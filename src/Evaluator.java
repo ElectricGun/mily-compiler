@@ -288,20 +288,20 @@ public class Evaluator {
                         System.out.printf(indent + "operation : %s tokens : %s%n",name, operationTokens);
                         int[] orders = new int[operationTokens.size()];
 
-                        // if smallest value is -1 then its probably a constant or something is very wrong
-                        int smallestIndex = -1;
-                        int smallestValue = -1;
+                        // if largest value is -1 then its probably a constant or something is very wrong
+                        int largestValueIndex = -1;
+                        int largestValue = -1;
                         for (int i = 0; i< orders.length; i++) {
                             orders[i] = operationOrder(operationTokens.get(i));
 
                             if (orders[i] != -1 &&
-                                    (smallestValue == -1 || orders[i] > smallestValue)) {
-                                smallestValue = orders[i];
-                                smallestIndex = i;
+                                    (largestValue == -1 || orders[i] > largestValue)) {
+                                largestValue = orders[i];
+                                largestValueIndex = i;
                             }
                         }
-                        if (smallestValue != -1) {
-                            type = operationTokens.get(smallestIndex);
+                        if (largestValue != -1) {
+                            type = operationTokens.get(largestValueIndex);
                         }
                         // if it only has -1 then its a constant
                         else if (orders.length == 1) {
@@ -311,8 +311,8 @@ public class Evaluator {
                             throw new Exception("Invalid operation %s on token \"%s\"".formatted(name, token));
                         }
 
-                        List<String> left = new ArrayList<>(operationTokens.subList(0, smallestIndex));
-                        List<String> right = new ArrayList<>(operationTokens.subList(smallestIndex + 1, operationTokens.size()));
+                        List<String> left = new ArrayList<>(operationTokens.subList(0, largestValueIndex));
+                        List<String> right = new ArrayList<>(operationTokens.subList(largestValueIndex + 1, operationTokens.size()));
 
                         left.add(";");
                         right.add(";");
