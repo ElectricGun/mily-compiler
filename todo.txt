@@ -1,0 +1,21 @@
+# Other additions
+ - Use regex for more accurate checking
+ - Robust error messages, such as line numbers
+
+# Operations
+ - Operations currently do not support parentheses
+ - Add more operation
+
+# Looping and Branching
+ - if statements, else statements
+ - for loops
+ - while loops
+
+# Datatypes
+ - (int, double, boolean). Mlog doesn't really support that many datatypes, but implementing them here should be nice
+ - static typing
+
+# Functions
+ - return types, such as void, int, double, boolean.
+ - add function calls
+

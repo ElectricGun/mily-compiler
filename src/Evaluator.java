@@ -5,20 +5,34 @@ import java.util.List;
 
 import static src.Vars.*;
 public class Evaluator {
-    public ScopeEvaluator mainBlock = new ScopeEvaluator("__MAIN__");
+    public ScopeEvaluator mainBlock = new ScopeEvaluator("__MAIN__", 0);
 
     public EvaluatorNode begin(List<String> tokenList) {
         mainBlock.evaluate(tokenList, this);
         return mainBlock;
     }
 
+    public static void printRecursive(EvaluatorNode node) {
+        printRecursiveHelper(node, 0);
+    }
+    protected static void printRecursiveHelper(EvaluatorNode node, int depth) {
+        String prefix = depth > 0 ? "| ".repeat(depth) : "";
+        System.out.println(prefix + node);
+        depth++;
+        for (EvaluatorNode member : node.members) {
+            printRecursiveHelper(member, depth);
+        }
+    }
+
     public static class EvaluatorNode {
+        int depth;
         String name;
         String buffer = "";
         List<EvaluatorNode> members = new ArrayList<>();
 
-        public EvaluatorNode(String name) {
+        public EvaluatorNode(String name, int depth) {
             this.name = name;
+            this.depth = depth;
         }
         protected EvaluatorNode evaluator(List<String> tokenList, Evaluator evaluator) throws Exception {
             throw new UnsupportedOperationException("This method is not yet implemented.");
@@ -29,6 +43,7 @@ public class Evaluator {
                 return evaluator(tokenList, evaluator);
             } catch (Exception e) {
                 e.printStackTrace();
+                System.exit(0);
                 return null;
             }
         }
@@ -37,26 +52,28 @@ public class Evaluator {
     public static class ScopeEvaluator extends EvaluatorNode {
         // if block starts with '{'
         boolean needsClosing = false;
-        boolean functionBlock = false;
-        public ScopeEvaluator(String name) {
-            super(name);
+        FunctionEvaluator functionBlock = null;
+        public ScopeEvaluator(String name, int depth) {
+            super(name, depth);
         }
-        public ScopeEvaluator(String name, boolean needsClosing, boolean functionBlock) {
-            super(name);
+        public ScopeEvaluator(String name, int depth, boolean needsClosing, FunctionEvaluator functionBlock) {
+            super(name, depth);
             this.needsClosing = needsClosing;
             this.functionBlock = functionBlock;
         }
         @Override
         protected EvaluatorNode evaluator(List<String> tokenList, Evaluator evaluator) throws Exception {
+            String indent = " ".repeat(depth);
+
             boolean isInitialized = false;
             String previousElementToken = "";
 
-            System.out.printf("Parsing Block %s:%n", name);
+            System.out.printf(indent + "Parsing Block %s:%n", name);
 
             while (!tokenList.isEmpty()) {
                 String token = tokenList.removeFirst();
 
-                System.out.printf("scope :  %s  :  %s%n",name, token);
+                System.out.printf(indent + "scope\t:\t%s\t:\t%s%n",name, token);
 
                 buffer += token;
 
@@ -67,13 +84,13 @@ public class Evaluator {
                         continue;
                     }
                     if (isPunctuation(c) && !isInitialized)
-                        throw new Exception("scope cannot start with a punctuation at token \"%s\"".formatted(c));
+                        throw new Exception("Illegal punctuation on scope %s \"%s\"".formatted(name, c));
 
                     // expect new function '(', or equals '='
                     // FUNCTION DECLARATION
                     if (CHAR_BRACKET_OPEN == c) {
-                        System.out.printf("Creating new function \"%s\"%n", previousElementToken);
-                        EvaluatorNode node = new FunctionEvaluator(previousElementToken).evaluate(tokenList, evaluator);
+                        System.out.printf(indent + "Creating new function \"%s\"%n", previousElementToken);
+                        EvaluatorNode node = new FunctionEvaluator(previousElementToken, depth + 1).evaluate(tokenList, evaluator);
                         members.add(node);
                     }
                     else if (needsClosing && CHAR_CURLY_CLOSE == c) {
@@ -83,17 +100,22 @@ public class Evaluator {
                     else {
                         throw new Exception("Unexpected token on scope %s: \"%s\"".formatted(name, c));
                     }
+                }
+                // evaluate operators
+                else if (isOperator(token)) {
+                    throw new Exception("Unexpected operator on scope %s: \"%s\"".formatted(name, token));
+                // evaluate the rest
                 } else {
 
-                    // RETURN
-                    if (functionBlock && token.equals(KEYWORD_RETURN)) {
-                        OperationEvaluator returnOp = new OperationEvaluator(name+"_return");
+                    // RETURN STATEMENT FOR FUNCTIONS
+                    if (functionBlock != null && token.equals(KEYWORD_RETURN)) {
+                        OperationEvaluator returnOp = new ReturnOperationEvaluator(name+"_return", depth + 1);
                         members.add(returnOp);
                         returnOp.evaluate(tokenList, evaluator);
                     }
                     // VARIABLE DECLARATION
                     else if (previousElementToken.equals(KEYWORD_LET)) {
-                        EvaluatorNode node = new DeclarationEvaluator(token).evaluate(tokenList, evaluator);
+                        EvaluatorNode node = new DeclarationEvaluator(token, depth + 1).evaluate(tokenList, evaluator);
                         members.add(node);
                     }
                     previousElementToken = token;
@@ -108,31 +130,31 @@ public class Evaluator {
 
         @Override
         public String toString() {
-            return ("scope : " + name);
+            return ((functionBlock != null ? "function " : "")  + "scope : " + name);
         }
     }
 
     public static class FunctionEvaluator extends EvaluatorNode {
         List<String> argumentNames = new ArrayList<>();
         ScopeEvaluator scope;
-
-        public FunctionEvaluator(String name) {
-            super(name);
+        public FunctionEvaluator(String name, int depth) {
+            super(name, depth);
         }
 
         @Override
         protected EvaluatorNode evaluator(List<String> tokenList, Evaluator evaluator) throws Exception {
+            String indent = " ".repeat(depth);
+
             boolean isInitialized = false;
-            String previousToken = "";
             boolean functionDeclared = false;
             boolean argumentWanted = false;
 
-            System.out.printf("Parsing Function %s:%n", name);
+            System.out.printf(indent + "Parsing Function %s:%n", name);
 
             while (!tokenList.isEmpty()) {
                 String token = tokenList.removeFirst();
 
-                System.out.printf("function : %s : %s%n",name, token);
+                System.out.printf(indent + "function\t:\t%s\t:\t%s%n",name, token);
 
                 buffer += token;
 
@@ -151,22 +173,25 @@ public class Evaluator {
                         argumentWanted = true;
                     }
                     else if (functionDeclared && CHAR_CURLY_OPEN == c) {
-                        System.out.printf("Function header \"%s(%s)\" created%n", name, String.join(", ", argumentNames));
-                        scope = new ScopeEvaluator(name, true, true);
+                        System.out.printf(indent + "Function header \"%s(%s)\" created%n", name, String.join(", ", argumentNames));
+                        scope = new ScopeEvaluator(name, depth + 1, true, this);
                         members.add(scope.evaluate(tokenList, evaluator));
                         return this;
                     } else {
                         throw new Exception("Unexpected token at function declaration %s: \"%s\"".formatted(name, c));
                     }
-                } else {
-
-
+                }
+                // evaluate operators
+                else if (isOperator(token)) {
+                    throw new Exception("Unexpected operator at function declaration %s: \"%s\"".formatted(name, token));
+                }
+                // evaluate the rest
+                else {
                       if (!isInitialized || argumentWanted) {
                           argumentNames.add(token);
                           argumentWanted = false;
                           System.out.printf("Added argument %s%n", token);
                         }
-
                     isInitialized = true;
                 }
             }
@@ -179,45 +204,47 @@ public class Evaluator {
     }
 
     public static class DeclarationEvaluator extends EvaluatorNode {
-        // todo create an evaluator for operator
-        public DeclarationEvaluator(String name) {
-            super(name);
+
+        public DeclarationEvaluator(String name, int depth) {
+            super(name, depth);
         }
 
         @Override
         protected EvaluatorNode evaluator(List<String> tokenList, Evaluator evaluator) throws Exception {
-
-            String previousToken = "";
-            boolean isInitialized = false;
+            String indent = " ".repeat(depth);
 
             System.out.printf("Parsing Variable Declaration %s:%n", name);
 
             while (!tokenList.isEmpty()) {
                 String token = tokenList.removeFirst();
 
-                System.out.printf("declaration :  %s : %s%n",name, token);
+                System.out.printf(indent + "declaration :  %s : %s%n",name, token);
 
+                // evaluate punctuations
                 if (token.length() == 1 && isPunctuation(token.charAt(0))) {
                     char c = token.charAt(0);
                     if (isWhiteSpace(c)) {
                         continue;
                     }
 
-                    throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(name, c));
-
-                } else {
+                    throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(name, c));
+                }
+                // evaluate operators
+                else if (isOperator(token)) {
                     // check for equal sign
-                    if (isOperator(token)) {
-                        if (token.equals(OP_EQUALS)) {
-                            OperationEvaluator operationEvaluator = new OperationEvaluator("op_"+name);
-                            operationEvaluator.evaluate(tokenList, evaluator);
-                            members.add(operationEvaluator);
-                            return this;
-                        }
-                        else {
-                            throw new Exception("Missing '=' sign %s: \"%s\"".formatted(name, token));
-                        }
+                    if (token.equals(OP_EQUALS)) {
+                        OperationEvaluator operationEvaluator = new OperationEvaluator("op_"+name, depth + 1);
+                        operationEvaluator.evaluate(tokenList, evaluator);
+                        members.add(operationEvaluator);
+                        return this;
                     }
+                    else {
+                        throw new Exception("Missing '=' sign %s: \"%s\"".formatted(name, token));
+                    }
+                }
+                // evaluate the rest
+                else {
+
                 }
             }
             return null;
@@ -225,7 +252,7 @@ public class Evaluator {
 
         @Override
         public String toString() {
-            return "declare %s".formatted(name, members);
+            return "declare %s".formatted(name);
         }
     }
 
@@ -236,21 +263,21 @@ public class Evaluator {
         EvaluatorNode targetOperand = null;
         List<String> operationTokens = new ArrayList<>();
 
-        public OperationEvaluator(String name) {
-            super(name);
+        public OperationEvaluator(String name, int depth) {
+            super(name, depth);
         }
         @Override
         protected EvaluatorNode evaluator(List<String> tokenList, Evaluator evaluator) throws Exception {
-            String previousToken = "";
-            boolean isInitialized = false;
+            String indent = " ".repeat(depth);
 
-            System.out.printf("Parsing Operation Declaration %s:%n", name);
+            System.out.printf(indent + "Parsing Operation Declaration %s:%n", name);
 
             while (!tokenList.isEmpty()) {
                 String token = tokenList.removeFirst();
 
-                System.out.printf("operation :  %s : %s%n",name, token);
+                System.out.printf(indent + "operation : %s : %s%n",name, token);
 
+                // evaluate punctuations
                 if (token.length() == 1 && isPunctuation(token.charAt(0))) {
                     char c = token.charAt(0);
                     if (isWhiteSpace(c)) {
@@ -258,7 +285,7 @@ public class Evaluator {
                     }
 
                     if (CHAR_SEMICOLON == c) {
-                        System.out.printf("operation : %s tokens : %s%n",name, operationTokens);
+                        System.out.printf(indent + "operation : %s tokens : %s%n",name, operationTokens);
                         int[] orders = new int[operationTokens.size()];
 
                         // if smallest value is -1 then its probably a constant or something is very wrong
@@ -281,7 +308,7 @@ public class Evaluator {
                             constantValue = operationTokens.removeFirst();
                             return this;
                         } else {
-                            throw new Exception("Invalid declaration on %s, \"%s\"".formatted(name, token));
+                            throw new Exception("Invalid operation %s on token \"%s\"".formatted(name, token));
                         }
 
                         List<String> left = new ArrayList<>(operationTokens.subList(0, smallestIndex));
@@ -290,10 +317,9 @@ public class Evaluator {
                         left.add(";");
                         right.add(";");
 
-//                        System.out.printf("%s %s %s%n", left, right, type);
 
-                        baseOperand = new OperationEvaluator("left_" + name);
-                        targetOperand = new OperationEvaluator("right_" + name);
+                        baseOperand = new OperationEvaluator("l_" + name, depth + 1);
+                        targetOperand = new OperationEvaluator("r_" + name, depth + 1);
 
                         baseOperand.evaluate(left, evaluator);
                         targetOperand.evaluate(right, evaluator);
@@ -302,8 +328,17 @@ public class Evaluator {
                         members.add(targetOperand);
 
                         return this;
+                    } else {
+                        throw new Exception("Unexpected token on operation %s, \"%s\"".formatted(name, token));
                     }
-                } else {
+                }
+                // evaluate operators
+                else if (isOperator(token)) {
+                    // entire operations are evaluated after a semicolon is detected, so this isn't really used
+                    operationTokens.add(token);
+                }
+                // evaluate the rest
+                else {
                     operationTokens.add(token);
                 }
             }
@@ -312,22 +347,20 @@ public class Evaluator {
 
         @Override
         public String toString() {
-//            return "operator :  %s : %s : %s".formatted(name, baseOperand == null ? constantValue : "", type);
             return "%s %s".formatted( baseOperand == null ? constantValue : "operator", type.equals(OP_CONSTANT) ? "" : type);
-
         }
     }
 
-    public static void printRecursive(EvaluatorNode node) {
-        printRecursiveHelper(node, 0);
-    }
-    protected static void printRecursiveHelper(EvaluatorNode node, int depth) {
-        String prefix = depth > 0 ? "| ".repeat(depth) : "";
-        System.out.println(prefix + node);
-        depth++;
-        for (EvaluatorNode member : node.members) {
-            printRecursiveHelper(member, depth);
+    public static class ReturnOperationEvaluator extends OperationEvaluator {
+        public ReturnOperationEvaluator(String name, int depth) {
+            super(name, depth);
+        }
+
+        @Override
+        public String toString() {
+            return "%s %s".formatted( baseOperand == null ? "returns " + constantValue : "returns operator", type.equals(OP_CONSTANT) ? "" : type);
         }
     }
+
 }
 

@@ -52,18 +52,6 @@ public class Vars {
         return false;
     }
 
-    public static int operationOrder(String c) {
-        HashMap<String, Integer> pemdas = new HashMap<>();
-
-        pemdas.put(OP_POW, 0);
-        pemdas.put(OP_MUL, 1);
-        pemdas.put(OP_DIV, 1);
-        pemdas.put(OP_ADD, 2);
-        pemdas.put(OP_SUB, 2);
-
-        return pemdas.getOrDefault(c, -1);
-    }
-
     public static boolean isOperator(String c) {
         String[] ops = {
                 OP_MUL,
@@ -77,6 +65,18 @@ public class Vars {
             if (c.equals(s)) return true;
         }
         return false;
+    }
+
+    public static int operationOrder(String c) {
+        HashMap<String, Integer> pemdas = new HashMap<>();
+
+        pemdas.put(OP_POW, 0);
+        pemdas.put(OP_MUL, 1);
+        pemdas.put(OP_DIV, 1);
+        pemdas.put(OP_ADD, 2);
+        pemdas.put(OP_SUB, 2);
+
+        return pemdas.getOrDefault(c, -1);
     }
 
     public static boolean isWhiteSpace(char c) {

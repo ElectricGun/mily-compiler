@@ -28,22 +28,36 @@ public class Main {
 
         String string3 =
                 """
+                let global_var = 103;
+                
+                let global_operation = global_var * 2;
+
                 euclid() {
                     return 100000;
                 }
-                
                 euler() {
                     return x*y+z+u/v-w;
                 }
+                turing() {return 100;}
+                lovelace() {
+                    let sdfds = 13123;
+                    return a * sdfds;
+                }
                 """;
-
-        List<String> tokenList = tokenize(string3);
-        Evaluator evaluator = new Evaluator();
-        Evaluator.EvaluatorNode node = evaluator.begin(tokenList);
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
 
         System.out.println(string3);
+
+        System.out.printf("%n---------------\tTokenization\t%n%n");
+
+        List<String> tokenList = tokenize(string3);
+        System.out.println(tokenList);
+
+        System.out.printf("%n---------------\tLogs\t%n%n");
+
+        Evaluator evaluator = new Evaluator();
+        Evaluator.EvaluatorNode node = evaluator.begin(tokenList);
 
         System.out.printf("%n---------------\tSyntax Tree (WIP)\t%n%n");
 
@@ -57,7 +71,7 @@ public class Main {
         char previousChar = 0;
         for (char c : input.toCharArray()) {
 
-            boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar) || isOperator("" + previousChar));
+            boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
             if (isWhiteSpace(c)) {
@@ -75,6 +89,8 @@ public class Main {
             } else {
                 currentToken += c;
             }
+
+            System.out.printf("current: %s%n", currentToken);
 
             isInitialized = true;
             previousChar = c;
