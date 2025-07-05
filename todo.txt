@@ -4,7 +4,7 @@
 
 # Operations
  - Operations currently do not support parentheses
- - Add more operation
+ - Implement more operations
 
 # Looping and Branching
  - if statements, else statements
@@ -18,4 +18,13 @@
 # Functions
  - return types, such as void, int, double, boolean.
  - add function calls
+
+# Technical stuff
+ - Tokenization for multicharacter operators
+ - Each evaluator node should have 5 component methods, executed in this order:
+  - Evaluate punctuations: if token is a punctuation, run
+  - Evaluate operators: if token is an operator, run
+  - Evaluate keywords: if token is a keyword, run
+  - Evaluate others: if token is none of the above, run
+  - Evaluate current token: run regardless
 

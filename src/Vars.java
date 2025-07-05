@@ -1,6 +1,7 @@
 package src;
 
-import java.util.HashMap;
+import src.evaluation.*;
+import java.util.*;
 
 public class Vars {
 
@@ -23,14 +24,21 @@ public class Vars {
     KEYWORD_RETURN = "return",
 
     // operators
-    OP_EQUALS = "=",
+    OP_ASSIGN = "=",
     OP_MUL = "*",
     OP_ADD = "+",
     OP_SUB = "-",
     OP_DIV = "/",
     OP_POW = "^",
+    OP_IDIV = "//",
+    OP_MOD = "%",
 
-    // other operation types
+    // boolean/comparator operators
+    OP_EQUALS = "==",
+    OP_STRICT_EQUALS = "===",
+    OP_NOT_EQUAL = "!=",
+
+    // other "operation" types
     OP_CONSTANT = "constant"
     ;
 
@@ -52,6 +60,10 @@ public class Vars {
         return false;
     }
 
+    public static boolean isOperator(Token t) {
+        return isOperator(t.string);
+    }
+
     public static boolean isOperator(String c) {
         String[] ops = {
                 OP_MUL,
@@ -59,12 +71,16 @@ public class Vars {
                 OP_DIV,
                 OP_POW,
                 OP_SUB,
-                OP_EQUALS
+                OP_ASSIGN
         };
         for (String s : ops) {
             if (c.equals(s)) return true;
         }
         return false;
+    }
+
+    public static int operationOrder(Token t) {
+        return operationOrder(t.string);
     }
 
     public static int operationOrder(String c) {
