@@ -1,6 +1,8 @@
 package src;
 
-import src.evaluation.*;
+import src.evaluators.*;
+import src.tokens.Token;
+
 import java.util.*;
 
 import static src.Vars.*;
@@ -9,12 +11,8 @@ public class Main {
     public static void main(String[] args) {
         String code = """
                    
-                  testfunction(testarg) {
-                  let test = 100;
-                  test () {
-                  return test;
-                  }
-                  return test + - - 100;
+                  test_function(x, y) {
+                    return (y + 20 * (x + 10)) * (1 + 1) / x;
                   }
                 
                 """;

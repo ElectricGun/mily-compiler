@@ -1,6 +1,7 @@
 package src;
 
-import src.evaluation.*;
+import src.tokens.Token;
+
 import java.util.*;
 
 public class Vars {
@@ -83,9 +84,17 @@ public class Vars {
         return operationOrder(t.string);
     }
 
+    public static boolean isConstant(int order) {
+        return order == -1 || order == -4;
+    }
+
     public static int operationOrder(String c) {
         HashMap<String, Integer> pemdas = new HashMap<>();
 
+        pemdas.put(String.valueOf(CHAR_BRACKET_OPEN), -4);
+        pemdas.put(String.valueOf(CHAR_BRACKET_CLOSE), -3);
+        // -2 is reserved for unary operators
+        // -1 is reserved for constants
         pemdas.put(OP_POW, 0);
         pemdas.put(OP_MUL, 1);
         pemdas.put(OP_DIV, 1);

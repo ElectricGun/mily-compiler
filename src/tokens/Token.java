@@ -1,4 +1,4 @@
-package src.evaluation;
+package src.tokens;
 
 public class Token {
     public String string;

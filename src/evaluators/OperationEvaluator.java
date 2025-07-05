@@ -1,4 +1,7 @@
-package src.evaluation;
+package src.evaluators;
+
+import src.tokens.BracketToken;
+import src.tokens.Token;
 
 import java.util.*;
 
@@ -10,10 +13,12 @@ public class OperationEvaluator extends EvaluatorNode {
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
     public List<Token> operationTokens = new ArrayList<>();
+    public List<BracketEvaluator> bracketOperations = new ArrayList<>();
 
     public OperationEvaluator(Token name, int depth) {
         super(name, depth);
     }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
@@ -23,7 +28,7 @@ public class OperationEvaluator extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "operation : %s : %s%n",name, token);
+            System.out.printf(indent + "operation : %s : %s%n", name, token);
 
             // evaluate punctuations
             if (token.length() == 1 && isPunctuation(token.charAt(0))) {
@@ -32,9 +37,16 @@ public class OperationEvaluator extends EvaluatorNode {
                     continue;
                 }
 
+                if (CHAR_BRACKET_OPEN == c || CHAR_BRACKET_CLOSE == c) {
+                    operationTokens.add(token);
+                } else
                 if (CHAR_SEMICOLON == c) {
                     System.out.printf(indent + "operation : %s tokens : %s%n",name, operationTokens);
-                    int[] orders = new int[operationTokens.size()];
+                    List<Integer> orders = new ArrayList<>();
+
+                    for (int i = 0; i < operationTokens.size(); i++) {
+                        orders.add(0);
+                    }
 
                     // if largest value is -1 then its probably a constant or something is very wrong
                     int largestOrderIndex = -1;
@@ -43,47 +55,76 @@ public class OperationEvaluator extends EvaluatorNode {
                     int previousOrder = -2;
 
                     boolean constantFound = false;
-                    for (int i = 0; i < orders.length; i++) {
+                    for (int i = 0; i < orders.size(); i++) {
                         int currentOrder = operationOrder(operationTokens.get(i));
-                        if (currentOrder == -1) {
+
+                        // start bracket
+                        if (currentOrder == -4) {
+                            BracketEvaluator bracketOperation = new BracketEvaluator(new Token("b_" + name, name.line), depth + 1, i);
+                            bracketOperation.evaluate(operationTokens, orders, evaluator);
+                            bracketOperations.add(bracketOperation);
+
+                            currentOrder = -1;
+                        }
+
+                        // because parentheses are constants
+                        if (isConstant(currentOrder)) {
                             constantFound = true;
                         }
                         // this is checking for unary operators,
-                        // if two constants side by side it just breaks (as it should)
+                        // if two constants are side by side it just breaks (as it should)
                         // if the operators come before any constants, they should not be counted as binary
-                        orders[i] = !(previousOrder > -1 && currentOrder > -1 || !constantFound) ?
-                                currentOrder : -2;
+                        orders.set(i, !(previousOrder > -1 && currentOrder > -1 || !constantFound) ?
+                                currentOrder : -2);
 
                         // if it is an operator, then set the order
-                        if (orders[i] >= 0 && (largestOrder == -1 || orders[i] >= largestOrder)) {
-                            largestOrder = orders[i];
+                        if (orders.get(i) >= 0 && (largestOrder == -1 || orders.get(i) >= largestOrder)) {
+                            largestOrder = orders.get(i);
                             largestOrderIndex = i;
                         }
-                        else if (orders[i] == -2 && largestOrderIndex == -1) {
-                            largestOrder = orders[i];
+                        else if (orders.get(i) == -2 && largestOrderIndex == -1) {
+                            largestOrder = orders.get(i);
                             largestOrderIndex = i;
                         }
 
                         previousOrder = currentOrder;
                     }
 
+                    System.out.printf(indent + "operation orders : %s : %s%n", name, orders);
+
                     // if amount of elements > 2
                     // then its a binary operation,
-                    if (orders.length > 2 && largestOrder != -1) {
+                    if (orders.size() > 2 && largestOrder != -1) {
                         type = operationTokens.get(largestOrderIndex).string;
                     }
-                    // if it only has a -1 then its a constant value
-                    else if (orders.length == 1 && orders[0] == -1) {
-                        constantValue = operationTokens.removeFirst().string;
+                    // if it only has a -1 or -4 then its a constant value
+                    else if (orders.size() == 1 && isConstant(orders.get(0))) {
+                        Token constantToken = operationTokens.removeFirst();
+
+                        if (constantToken instanceof BracketToken bracketToken) {
+                            return bracketToken.getOperationEvaluator();
+                        } else {
+                            constantValue = constantToken.string;
+                        }
                         return this;
                     }
-                    // if it has -1 on the right and a -2 operator on the left, it's a regular unary - or +
-                    else if (orders.length == 2 && orders[1] == -1 && orders[0] < -1) {
+                    // if it has -1 or -4 on the right and a -2 operator on the left, it's a regular unary - or +
+                    else if (orders.size() == 2 && isConstant(orders.get(1)) && orders.get(0) == -2) {
                         type = operationTokens.removeFirst().string;
-                        constantValue = operationTokens.removeFirst().string;
+                        Token constantToken = operationTokens.removeFirst();
+
+                        if (constantToken instanceof BracketToken bracketToken) {
+                            bracketToken.getOperationEvaluator().type = type;
+
+                            members.add(bracketToken.getOperationEvaluator());
+                            return bracketToken.getOperationEvaluator();
+
+                        } else {
+                            constantValue = constantToken.string;
+                        }
                         return this;
                     }
-                    // if all the values are -1 or -2 then funny error
+                    // if all the values are -1 or -4 or -2 then funny error
                     else {
                         String out = "";
                         for (Token operationToken : operationTokens)
@@ -100,14 +141,12 @@ public class OperationEvaluator extends EvaluatorNode {
 
                     if (left.size() > 1) {
                         leftSide = new OperationEvaluator(new Token("l_" + name, name.line), depth + 1);
-                        leftSide.evaluate(left, evaluator);
-                        members.add(leftSide);
+                        members.add(leftSide.evaluate(left, evaluator));
                     }
 
                     if (right.size() > 1) {
                         rightSide = new OperationEvaluator(new Token("r_" + name, name.line), depth + 1);
-                        rightSide.evaluate(right, evaluator);
-                        members.add(rightSide);
+                        members.add(rightSide.evaluate(right, evaluator));
                     }
 
                     return this;
@@ -115,9 +154,11 @@ public class OperationEvaluator extends EvaluatorNode {
                     throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(name, token, token.line));
                 }
             }
+
+            // entire operations are evaluated after a semicolon is detected
+
             // evaluate operators
             else if (isOperator(token)) {
-                // entire operations are evaluated after a semicolon is detected, so this isn't really used
                 operationTokens.add(token);
             }
             // evaluate the rest

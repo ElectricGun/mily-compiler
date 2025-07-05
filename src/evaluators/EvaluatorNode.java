@@ -1,4 +1,6 @@
-package src.evaluation;
+package src.evaluators;
+
+import src.tokens.Token;
 
 import java.util.ArrayList;
 import java.util.List;
