@@ -33,16 +33,39 @@ public class Functions {
         return isPunctuation(t.string.charAt(0));
     }
 
-    public static boolean isOperator(Token t) {
-        return isOperator(t.string);
-    }
-
     public static boolean isOperator(String c) {
         for (String s : operatorMap.values()) {
             if (c.equals(s)) return true;
         }
         return false;
     }
+
+    public static boolean isOperator(Token t) {
+        return isOperator(t.string);
+    }
+
+    public static boolean isOperator(char c) {
+        return isOperator(String.valueOf(c));
+    }
+
+    public static boolean isKeywordIncomplete(String c) {
+        if (isWhiteSpace(c) || c.isEmpty())
+            return false;
+        for (String op : allKeywordMap.values()) {
+            boolean partialEquals = op.contains(c) && !op.equals(c);
+            if (partialEquals) return true;
+        }
+        return false;
+    }
+
+    public static boolean isKeywordIncomplete(Token t) {
+        return isKeywordIncomplete(t.string);
+    }
+
+    public static boolean isKeywordIncomplete(char c) {
+        return isKeywordIncomplete(String.valueOf(c));
+    }
+
 
     public static int operationOrder(Token t) {
         return operationOrder(t.string);

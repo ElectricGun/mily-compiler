@@ -50,6 +50,7 @@ public class Keys {
 //        KEY_OP_FLOOR = "key_op_floor",
 //        KEY_OP_CEIL= "key_op_ceil",
 
-    // other
-        KEY_OP_CONSTANT = "key_constant";
+    // operator types
+        KEY_OP_TYPE_CONSTANT = "key_constant",
+        KEY_OP_TYPE_GROUP = "key_group";
 }

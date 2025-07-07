@@ -8,7 +8,7 @@ import static src.constants.Functions.*;
 import static src.constants.Keys.*;
 
 public class OperationEvaluatorNode extends EvaluatorNode {
-    public String type = KEY_OP_CONSTANT;
+    public String type = KEY_OP_TYPE_CONSTANT;
     public String constantValue = "";
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
@@ -51,13 +51,14 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         orders.add(0);
                     }
 
-                    // if largest value is -1 then its probably a constant or something is very wrong
+                    // if largest value is -1 then it's a constant or something is very wrong
                     int largestOrderIndex = -1;
                     int largestOrder = -1;
-                    // -2 means operator without a constant to the left
+                    // -2 means operator without a constant on the left
                     int previousOrder = -2;
-
                     boolean constantFound = false;
+
+                    // OPERATION EVALUATION LOOP
                     for (int i = 0; i < orders.size(); i++) {
                         int currentOrder = operationOrder(operationTokens.get(i));
 
@@ -174,8 +175,13 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
     @Override
     public String toString() {
+
+        if (constantValue.isEmpty() && type.equals(KEY_OP_TYPE_CONSTANT)) {
+            return "group";
+        }
+
         if (rightSide == null || leftSide == null)
-            return "%s%s".formatted(!type.equals(KEY_OP_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
-        return "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(KEY_OP_CONSTANT) ? "" : type);
+            return "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
+        return "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
     }
 }

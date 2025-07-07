@@ -10,6 +10,6 @@ public class ReturnOperationEvaluatorNode extends OperationEvaluatorNode {
 
     @Override
     public String toString() {
-        return "%s %s".formatted( leftSide == null ? "returns " + constantValue : "returns operator", type.equals(KEY_OP_CONSTANT) ? "" : type);
+        return "%s %s".formatted( leftSide == null ? "returns " + constantValue : "returns operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
     }
 }
