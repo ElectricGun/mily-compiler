@@ -1,6 +1,6 @@
-# Other additions
- - Use regex for more accurate checking
- - Robust error messages, such as line numbers
+# Start compiling to mlog once all of these features are done:
+ - Looping and Branching
+ - Function calling (very important because thats literally the point of this)
 
 # Operations
  - Implement more operations
@@ -26,4 +26,3 @@
  - Evaluate keywords: if token is a keyword, run
  - Evaluate others: if token is none of the above, run
  - Evaluate current token: run regardless
-
