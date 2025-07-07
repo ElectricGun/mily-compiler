@@ -5,12 +5,12 @@ import src.tokens.*;
 import src.constants.*;
 import static src.constants.Keys.*;
 
-public class BracketEvaluatorNode extends EvaluatorNode {
+public class OperationBracketEvaluatorNode extends EvaluatorNode {
 
     protected List<Token> operationTokens = new ArrayList<>();
     public int operatorIndex;
 
-    public BracketEvaluatorNode(Token token, int depth, int operatorIndex) {
+    public OperationBracketEvaluatorNode(Token token, int depth, int operatorIndex) {
         super(token, depth);
         this.operatorIndex = operatorIndex;
     }

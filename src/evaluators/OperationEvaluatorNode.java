@@ -12,7 +12,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     public String constantValue = "";
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
-    public List<BracketEvaluatorNode> bracketOperations = new ArrayList<>();
+    public List<OperationBracketEvaluatorNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones.
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
@@ -74,7 +74,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                         // start bracket
                         if (currentOrder == -4) {
-                            BracketEvaluatorNode bracketOperation = new BracketEvaluatorNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
+                            OperationBracketEvaluatorNode bracketOperation = new OperationBracketEvaluatorNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
                             bracketOperation.evaluate(operationTokens, orders, evaluator);
                             bracketOperations.add(bracketOperation);
 
