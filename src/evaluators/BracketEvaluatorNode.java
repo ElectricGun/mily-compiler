@@ -1,11 +1,9 @@
 package src.evaluators;
 
-import src.tokens.BracketToken;
-import src.tokens.Token;
-
-import java.util.ArrayList;
-import java.util.List;
-import static src.Vars.*;
+import java.util.*;
+import src.tokens.*;
+import src.constants.*;
+import static src.constants.Keys.*;
 
 public class BracketEvaluatorNode extends EvaluatorNode {
 
@@ -32,10 +30,10 @@ public class BracketEvaluatorNode extends EvaluatorNode {
             Token token = tokenList.remove(operatorIndex);
 
             System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
-            if (token.length() == 1 && CHAR_BRACKET_OPEN == token.charAt(0)) {
+            if (token.length() == 1 && Vars.equals(KEY_BRACKET_OPEN, token)) {
                 bracketCounter ++;
             } else
-            if (token.length() == 1 && CHAR_BRACKET_CLOSE == token.charAt(0)) {
+            if (token.length() == 1 && Vars.equals(KEY_BRACKET_CLOSE, token)) {
                 // replace closing bracket with a constant indicator
                 bracketCounter --;
             }

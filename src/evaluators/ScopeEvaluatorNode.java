@@ -1,10 +1,11 @@
 package src.evaluators;
 
-import src.tokens.Token;
-
 import java.util.*;
+import src.constants.*;
+import src.tokens.*;
 
-import static src.Vars.*;
+import static src.constants.Vars.*;
+import static src.constants.Keys.*;
 
 public class ScopeEvaluatorNode extends EvaluatorNode {
     // if true, then the block is finalized after finding a '}'. Usually for functions
@@ -36,8 +37,9 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             buffer += token;
 
             // evaluate punctuations
-            if (token.length() == 1 && isPunctuation(token.charAt(0))) {
+            if (token.length() == 1 && isPunctuation(token)) {
                 char c = token.charAt(0);
+
                 if (isWhiteSpace(c)) {
                     continue;
                 }
@@ -46,12 +48,12 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
                 // expect new function '(', or equals '='
                 // FUNCTION DECLARATION
-                if (CHAR_BRACKET_OPEN == c) {
+                if (Vars.equals(KEY_BRACKET_OPEN, token)) {
                     System.out.printf(indent + "Creating new function \"%s\"%n", previousElementToken);
                     EvaluatorNode node = new FunctionEvaluatorNode(previousElementToken, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }
-                else if (needsClosing && CHAR_CURLY_CLOSE == c) {
+                else if (needsClosing && Vars.equals(KEY_CURLY_CLOSE, token)) {
                     System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
                 }
@@ -65,13 +67,13 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                 // evaluate the rest
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
-                if (functionEvaluatorNode != null && token.string.equals(KEYWORD_RETURN)) {
+                if (functionEvaluatorNode != null && Vars.equals(KEY_RETURN, token)) {
                     OperationEvaluatorNode returnOp = new ReturnOperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1);
                     members.add(returnOp);
                     returnOp.evaluate(tokenList, evaluator);
                 }
                 // VARIABLE DECLARATION
-                else if (previousElementToken.string.equals(KEYWORD_LET)) {
+                else if (Vars.equals(KEY_LET, previousElementToken)) {
                     EvaluatorNode node = new DeclarationEvaluatorNode(token, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }

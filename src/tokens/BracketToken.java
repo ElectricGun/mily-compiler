@@ -1,10 +1,10 @@
 package src.tokens;
 
-import src.evaluators.OperationEvaluatorNode;
+import src.evaluators.*;
 
-public class BracketToken extends Token {
+public class BracketToken extends TypedToken {
 
-    private OperationEvaluatorNode operationEvaluatorNode;
+    private final OperationEvaluatorNode operationEvaluatorNode;
 
     public BracketToken(String string, int line, OperationEvaluatorNode operationEvaluatorNode) {
         super(string, line);

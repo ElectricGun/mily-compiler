@@ -1,14 +1,14 @@
 package src.evaluators;
 
-import src.tokens.BracketToken;
-import src.tokens.Token;
-
 import java.util.*;
+import src.constants.*;
+import src.tokens.*;
 
-import static src.Vars.*;
+import static src.constants.Vars.*;
+import static src.constants.Keys.*;
 
 public class OperationEvaluatorNode extends EvaluatorNode {
-    public String type = OP_CONSTANT;
+    public String type = KEY_OP_CONSTANT;
     public String constantValue = "";
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
@@ -33,18 +33,17 @@ public class OperationEvaluatorNode extends EvaluatorNode {
             System.out.printf(indent + "operation : %s : %s%n", this.token, token);
 
             // evaluate punctuations
-            if (token.length() == 1 && isPunctuation(token.charAt(0))) {
-                char c = token.charAt(0);
-                if (isWhiteSpace(c)) {
+            if (token.length() == 1 && isPunctuation(token)) {
+                if (isWhiteSpace(token)) {
                     continue;
                 }
 
-                if (CHAR_BRACKET_OPEN == c || CHAR_BRACKET_CLOSE == c) {
+                if (Vars.equals(KEY_BRACKET_OPEN, token) || Vars.equals(KEY_BRACKET_CLOSE, token)) {
                     operationTokens.add(token);
                 }
 
                 // entire operations are evaluated after a semicolon is detected
-                else if (CHAR_SEMICOLON == c) {
+                else if (Vars.equals(KEY_SEMICOLON, token)) {
                     System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
                     List<Integer> orders = new ArrayList<>();
 
@@ -61,6 +60,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     boolean constantFound = false;
                     for (int i = 0; i < orders.size(); i++) {
                         int currentOrder = operationOrder(operationTokens.get(i));
+
+                        System.out.printf(indent + "%s order : %s%n", operationTokens.get(i), currentOrder);
 
                         // start bracket
                         if (currentOrder == -4) {
@@ -106,7 +107,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         Token constantToken = operationTokens.removeFirst();
 
                         if (constantToken instanceof BracketToken bracketToken) {
-                            return bracketToken.getOperationEvaluator();
+                            members.add(bracketToken.getOperationEvaluator());
+                            return this;
                         } else {
                             constantValue = constantToken.string;
                         }
@@ -173,7 +175,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     @Override
     public String toString() {
         if (rightSide == null || leftSide == null)
-            return "%s%s".formatted(!type.equals(OP_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
-        return "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(OP_CONSTANT) ? "" : type);
+            return "%s%s".formatted(!type.equals(KEY_OP_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
+        return "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(KEY_OP_CONSTANT) ? "" : type);
     }
 }

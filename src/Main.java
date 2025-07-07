@@ -1,17 +1,17 @@
 package src;
 
+import java.util.*;
+import src.constants.*;
 import src.evaluators.*;
 import src.tokens.Token;
-
-import java.util.*;
-
-import static src.Vars.*;
+import static src.constants.Vars.*;
+import static src.constants.Keys.*;
 
 public class Main {
     public static void main(String[] args) {
         String code = """
                   test_function(x, y) {
-                    let amonge = sus * (among + 1);
+                    let among = sus * -((among + 1));
                   }
                 """;
 
@@ -42,11 +42,12 @@ public class Main {
         int currentLine = 1;
 
         for (char c : input.toCharArray()) {
+            String cs = String.valueOf(c);
             boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
-            if (isWhiteSpace(c)) {
-                if (WSP_NEWLINE == c) {
+            if (isWhiteSpace(cs)) {
+                if (Vars.equals(KEY_NEWLINE, cs)) {
                     currentLine ++;
                 }
                 if (!previousIsWhitespace) {

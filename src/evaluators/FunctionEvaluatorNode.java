@@ -1,12 +1,10 @@
 package src.evaluators;
 
-import src.tokens.Token;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static src.Vars.*;
-import static src.Vars.isOperator;
+import src.constants.*;
+import src.tokens.*;
+import java.util.*;
+import static src.constants.Vars.*;
+import static src.constants.Keys.*;
 
 public class FunctionEvaluatorNode extends EvaluatorNode {
     List<String> argumentNames = new ArrayList<>();
@@ -33,26 +31,27 @@ public class FunctionEvaluatorNode extends EvaluatorNode {
             buffer += token;
 
             // evaluate punctuations
-            if (token.length() == 1 && isPunctuation(token.charAt(0))) {
-                char c = token.charAt(0);
-                if (isWhiteSpace(c)) {
+            if (token.length() == 1  && isPunctuation(token)) {
+//                char c = token.charAt(0);
+
+                if (isWhiteSpace(token)) {
                     continue;
                 }
 
                 if (argumentWanted) {
-                    throw new Exception("Expecting an argument at function declaration %s: \"%s\" at line %s".formatted(this.token, c, token.line));
-                } else if (CHAR_BRACKET_CLOSE == c) {
+                    throw new Exception("Expecting an argument at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                } else if (Vars.equals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;
-                } else if (CHAR_COMMA == c) {
+                } else if (Vars.equals(KEY_COMMA, token)) {
                     argumentWanted = true;
                 }
-                else if (functionDeclared && CHAR_CURLY_OPEN == c) {
+                else if (functionDeclared && Vars.equals(KEY_CURLY_OPEN, token)) {
                     System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
                     scope = new ScopeEvaluatorNode(this.token, depth + 1, true, this);
                     members.add(scope.evaluate(tokenList, evaluator));
                     return this;
                 } else {
-                    throw new Exception("Unexpected punctuation at function declaration %s: \"%s\" at line %s".formatted(this.token, c, token.line));
+                    throw new Exception("Unexpected punctuation at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
                 }
             }
             // evaluate operators

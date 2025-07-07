@@ -1,9 +1,7 @@
 package src.evaluators;
 
+import java.util.*;
 import src.tokens.Token;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EvaluatorNode {
     public int depth;

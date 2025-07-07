@@ -1,8 +1,7 @@
 package src.evaluators;
 
-import src.tokens.Token;
-
-import static src.Vars.OP_CONSTANT;
+import src.tokens.*;
+import static src.constants.Keys.*;
 
 public class ReturnOperationEvaluatorNode extends OperationEvaluatorNode {
     public ReturnOperationEvaluatorNode(Token name, int depth) {
@@ -11,6 +10,6 @@ public class ReturnOperationEvaluatorNode extends OperationEvaluatorNode {
 
     @Override
     public String toString() {
-        return "%s %s".formatted( leftSide == null ? "returns " + constantValue : "returns operator", type.equals(OP_CONSTANT) ? "" : type);
+        return "%s %s".formatted( leftSide == null ? "returns " + constantValue : "returns operator", type.equals(KEY_OP_CONSTANT) ? "" : type);
     }
 }

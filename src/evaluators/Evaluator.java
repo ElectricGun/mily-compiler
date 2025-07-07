@@ -1,8 +1,8 @@
 package src.evaluators;
 
-import src.tokens.Token;
+import java.util.*;
+import src.tokens.*;
 
-import java.util.List;
 public class Evaluator {
     public ScopeEvaluatorNode mainBlock = new ScopeEvaluatorNode(new Token("__MAIN__", 1), 0);
 
