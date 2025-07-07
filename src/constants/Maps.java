@@ -30,7 +30,7 @@ public class Maps {
         operatorMap.put(KEY_OP_ADD, "+");
         operatorMap.put(KEY_OP_SUB, "-");
         operatorMap.put(KEY_OP_DIV, "/");
-        operatorMap.put(KEY_OP_POW, "^");
+        operatorMap.put(KEY_OP_POW, "**");
         operatorMap.put(KEY_OP_IDIV, "//");
         operatorMap.put(KEY_OP_MOD, "%");
 
