@@ -84,6 +84,6 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return ((functionEvaluatorNode != null ? "function " : "")  + "scope : " + token);
+        return ( "scope : " + token);
     }
 }

@@ -10,10 +10,14 @@ import static src.constants.Keys.*;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                  let test_function2(h, j) {
-                    return;
-                  }
-                """;
+               let test_function_1(h, j) {
+                  return;
+               }
+                  
+               let test_function_2(h, j) {
+                  return (h + j) * 4;
+               }
+               """;
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
 
