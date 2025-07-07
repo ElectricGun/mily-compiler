@@ -7,9 +7,9 @@ import java.util.List;
 import static src.Vars.*;
 import static src.Vars.OP_ASSIGN;
 
-public class DeclarationEvaluator extends EvaluatorNode {
+public class DeclarationEvaluatorNode extends EvaluatorNode {
 
-    public DeclarationEvaluator(Token name, int depth) {
+    public DeclarationEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
 
@@ -17,12 +17,12 @@ public class DeclarationEvaluator extends EvaluatorNode {
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf("Parsing Variable Declaration %s:%n", name);
+        System.out.printf("Parsing Variable Declaration %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "declaration :  %s : %s%n",name, token);
+            System.out.printf(indent + "declaration :  %s : %s%n", this.token, token);
 
             // evaluate punctuations
             if (token.length() == 1 && isPunctuation(token.charAt(0))) {
@@ -31,19 +31,19 @@ public class DeclarationEvaluator extends EvaluatorNode {
                     continue;
                 }
 
-                throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(name, c));
+                throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(this.token, c));
             }
             // evaluate operators
             else if (isOperator(token)) {
                 // check for equal sign
                 if (token.string.equals(OP_ASSIGN)) {
-                    OperationEvaluator operationEvaluator = new OperationEvaluator(new Token("op_"+name, name.line), depth + 1);
-                    operationEvaluator.evaluate(tokenList, evaluator);
-                    members.add(operationEvaluator);
+                    OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token("op_"+ this.token, this.token.line), depth + 1);
+                    operationEvaluatorNode.evaluate(tokenList, evaluator);
+                    members.add(operationEvaluatorNode);
                     return this;
                 }
                 else {
-                    throw new Exception("Missing '=' sign %s: \"%s\"".formatted(name, token));
+                    throw new Exception("Missing '=' sign %s: \"%s\"".formatted(this.token, token));
                 }
             }
             // evaluate the rest
@@ -56,6 +56,6 @@ public class DeclarationEvaluator extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return "declare %s".formatted(name);
+        return "declare %s".formatted(token);
     }
 }

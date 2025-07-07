@@ -40,8 +40,7 @@ public class Vars {
     OP_NOT_EQUAL = "!=",
 
     // other "operation" types
-    OP_CONSTANT = "constant"
-    ;
+    OP_CONSTANT = "constant";
 
     public static boolean isPunctuation(char c) {
         char[] puncs = {
@@ -59,6 +58,21 @@ public class Vars {
             if (c == s) return true;
         }
         return false;
+    }
+
+    public static final HashMap<String, Integer> PEMDAS = new HashMap<>();
+    static {
+        // negatives are reserved for special characters
+        PEMDAS.put(String.valueOf(CHAR_BRACKET_OPEN), -4);
+        PEMDAS.put(String.valueOf(CHAR_BRACKET_CLOSE), -3);
+        // -2 is reserved for unary operators
+        // -1 is reserved for constants (default value)
+        PEMDAS.put(OP_POW, 0);
+        PEMDAS.put(OP_MUL, 1);
+        PEMDAS.put(OP_DIV, 1);
+        PEMDAS.put(OP_IDIV, 1);
+        PEMDAS.put(OP_ADD, 2);
+        PEMDAS.put(OP_SUB, 2);
     }
 
     public static boolean isOperator(Token t) {
@@ -89,19 +103,7 @@ public class Vars {
     }
 
     public static int operationOrder(String c) {
-        HashMap<String, Integer> pemdas = new HashMap<>();
-
-        pemdas.put(String.valueOf(CHAR_BRACKET_OPEN), -4);
-        pemdas.put(String.valueOf(CHAR_BRACKET_CLOSE), -3);
-        // -2 is reserved for unary operators
-        // -1 is reserved for constants
-        pemdas.put(OP_POW, 0);
-        pemdas.put(OP_MUL, 1);
-        pemdas.put(OP_DIV, 1);
-        pemdas.put(OP_ADD, 2);
-        pemdas.put(OP_SUB, 2);
-
-        return pemdas.getOrDefault(c, -1);
+        return PEMDAS.getOrDefault(c, -1);
     }
 
     public static boolean isWhiteSpace(char c) {

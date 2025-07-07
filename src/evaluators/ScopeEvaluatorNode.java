@@ -6,17 +6,18 @@ import java.util.*;
 
 import static src.Vars.*;
 
-public class ScopeEvaluator extends EvaluatorNode {
+public class ScopeEvaluatorNode extends EvaluatorNode {
     // if true, then the block is finalized after finding a '}'. Usually for functions
     public boolean needsClosing = false;
-    public FunctionEvaluator functionBlock = null;
-    public ScopeEvaluator(Token name, int depth) {
+    // if the block is a function block, this is the parent function
+    public FunctionEvaluatorNode functionEvaluatorNode = null;
+    public ScopeEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
-    public ScopeEvaluator(Token name, int depth, boolean needsClosing, FunctionEvaluator functionBlock) {
+    public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing, FunctionEvaluatorNode functionEvaluatorNode) {
         super(name, depth);
         this.needsClosing = needsClosing;
-        this.functionBlock = functionBlock;
+        this.functionEvaluatorNode = functionEvaluatorNode;
     }
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
@@ -25,12 +26,12 @@ public class ScopeEvaluator extends EvaluatorNode {
         boolean isInitialized = false;
         Token previousElementToken = new Token("", -1);
 
-        System.out.printf(indent + "Parsing Block %s:%n", name);
+        System.out.printf(indent + "Parsing Block %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "scope\t:\t%s\t:\t%s%n",name, token);
+            System.out.printf(indent + "scope\t:\t%s\t:\t%s%n", this.token, token);
 
             buffer += token;
 
@@ -41,37 +42,37 @@ public class ScopeEvaluator extends EvaluatorNode {
                     continue;
                 }
                 if (isPunctuation(c) && !isInitialized)
-                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(name, c, token.line));
+                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, c, token.line));
 
                 // expect new function '(', or equals '='
                 // FUNCTION DECLARATION
                 if (CHAR_BRACKET_OPEN == c) {
                     System.out.printf(indent + "Creating new function \"%s\"%n", previousElementToken);
-                    EvaluatorNode node = new FunctionEvaluator(previousElementToken, depth + 1).evaluate(tokenList, evaluator);
+                    EvaluatorNode node = new FunctionEvaluatorNode(previousElementToken, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }
                 else if (needsClosing && CHAR_CURLY_CLOSE == c) {
-                    System.out.printf("Created scope \"%s\"%n", name);
+                    System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
                 }
                 else {
-                    throw new Exception("Unexpected token on scope %s: \"%s\" at line %s".formatted(name, c, token.line));
+                    throw new Exception("Unexpected token on scope %s: \"%s\" at line %s".formatted(this.token, c, token.line));
                 }
             }
             // evaluate operators
             else if (isOperator(token)) {
-                throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(name, token, token.line));
+                throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
                 // evaluate the rest
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
-                if (functionBlock != null && token.string.equals(KEYWORD_RETURN)) {
-                    OperationEvaluator returnOp = new ReturnOperationEvaluator(new Token(name+"_return", name.line), depth + 1);
+                if (functionEvaluatorNode != null && token.string.equals(KEYWORD_RETURN)) {
+                    OperationEvaluatorNode returnOp = new ReturnOperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1);
                     members.add(returnOp);
                     returnOp.evaluate(tokenList, evaluator);
                 }
                 // VARIABLE DECLARATION
                 else if (previousElementToken.string.equals(KEYWORD_LET)) {
-                    EvaluatorNode node = new DeclarationEvaluator(token, depth + 1).evaluate(tokenList, evaluator);
+                    EvaluatorNode node = new DeclarationEvaluatorNode(token, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }
                 previousElementToken = token;
@@ -79,13 +80,13 @@ public class ScopeEvaluator extends EvaluatorNode {
             }
         }
         if (needsClosing) {
-            throw new Exception("Scope \"%s\" is unclosed".formatted(name));
+            throw new Exception("Scope \"%s\" is unclosed".formatted(token));
         }
         return this;
     }
 
     @Override
     public String toString() {
-        return ((functionBlock != null ? "function " : "")  + "scope : " + name);
+        return ((functionEvaluatorNode != null ? "function " : "")  + "scope : " + token);
     }
 }

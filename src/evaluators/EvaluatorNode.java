@@ -7,12 +7,12 @@ import java.util.List;
 
 public class EvaluatorNode {
     public int depth;
-    public Token name;
+    public Token token;
     public String buffer = "";
     public List<EvaluatorNode> members = new ArrayList<>();
 
-    public EvaluatorNode(Token name, int depth) {
-        this.name = name;
+    public EvaluatorNode(Token token, int depth) {
+        this.token = token;
         this.depth = depth;
     }
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {

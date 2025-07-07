@@ -10,17 +10,10 @@ import static src.Vars.*;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                   
                   test_function(x, y) {
-                    return (y + 20 * (x + 10)) * (1 + 1) / x;
+                    let amonge = sus * (among + 1);
                   }
-                
                 """;
-
-//        String code2 = """
-//                bar() {
-//                let foo = 1 + -1;}
-//                """;
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
 
@@ -70,6 +63,7 @@ public class Main {
             } else {
                 tokenString += c;
             }
+
             System.out.printf("line: %s   token: %s%n",currentLine, tokenString);
 
             isInitialized = true;

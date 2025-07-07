@@ -4,7 +4,7 @@ import src.tokens.Token;
 
 import java.util.List;
 public class Evaluator {
-    public ScopeEvaluator mainBlock = new ScopeEvaluator(new Token("__MAIN__", 1), 0);
+    public ScopeEvaluatorNode mainBlock = new ScopeEvaluatorNode(new Token("__MAIN__", 1), 0);
 
     public EvaluatorNode begin(List<Token> tokenList) {
         mainBlock.evaluate(tokenList, this);
@@ -22,17 +22,5 @@ public class Evaluator {
             printRecursiveHelper(member, depth);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
 

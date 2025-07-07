@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import static src.Vars.*;
 
-public class BracketEvaluator extends EvaluatorNode {
+public class BracketEvaluatorNode extends EvaluatorNode {
 
     protected List<Token> operationTokens = new ArrayList<>();
     public int operatorIndex;
 
-    public BracketEvaluator(Token name, int depth, int operatorIndex) {
-        super(name, depth);
+    public BracketEvaluatorNode(Token token, int depth, int operatorIndex) {
+        super(token, depth);
         this.operatorIndex = operatorIndex;
     }
 
     protected EvaluatorNode evaluator(List<Token> tokenList, List<Integer> orders, Evaluator evaluator) throws Exception {
 
         String indent = " ".repeat(depth);
-        System.out.printf(indent + "Parsing Brackets %s:%n", name);
+        System.out.printf(indent + "Parsing Brackets %s:%n", token);
 
         // remove the start bracket
         tokenList.remove(operatorIndex);
@@ -31,7 +31,7 @@ public class BracketEvaluator extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(operatorIndex);
 
-            System.out.printf(indent + "brackets : %s : %s%n", name, token);
+            System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
             if (token.length() == 1 && CHAR_BRACKET_OPEN == token.charAt(0)) {
                 bracketCounter ++;
             } else
@@ -41,11 +41,14 @@ public class BracketEvaluator extends EvaluatorNode {
             }
 
             if (bracketCounter < 0) {
-                OperationEvaluator operationEvaluator = new OperationEvaluator(new Token(name.string, name.line), depth + 1);
-                operationTokens.add(new Token(";", name.line));
-                operationEvaluator.evaluate(operationTokens, evaluator);
-                tokenList.add(operatorIndex, new BracketToken("BRACKET", name.line, operationEvaluator));
-                members.add(operationEvaluator);
+                OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token(this.token.string, this.token.line), depth + 1);
+                operationTokens.add(new Token(";", this.token.line));
+                operationEvaluatorNode.evaluate(operationTokens, evaluator);
+
+                // substitute the operator removed with a BracketToken
+                // an integer is not added to orders because we are not removing one on this final loop
+                tokenList.add(operatorIndex, new BracketToken("BRACKET", this.token.line, operationEvaluatorNode));
+                members.add(operationEvaluatorNode);
                 return this;
             }
 

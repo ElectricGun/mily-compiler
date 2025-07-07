@@ -1,23 +1,23 @@
 package src.tokens;
 
-import src.evaluators.OperationEvaluator;
+import src.evaluators.OperationEvaluatorNode;
 
 public class BracketToken extends Token {
 
-    private OperationEvaluator operationEvaluator;
+    private OperationEvaluatorNode operationEvaluatorNode;
 
-    public BracketToken(String string, int line, OperationEvaluator operationEvaluator) {
+    public BracketToken(String string, int line, OperationEvaluatorNode operationEvaluatorNode) {
         super(string, line);
 
-        this.operationEvaluator = operationEvaluator;
+        this.operationEvaluatorNode = operationEvaluatorNode;
     }
 
-    public OperationEvaluator getOperationEvaluator() {
-        return operationEvaluator;
+    public OperationEvaluatorNode getOperationEvaluator() {
+        return operationEvaluatorNode;
     }
 
     @Override
     public String toString() {
-        return operationEvaluator.toString();
+        return operationEvaluatorNode.toString();
     }
 }

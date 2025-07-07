@@ -7,28 +7,30 @@ import java.util.*;
 
 import static src.Vars.*;
 
-public class OperationEvaluator extends EvaluatorNode {
+public class OperationEvaluatorNode extends EvaluatorNode {
     public String type = OP_CONSTANT;
     public String constantValue = "";
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
+    public List<BracketEvaluatorNode> bracketOperations = new ArrayList<>();
+    // this list MUST always end with a semicolon token, including generated ones.
+    // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
-    public List<BracketEvaluator> bracketOperations = new ArrayList<>();
 
-    public OperationEvaluator(Token name, int depth) {
-        super(name, depth);
+    public OperationEvaluatorNode(Token token, int depth) {
+        super(token, depth);
     }
 
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing Operation Declaration %s:%n", name);
+        System.out.printf(indent + "Parsing Operation Declaration %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "operation : %s : %s%n", name, token);
+            System.out.printf(indent + "operation : %s : %s%n", this.token, token);
 
             // evaluate punctuations
             if (token.length() == 1 && isPunctuation(token.charAt(0))) {
@@ -39,9 +41,11 @@ public class OperationEvaluator extends EvaluatorNode {
 
                 if (CHAR_BRACKET_OPEN == c || CHAR_BRACKET_CLOSE == c) {
                     operationTokens.add(token);
-                } else
-                if (CHAR_SEMICOLON == c) {
-                    System.out.printf(indent + "operation : %s tokens : %s%n",name, operationTokens);
+                }
+
+                // entire operations are evaluated after a semicolon is detected
+                else if (CHAR_SEMICOLON == c) {
+                    System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
                     List<Integer> orders = new ArrayList<>();
 
                     for (int i = 0; i < operationTokens.size(); i++) {
@@ -60,7 +64,7 @@ public class OperationEvaluator extends EvaluatorNode {
 
                         // start bracket
                         if (currentOrder == -4) {
-                            BracketEvaluator bracketOperation = new BracketEvaluator(new Token("b_" + name, name.line), depth + 1, i);
+                            BracketEvaluatorNode bracketOperation = new BracketEvaluatorNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
                             bracketOperation.evaluate(operationTokens, orders, evaluator);
                             bracketOperations.add(bracketOperation);
 
@@ -90,7 +94,7 @@ public class OperationEvaluator extends EvaluatorNode {
                         previousOrder = currentOrder;
                     }
 
-                    System.out.printf(indent + "operation orders : %s : %s%n", name, orders);
+                    System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
 
                     // if amount of elements > 2
                     // then its a binary operation,
@@ -130,7 +134,7 @@ public class OperationEvaluator extends EvaluatorNode {
                         for (Token operationToken : operationTokens)
                             out += " " + operationToken.string;
 
-                        throw new Exception("Invalid operation %s \"%s\" at line %s".formatted(name, out +"...", token.line));
+                        throw new Exception("Invalid operation %s \"%s\" at line %s".formatted(this.token, out +"...", token.line));
                     }
 
                     List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
@@ -140,23 +144,20 @@ public class OperationEvaluator extends EvaluatorNode {
                     right.add(new Token(";", operationTokens.getLast().line));
 
                     if (left.size() > 1) {
-                        leftSide = new OperationEvaluator(new Token("l_" + name, name.line), depth + 1);
+                        leftSide = new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1);
                         members.add(leftSide.evaluate(left, evaluator));
                     }
 
                     if (right.size() > 1) {
-                        rightSide = new OperationEvaluator(new Token("r_" + name, name.line), depth + 1);
+                        rightSide = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
                         members.add(rightSide.evaluate(right, evaluator));
                     }
 
                     return this;
                 } else {
-                    throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(name, token, token.line));
+                    throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
                 }
             }
-
-            // entire operations are evaluated after a semicolon is detected
-
             // evaluate operators
             else if (isOperator(token)) {
                 operationTokens.add(token);

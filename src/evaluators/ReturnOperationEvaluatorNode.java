@@ -4,8 +4,8 @@ import src.tokens.Token;
 
 import static src.Vars.OP_CONSTANT;
 
-public class ReturnOperationEvaluator extends OperationEvaluator {
-    public ReturnOperationEvaluator(Token name, int depth) {
+public class ReturnOperationEvaluatorNode extends OperationEvaluatorNode {
+    public ReturnOperationEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
 
