@@ -32,7 +32,6 @@ public class FunctionEvaluatorNode extends EvaluatorNode {
 
             // evaluate punctuations
             if (token.length() == 1  && isPunctuation(token)) {
-//                char c = token.charAt(0);
 
                 if (isWhiteSpace(token)) {
                     continue;

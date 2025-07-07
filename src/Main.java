@@ -50,8 +50,6 @@ public class Main {
             boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
-//            tokenString = tokenString.strip();
-
             System.out.printf("line: %s   token: %s   is_partial_operator: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString));
 
             if (isWhiteSpace(cs)) {
