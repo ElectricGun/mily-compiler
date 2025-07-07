@@ -3,7 +3,6 @@
  - Robust error messages, such as line numbers
 
 # Operations
- - Operations currently do not support parentheses
  - Implement more operations
 
 # Looping and Branching
@@ -20,11 +19,11 @@
  - add function calls
 
 # Technical stuff
- - Tokenization for multicharacter operators
+ - hashmap system for constants seems redundant, just use arrays
  - Each evaluator node should have 5 component methods, executed in this order:
-  - Evaluate punctuations: if token is a punctuation, run
-  - Evaluate operators: if token is an operator, run
-  - Evaluate keywords: if token is a keyword, run
-  - Evaluate others: if token is none of the above, run
-  - Evaluate current token: run regardless
+ - Evaluate punctuations: if token is a punctuation, run
+ - Evaluate operators: if token is an operator, run
+ - Evaluate keywords: if token is a keyword, run
+ - Evaluate others: if token is none of the above, run
+ - Evaluate current token: run regardless
 
