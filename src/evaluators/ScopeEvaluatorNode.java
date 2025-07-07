@@ -4,7 +4,7 @@ import java.util.*;
 import src.constants.*;
 import src.tokens.*;
 
-import static src.constants.Vars.*;
+import static src.constants.Functions.*;
 import static src.constants.Keys.*;
 
 public class ScopeEvaluatorNode extends EvaluatorNode {
@@ -48,12 +48,12 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
                 // expect new function '(', or equals '='
                 // FUNCTION DECLARATION
-                if (Vars.equals(KEY_BRACKET_OPEN, token)) {
+                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
                     System.out.printf(indent + "Creating new function \"%s\"%n", previousElementToken);
                     EvaluatorNode node = new FunctionEvaluatorNode(previousElementToken, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }
-                else if (needsClosing && Vars.equals(KEY_CURLY_CLOSE, token)) {
+                else if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
                     System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
                 }
@@ -67,13 +67,13 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                 // evaluate the rest
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
-                if (functionEvaluatorNode != null && Vars.equals(KEY_RETURN, token)) {
+                if (functionEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
                     OperationEvaluatorNode returnOp = new ReturnOperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1);
                     members.add(returnOp);
                     returnOp.evaluate(tokenList, evaluator);
                 }
                 // VARIABLE DECLARATION
-                else if (Vars.equals(KEY_LET, previousElementToken)) {
+                else if (Functions.equals(KEY_LET, previousElementToken)) {
                     EvaluatorNode node = new DeclarationEvaluatorNode(token, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }

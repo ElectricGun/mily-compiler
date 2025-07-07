@@ -4,7 +4,7 @@ import java.util.*;
 import src.constants.*;
 import src.tokens.*;
 
-import static src.constants.Vars.*;
+import static src.constants.Functions.*;
 import static src.constants.Keys.*;
 
 public class OperationEvaluatorNode extends EvaluatorNode {
@@ -38,12 +38,12 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     continue;
                 }
 
-                if (Vars.equals(KEY_BRACKET_OPEN, token) || Vars.equals(KEY_BRACKET_CLOSE, token)) {
+                if (Functions.equals(KEY_BRACKET_OPEN, token) || Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     operationTokens.add(token);
                 }
 
                 // entire operations are evaluated after a semicolon is detected
-                else if (Vars.equals(KEY_SEMICOLON, token)) {
+                else if (Functions.equals(KEY_SEMICOLON, token)) {
                     System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
                     List<Integer> orders = new ArrayList<>();
 

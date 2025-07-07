@@ -3,7 +3,7 @@ package src.evaluators;
 import src.constants.*;
 import src.tokens.*;
 import java.util.*;
-import static src.constants.Vars.*;
+import static src.constants.Functions.*;
 import static src.constants.Keys.*;
 
 public class DeclarationEvaluatorNode extends EvaluatorNode {
@@ -35,7 +35,7 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
             // evaluate operators
             else if (isOperator(token)) {
                 // check for equal sign
-                if (Vars.equals(KEY_OP_ASSIGN, token)) {
+                if (Functions.equals(KEY_OP_ASSIGN, token)) {
                     OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token("op_"+ this.token, this.token.line), depth + 1);
                     operationEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(operationEvaluatorNode);

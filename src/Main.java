@@ -4,7 +4,7 @@ import java.util.*;
 import src.constants.*;
 import src.evaluators.*;
 import src.tokens.Token;
-import static src.constants.Vars.*;
+import static src.constants.Functions.*;
 import static src.constants.Keys.*;
 
 public class Main {
@@ -47,7 +47,7 @@ public class Main {
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
             if (isWhiteSpace(cs)) {
-                if (Vars.equals(KEY_NEWLINE, cs)) {
+                if (Functions.equals(KEY_NEWLINE, cs)) {
                     currentLine ++;
                 }
                 if (!previousIsWhitespace) {

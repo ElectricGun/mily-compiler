@@ -30,10 +30,10 @@ public class BracketEvaluatorNode extends EvaluatorNode {
             Token token = tokenList.remove(operatorIndex);
 
             System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
-            if (token.length() == 1 && Vars.equals(KEY_BRACKET_OPEN, token)) {
+            if (token.length() == 1 && Functions.equals(KEY_BRACKET_OPEN, token)) {
                 bracketCounter ++;
             } else
-            if (token.length() == 1 && Vars.equals(KEY_BRACKET_CLOSE, token)) {
+            if (token.length() == 1 && Functions.equals(KEY_BRACKET_CLOSE, token)) {
                 // replace closing bracket with a constant indicator
                 bracketCounter --;
             }

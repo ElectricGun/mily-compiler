@@ -3,7 +3,7 @@ package src.evaluators;
 import src.constants.*;
 import src.tokens.*;
 import java.util.*;
-import static src.constants.Vars.*;
+import static src.constants.Functions.*;
 import static src.constants.Keys.*;
 
 public class FunctionEvaluatorNode extends EvaluatorNode {
@@ -40,12 +40,12 @@ public class FunctionEvaluatorNode extends EvaluatorNode {
 
                 if (argumentWanted) {
                     throw new Exception("Expecting an argument at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-                } else if (Vars.equals(KEY_BRACKET_CLOSE, token)) {
+                } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;
-                } else if (Vars.equals(KEY_COMMA, token)) {
+                } else if (Functions.equals(KEY_COMMA, token)) {
                     argumentWanted = true;
                 }
-                else if (functionDeclared && Vars.equals(KEY_CURLY_OPEN, token)) {
+                else if (functionDeclared && Functions.equals(KEY_CURLY_OPEN, token)) {
                     System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
                     scope = new ScopeEvaluatorNode(this.token, depth + 1, true, this);
                     members.add(scope.evaluate(tokenList, evaluator));

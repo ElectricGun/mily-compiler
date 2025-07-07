@@ -4,7 +4,7 @@ import src.tokens.*;
 import static src.constants.Maps.*;
 import static src.constants.Keys.*;
 
-public class Vars {
+public class Functions {
 
     public static boolean equals(String key, String compare) {
         return allKeywordMap.get(key).equals(compare);
