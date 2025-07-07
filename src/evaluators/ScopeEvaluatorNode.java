@@ -43,20 +43,15 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                 if (isWhiteSpace(c)) {
                     continue;
                 }
-                if (isPunctuation(c) && !isInitialized)
-                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, c, token.line));
 
-                // expect new function '(', or equals '='
-                // FUNCTION DECLARATION
-                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                    System.out.printf(indent + "Creating new function \"%s\"%n", previousElementToken);
-                    EvaluatorNode node = new FunctionEvaluatorNode(previousElementToken, depth + 1).evaluate(tokenList, evaluator);
-                    members.add(node);
-                }
-                else if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
+                if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
                     System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
                 }
+
+                if (isPunctuation(c) && !isInitialized)
+                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, c, token.line));
+
                 else {
                     throw new Exception("Unexpected token on scope %s: \"%s\" at line %s".formatted(this.token, c, token.line));
                 }
@@ -68,7 +63,7 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
                 if (functionEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
-                    OperationEvaluatorNode returnOp = new ReturnOperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1);
+                    OperationEvaluatorNode returnOp = new OperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
                     members.add(returnOp);
                     returnOp.evaluate(tokenList, evaluator);
                 }

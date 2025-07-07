@@ -7,7 +7,7 @@ import static src.constants.Keys.*;
 public class Functions {
 
     public static boolean equals(String key, String compare) {
-        return allKeywordMap.get(key).equals(compare);
+        return key.equals(compare);
     }
 
     public static boolean equals(String key, Token token) {
@@ -19,7 +19,7 @@ public class Functions {
     }
 
     public static boolean isPunctuation(String compare) {
-        for (String s : punctuationMap.values()) {
+        for (String s : punctuationKeys) {
             if (s.equals(compare)) return true;
         }
         return false;
@@ -34,7 +34,7 @@ public class Functions {
     }
 
     public static boolean isOperator(String c) {
-        for (String s : operatorMap.values()) {
+        for (String s : operatorKeys) {
             if (c.equals(s)) return true;
         }
         return false;
@@ -51,7 +51,7 @@ public class Functions {
     public static boolean isKeywordIncomplete(String c) {
         if (isWhiteSpace(c) || c.isEmpty())
             return false;
-        for (String op : allKeywordMap.values()) {
+        for (String op : allKeywordKeys) {
             boolean partialEquals = op.contains(c) && !op.equals(c);
             if (partialEquals) return true;
         }
@@ -89,8 +89,8 @@ public class Functions {
     }
 
     public static boolean isWhiteSpace(String c) {
-        return punctuationMap.get(KEY_SPACE).equals(c) ||
-                punctuationMap.get(KEY_TAB).equals(c) ||
-                punctuationMap.get(KEY_NEWLINE).equals(c);
+        return KEY_SPACE.equals(c) ||
+                KEY_TAB.equals(c) ||
+                KEY_NEWLINE.equals(c);
     }
 }

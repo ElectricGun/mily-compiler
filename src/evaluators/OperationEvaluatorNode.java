@@ -17,8 +17,16 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
 
+    public boolean isReturnOperation;
+
     public OperationEvaluatorNode(Token token, int depth) {
         super(token, depth);
+    }
+
+    public OperationEvaluatorNode(Token token, int depth, boolean isReturnOperation) {
+        super(token, depth);
+
+        this.isReturnOperation = true;
     }
 
     @Override
@@ -96,6 +104,12 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         previousOrder = currentOrder;
                     }
 
+                    if (operationTokens.isEmpty()) {
+                        constantValue = "void";
+                        return this;
+                    }
+
+                    System.out.printf(indent + "operation tokens post : %s : %s%n", this.token, operationTokens);
                     System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
 
                     // if amount of elements > 2
@@ -154,6 +168,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     if (right.size() > 1) {
                         rightSide = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
                         members.add(rightSide.evaluate(right, evaluator));
+                    } else {
+                        throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
                     }
 
                     return this;
@@ -181,7 +197,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         }
 
         if (rightSide == null || leftSide == null)
-            return "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
-        return "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
+            return (isReturnOperation ? "return " : "") + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
+
+        return (isReturnOperation ? "return " : "") + "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
     }
 }

@@ -10,8 +10,8 @@ import static src.constants.Keys.*;
 public class Main {
     public static void main(String[] args) {
         String code = """
-                  test_function(x, y) {
-                    let among = sus // (1 - (among + 1));
+                  let test_function2(h, j) {
+                    return;
                   }
                 """;
 

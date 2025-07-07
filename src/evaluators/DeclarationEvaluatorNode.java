@@ -29,6 +29,13 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
                 if (isWhiteSpace(c)) {
                     continue;
                 }
+                // FUNCTION DECLARATION
+                else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+                    System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
+                    EvaluatorNode node = new FunctionEvaluatorNode(this.token, depth + 1).evaluate(tokenList, evaluator);
+                    members.add(node);
+                    return this;
+                }
 
                 throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(this.token, c));
             }
@@ -40,8 +47,7 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
                     operationEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(operationEvaluatorNode);
                     return this;
-                }
-                else {
+                } else {
                     throw new Exception("Missing '=' sign %s: \"%s\"".formatted(this.token, token));
                 }
             }
