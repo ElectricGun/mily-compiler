@@ -17,7 +17,7 @@ public class EvaluatorNode {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
-    public EvaluatorNode evaluate(List<Token> tokenList, Evaluator evaluator) {
+    public final EvaluatorNode evaluate(List<Token> tokenList, Evaluator evaluator) {
         try {
             return evaluator(tokenList, evaluator);
         } catch (Exception e) {
@@ -25,5 +25,9 @@ public class EvaluatorNode {
             System.exit(0);
             return null;
         }
+    }
+
+    public void printRecursive() {
+        Evaluator.printRecursive(this);
     }
 }

@@ -6,23 +6,24 @@ import src.evaluators.*;
 import src.tokens.Token;
 import static src.constants.Functions.*;
 import static src.constants.Keys.*;
+import static src.structure.Parsing.tokenize;
+import static src.structure.Pruning.pruneEmptyOperations;
 
 public class Main {
     public static void main(String[] args) {
         String code = """
+               let sus = "among";
                let test_function_1(h, j) {
+                  let test = 1;
                   return;
                }
-                  
                let test_function_2(h, j) {
-                  return (h + j) * 4;
+                  return (1 - ((h + j) * 4) + 1) == sus && sus > 10;
                }
                """;
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
-
         System.out.println(code);
-
         System.out.printf("%n---------------\tTokenization\t%n%n");
 
         List<Token> tokenList = tokenize(code);
@@ -33,51 +34,13 @@ public class Main {
         Evaluator evaluator = new Evaluator();
         EvaluatorNode node = evaluator.begin(tokenList);
 
-        System.out.printf("%n---------------\tSyntax Tree (WIP)\t%n%n");
+        System.out.printf("%n---------------\tSyntax Tree\t%n%n");
 
         Evaluator.printRecursive(node);
-    }
 
-    public static List<Token> tokenize(String input) {
-        List<Token> tokens = new ArrayList<>();
-        String tokenString = "";
-        boolean isInitialized = false;
-        char previousChar = 0;
-        int currentLine = 1;
+        System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");
 
-        for (char c : input.toCharArray()) {
-            String cs = String.valueOf(c);
-            boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
-            boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
-
-            System.out.printf("line: %s   token: %s   is_partial_operator: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString));
-
-            if (isWhiteSpace(cs)) {
-                if (Functions.equals(KEY_NEWLINE, cs)) {
-                    currentLine ++;
-                }
-                if (!previousIsWhitespace) {
-                    tokens.add(new Token(tokenString, currentLine));
-                }
-                tokenString = " ";
-            }
-            else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
-
-                tokens.add(new Token(tokenString, currentLine));
-                tokenString = "" + c;
-            } else if (!(isPunctuation(c) || isOperator("" + c)) && previousIsPunctuation && !isKeywordIncomplete(tokenString)) {
-                tokens.add(new Token(tokenString, currentLine));
-                tokenString = "" + c;
-            } else {
-                tokenString += c;
-            }
-
-            isInitialized = true;
-            previousChar = c;
-        }
-        tokens.add(new Token(tokenString, currentLine));
-
-    return tokens;
+        Evaluator.printRecursive(pruneEmptyOperations(node));
     }
 }
 

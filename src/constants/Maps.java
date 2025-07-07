@@ -66,7 +66,21 @@ public class Maps {
         PEMDAS.put(KEY_OP_MUL, 1);
         PEMDAS.put(KEY_OP_DIV, 1);
         PEMDAS.put(KEY_OP_IDIV, 1);
+        PEMDAS.put(KEY_OP_MOD, 1);
         PEMDAS.put(KEY_OP_ADD, 2);
         PEMDAS.put(KEY_OP_SUB, 2);
+        PEMDAS.put(KEY_BOP_SHIFT_LEFT, 3);
+        PEMDAS.put(KEY_BOP_SHIFT_RIGHT, 3);
+        PEMDAS.put(KEY_OP_LESS_THAN, 4);
+        PEMDAS.put(KEY_OP_LESS_THAN_EQUALS, 4);
+        PEMDAS.put(KEY_OP_GREATER_THAN, 4);
+        PEMDAS.put(KEY_OP_GREATER_THAN_EQUALS, 4);
+        PEMDAS.put(KEY_OP_EQUALS, 5);
+        PEMDAS.put(KEY_OP_NOT_EQUAL, 5);
+        PEMDAS.put(KEY_BOP_B_AND, 6);
+        PEMDAS.put(KEY_BOP_XOR, 7);
+        PEMDAS.put(KEY_BOP_OR, 8);
+        PEMDAS.put(KEY_OP_AND, 9);
+        PEMDAS.put(KEY_OP_OR, 10);
     }
 }

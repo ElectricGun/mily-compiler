@@ -88,8 +88,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         // this is checking for unary operators,
                         // if two constants are side by side it just breaks (as it should)
                         // if the operators come before any constants, they should not be counted as binary
-                        orders.set(i, !(previousOrder > -1 && currentOrder > -1 || !constantFound) ?
-                                currentOrder : -2);
+                        orders.set(i, !(previousOrder > -1 && currentOrder > -1 || !constantFound) ? currentOrder : -2);
 
                         // if it is an operator, then set the order
                         if (orders.get(i) >= 0 && (largestOrder == -1 || orders.get(i) >= largestOrder)) {
@@ -113,23 +112,44 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
 
                     // if amount of elements > 2
-                    // then its a binary operation,
+                    // for binary operationsz
                     if (orders.size() > 2 && largestOrder != -1) {
                         type = operationTokens.get(largestOrderIndex).string;
+
+                        List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
+                        List<Token> right = new ArrayList<>(operationTokens.subList(largestOrderIndex + 1, operationTokens.size()));
+
+                        left.add(new Token(";", operationTokens.getLast().line));
+                        right.add(new Token(";", operationTokens.getLast().line));
+
+                        if (left.size() > 1) {
+                            leftSide = new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1);
+                            members.add(leftSide.evaluate(left, evaluator));
+                        }
+
+                        if (right.size() > 1) {
+                            rightSide = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
+                            members.add(rightSide.evaluate(right, evaluator));
+                        } else {
+                            throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
+                        }
+                        return this;
                     }
-                    // if it only has a -1 or -4 then its a constant value
+                    // if it only has a -1 or -4
+                    // for constant values
                     else if (orders.size() == 1 && isConstant(orders.get(0))) {
                         Token constantToken = operationTokens.removeFirst();
 
                         if (constantToken instanceof BracketToken bracketToken) {
                             members.add(bracketToken.getOperationEvaluator());
-                            return this;
+                            return bracketToken.getOperationEvaluator();
                         } else {
                             constantValue = constantToken.string;
+                            return this;
                         }
-                        return this;
                     }
-                    // if it has -1 or -4 on the right and a -2 operator on the left, it's a regular unary - or +
+                    // if it has -1 or -4 on the right and a -2 operator on the left
+                    // for unary operators
                     else if (orders.size() == 2 && isConstant(orders.get(1)) && orders.get(0) == -2) {
                         type = operationTokens.removeFirst().string;
                         Token constantToken = operationTokens.removeFirst();
@@ -142,8 +162,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                         } else {
                             constantValue = constantToken.string;
+                            return this;
                         }
-                        return this;
                     }
                     // if all the values are -1 or -4 or -2 then funny error
                     else {
@@ -153,26 +173,6 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                         throw new Exception("Invalid operation %s \"%s\" at line %s".formatted(this.token, out +"...", token.line));
                     }
-
-                    List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
-                    List<Token> right = new ArrayList<>(operationTokens.subList(largestOrderIndex + 1, operationTokens.size()));
-
-                    left.add(new Token(";", operationTokens.getLast().line));
-                    right.add(new Token(";", operationTokens.getLast().line));
-
-                    if (left.size() > 1) {
-                        leftSide = new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1);
-                        members.add(leftSide.evaluate(left, evaluator));
-                    }
-
-                    if (right.size() > 1) {
-                        rightSide = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
-                        members.add(rightSide.evaluate(right, evaluator));
-                    } else {
-                        throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
-                    }
-
-                    return this;
                 } else {
                     throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
                 }
@@ -189,10 +189,14 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         return this;
     }
 
+    public boolean isEmpty() {
+        return constantValue.isEmpty() && type.equals(KEY_OP_TYPE_CONSTANT);
+    }
+
     @Override
     public String toString() {
 
-        if (constantValue.isEmpty() && type.equals(KEY_OP_TYPE_CONSTANT)) {
+        if (isEmpty()) {
             return "group";
         }
 
