@@ -1,7 +1,6 @@
 package src.structure;
 
-import src.evaluators.EvaluatorNode;
-import src.evaluators.OperationEvaluatorNode;
+import src.evaluators.*;
 
 public class Pruning {
     public static EvaluatorNode pruneEmptyOperations(EvaluatorNode evaluatorNode) {

@@ -1,6 +1,6 @@
 package src.tokens;
 
-import src.evaluators.FunctionCallEvaluatorNode;
+import src.evaluators.*;
 
 /**
  * A token used to store function calls within expressions

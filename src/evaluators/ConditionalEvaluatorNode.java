@@ -1,8 +1,7 @@
 package src.evaluators;
 
-import src.tokens.Token;
-
-import java.util.List;
+import src.tokens.*;
+import java.util.*;
 
 /**
  * If and While statements

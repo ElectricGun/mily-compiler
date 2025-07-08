@@ -1,12 +1,10 @@
 package src;
 
 import java.util.*;
-
 import src.evaluators.*;
 import src.tokens.Token;
-
-import static src.structure.Parsing.tokenize;
-import static src.structure.Pruning.pruneEmptyOperations;
+import static src.structure.Parsing.*;
+import static src.structure.Pruning.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,7 +13,8 @@ public class Main {
                   return h + j;
                }
                
-               sus(); suss(2,3);
+               test_function_1(2,4);
+               test_function_1(2,3);
 
                let test_function_2(h, j) {
                    return (1 - ((h + j) * 4) + 1) == sus && test_function_1(2, 5) > 10;

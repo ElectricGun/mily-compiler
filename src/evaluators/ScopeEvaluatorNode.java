@@ -75,7 +75,8 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             }
             else if (isOperator(token)) {
                 throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-            } else {
+            }
+            else {
                 // RETURN STATEMENT FOR FUNCTIONS
                 if (functionDeclareEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
                     OperationEvaluatorNode returnOp = new OperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
@@ -88,9 +89,9 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                     members.add(node);
                 }
             }
-
             previousToken = token;
         }
+        // after running out of tokens
         if (needsClosing) {
             throw new Exception("Scope \"%s\" is unclosed".formatted(token));
         }
