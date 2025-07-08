@@ -4,9 +4,14 @@ import src.tokens.Token;
 
 import java.util.List;
 
-public class ConditionEvaluatorNode extends EvaluatorNode{
+/**
+ * If and While statements
+ *
+ */
 
-    public ConditionEvaluatorNode(Token token, int depth) {
+public class ConditionalEvaluatorNode extends EvaluatorNode{
+
+    public ConditionalEvaluatorNode(Token token, int depth) {
         super(token, depth);
     }
 
