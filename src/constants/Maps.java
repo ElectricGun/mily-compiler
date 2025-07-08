@@ -1,7 +1,7 @@
 package src.constants;
 
 import java.util.*;
-import static src.constants.Keys.*;
+import static src.constants.Keywords.*;
 
 public class Maps {
     protected final static List<String> punctuationKeys = new ArrayList<>(Arrays.asList(
@@ -18,7 +18,9 @@ public class Maps {
 
     protected final static List<String> keywordKeys = new ArrayList<>(Arrays.asList(
             KEY_LET,
-            KEY_RETURN
+            KEY_RETURN,
+            KEY_CONDITIONAL_IF,
+            KEY_CONDITIONAL_WHILE
     ));
 
     protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(
@@ -57,6 +59,7 @@ public class Maps {
     protected static final HashMap<String, Integer> PEMDAS = new HashMap<>();
     static {
         // negatives are reserved for special characters
+
         PEMDAS.put(KEY_BRACKET_OPEN, -4);
         PEMDAS.put(KEY_BRACKET_CLOSE, -3);
         // -2 is reserved for unary operators

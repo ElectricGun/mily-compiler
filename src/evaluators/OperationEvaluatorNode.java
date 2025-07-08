@@ -5,7 +5,7 @@ import src.constants.*;
 import src.tokens.*;
 
 import static src.constants.Functions.*;
-import static src.constants.Keys.*;
+import static src.constants.Keywords.*;
 
 public class OperationEvaluatorNode extends EvaluatorNode {
     public String type = KEY_OP_TYPE_CONSTANT;
@@ -46,6 +46,13 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     continue;
                 }
 
+                // function calls should be evaluated here because they dont change the order of operations
+                // and can be regarded as constants
+                // store them as class FunctionCallToken
+
+                // casts also should be regarded as unary operators
+                // store them as class CastToken
+
                 if (Functions.equals(KEY_BRACKET_OPEN, token) || Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     operationTokens.add(token);
                 }
@@ -77,8 +84,6 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                             OperationBracketEvaluatorNode bracketOperation = new OperationBracketEvaluatorNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
                             bracketOperation.evaluate(operationTokens, orders, evaluator);
                             bracketOperations.add(bracketOperation);
-
-                            currentOrder = -1;
                         }
 
                         // because parentheses are constants

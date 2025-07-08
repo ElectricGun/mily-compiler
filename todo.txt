@@ -26,3 +26,4 @@
  - Evaluate keywords: if token is a keyword, run
  - Evaluate others: if token is none of the above, run
  - Evaluate current token: run regardless
+ - Unary operator orders

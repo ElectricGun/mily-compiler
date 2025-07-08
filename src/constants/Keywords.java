@@ -1,6 +1,6 @@
 package src.constants;
 
-public class Keys {
+public class Keywords {
 
     public final static String
 
@@ -18,6 +18,8 @@ public class Keys {
     // keywords
         KEY_LET = "let",
         KEY_RETURN = "return",
+        KEY_CONDITIONAL_IF = "if",
+        KEY_CONDITIONAL_WHILE = "while",
 
     // operators
         KEY_OP_ASSIGN = "=",

@@ -4,9 +4,11 @@ import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 import static src.constants.Functions.*;
-import static src.constants.Keys.*;
+import static src.constants.Keywords.*;
 
 public class DeclarationEvaluatorNode extends EvaluatorNode {
+
+    public String variableName = "";
 
     public DeclarationEvaluatorNode(Token name, int depth) {
         super(name, depth);
@@ -16,7 +18,7 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf("Parsing Variable Declaration %s:%n", token);
+        System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
@@ -24,43 +26,58 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
             System.out.printf(indent + "declaration :  %s : %s%n", this.token, token);
 
             // evaluate punctuations
-            if (token.length() == 1 && isPunctuation(token.charAt(0))) {
-                char c = token.charAt(0);
-                if (isWhiteSpace(c)) {
+            if (isPunctuation(token)) {
+                if (isWhiteSpace(token)) {
                     continue;
-                }
+                } else
+
                 // FUNCTION DECLARATION
-                else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+                 if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
-                    EvaluatorNode node = new FunctionEvaluatorNode(this.token, depth + 1).evaluate(tokenList, evaluator);
+                    EvaluatorNode node = new FunctionEvaluatorNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                     return this;
+                } else {
+                    throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(this.token, token));
                 }
-
-                throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(this.token, c));
             }
             // evaluate operators
             else if (isOperator(token)) {
                 // check for equal sign
-                if (Functions.equals(KEY_OP_ASSIGN, token)) {
+                if (Functions.equals(KEY_OP_ASSIGN, token) && isDeclared()) {
                     OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token("op_"+ this.token, this.token.line), depth + 1);
                     operationEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(operationEvaluatorNode);
                     return this;
+                } else if (!isDeclared()) {
+                    throw new Exception("Missing variable name : \"%s\"".formatted(token));
                 } else {
-                    throw new Exception("Missing '=' sign %s: \"%s\"".formatted(this.token, token));
+                    throw new Exception("Missing '=' sign %s : \"%s\"".formatted(this.token, token));
+                }
+            }
+            // evaluate strings
+            else if (!isKeyWord(token)) {
+                if (!isDeclared()) {
+                    System.out.printf(indent + "Declaring variable name : %s", token.string);
+                    variableName = token.string;
+                } else {
+                    throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(this.token, token));
                 }
             }
             // evaluate the rest
             else {
-
+                throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(this.token, token));
             }
         }
         return null;
     }
 
+    public boolean isDeclared() {
+        return !variableName.isEmpty();
+    }
+
     @Override
     public String toString() {
-        return "declare %s".formatted(token);
+        return "declare %s".formatted(variableName);
     }
 }

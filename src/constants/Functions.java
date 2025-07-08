@@ -2,7 +2,7 @@ package src.constants;
 
 import src.tokens.*;
 import static src.constants.Maps.*;
-import static src.constants.Keys.*;
+import static src.constants.Keywords.*;
 
 public class Functions {
 
@@ -79,6 +79,12 @@ public class Functions {
         return PEMDAS.getOrDefault(c, -1);
     }
 
+    public static boolean isWhiteSpace(String c) {
+        return KEY_SPACE.equals(c) ||
+                KEY_TAB.equals(c) ||
+                KEY_NEWLINE.equals(c);
+    }
+
     public static boolean isWhiteSpace(char c) {
         String cs = String.valueOf(c);
         return isWhiteSpace(cs);
@@ -88,9 +94,15 @@ public class Functions {
         return isWhiteSpace(t.string);
     }
 
-    public static boolean isWhiteSpace(String c) {
-        return KEY_SPACE.equals(c) ||
-                KEY_TAB.equals(c) ||
-                KEY_NEWLINE.equals(c);
+    public static boolean isKeyWord(String s) {
+        return keywordKeys.contains(s);
+    }
+
+    public static boolean isKeyWord(Token t) {
+        return isKeyWord(t.string);
+    }
+
+    public static boolean isKeyWord(char c) {
+        return isKeyWord(String.valueOf(c));
     }
 }
