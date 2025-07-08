@@ -71,7 +71,7 @@ public class Functions {
         return operationOrder(t.string);
     }
 
-    public static boolean isConstant(int order) {
+    public static boolean orderIsConstant(int order) {
         return order == -1 || order == -4;
     }
 
@@ -104,5 +104,38 @@ public class Functions {
 
     public static boolean isKeyWord(char c) {
         return isKeyWord(String.valueOf(c));
+    }
+
+    public static boolean isVariableName(String s) {
+        return !isKeyWord(s) && !isOperator(s) && !isPunctuation(s) && !isNumeric(s) && s != null;
+    }
+
+    public static boolean isVariableName(Token t) {
+        if (t == null)
+            return false;
+
+        return isVariableName(t.string);
+    }
+
+    public static boolean isVariableName(char c) {
+        return isVariableName(String.valueOf(c));
+    }
+
+    public static boolean isNumeric(String s) {
+        try {
+            Double.parseDouble(s);
+
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean isNumeric(Token t) {
+        return isNumeric(t.string);
+    }
+
+    public static boolean isNumeric(char c) {
+        return isNumeric(String.valueOf(c));
     }
 }

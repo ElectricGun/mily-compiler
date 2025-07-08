@@ -9,7 +9,7 @@ import static src.constants.Keywords.*;
 
 public class OperationEvaluatorNode extends EvaluatorNode {
     public String type = KEY_OP_TYPE_CONSTANT;
-    public String constantValue = "";
+    public Token constantToken = null;
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
     public List<OperationBracketEvaluatorNode> bracketOperations = new ArrayList<>();
@@ -35,6 +35,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
         System.out.printf(indent + "Parsing Operation Declaration %s:%n", token);
 
+        Token previousToken = null;
+
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
@@ -50,10 +52,27 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                 // and can be regarded as constants
                 // store them as class FunctionCallToken
 
+                // TODO IMPLEMENT DATATYPES BEFORE CASTS
                 // casts also should be regarded as unary operators
                 // store them as class CastToken
 
-                if (Functions.equals(KEY_BRACKET_OPEN, token) || Functions.equals(KEY_BRACKET_CLOSE, token)) {
+                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+
+                    if (isVariableName(previousToken)) {
+                        System.out.printf(indent + "Parsing function call : prev %s : %s%n", previousToken, token);
+
+                        // remove because it will be replaced by a single FunctionCallToken
+                        operationTokens.removeLast();
+
+                        FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
+                        functionCallEvaluatorNode.evaluate(tokenList, evaluator);
+                        FunctionCallToken functionCallToken = new FunctionCallToken(functionCallEvaluatorNode.token.string, token.line, functionCallEvaluatorNode);
+                        operationTokens.add(functionCallToken);
+                    } else {
+                        operationTokens.add(token);
+                    }
+
+                } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     operationTokens.add(token);
                 }
 
@@ -87,7 +106,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         }
 
                         // because parentheses are constants
-                        if (isConstant(currentOrder)) {
+                        if (orderIsConstant(currentOrder)) {
                             constantFound = true;
                         }
                         // this is checking for unary operators,
@@ -109,7 +128,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     }
 
                     if (operationTokens.isEmpty()) {
-                        constantValue = "void";
+                        constantToken = new VoidToken("void", token.line);
                         return this;
                     }
 
@@ -142,31 +161,31 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     }
                     // if it only has a -1 or -4
                     // for constant values
-                    else if (orders.size() == 1 && isConstant(orders.get(0))) {
-                        Token constantToken = operationTokens.removeFirst();
+                    else if (orders.size() == 1 && orderIsConstant(orders.get(0))) {
+                        Token newConstantToken = operationTokens.removeFirst();
 
-                        if (constantToken instanceof BracketToken bracketToken) {
+                        if (newConstantToken instanceof BracketToken bracketToken) {
                             members.add(bracketToken.getOperationEvaluator());
                             return bracketToken.getOperationEvaluator();
                         } else {
-                            constantValue = constantToken.string;
+                            constantToken = newConstantToken;
                             return this;
                         }
                     }
                     // if it has -1 or -4 on the right and a -2 operator on the left
                     // for unary operators
-                    else if (orders.size() == 2 && isConstant(orders.get(1)) && orders.get(0) == -2) {
+                    else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
                         type = operationTokens.removeFirst().string;
-                        Token constantToken = operationTokens.removeFirst();
+                        Token newConstantToken = operationTokens.removeFirst();
 
-                        if (constantToken instanceof BracketToken bracketToken) {
+                        if (newConstantToken instanceof BracketToken bracketToken) {
                             bracketToken.getOperationEvaluator().type = type;
 
                             members.add(bracketToken.getOperationEvaluator());
                             return bracketToken.getOperationEvaluator();
 
                         } else {
-                            constantValue = constantToken.string;
+                            constantToken = newConstantToken;
                             return this;
                         }
                     }
@@ -190,24 +209,32 @@ public class OperationEvaluatorNode extends EvaluatorNode {
             else {
                 operationTokens.add(token);
             }
+
+            previousToken = token;
         }
         return this;
     }
 
     public boolean isEmpty() {
-        return constantValue.isEmpty() && type.equals(KEY_OP_TYPE_CONSTANT);
+        return constantToken == null && type.equals(KEY_OP_TYPE_CONSTANT);
     }
 
     @Override
     public String toString() {
 
+        String out = "";
+
         if (isEmpty()) {
             return "group";
         }
 
-        if (rightSide == null || leftSide == null)
-            return (isReturnOperation ? "return " : "") + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantValue);
+        if (isReturnOperation) {
+            out += "return ";
+        }
 
-        return (isReturnOperation ? "return " : "") + "%s %s".formatted( leftSide == null ? constantValue : "operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
+        if (rightSide == null || leftSide == null)
+            return out + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", "const " + constantToken);
+
+        return out + "%s %s".formatted("operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
     }
 }

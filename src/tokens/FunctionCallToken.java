@@ -2,6 +2,10 @@ package src.tokens;
 
 import src.evaluators.FunctionCallEvaluatorNode;
 
+/**
+ * A token used to store function calls within expressions
+ */
+
 public class FunctionCallToken extends Token {
 
     private FunctionCallEvaluatorNode functionCallEvaluatorNode;
@@ -16,4 +20,8 @@ public class FunctionCallToken extends Token {
         return functionCallEvaluatorNode;
     }
 
+    @Override
+    public String toString() {
+        return functionCallEvaluatorNode.toString();
+    }
 }

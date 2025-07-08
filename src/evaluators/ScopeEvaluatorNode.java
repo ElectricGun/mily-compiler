@@ -19,16 +19,19 @@ import static src.constants.Keywords.*;
 public class ScopeEvaluatorNode extends EvaluatorNode {
     // if true, then the block is finalized after finding a '}'. Usually for functions
     public boolean needsClosing = false;
+    public boolean expectingSemicolon = false;
     // if the block is a function block, this is the parent function
-    public FunctionEvaluatorNode functionEvaluatorNode = null;
+    public FunctionDeclareEvaluatorNode functionDeclareEvaluatorNode = null;
     public ScopeEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
-    public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing, FunctionEvaluatorNode functionEvaluatorNode) {
+    public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing, FunctionDeclareEvaluatorNode functionDeclareEvaluatorNode) {
         super(name, depth);
         this.needsClosing = needsClosing;
-        this.functionEvaluatorNode = functionEvaluatorNode;
+        this.functionDeclareEvaluatorNode = functionDeclareEvaluatorNode;
     }
+
+    private Token previousToken = null;
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
@@ -42,10 +45,22 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
             buffer += token;
 
-            // evaluate punctuations
-            if (isPunctuation(token)) {
 
-                if (isWhiteSpace(token)) {
+            if (isWhiteSpace(token)) {
+                continue;
+            }
+            else if (expectingSemicolon) {
+                if (!Functions.equals(KEY_SEMICOLON, token)) {
+                    throw new Exception("Missing semicolon on line %s".formatted(token.line));
+                    }
+                expectingSemicolon = false;
+            }
+            else if (isPunctuation(token)) {
+                if (isVariableName(previousToken) && Functions.equals(KEY_BRACKET_OPEN, token)) {
+                    FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
+                    functionCallEvaluatorNode.evaluate(tokenList, evaluator);
+                    members.add(functionCallEvaluatorNode);
+                    expectingSemicolon = true;
                     continue;
                 }
 
@@ -54,20 +69,14 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                     return this;
                 }
 
-                if (isPunctuation(token))
-                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, token, token.line));
+                throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, token, token.line));
 
-                else {
-                    throw new Exception("Unexpected token on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-                }
             }
-            // evaluate operators
             else if (isOperator(token)) {
                 throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-                // evaluate the rest
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
-                if (functionEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
+                if (functionDeclareEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
                     OperationEvaluatorNode returnOp = new OperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
                     members.add(returnOp);
                     returnOp.evaluate(tokenList, evaluator);
@@ -78,6 +87,8 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                     members.add(node);
                 }
             }
+
+            previousToken = token;
         }
         if (needsClosing) {
             throw new Exception("Scope \"%s\" is unclosed".formatted(token));

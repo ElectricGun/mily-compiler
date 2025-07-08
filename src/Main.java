@@ -11,15 +11,15 @@ import static src.structure.Pruning.pruneEmptyOperations;
 public class Main {
     public static void main(String[] args) {
         String code = """
-               let sus = "among";
                let test_function_1(h, j) {
-                  let test = 1;
-                  return;
-               }
-               let test_function_2(h, j) {
-                  return (1 - ((h + j) * 4) + 1) == sus && sus > 10;
+                  return h + j;
                }
                
+               sus(); suss(2,3);
+
+               let test_function_2(h, j) {
+                   return (1 - ((h + j) * 4) + 1) == sus && test_function_1(2, 5) > 10;
+               }
                """;
 
         System.out.printf("%n---------------\tInput Code\t%n%n");

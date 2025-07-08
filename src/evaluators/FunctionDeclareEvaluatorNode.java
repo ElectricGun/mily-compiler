@@ -6,10 +6,10 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
-public class FunctionEvaluatorNode extends EvaluatorNode {
+public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
     List<String> argumentNames = new ArrayList<>();
     ScopeEvaluatorNode scope;
-    public FunctionEvaluatorNode(Token name, int depth) {
+    public FunctionDeclareEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
 

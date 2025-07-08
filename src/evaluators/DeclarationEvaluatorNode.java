@@ -34,7 +34,7 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
                 // FUNCTION DECLARATION
                  if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
-                    EvaluatorNode node = new FunctionEvaluatorNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluator);
+                    EvaluatorNode node = new FunctionDeclareEvaluatorNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                     return this;
                 } else {

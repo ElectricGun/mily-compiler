@@ -2,6 +2,10 @@ package src.tokens;
 
 import src.evaluators.*;
 
+/**
+ * A token used to store parentheses within expressions
+ */
+
 public class BracketToken extends TypedToken {
 
     private final OperationEvaluatorNode operationEvaluatorNode;
