@@ -7,6 +7,15 @@ import src.tokens.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * @author ElectricGun
+ * <h1> Parses expressions </h1>
+ * Parses expressions, such as 1 + 1, x * y, and f(x) > 10.
+ * Conditionals / Routes:
+ * - Token ";"          -> return this
+ * - String token + "(" -> appends a new FunctionCallEvaluatorNode in a FunctionCallToken into operationTokens
+ */
+
 public class OperationEvaluatorNode extends EvaluatorNode {
     public String type = KEY_OP_TYPE_CONSTANT;
     public Token constantToken = null;
@@ -61,7 +70,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     if (isVariableName(previousToken)) {
                         System.out.printf(indent + "Parsing function call : prev %s : %s%n", previousToken, token);
 
-                        // remove because it will be replaced by a single FunctionCallToken
+                        // remove last token because it will be replaced by a single FunctionCallToken
                         operationTokens.removeLast();
 
                         FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
@@ -136,7 +145,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
 
                     // if amount of elements > 2
-                    // for binary operationsz
+                    // for binary operations
                     if (orders.size() > 2 && largestOrder != -1) {
                         type = operationTokens.get(largestOrderIndex).string;
 

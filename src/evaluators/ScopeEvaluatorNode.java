@@ -10,10 +10,11 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  * <h1> Parses code blocks </h1>
  * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function)
- * Routes:
- * - keyword "let" -> DeclarationEvaluatorNode
- * - keyword "return" -> OperationEvaluatorNode
- * - any token + "(" -> FunctionCallEvaluatorNode
+ * Conditionals / Routes:
+ * - Token "let"                  -> DeclarationEvaluatorNode
+ * - Token "return"               -> OperationEvaluatorNode
+ * - Any token + "("              -> FunctionCallEvaluatorNode
+ * - Token "}" when needs closing -> return this
  */
 
 public class ScopeEvaluatorNode extends EvaluatorNode {

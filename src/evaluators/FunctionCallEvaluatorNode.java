@@ -6,6 +6,14 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * @author ElectricGun
+ * <h1> Parses function calls </h1>
+ * Purpose: Parses function calls, such as f(), f(x), and f(x, y)
+ * Conditionals / Routes:
+ * - Token ")" on first iteration             -> return this
+ * - Token ")" when not expecting a parameter -> return this
+ */
 
 public class FunctionCallEvaluatorNode extends EvaluatorNode {
     public FunctionCallEvaluatorNode(Token token, int depth) {
@@ -14,7 +22,6 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
 
     public List<Token> arguments = new ArrayList<>();
 
-    private Token previousToken = null;
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
 
@@ -52,7 +59,6 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
                 throw new Exception("Unexpected token \"%s\" in function call at line %s".formatted(token, token.line));
             }
 
-            previousToken = token;
             isInitialized = true;
         }
 
