@@ -8,23 +8,25 @@ import static src.constants.Keywords.*;
 
 /**
  * @author ElectricGun
- * <h1> Parses expressions </h1>
- * Parses expressions, such as 1 + 1, x * y, and f(x) > 10.
- * Conditionals / Routes:
- * - Token ";"          -> return this
- * - String token + "(" -> appends a new FunctionCallEvaluatorNode in a FunctionCallToken into operationTokens
+ * <h3> Parses expressions </h3>
+ * Parses expressions, such as 1 + 1, x * y, and f(x) > 10. <br>
+ * Conditionals / Routes: <br>
+ * <ul>
+ *     <li> Token ";"          -> return this </li>
+ *     <li> String token + "(" -> appends a new FunctionCallEvaluatorNode in a FunctionCallToken into operationTokens </li>
+ * </ul>
  */
 
 public class OperationEvaluatorNode extends EvaluatorNode {
+
     public String type = KEY_OP_TYPE_CONSTANT;
     public Token constantToken = null;
     public EvaluatorNode leftSide = null;
     public EvaluatorNode rightSide = null;
     public List<OperationBracketEvaluatorNode> bracketOperations = new ArrayList<>();
-    // this list MUST always end with a semicolon token, including generated ones.
+    // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
-
     public boolean isReturnOperation;
 
     public OperationEvaluatorNode(Token token, int depth) {
@@ -65,17 +67,17 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                 // store them as class CastToken
 
                 if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-
                     if (isVariableName(previousToken)) {
                         System.out.printf(indent + "Parsing function call : prev %s : %s%n", previousToken, token);
-
                         // remove last token because it will be replaced by a single FunctionCallToken
                         operationTokens.removeLast();
 
                         FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
                         functionCallEvaluatorNode.evaluate(tokenList, evaluator);
+
                         FunctionCallToken functionCallToken = new FunctionCallToken(functionCallEvaluatorNode.token.string, token.line, functionCallEvaluatorNode);
                         operationTokens.add(functionCallToken);
+
                     } else {
                         operationTokens.add(token);
                     }
@@ -126,8 +128,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         if (orders.get(i) >= 0 && (largestOrder == -1 || orders.get(i) >= largestOrder)) {
                             largestOrder = orders.get(i);
                             largestOrderIndex = i;
-                        }
-                        else if (orders.get(i) == -2 && largestOrderIndex == -1) {
+
+                        } else if (orders.get(i) == -2 && largestOrderIndex == -1) {
                             largestOrder = orders.get(i);
                             largestOrderIndex = i;
                         }
@@ -162,6 +164,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         if (right.size() > 1) {
                             rightSide = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
                             members.add(rightSide.evaluate(right, evaluator));
+
                         } else {
                             throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
                         }
@@ -175,6 +178,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             members.add(bracketToken.getOperationEvaluator());
                             return bracketToken.getOperationEvaluator();
+
                         } else {
                             constantToken = newConstantToken;
                             return this;
@@ -188,8 +192,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             bracketToken.getOperationEvaluator().type = type;
-
                             members.add(bracketToken.getOperationEvaluator());
+
                             return bracketToken.getOperationEvaluator();
 
                         } else {

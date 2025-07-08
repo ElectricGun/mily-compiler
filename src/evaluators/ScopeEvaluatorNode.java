@@ -8,21 +8,27 @@ import static src.constants.Keywords.*;
 
 /**
  * @author ElectricGun
- * <h1> Parses code blocks </h1>
- * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function)
+ * <h3> Parses code blocks </h3>
+ * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function) <br>
  * Conditionals / Routes:
- * - Token "let"                  -> DeclarationEvaluatorNode
- * - Token "return"               -> OperationEvaluatorNode
- * - Any token + "("              -> FunctionCallEvaluatorNode
- * - Token "}" when needs closing -> return this
+ *  <ul>
+ *      <li> Token "let"                  -> DeclarationEvaluatorNode</li>
+ *      <li> Token "return"               -> OperationEvaluatorNode</li>
+ *      <li> Any token + "("              -> FunctionCallEvaluatorNode</li>
+ *      <li> Token "}" when needs closing -> return this</li>
+ * </ul>
  */
 
 public class ScopeEvaluatorNode extends EvaluatorNode {
+
     // if true, then the block is finalized after finding a '}'. Usually for functions
     public boolean needsClosing = false;
     public boolean expectingSemicolon = false;
     // if the block is a function block, this is the parent function
     public FunctionDeclareEvaluatorNode functionDeclareEvaluatorNode = null;
+
+    private Token previousToken = null;
+
     public ScopeEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
@@ -32,7 +38,6 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
         this.functionDeclareEvaluatorNode = functionDeclareEvaluatorNode;
     }
 
-    private Token previousToken = null;
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
@@ -45,7 +50,6 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             System.out.printf(indent + "scope\t:\t%s\t:\t%s%n", this.token, token);
 
             buffer += token;
-
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -63,9 +67,8 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                     members.add(functionCallEvaluatorNode);
                     expectingSemicolon = true;
                     continue;
-                }
 
-                if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
+                } else if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
                     System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
                 }

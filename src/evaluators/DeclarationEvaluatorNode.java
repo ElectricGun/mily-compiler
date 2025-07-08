@@ -6,37 +6,45 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * @author ElectricGun
+ * <h3> Variable and Function Declaration </h3>
+ */
+
 public class DeclarationEvaluatorNode extends EvaluatorNode {
 
-    public String variableName = "";
+    String variableName = "";
 
     public DeclarationEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
 
+    public String getVariableName() {
+        return variableName;
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
-
         System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
-
             System.out.printf(indent + "declaration :  %s : %s%n", this.token, token);
 
             // evaluate punctuations
             if (isPunctuation(token)) {
                 if (isWhiteSpace(token)) {
                     continue;
-                } else
 
+                }
                 // FUNCTION DECLARATION
-                 if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
+                else if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
                     EvaluatorNode node = new FunctionDeclareEvaluatorNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                     return this;
+
                 } else {
                     throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(this.token, token));
                 }
@@ -49,8 +57,10 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
                     operationEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(operationEvaluatorNode);
                     return this;
+
                 } else if (!isDeclared()) {
                     throw new Exception("Missing variable name : \"%s\"".formatted(token));
+
                 } else {
                     throw new Exception("Missing '=' sign %s : \"%s\"".formatted(this.token, token));
                 }
@@ -60,6 +70,7 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
                 if (!isDeclared()) {
                     System.out.printf(indent + "Declaring variable name : %s", token.string);
                     variableName = token.string;
+
                 } else {
                     throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(this.token, token));
                 }

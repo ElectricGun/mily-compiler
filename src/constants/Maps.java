@@ -4,6 +4,7 @@ import java.util.*;
 import static src.constants.Keywords.*;
 
 public class Maps {
+
     protected final static List<String> punctuationKeys = new ArrayList<>(Arrays.asList(
             KEY_BRACKET_OPEN,
             KEY_BRACKET_CLOSE,

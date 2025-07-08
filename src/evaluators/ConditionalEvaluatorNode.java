@@ -4,14 +4,24 @@ import src.tokens.*;
 import java.util.*;
 
 /**
- * If and While statements
- *
+ * @author ElectricGun
+ * <h3> If and While statements </h3>
+ * Conditionals / Routes:
+ * <ul>
+ *     <li> Token ")" if expression not null -> return this </li>
+ * </ul>
  */
 
 public class ConditionalEvaluatorNode extends EvaluatorNode{
 
+    OperationEvaluatorNode expression = null;
+
     public ConditionalEvaluatorNode(Token token, int depth) {
         super(token, depth);
+    }
+
+    public OperationEvaluatorNode getExpression() {
+        return expression;
     }
 
     @Override

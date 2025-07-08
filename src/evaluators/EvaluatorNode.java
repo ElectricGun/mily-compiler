@@ -3,7 +3,13 @@ package src.evaluators;
 import java.util.*;
 import src.tokens.*;
 
+/**
+ * @author ElectricGun
+ * <h3> Base abstract syntax tree node </h3>
+ */
+
 public class EvaluatorNode {
+
     public int depth;
     public Token token;
     public String buffer = "";
@@ -20,6 +26,7 @@ public class EvaluatorNode {
     public final EvaluatorNode evaluate(List<Token> tokenList, Evaluator evaluator) {
         try {
             return evaluator(tokenList, evaluator);
+
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

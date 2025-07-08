@@ -66,7 +66,6 @@ public class Functions {
         return isKeywordIncomplete(String.valueOf(c));
     }
 
-
     public static int operationOrder(Token t) {
         return operationOrder(t.string);
     }

@@ -6,20 +6,27 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * @author ElectricGun
+ * <h3> Parses function declarations </h3>
+ */
+
 public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
-    List<String> argumentNames = new ArrayList<>();
-    ScopeEvaluatorNode scope;
+
     public FunctionDeclareEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
 
+    List<String> argumentNames = new ArrayList<>();
+    ScopeEvaluatorNode scope;
+
+    private boolean isInitialized = false;
+    private boolean functionDeclared = false;
+    private boolean argumentWanted = false;
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
         String indent = " ".repeat(depth);
-
-        boolean isInitialized = false;
-        boolean functionDeclared = false;
-        boolean argumentWanted = false;
 
         System.out.printf(indent + "Parsing Function %s:%n", token);
 
@@ -28,16 +35,9 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
 
             System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.token, token);
 
-            buffer += token;
-
             // evaluate punctuations
-            if (token.length() == 1  && isPunctuation(token)) {
-
-                if (isWhiteSpace(token)) {
-                    continue;
-                }
-
-                if (argumentWanted) {
+            if (isPunctuation(token) && !isWhiteSpace(token)) {
+                 if (argumentWanted) {
                     throw new Exception("Expecting an argument at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
                 } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;

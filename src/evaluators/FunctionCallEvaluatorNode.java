@@ -8,30 +8,24 @@ import static src.constants.Keywords.*;
 
 /**
  * @author ElectricGun
- * <h1> Parses function calls </h1>
- * Purpose: Parses function calls, such as f(), f(x), and f(x, y)
+ * <h3> Parses function calls </h3>
+ * Purpose: Parses function calls, such as f(), f(x), and f(x, y) <br>
  * Conditionals / Routes:
- * - Token ")" on first iteration             -> return this
- * - Token ")" when not expecting a parameter -> return this
+ * <ul>
+ *     <li> Token ")" on first iteration             -> return this </li>
+ *     <li> Token ")" when not expecting a parameter -> return this </li>
+ * </ul>
  */
 
 public class FunctionCallEvaluatorNode extends EvaluatorNode {
-    public FunctionCallEvaluatorNode(Token token, int depth) {
-        super(token, depth);
-    }
 
     public List<Token> arguments = new ArrayList<>();
 
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
 
-    private void tryAddArgument(Token token) throws Exception {
-        if (isVariableName(token) || isNumeric(token)) {
-            arguments.add(token);
-            expectingArgument = false;
-        } else {
-            throw new Exception("ERROR" + token.string);
-        }
+    public FunctionCallEvaluatorNode(Token token, int depth) {
+        super(token, depth);
     }
 
     @Override
@@ -43,7 +37,6 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
 
             System.out.printf(indent + "function call : %s:%n", token);
 
-
             if (isWhiteSpace(token)) {
                 continue;
             }
@@ -52,17 +45,26 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
 
             } else if (Functions.equals(KEY_COMMA, token) && isInitialized) {
                 expectingArgument = true;
+
             } else if (expectingArgument) {
                 tryAddArgument(token);
             }
             else if (isInitialized) {
                 throw new Exception("Unexpected token \"%s\" in function call at line %s".formatted(token, token.line));
             }
-
             isInitialized = true;
         }
 
         return null;
+    }
+
+    private void tryAddArgument(Token token) throws Exception {
+        if (isVariableName(token) || isNumeric(token)) {
+            arguments.add(token);
+            expectingArgument = false;
+        } else {
+            throw new Exception("ERROR" + token.string);
+        }
     }
 
     @Override

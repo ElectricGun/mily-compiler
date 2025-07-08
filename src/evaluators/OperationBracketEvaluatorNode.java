@@ -5,10 +5,16 @@ import src.tokens.*;
 import src.constants.*;
 import static src.constants.Keywords.*;
 
+/**
+ * @author ElectricGun
+ * <h3> Helper node for parsing parenthesis within operations, such as (x + y) * z </h3>
+ */
+
 public class OperationBracketEvaluatorNode extends EvaluatorNode {
 
-    protected List<Token> operationTokens = new ArrayList<>();
     public int operatorIndex;
+
+    protected List<Token> operationTokens = new ArrayList<>();
 
     public OperationBracketEvaluatorNode(Token token, int depth, int operatorIndex) {
         super(token, depth);
