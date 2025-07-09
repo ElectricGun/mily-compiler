@@ -7,8 +7,8 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * @author ElectricGun
  * <h3> Variable and Function Declaration </h3>
+ *  @author ElectricGun
  */
 
 public class DeclarationEvaluatorNode extends EvaluatorNode {

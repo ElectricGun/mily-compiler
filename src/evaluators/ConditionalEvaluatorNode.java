@@ -4,12 +4,13 @@ import src.tokens.*;
 import java.util.*;
 
 /**
- * @author ElectricGun
+ *
  * <h3> If and While statements </h3>
  * Conditionals / Routes:
  * <ul>
  *     <li> Token ")" if expression not null -> return this </li>
  * </ul>
+ * @author ElectricGun
  */
 
 public class ConditionalEvaluatorNode extends EvaluatorNode{

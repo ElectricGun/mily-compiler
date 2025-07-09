@@ -7,7 +7,6 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * @author ElectricGun
  * <h3> Parses function calls </h3>
  * Purpose: Parses function calls, such as f(), f(x), and f(x, y) <br>
  * Conditionals / Routes:
@@ -15,6 +14,7 @@ import static src.constants.Keywords.*;
  *     <li> Token ")" on first iteration             -> return this </li>
  *     <li> Token ")" when not expecting a parameter -> return this </li>
  * </ul>
+ * @author ElectricGun
  */
 
 public class FunctionCallEvaluatorNode extends EvaluatorNode {

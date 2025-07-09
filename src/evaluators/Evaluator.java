@@ -4,8 +4,8 @@ import java.util.*;
 import src.tokens.*;
 
 /**
- * @author ElectricGun
  * <h3> The container for the syntax tree </h3>
+ * @author ElectricGun
  */
 
 public class Evaluator {

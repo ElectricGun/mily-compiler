@@ -4,6 +4,7 @@ import src.evaluators.*;
 
 /**
  * A token used to store function calls within expressions
+ * @author ElectricGun
  */
 
 public class FunctionCallToken extends Token {

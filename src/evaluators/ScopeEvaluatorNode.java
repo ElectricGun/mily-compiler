@@ -7,7 +7,6 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * @author ElectricGun
  * <h3> Parses code blocks </h3>
  * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function) <br>
  * Conditionals / Routes:
@@ -17,6 +16,7 @@ import static src.constants.Keywords.*;
  *      <li> Any token + "("              -> FunctionCallEvaluatorNode</li>
  *      <li> Token "}" when needs closing -> return this</li>
  * </ul>
+ * @author ElectricGun
  */
 
 public class ScopeEvaluatorNode extends EvaluatorNode {

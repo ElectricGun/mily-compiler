@@ -7,7 +7,6 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * @author ElectricGun
  * <h3> Parses expressions </h3>
  * Parses expressions, such as 1 + 1, x * y, and f(x) > 10. <br>
  * Conditionals / Routes: <br>
@@ -15,6 +14,7 @@ import static src.constants.Keywords.*;
  *     <li> Token ";"          -> return this </li>
  *     <li> String token + "(" -> appends a new FunctionCallEvaluatorNode in a FunctionCallToken into operationTokens </li>
  * </ul>
+ * @author ElectricGun
  */
 
 public class OperationEvaluatorNode extends EvaluatorNode {

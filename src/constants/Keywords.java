@@ -1,5 +1,10 @@
 package src.constants;
 
+/**
+ * Static lexicon of pre-defined keywords
+ * @author ElectricGun
+ */
+
 public class Keywords {
 
     public final static String
@@ -47,11 +52,6 @@ public class Keywords {
         KEY_BOP_XOR = "^",
         KEY_BOP_OR = "|",
         KEY_OP_NEGATE = "!",
-
-//        KEY_BOP_FLIP = "key_bop_flip",
-//        KEY_OP_LOG = "key_op_log",
-//        KEY_OP_FLOOR = "key_op_floor",
-//        KEY_OP_CEIL= "key_op_ceil",
 
     // operator types
         KEY_OP_TYPE_CONSTANT = "key_constant",

@@ -3,6 +3,12 @@ package src.constants;
 import java.util.*;
 import static src.constants.Keywords.*;
 
+/**
+ * Lists and maps of keywords
+ * @author ElectricGun
+ * @see Keywords
+ */
+
 public class Maps {
 
     protected final static List<String> punctuationKeys = new ArrayList<>(Arrays.asList(

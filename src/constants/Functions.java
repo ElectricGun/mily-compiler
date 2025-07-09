@@ -4,6 +4,11 @@ import src.tokens.*;
 import static src.constants.Maps.*;
 import static src.constants.Keywords.*;
 
+/**
+ * Basic utilities
+ * @author ElectricGun
+ */
+
 public class Functions {
 
     public static boolean equals(String key, String compare) {

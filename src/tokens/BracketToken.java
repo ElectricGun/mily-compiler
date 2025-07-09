@@ -4,6 +4,7 @@ import src.evaluators.*;
 
 /**
  * A token used to store parentheses within expressions
+ * @author ElectricGun
  */
 
 public class BracketToken extends TypedToken {
