@@ -35,8 +35,9 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
 
             System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.token, token);
 
-            // evaluate punctuations
-            if (isPunctuation(token) && !isWhiteSpace(token)) {
+            if (isWhiteSpace(token)) {
+                continue;
+            } else if (isPunctuation(token) && !isWhiteSpace(token)) {
                  if (argumentWanted) {
                     throw new Exception("Expecting an argument at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
                 } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
@@ -52,17 +53,20 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
                 } else {
                     throw new Exception("Unexpected punctuation at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
                 }
-            }
-            // evaluate operators
-            else if (isOperator(token)) {
+            } else if (isOperator(token)) {
+                // evaluate operators
                 throw new Exception("Unexpected operator at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-            }
-            // evaluate the rest
-            else {
-                if (!isInitialized || argumentWanted) {
-                    argumentNames.add(token.string);
-                    argumentWanted = false;
-                    System.out.printf("Added argument %s%n", token);
+
+            } else {
+                if (isVariableName(token)) {
+                    if (!isInitialized || argumentWanted) {
+                        argumentNames.add(token.string);
+                        argumentWanted = false;
+                        System.out.printf("Added argument %s%n", token);
+
+                    } else {
+                        throw new Exception("Unexpected token at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                    }
                 }
                 isInitialized = true;
             }
@@ -72,6 +76,6 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return "function : %s : %s(%s)".formatted(token, token, String.join(", ", argumentNames));
+        return "declare function : %s : %s(%s)".formatted(token, token, String.join(", ", argumentNames));
     }
 }
