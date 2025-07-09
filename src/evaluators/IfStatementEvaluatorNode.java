@@ -5,7 +5,7 @@ import java.util.*;
 
 /**
  *
- * <h3> If and While statements </h3>
+ * <h3> If statements </h3>
  * Conditionals / Routes:
  * <ul>
  *     <li> Token ")" if expression not null -> return this </li>
@@ -13,11 +13,11 @@ import java.util.*;
  * @author ElectricGun
  */
 
-public class ConditionalEvaluatorNode extends EvaluatorNode{
+public class IfStatementEvaluatorNode extends EvaluatorNode{
 
     OperationEvaluatorNode expression = null;
 
-    public ConditionalEvaluatorNode(Token token, int depth) {
+    public IfStatementEvaluatorNode(Token token, int depth) {
         super(token, depth);
     }
 
