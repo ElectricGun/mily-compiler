@@ -1,5 +1,10 @@
 package src.tokens;
 
+/**
+ * Basic token, contains a string and line number.
+ * @author ElectricGun
+ */
+
 public class Token {
     public String string;
     public int line;

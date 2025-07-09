@@ -6,8 +6,15 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * Parsing utilities
+ * @author ElectricGun
+ */
+
 public class Parsing {
+
     public static List<Token> tokenize(String input) {
+
         List<Token> tokens = new ArrayList<>();
         String tokenString = "";
         boolean isInitialized = false;
@@ -25,18 +32,20 @@ public class Parsing {
                 if (Functions.equals(KEY_NEWLINE, cs)) {
                     currentLine ++;
                 }
+
                 if (!previousIsWhitespace) {
                     tokens.add(new Token(tokenString, currentLine));
                 }
                 tokenString = " ";
             }
             else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
-
                 tokens.add(new Token(tokenString, currentLine));
                 tokenString = "" + c;
+
             } else if (!(isPunctuation(c) || isOperator("" + c)) && previousIsPunctuation && !isKeywordIncomplete(tokenString)) {
                 tokens.add(new Token(tokenString, currentLine));
                 tokenString = "" + c;
+
             } else {
                 tokenString += c;
             }

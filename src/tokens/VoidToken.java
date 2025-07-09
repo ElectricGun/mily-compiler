@@ -1,7 +1,8 @@
 package src.tokens;
 
 /**
- * A token used to voids within expressions
+ * A token used for voids within expressions
+ * @author ElectricGun
  */
 
 public class VoidToken extends Token {

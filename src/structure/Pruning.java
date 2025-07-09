@@ -2,6 +2,11 @@ package src.structure;
 
 import src.evaluators.*;
 
+/**
+ * Abstract syntax tree pruning utilities
+ * @author ElectricGun
+ */
+
 public class Pruning {
     public static EvaluatorNode pruneEmptyOperations(EvaluatorNode evaluatorNode) {
         pruneEmptyOperationGroupsHelper(evaluatorNode);
@@ -10,7 +15,6 @@ public class Pruning {
     };
 
     private static void pruneEmptyOperationGroupsHelper(EvaluatorNode evaluatorNode) {
-
 
         for (int i = 0; i< evaluatorNode.members.size(); i++) {
 
@@ -25,7 +29,6 @@ public class Pruning {
                     }
                 }
             }
-
             pruneEmptyOperationGroupsHelper(member);
         }
     }
