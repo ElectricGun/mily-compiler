@@ -27,7 +27,9 @@ public class Maps {
             KEY_LET,
             KEY_RETURN,
             KEY_CONDITIONAL_IF,
-            KEY_CONDITIONAL_WHILE
+            KEY_CONDITIONAL_ELSE,
+            KEY_LOOPING_WHILE,
+            KEY_LOOPING_FOR
     ));
 
     protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(

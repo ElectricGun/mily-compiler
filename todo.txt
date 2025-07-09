@@ -2,7 +2,7 @@
  - Looping and Branching
 
 # Looping and Branching
- - if statements, else statements
+ - else statements
  - for loops
  - while loops
 

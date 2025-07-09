@@ -19,6 +19,10 @@ public class Main {
                let test_function_2(h, j) {
                    return (1 - ((h + j) * 4) + 1) == sus && test_function_1(2, 5) > 10;
                }
+               
+               if ( test_function_2(4, 2) > 100 + sussy * wussy) {
+                   let sussy = 1;
+               }
                """;
 
         System.out.printf("%n---------------\tInput Code\t%n%n");

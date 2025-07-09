@@ -69,6 +69,7 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
         }
         return null;
     }
+
     @Override
     public String toString() {
         return "function : %s : %s(%s)".formatted(token, token, String.join(", ", argumentNames));

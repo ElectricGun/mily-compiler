@@ -24,7 +24,9 @@ public class Keywords {
         KEY_LET = "let",
         KEY_RETURN = "return",
         KEY_CONDITIONAL_IF = "if",
-        KEY_CONDITIONAL_WHILE = "while",
+        KEY_CONDITIONAL_ELSE = "else",
+        KEY_LOOPING_WHILE = "while",
+        KEY_LOOPING_FOR = "for",
 
     // operators
         KEY_OP_ASSIGN = "=",

@@ -39,8 +39,8 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
 
             if (isWhiteSpace(token)) {
                 continue;
-            }
-            if (Functions.equals(KEY_BRACKET_CLOSE, token) && (!expectingArgument || !isInitialized)) {
+
+            } else if (Functions.equals(KEY_BRACKET_CLOSE, token) && (!expectingArgument || !isInitialized)) {
                 return this;
 
             } else if (Functions.equals(KEY_COMMA, token) && isInitialized) {
@@ -48,8 +48,8 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
 
             } else if (expectingArgument) {
                 tryAddArgument(token);
-            }
-            else if (isInitialized) {
+
+            } else if (isInitialized) {
                 throw new Exception("Unexpected token \"%s\" in function call at line %s".formatted(token, token.line));
             }
             isInitialized = true;
@@ -62,6 +62,7 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
         if (isVariableName(token) || isNumeric(token)) {
             arguments.add(token);
             expectingArgument = false;
+
         } else {
             throw new Exception("ERROR" + token.string);
         }
@@ -71,6 +72,7 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
     public String toString() {
         String arguments = "";
         int i = 0;
+
         for (Token token : this.arguments) {
             arguments += (i > 0 ?  ", " : "") + token.string;
             i++;

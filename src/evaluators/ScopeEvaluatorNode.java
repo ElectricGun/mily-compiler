@@ -11,9 +11,10 @@ import static src.constants.Keywords.*;
  * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function) <br>
  * Conditionals / Routes:
  *  <ul>
- *      <li> Token "let"                  -> DeclarationEvaluatorNode</li>
- *      <li> Token "return"               -> OperationEvaluatorNode</li>
- *      <li> Any token + "("              -> FunctionCallEvaluatorNode</li>
+ *      <li> Token "let"                  -> {@link DeclarationEvaluatorNode}</li>
+ *      <li> Token "return"               -> {@link OperationEvaluatorNode}</li>
+ *      <li> Any token + "("              -> {@link FunctionCallEvaluatorNode}</li>
+ *      <li> Token "if"                   -> {@link IfStatementEvaluatorNode}</li>
  *      <li> Token "}" when needs closing -> return this</li>
  * </ul>
  * @author ElectricGun
@@ -32,6 +33,12 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
     public ScopeEvaluatorNode(Token name, int depth) {
         super(name, depth);
     }
+
+    public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing) {
+        super(name, depth);
+        this.needsClosing = needsClosing;
+    }
+
     public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing, FunctionDeclareEvaluatorNode functionDeclareEvaluatorNode) {
         super(name, depth);
         this.needsClosing = needsClosing;
@@ -53,14 +60,14 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
             if (isWhiteSpace(token)) {
                 continue;
-            }
-            else if (expectingSemicolon) {
+
+            } else if (expectingSemicolon) {
                 if (!Functions.equals(KEY_SEMICOLON, token)) {
                     throw new Exception("Missing semicolon on line %s".formatted(token.line));
                     }
                 expectingSemicolon = false;
-            }
-            else if (isPunctuation(token)) {
+
+            } else if (isPunctuation(token)) {
                 if (isVariableName(previousToken) && Functions.equals(KEY_BRACKET_OPEN, token)) {
                     FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
                     functionCallEvaluatorNode.evaluate(tokenList, evaluator);
@@ -71,31 +78,35 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                 } else if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
                     System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
+
+                } else {
+                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, token, token.line));
                 }
 
-                throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, token, token.line));
-
-            }
-            else if (isOperator(token)) {
+            } else if (isOperator(token)) {
                 throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-            }
-            else {
+
+            } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
+                IfStatementEvaluatorNode ifStatementEvaluatorNode = new IfStatementEvaluatorNode(token, depth+1);
+                ifStatementEvaluatorNode.evaluate(tokenList, evaluator);
+                members.add(ifStatementEvaluatorNode);
+
+            } else {
                 // RETURN STATEMENT FOR FUNCTIONS
                 if (functionDeclareEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
                     OperationEvaluatorNode returnOp = new OperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
                     members.add(returnOp);
                     returnOp.evaluate(tokenList, evaluator);
-                }
-                // VARIABLE DECLARATION
-                else if (Functions.equals(KEY_LET, token)) {
+
+                } else if (Functions.equals(KEY_LET, token)) {
+                    // VARIABLE DECLARATION
                     EvaluatorNode node = new DeclarationEvaluatorNode(token, depth + 1).evaluate(tokenList, evaluator);
                     members.add(node);
                 }
             }
             previousToken = token;
-        }
-        // after running out of tokens
-        if (needsClosing) {
+        } if (needsClosing) {
+            // after running out of tokens
             throw new Exception("Scope \"%s\" is unclosed".formatted(token));
         }
         return this;
