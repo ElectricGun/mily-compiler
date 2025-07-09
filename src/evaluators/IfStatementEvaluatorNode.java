@@ -91,6 +91,6 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
 
     @Override
     public String toString() {
-        return "if statement : %s : %s".formatted(token, expression);
+        return "if statement";
     }
 }
