@@ -1,13 +1,21 @@
 package src.evaluators;
 
-import src.constants.Functions;
-import src.tokens.Token;
-
-import java.util.List;
-
+import src.constants.*;
+import src.tokens.*;
+import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ *
+ * <h3> Else statements </h3>
+ * Conditionals / Routes:
+ * <ul>
+ *     <li> Token "{"   -> {@link ScopeEvaluatorNode} and return this </li>
+ *     <li> Token "if"  -> {@link IfStatementEvaluatorNode} and return this </li>
+ * </ul>
+ * @author ElectricGun
+ */
 
 public class ElseEvaluatorNode extends EvaluatorNode {
 

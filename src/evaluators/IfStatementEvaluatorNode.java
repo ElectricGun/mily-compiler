@@ -10,6 +10,7 @@ import java.util.*;
  * Conditionals / Routes:
  * <ul>
  *     <li> Token ")" if expression not null -> return this </li>
+ *     <li> Token "{" if scope not null      -> {@link ScopeEvaluatorNode} </li>
  * </ul>
  * @author ElectricGun
  */
@@ -22,7 +23,6 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
     OperationEvaluatorNode expression = null;
     ScopeEvaluatorNode scope = null;
     ElseEvaluatorNode elseNode = null;
-
 
     public IfStatementEvaluatorNode(Token token, int depth) {
         super(token, depth);
@@ -80,7 +80,7 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
                         operationTokens.add(expressionToken);
                     }
                 }
-            } else if (expression != null) {
+            } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
                     ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
                     scopeEvaluatorNode.evaluate(tokenList, evaluator);
@@ -88,7 +88,12 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
                     scope = scopeEvaluatorNode;
                     // dont return yet, check for an else statement
 
-                } else if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
+                } else {
+                    throw new Exception();
+                }
+
+            } else if (scope != null) {
+                if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
                     ElseEvaluatorNode elseEvaluatorNode = new ElseEvaluatorNode(this.token, depth + 1);
                     elseEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(elseEvaluatorNode);
@@ -99,8 +104,7 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
                     // undo the token consumption
                     tokenList.add(0, token);
                     return this;
-                }
-
+                    }
             } else {
                 throw new Exception(("Unexpected token \"%s\" on if statement on line " + token.line).formatted(token));
             }

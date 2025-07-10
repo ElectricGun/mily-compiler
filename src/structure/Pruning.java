@@ -12,12 +12,11 @@ public class Pruning {
         pruneEmptyOperationGroupsHelper(evaluatorNode);
 
         return evaluatorNode;
-    };
+    }
 
     private static void pruneEmptyOperationGroupsHelper(EvaluatorNode evaluatorNode) {
 
         for (int i = 0; i< evaluatorNode.members.size(); i++) {
-
             EvaluatorNode member = evaluatorNode.members.get(i);
 
             if (member instanceof OperationEvaluatorNode operationEvaluatorNode) {

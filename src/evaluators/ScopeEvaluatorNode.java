@@ -67,15 +67,21 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                     }
                 expectingSemicolon = false;
 
-            } else if (isPunctuation(token)) {
-                if (isVariableName(previousToken) && Functions.equals(KEY_BRACKET_OPEN, token)) {
+
+            } else if (isVariableName(previousToken)) {
+                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
                     FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
                     functionCallEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(functionCallEvaluatorNode);
                     expectingSemicolon = true;
                     continue;
 
-                } else if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
+                } else {
+                    throw new Exception("Cannot resolve symbol \"%s\" at line %s".formatted(previousToken, previousToken.line));
+                }
+
+            } else if (isPunctuation(token)) {
+                if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
                     System.out.printf("Created scope \"%s\"%n", this.token);
                     return this;
 

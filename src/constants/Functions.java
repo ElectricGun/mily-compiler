@@ -35,7 +35,7 @@ public class Functions {
     }
 
     public static boolean isPunctuation(Token t) {
-        return isPunctuation(t.string.charAt(0));
+        return isPunctuation(t.string);
     }
 
     public static boolean isOperator(String c) {
@@ -84,9 +84,10 @@ public class Functions {
     }
 
     public static boolean isWhiteSpace(String c) {
-        return KEY_SPACE.equals(c) ||
+        return  KEY_SPACE.equals(c) ||
                 KEY_TAB.equals(c) ||
-                KEY_NEWLINE.equals(c);
+                KEY_NEWLINE.equals(c) ||
+                KEY_EMPTY.equals(c);
     }
 
     public static boolean isWhiteSpace(char c) {

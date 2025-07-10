@@ -6,8 +6,10 @@ package src.tokens;
  */
 
 public class Token {
+
     public String string;
     public int line;
+
     public Token(String string, int line) {
         this.string = string;
         this.line = line;

@@ -16,6 +16,7 @@ public class Keywords {
         KEY_CURLY_CLOSE = "}",
         KEY_SEMICOLON = ";",
         KEY_COMMA = ",",
+        KEY_EMPTY = "",
         KEY_NEWLINE = "\n",
         KEY_SPACE = " ",
         KEY_TAB =   "\t",
