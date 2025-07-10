@@ -21,6 +21,8 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
 
     OperationEvaluatorNode expression = null;
     ScopeEvaluatorNode scope = null;
+    ElseEvaluatorNode elseNode = null;
+
 
     public IfStatementEvaluatorNode(Token token, int depth) {
         super(token, depth);
@@ -45,6 +47,8 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
                 List<Token> operationTokens = new ArrayList<>();
                 int bracketCount = 1;
 
+                // keep iterating until the full expression is obtained
+                // before passing its tokens into an OperationEvaluatorNode
                 while (true) {
                     Token expressionToken = tokenList.removeFirst();
                     System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
@@ -76,11 +80,26 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
                         operationTokens.add(expressionToken);
                     }
                 }
-            } else if (expression != null && Functions.equals(KEY_CURLY_OPEN, token)) {
-                ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
-                scopeEvaluatorNode.evaluate(tokenList, evaluator);
-                members.add(scopeEvaluatorNode);
-                scope = scopeEvaluatorNode;
+            } else if (expression != null) {
+                if (Functions.equals(KEY_CURLY_OPEN, token)) {
+                    ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
+                    scopeEvaluatorNode.evaluate(tokenList, evaluator);
+                    members.add(scopeEvaluatorNode);
+                    scope = scopeEvaluatorNode;
+                    // dont return yet, check for an else statement
+
+                } else if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
+                    ElseEvaluatorNode elseEvaluatorNode = new ElseEvaluatorNode(this.token, depth + 1);
+                    elseEvaluatorNode.evaluate(tokenList, evaluator);
+                    members.add(elseEvaluatorNode);
+                    elseNode = elseEvaluatorNode;
+                    return this;
+
+                } else {
+                    // undo the token consumption
+                    tokenList.add(0, token);
+                    return this;
+                }
 
             } else {
                 throw new Exception(("Unexpected token \"%s\" on if statement on line " + token.line).formatted(token));

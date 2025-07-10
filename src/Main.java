@@ -9,21 +9,25 @@ import static src.structure.Pruning.*;
 public class Main {
     public static void main(String[] args) {
         String code = """
-               let test_function_1(h, j) {
-                  return h + j;
-               }
-               
-               test_function_1(2,4);
-               test_function_1(2,3);
-
-               let test_function_2(h, j) {
-                   return (1 - ((h + j) * 4) + 1) == sus && test_function_1(2, 5) > 10;
-               }
-               
-               if ( test_function_2(4, 2) > 100 + sussy * wussy) {
-                   let sussy = 1;
-               }
-               """;
+           let test_function_1(h, j) {
+              return h + j;
+           }
+           
+           test_function_1(2,4);
+           test_function_1(2,3);
+            
+           if ( test_function_2(4, 2) > 100 + sussy * wussy) {
+               let sussy = 1;
+           } else if (1) {
+               let vent = 5;
+           } else {
+               let among_us = 10;
+           }
+           
+           let test_function_2(h, j) {
+               return (1 - ((h + j) * 4) + 1) == sus && test_function_1(2, 5) > 10;
+           }
+           """;
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
         System.out.println(code);
