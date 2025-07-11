@@ -31,7 +31,6 @@ public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
             Token token = tokenList.removeFirst();
 
             System.out.printf(indent + "while\t:\t%s\t:\t%s%n", this.token, token);
-            System.out.println(expression != null && scope == null);
 
             if (isWhiteSpace(token)) {
                 continue;
