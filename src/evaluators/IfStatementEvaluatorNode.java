@@ -3,6 +3,8 @@ package src.evaluators;
 import src.constants.Functions;
 import src.tokens.*;
 import java.util.*;
+import static src.constants.Functions.*;
+import static src.constants.Keywords.*;
 
 /**
  *
@@ -14,9 +16,6 @@ import java.util.*;
  * </ul>
  * @author ElectricGun
  */
-
-import static src.constants.Functions.*;
-import static src.constants.Keywords.*;
 
 public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
 
@@ -55,13 +54,12 @@ public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
                     elseEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(elseEvaluatorNode);
                     elseNode = elseEvaluatorNode;
-                    return this;
 
                 } else {
                     // undo the token consumption
-                    tokenList.add(0, token);
-                    return this;
-                    }
+                    tokenList.addFirst(token);
+                }
+                return this;
             } else {
                 throw new Exception(("Unexpected token \"%s\" on if statement on line " + token.line).formatted(token));
             }
