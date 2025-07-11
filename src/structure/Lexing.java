@@ -11,7 +11,7 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class Parsing {
+public class Lexing {
 
     public static List<Token> tokenize(String input) {
 
