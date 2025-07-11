@@ -7,6 +7,7 @@ import static src.constants.Keywords.*;
 
 public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
 
+    ScopeEvaluatorNode scope = null;
     OperationEvaluatorNode expression = null;
 
     public ConditionalEvaluatorNode(Token token, int depth) {
@@ -54,5 +55,12 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
                 operationTokens.add(expressionToken);
             }
         }
+    }
+
+    public void createBlock(List<Token> tokenList, Evaluator evaluator) {
+        ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
+        scopeEvaluatorNode.evaluate(tokenList, evaluator);
+        members.add(scopeEvaluatorNode);
+        scope = scopeEvaluatorNode;
     }
 }

@@ -97,6 +97,11 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                 ifStatementEvaluatorNode.evaluate(tokenList, evaluator);
                 members.add(ifStatementEvaluatorNode);
 
+            } else if (Functions.equals(KEY_LOOPING_WHILE, token)) {
+                WhileLoopEvaluatorNode whileLoopEvaluatorNode = new WhileLoopEvaluatorNode(token, depth+1);
+                whileLoopEvaluatorNode.evaluate(tokenList, evaluator);
+                members.add(whileLoopEvaluatorNode);
+
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
                 if (functionDeclareEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {

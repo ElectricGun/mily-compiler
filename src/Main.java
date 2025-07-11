@@ -5,6 +5,7 @@ import src.evaluators.*;
 import src.tokens.Token;
 import static src.structure.Parsing.*;
 import static src.structure.Pruning.*;
+import static src.constants.Functions.*;
 
 // TODO leading whitespaces causes errors
 public class Main {
@@ -22,6 +23,10 @@ public class Main {
                let sussy = 1;
            } else if (1) {
                let vent = 5;
+           }
+           
+           while (true) {
+           
            }
 
            let test_function_2(h, j) {

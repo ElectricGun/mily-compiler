@@ -20,7 +20,6 @@ import static src.constants.Keywords.*;
 
 public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
 
-    ScopeEvaluatorNode scope = null;
     ElseEvaluatorNode elseNode = null;
 
     public IfStatementEvaluatorNode(Token token, int depth) {
@@ -43,10 +42,7 @@ public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
 
             } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                    ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
-                    scopeEvaluatorNode.evaluate(tokenList, evaluator);
-                    members.add(scopeEvaluatorNode);
-                    scope = scopeEvaluatorNode;
+                    createBlock(tokenList, evaluator);
                     // dont return yet, check for an else statement
 
                 } else {
