@@ -27,6 +27,7 @@ public class Main {
            
            while (true) {
                let sus = 2;
+               sus = 4;
            }
 
            let test_function_2(h, j) {

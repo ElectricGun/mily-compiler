@@ -89,6 +89,6 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return "declare %s".formatted(variableName);
+        return "declare %s :=".formatted(variableName);
     }
 }

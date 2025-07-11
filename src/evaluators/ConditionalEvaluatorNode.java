@@ -11,7 +11,7 @@ import static src.constants.Keywords.*;
  *  @author ElectricGun
  */
 
-public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
+public abstract class ConditionalEvaluatorNode extends EvaluatorNode {
 
     ScopeEvaluatorNode scope = null;
     OperationEvaluatorNode expression = null;

@@ -74,11 +74,20 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                     functionCallEvaluatorNode.evaluate(tokenList, evaluator);
                     members.add(functionCallEvaluatorNode);
                     expectingSemicolon = true;
-                    continue;
+
+                } else if (Functions.equals(KEY_OP_ASSIGN, token)) {
+                    AssignmentEvaluatorNode assignmentEvaluatorNode = new AssignmentEvaluatorNode(previousToken, depth + 1);
+                    assignmentEvaluatorNode.evaluate(tokenList, evaluator);
+                    members.add(assignmentEvaluatorNode);
 
                 } else {
                     throw new Exception("Cannot resolve symbol \"%s\" at line %s".formatted(previousToken, previousToken.line));
                 }
+                // clear previous token otherwise it won't be true to reality
+                // as the evaluators below will consume newer tokens
+                previousToken = null;
+
+                continue;
 
             } else if (isPunctuation(token)) {
                 if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
