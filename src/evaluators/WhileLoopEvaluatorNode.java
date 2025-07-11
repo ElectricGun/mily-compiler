@@ -1,13 +1,10 @@
 package src.evaluators;
 
-import src.constants.Functions;
+import src.constants.*;
 import src.tokens.*;
-
-import java.util.List;
-
-import static src.constants.Functions.isWhiteSpace;
-import static src.constants.Keywords.KEY_BRACKET_OPEN;
-import static src.constants.Keywords.KEY_CURLY_OPEN;
+import java.util.*;
+import static src.constants.Functions.*;
+import static src.constants.Keywords.*;
 
 /**
  * <h3> While Loop </h3>
