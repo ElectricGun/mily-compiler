@@ -1,8 +1,7 @@
 package src.evaluators;
 
-import src.constants.Maps;
 import src.constants.*;
-import src.tokens.Token;
+import src.tokens.*;
 import java.util.*;
 import static src.constants.Keywords.*;
 

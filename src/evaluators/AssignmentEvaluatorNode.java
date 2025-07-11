@@ -8,7 +8,6 @@ import java.util.*;
  *  @author ElectricGun
  */
 
-
 public class AssignmentEvaluatorNode extends EvaluatorNode {
 
     OperationEvaluatorNode expression = null;

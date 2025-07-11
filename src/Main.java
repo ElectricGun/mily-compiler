@@ -14,23 +14,26 @@ public class Main {
            let test_function_1(h, j) {
               return h + j;
            }
+           
+           let variable_1 = 10;
+           let variable_2 = 60;
+           let variable_3 = 2;
 
            test_function_1(2,4);
-           test_function_1(2,3);
 
-           if (test_function_2(4, 2) > 100 + sussy * wussy) {
-               let sussy = 1;
+           if (test_function_2(4, 2) > 100 + variable_1 * variable_2) {
+               variable_1 = 1;
            } else if (true) {
-               let vent = 5;
+               variable_2 = 5;
            }
            
            while (true) {
-               let sus = 2;
-               sus = 4;
+               print(variable_3);
+               variable_3 = variable_3 + 1;
            }
 
            let test_function_2(h, j) {
-               return (1 - ((h + j) * 4) + 1) == sus && test_function_1(2, 5) > 10;
+               return (1 - ((h + j) * 4) + 1) == test_function_2(h, 4) && test_function_1(j, 5) > 10;
            }
            """;
 
