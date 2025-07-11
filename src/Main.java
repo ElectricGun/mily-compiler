@@ -3,9 +3,8 @@ package src;
 import java.util.*;
 import src.evaluators.*;
 import src.tokens.Token;
-import static src.structure.Parsing.*;
+import static src.structure.Lexing.*;
 import static src.structure.Pruning.*;
-import static src.constants.Functions.*;
 
 // TODO leading whitespaces causes errors
 public class Main {
@@ -21,7 +20,7 @@ public class Main {
 
            if (test_function_2(4, 2) > 100 + sussy * wussy) {
                let sussy = 1;
-           } else if (1) {
+           } else if (true) {
                let vent = 5;
            }
            
