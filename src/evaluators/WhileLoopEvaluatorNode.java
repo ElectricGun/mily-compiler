@@ -52,4 +52,9 @@ public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
         }
         throw new Exception("Unexpected end of file");
     }
+
+    @Override
+    public String toString() {
+        return "while loop";
+    }
 }
