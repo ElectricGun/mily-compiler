@@ -11,7 +11,7 @@
 # Functions
  - return types, such as void, int, double, boolean.
 
-Aliasing and Macros
+# Aliasing and Macros
  - should be processed during the AST building stage
  - #define keyword
 
