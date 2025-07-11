@@ -2,9 +2,7 @@
  - Looping and Branching
 
 # Looping and Branching
- - else statements
  - for loops
- - while loops
 
 # Datatypes
  - (int, double, boolean). Mlog doesn't really support that many datatypes, but implementing them here should be nice
@@ -13,12 +11,10 @@
 # Functions
  - return types, such as void, int, double, boolean.
 
+Aliasing and Macros
+ - should be processed during the AST building stage
+ - #define keyword
+
 # Technical stuff
- - hashmap system for constants seems redundant, just use arrays
- - Each evaluator node should have 5 component methods, executed in this order:
- - Evaluate punctuations: if token is a punctuation, run
- - Evaluate operators: if token is an operator, run
- - Evaluate keywords: if token is a keyword, run
- - Evaluate others: if token is none of the above, run
- - Evaluate current token: run regardless
+ - Support for non hardcoded evaluators
  - Unary operator orders
