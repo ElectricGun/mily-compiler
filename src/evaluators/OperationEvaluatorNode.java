@@ -210,9 +210,9 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     }
                     // if all the values are -1 or -4 or -2 then funny error
                     else {
-                        String out = "";
+                        StringBuilder out = new StringBuilder();
                         for (Token operationToken : operationTokens)
-                            out += " " + operationToken.string;
+                            out.append(" ").append(operationToken.string);
 
                         throw new Exception("Invalid operation %s \"%s\" at line %s".formatted(this.token, out +"...", token.line));
                     }

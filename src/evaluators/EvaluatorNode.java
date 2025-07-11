@@ -12,7 +12,6 @@ public class EvaluatorNode {
 
     public int depth;
     public Token token;
-    public String buffer = "";
     public Map<String, String> flags = new HashMap<>();
     public List<EvaluatorNode> members = new ArrayList<>();
 

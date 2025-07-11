@@ -1,5 +1,6 @@
 package src.evaluators;
 
+import src.constants.Maps;
 import src.constants.*;
 import src.tokens.Token;
 import java.util.*;
@@ -51,7 +52,7 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode {
                     // remove the last bracket )
                     operationTokens.removeLast();
 
-                    if (operationTokens.size() == 0) {
+                    if (operationTokens.isEmpty()) {
                         throw new Exception("Expecting expression on conditional at line " + token.line);
                     }
 

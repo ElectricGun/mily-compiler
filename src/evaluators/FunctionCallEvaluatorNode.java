@@ -70,11 +70,11 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        String arguments = "";
+        StringBuilder arguments = new StringBuilder();
         int i = 0;
 
         for (Token token : this.arguments) {
-            arguments += (i > 0 ?  ", " : "") + token.string;
+            arguments.append(i > 0 ? ", " : "").append(token.string);
             i++;
         }
         return "call " + token.string + "("  + arguments  + ")";

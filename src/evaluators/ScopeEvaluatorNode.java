@@ -56,8 +56,6 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
             System.out.printf(indent + "scope\t:\t%s\t:\t%s%n", this.token, token);
 
-            buffer += token;
-
             if (isWhiteSpace(token)) {
                 continue;
 
