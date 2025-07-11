@@ -24,7 +24,8 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
         return expression;
     }
 
-    public void parseOperation(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    public void parseOperation(List<Token> tokenList, Evaluator evaluator, int depth) throws Exception {
+        String indent = " ".repeat(depth);
         List<Token> operationTokens = new ArrayList<>();
         int bracketCount = 1;
 
@@ -32,7 +33,7 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
         // before passing its tokens into an OperationEvaluatorNode
         while (true) {
             Token expressionToken = tokenList.removeFirst();
-//            System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
+            System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
 
             if (Functions.equals(KEY_BRACKET_CLOSE, expressionToken)) {
                 bracketCount--;
@@ -49,6 +50,10 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
                 } else {
                     // remove the last bracket )
                     operationTokens.removeLast();
+
+                    if (operationTokens.size() == 0) {
+                        throw new Exception("Expecting expression on conditional at line " + token.line);
+                    }
 
                     operationTokens.add(new Token(";", token.line));
                     OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(this.token, depth + 1);

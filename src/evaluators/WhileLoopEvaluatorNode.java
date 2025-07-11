@@ -36,7 +36,7 @@ public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
                 continue;
 
             } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                parseOperation(tokenList, evaluator);
+                parseOperation(tokenList, evaluator, depth);
 
             } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
