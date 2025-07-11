@@ -126,6 +126,18 @@ public class Functions {
         return isVariableName(String.valueOf(c));
     }
 
+    public static boolean isReserved(String s) {
+        return isKeyWord(s);
+    }
+
+    public static boolean isReserved(Token t) {
+        return isReserved(t.string);
+    }
+
+    public static boolean isReserved(char c) {
+        return isReserved(String.valueOf(c));
+    }
+
     public static boolean isNumeric(String s) {
         try {
             Double.parseDouble(s);

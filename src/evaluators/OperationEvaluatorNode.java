@@ -104,9 +104,16 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                     // OPERATION EVALUATION LOOP
                     for (int i = 0; i < orders.size(); i++) {
-                        int currentOrder = operationOrder(operationTokens.get(i));
 
-                        System.out.printf(indent + "%s order : %s%n", operationTokens.get(i), currentOrder);
+                        Token currentOperationToken = operationTokens.get(i);
+
+                        if (isReserved(currentOperationToken)) {
+                            throw new Exception("Reserved keyword \"%s\" found on operation at line %s".formatted(currentOperationToken, token.line));
+                        }
+
+                        int currentOrder = operationOrder(currentOperationToken);
+
+                        System.out.printf(indent + "%s order : %s%n", currentOperationToken, currentOrder);
 
                         // start bracket
                         if (currentOrder == -4) {
