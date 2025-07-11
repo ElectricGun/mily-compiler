@@ -53,7 +53,7 @@ public class ElseEvaluatorNode extends EvaluatorNode {
                 throw new Exception();
             }
         }
-        return null;
+        throw new Exception("Unexpected end of file");
     }
 
     @Override

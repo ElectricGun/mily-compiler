@@ -74,7 +74,7 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
                 isInitialized = true;
             }
         }
-        return null;
+        throw new Exception("Unexpected end of file");
     }
 
     @Override

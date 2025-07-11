@@ -109,7 +109,7 @@ public class IfStatementEvaluatorNode extends EvaluatorNode{
                 throw new Exception(("Unexpected token \"%s\" on if statement on line " + token.line).formatted(token));
             }
         }
-        return null;
+        throw new Exception("Unexpected end of file");
     }
 
     @Override

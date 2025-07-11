@@ -59,7 +59,7 @@ public class OperationBracketEvaluatorNode extends EvaluatorNode {
             orders.remove(operatorIndex);
             operationTokens.add(token);
         }
-        return null;
+        throw new Exception("Unexpected end of file");
     }
 
     public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, Evaluator evaluator) {

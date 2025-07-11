@@ -55,7 +55,7 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
             isInitialized = true;
         }
 
-        return null;
+        throw new Exception("Unexpected end of file");
     }
 
     private void tryAddArgument(Token token) throws Exception {

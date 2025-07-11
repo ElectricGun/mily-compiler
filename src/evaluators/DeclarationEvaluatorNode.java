@@ -80,7 +80,7 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
                 throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(this.token, token));
             }
         }
-        return null;
+        throw new Exception("Unexpected end of file");
     }
 
     public boolean isDeclared() {

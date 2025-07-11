@@ -115,7 +115,7 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             // after running out of tokens
             throw new Exception("Scope \"%s\" is unclosed".formatted(token));
         }
-        return this;
+        throw new Exception("Unexpected end of file");
     }
 
     @Override
