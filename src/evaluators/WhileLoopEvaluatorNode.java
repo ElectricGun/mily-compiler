@@ -9,6 +9,11 @@ import static src.constants.Functions.isWhiteSpace;
 import static src.constants.Keywords.KEY_BRACKET_OPEN;
 import static src.constants.Keywords.KEY_CURLY_OPEN;
 
+/**
+ * <h3> While Loop </h3>
+ *  @author ElectricGun
+ */
+
 public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
 
     public WhileLoopEvaluatorNode(Token token, int depth) {

@@ -5,6 +5,12 @@ import src.tokens.Token;
 import java.util.*;
 import static src.constants.Keywords.*;
 
+/**
+ * <h3> Conditionals </h3>
+ * Template for ifs and whiles
+ *  @author ElectricGun
+ */
+
 public abstract class ConditionalEvaluatorNode extends EvaluatorNode{
 
     ScopeEvaluatorNode scope = null;
