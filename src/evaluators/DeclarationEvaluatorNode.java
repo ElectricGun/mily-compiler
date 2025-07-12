@@ -11,16 +11,10 @@ import static src.constants.Keywords.*;
  *  @author ElectricGun
  */
 
-public class DeclarationEvaluatorNode extends EvaluatorNode {
-
-    String variableName = "";
+public class DeclarationEvaluatorNode extends VariableEvaluatorNode {
 
     public DeclarationEvaluatorNode(Token name, int depth) {
         super(name, depth);
-    }
-
-    public String getVariableName() {
-        return variableName;
     }
 
     @Override
@@ -80,10 +74,6 @@ public class DeclarationEvaluatorNode extends EvaluatorNode {
             }
         }
         throw new Exception("Unexpected end of file");
-    }
-
-    public boolean isDeclared() {
-        return !variableName.isEmpty();
     }
 
     @Override

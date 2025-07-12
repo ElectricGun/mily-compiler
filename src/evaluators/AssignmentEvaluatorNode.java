@@ -8,7 +8,7 @@ import java.util.*;
  *  @author ElectricGun
  */
 
-public class AssignmentEvaluatorNode extends EvaluatorNode {
+public class AssignmentEvaluatorNode extends VariableEvaluatorNode {
 
     OperationEvaluatorNode expression = null;
 
@@ -24,6 +24,7 @@ public class AssignmentEvaluatorNode extends EvaluatorNode {
         if (!tokenList.isEmpty()) {
             expression = (OperationEvaluatorNode) new OperationEvaluatorNode(this.token, depth + 1).evaluate(tokenList, evaluator);
             members.add(expression);
+            variableName = this.token.string;
             return this;
         }
         throw new Exception("Unexpected end of file");
