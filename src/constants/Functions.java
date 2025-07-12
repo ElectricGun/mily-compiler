@@ -152,6 +152,9 @@ public class Functions {
     }
 
     public static boolean isNumeric(Token t) {
+        if (t == null)
+            return false;
+
         return isNumeric(t.string);
     }
 

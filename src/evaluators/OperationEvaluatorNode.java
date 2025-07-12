@@ -21,8 +21,6 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
     public String type = KEY_OP_TYPE_CONSTANT;
     public Token constantToken = null;
-    public EvaluatorNode leftSide = null;
-    public EvaluatorNode rightSide = null;
     public List<OperationBracketEvaluatorNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
@@ -37,6 +35,34 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         super(token, depth);
 
         this.isReturnOperation = true;
+    }
+
+    public OperationEvaluatorNode getLeftSide() {
+        if (members.isEmpty())
+            return null;
+        return (OperationEvaluatorNode) members.get(0);
+    }
+
+    public OperationEvaluatorNode getRightSide() {
+        if (members.size() < 2)
+            return null;
+        return (OperationEvaluatorNode) members.get(1);
+    }
+
+    public void setLeftSide(OperationEvaluatorNode leftSide) {
+        if (members.isEmpty()) {
+            members.add(leftSide);
+        } else {
+            members.set(0, leftSide);
+        }
+    }
+
+    public void setRightSide(OperationEvaluatorNode rightSide) {
+        if (members.size() < 2) {
+            members.add(rightSide);
+        } else {
+            members.set(1, rightSide);
+        }
     }
 
     @Override
@@ -168,13 +194,13 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         right.add(new Token(";", operationTokens.getLast().line));
 
                         if (left.size() > 1) {
-                            leftSide = new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1);
-                            members.add(leftSide.evaluate(left, evaluator));
+                            setLeftSide(new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1));
+                            getLeftSide().evaluate(left, evaluator);
                         }
 
                         if (right.size() > 1) {
-                            rightSide = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
-                            members.add(rightSide.evaluate(right, evaluator));
+                            setRightSide(new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1));
+                            getRightSide().evaluate(right, evaluator);
 
                         } else {
                             throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
@@ -187,8 +213,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         Token newConstantToken = operationTokens.removeFirst();
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
-                            members.add(bracketToken.getOperationEvaluator());
-                            return bracketToken.getOperationEvaluator();
+                            setLeftSide(bracketToken.getOperationEvaluator());
+                            return this;
 
                         } else {
                             constantToken = newConstantToken;
@@ -203,9 +229,9 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             bracketToken.getOperationEvaluator().type = type;
-                            members.add(bracketToken.getOperationEvaluator());
+                            setLeftSide(bracketToken.getOperationEvaluator());
 
-                            return bracketToken.getOperationEvaluator();
+                            return this;
 
                         } else {
                             constantToken = newConstantToken;
@@ -237,6 +263,18 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         return constantToken == null && type.equals(KEY_OP_TYPE_CONSTANT);
     }
 
+    public boolean isConstant() {
+        return Functions.equals(KEY_OP_TYPE_CONSTANT, type);
+    }
+
+    public void makeConstant(String newConstantValue) {
+        this.constantToken = new Token(newConstantValue, this.token.line);
+        this.type = KEY_OP_TYPE_CONSTANT;
+        setLeftSide(null);
+        setRightSide(null);
+        this.members.clear();
+    }
+
     @Override
     public String toString() {
 
@@ -251,7 +289,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         }
 
         // TODO fix this silly thing
-        if (rightSide == null || leftSide == null)
+        if (getLeftSide() == null || getRightSide() == null)
             return out + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantToken != null ? "const " + constantToken : "");
 
         return out + "%s %s".formatted("operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);

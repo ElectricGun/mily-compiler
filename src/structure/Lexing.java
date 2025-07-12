@@ -14,13 +14,12 @@ import static src.constants.Keywords.*;
 public class Lexing {
 
     public static List<Token> tokenize(String input) {
-
         List<Token> tokens = new ArrayList<>();
         String tokenString = "";
+
         boolean isInitialized = false;
         char previousChar = 0;
         int currentLine = 1;
-
         char[] charArray = input.toCharArray();
 
         for (int index = 0; index < charArray.length; index++) {
@@ -70,8 +69,6 @@ public class Lexing {
             isInitialized = true;
             previousChar = c;
         }
-//        tokens.add(new Token(tokenString, currentLine));
-
         return tokens;
     }
 }

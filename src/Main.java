@@ -10,6 +10,9 @@ public class Main {
 
     public static void main(String[] args) {
         String code = """
+
+           let numeric = 1.2 + 3 + 2 + 5 - 3 / 3;
+
            let test_function_1(h, j) {
               return h + j;
            }
@@ -21,7 +24,7 @@ public class Main {
            }
 
            let variable_1 = 10;
-           let variable_2 = 60;
+           let variable_2 = 60 + 10;
            let variable_3 = 2;
 
            if (test_function_2(4, 2) > 100 + variable_1 * variable_2) {
@@ -61,6 +64,10 @@ public class Main {
 
         System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");
 
-        Evaluator.printRecursive(pruneEmptyOperations(node));
+        EvaluatorNode prunedNode = pruneEmptyOperations(node);
+
+        prunedNode = simplifyExpressions(prunedNode);
+
+        Evaluator.printRecursive(prunedNode);
     }
 }

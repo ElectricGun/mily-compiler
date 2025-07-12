@@ -1,3 +1,7 @@
+# Start compiling to mlog once all of these features are done:
+ - AST Pruning
+ - AST Validation
+
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
  - for lexing and evaluating
@@ -15,5 +19,6 @@
  - #define keyword
 
 # Technical stuff
+ - use encapsulation for node members instead of having separate variables to prevent errors
  - Support for non hardcoded evaluators
  - Unary operator orders
