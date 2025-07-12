@@ -129,7 +129,11 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         // this is checking for unary operators,
                         // if two constants are side by side it just breaks (as it should)
                         // if the operators come before any constants, they should not be counted as binary
-                        orders.set(i, !(previousOrder > -1 && currentOrder > -1 || !constantFound) ? currentOrder : -2);
+                        if ((!(previousOrder > -1 && currentOrder > -1 || !constantFound)) && !(previousOrder == -2 && currentOrder > -1)) {
+                            orders.set(i, currentOrder);
+                        } else {
+                            orders.set(i, -2);
+                        }
 
                         // if it is an operator, then set the order
                         if (orders.get(i) >= 0 && (largestOrder == -1 || orders.get(i) >= largestOrder)) {
@@ -220,11 +224,6 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
                 }
             }
-            // evaluate operators
-            else if (isOperator(token)) {
-                operationTokens.add(token);
-            }
-            // evaluate the rest
             else {
                 operationTokens.add(token);
             }
@@ -251,8 +250,9 @@ public class OperationEvaluatorNode extends EvaluatorNode {
             out += "return ";
         }
 
+        // TODO fix this silly thing
         if (rightSide == null || leftSide == null)
-            return out + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", "const " + constantToken);
+            return out + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantToken != null ? "const " + constantToken : "");
 
         return out + "%s %s".formatted("operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
     }

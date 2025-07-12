@@ -21,7 +21,11 @@ public class Lexing {
         char previousChar = 0;
         int currentLine = 1;
 
-        for (char c : input.toCharArray()) {
+        char[] charArray = input.toCharArray();
+
+        for (int index = 0; index < charArray.length; index++) {
+            char c = charArray[index];
+
             String cs = String.valueOf(c);
             boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
@@ -30,15 +34,25 @@ public class Lexing {
 
             if (isWhiteSpace(cs)) {
                 if (Functions.equals(KEY_NEWLINE, cs)) {
-                    currentLine ++;
+                    currentLine++;
                 }
 
                 if (!previousIsWhitespace) {
                     tokens.add(new Token(tokenString, currentLine));
                 }
                 tokenString = " ";
-            }
-            else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
+
+            } else if (
+                    // prevents malformed compound operators from forming
+                    isKeywordIncomplete(tokenString) &&
+                    (isOperator(tokenString) || isPunctuation(tokenString)) &&
+                    !isKeywordIncomplete(tokenString + c) &&
+                    !isOperator(tokenString + c)
+                    ) {
+                tokens.add(new Token(tokenString , currentLine));
+                tokenString = "" + c;
+
+            } else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
                 tokens.add(new Token(tokenString, currentLine));
                 tokenString = "" + c;
 
@@ -50,10 +64,13 @@ public class Lexing {
                 tokenString += c;
             }
 
+            if (index == charArray.length - 1) {
+                tokens.add(new Token(tokenString, currentLine));
+            }
             isInitialized = true;
             previousChar = c;
         }
-        tokens.add(new Token(tokenString, currentLine));
+//        tokens.add(new Token(tokenString, currentLine));
 
         return tokens;
     }

@@ -13,13 +13,13 @@ public class Main {
            let test_function_1(h, j) {
               return h + j;
            }
-           
+
            test_function_1(2,4);
-           
+
            for (i = 0; i < 100; i = i + 1) {
             print(i);
            }
-           
+
            let variable_1 = 10;
            let variable_2 = 60;
            let variable_3 = 2;
@@ -29,7 +29,7 @@ public class Main {
            } else if (true) {
                variable_2 = 5;
            }
-           
+
            while (true) {
                print(variable_3);
                variable_3 = variable_3 + 1;
@@ -39,6 +39,9 @@ public class Main {
                return (1 - ((h + j) * 4) + 1) == test_function_2(h, 4) && test_function_1(j, 5) > 10;
            }
            """;
+
+        int among = 1;
+        System.out.println(among);
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
         System.out.println(code);

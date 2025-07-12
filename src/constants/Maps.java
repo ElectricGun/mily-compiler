@@ -64,7 +64,6 @@ public class Maps {
         allKeywordKeys.addAll(operatorKeys);
     }
 
-
     protected static final HashMap<String, Integer> PEMDAS = new HashMap<>();
     static {
         // negatives are reserved for special characters

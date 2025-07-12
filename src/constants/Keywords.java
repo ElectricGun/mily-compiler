@@ -39,6 +39,11 @@ public class Keywords {
         KEY_OP_IDIV = "//",
         KEY_OP_MOD = "%",
 
+    // don't bother using these, they are annoying and cause ambiguity
+    // just use compound operators instead (like in python)
+//        KEY_OP_INCREMENT = "++",
+//        KEY_OP_DECREMENT = "--",
+
     // boolean/comparator operators
         KEY_OP_EQUALS = "==",
         KEY_OP_NOT_EQUAL = "!=",

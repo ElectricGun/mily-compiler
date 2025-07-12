@@ -1,7 +1,3 @@
-# Start compiling to mlog once all of these features are done:
- - post increment var ++
- - pre increment ++ var
-
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
  - for lexing and evaluating
