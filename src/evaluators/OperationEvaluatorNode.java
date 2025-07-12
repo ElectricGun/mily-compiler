@@ -228,7 +228,6 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         Token newConstantToken = operationTokens.removeFirst();
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
-                            bracketToken.getOperationEvaluator().type = type;
                             setLeftSide(bracketToken.getOperationEvaluator());
 
                             return this;

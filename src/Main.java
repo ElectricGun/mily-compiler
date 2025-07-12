@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         String code = """
 
-           let numeric = (1.2 + 3 + 2 + 5 - 3) / 3 * 29 + 33 + -(100 +398);
+           let numeric = (1.2 + 3 + 2 + 5 - 3) / 3 * 29 + 33 + +(100 - 398);
 
            let test_function_1(h, j) {
               return h + j;
