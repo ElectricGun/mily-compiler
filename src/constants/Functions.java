@@ -16,6 +16,9 @@ public class Functions {
     }
 
     public static boolean equals(String key, Token token) {
+        if (token == null) {
+            throw new IllegalArgumentException("token is null");
+        }
         return equals(key, token.string);
     }
 

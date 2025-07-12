@@ -14,11 +14,15 @@ public class Main {
               return h + j;
            }
            
+           test_function_1(2,4);
+           
+           for (let i = 0; i < 100; i = i + 1) {
+            print(i);
+           }
+           
            let variable_1 = 10;
            let variable_2 = 60;
            let variable_3 = 2;
-
-           test_function_1(2,4);
 
            if (test_function_2(4, 2) > 100 + variable_1 * variable_2) {
                variable_1 = 1;

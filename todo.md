@@ -1,8 +1,6 @@
 # Start compiling to mlog once all of these features are done:
- - Looping and Branching
-
-# Looping and Branching
- - for loops
+ - post increment var ++
+ - pre increment ++ var
 
 # Datatypes
  - (int, double, boolean). Mlog doesn't really support that many datatypes, but implementing them here should be nice

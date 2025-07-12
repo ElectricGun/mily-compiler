@@ -15,6 +15,8 @@ import static src.constants.Keywords.*;
  *      <li> Token "return"               -> {@link OperationEvaluatorNode}</li>
  *      <li> Any token + "("              -> {@link FunctionCallEvaluatorNode}</li>
  *      <li> Token "if"                   -> {@link IfStatementEvaluatorNode}</li>
+ *      <li> Token "while"                -> {@link WhileLoopEvaluatorNode}</li>
+ *      <li> Token "for"                  -> {@link ForLoopEvaluatorNode}</li>
  *      <li> Token "}" when needs closing -> return this</li>
  * </ul>
  * @author ElectricGun
@@ -89,7 +91,7 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
             } else if (isPunctuation(token)) {
                 if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
-                    System.out.printf("Created scope \"%s\"%n", this.token);
+                    System.out.printf(indent + "Created scope \"%s\"%n", this.token);
                     return this;
 
                 } else {
@@ -100,14 +102,22 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
                 throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
+                System.out.printf(indent + "Creating if statement loop %n");
                 IfStatementEvaluatorNode ifStatementEvaluatorNode = new IfStatementEvaluatorNode(token, depth+1);
                 ifStatementEvaluatorNode.evaluate(tokenList, evaluator);
                 members.add(ifStatementEvaluatorNode);
 
             } else if (Functions.equals(KEY_LOOPING_WHILE, token)) {
+                System.out.printf(indent + "Creating while loop %n");
                 WhileLoopEvaluatorNode whileLoopEvaluatorNode = new WhileLoopEvaluatorNode(token, depth+1);
                 whileLoopEvaluatorNode.evaluate(tokenList, evaluator);
                 members.add(whileLoopEvaluatorNode);
+
+            } else if (Functions.equals(KEY_LOOPING_FOR, token)) {
+                System.out.printf(indent + "Creating for loop %n");
+                ForLoopEvaluatorNode forLoopEvaluatorNode = new ForLoopEvaluatorNode(token, depth+1);
+                forLoopEvaluatorNode.evaluate(tokenList, evaluator);
+                members.add(forLoopEvaluatorNode);
 
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS

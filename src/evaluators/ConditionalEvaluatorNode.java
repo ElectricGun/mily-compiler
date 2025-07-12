@@ -6,8 +6,7 @@ import java.util.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Conditionals </h3>
- * Template for ifs and whiles
+ * <h3> Template for If and While Statements </h3>
  *  @author ElectricGun
  */
 

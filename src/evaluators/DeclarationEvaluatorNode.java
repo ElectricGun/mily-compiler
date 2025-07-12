@@ -61,7 +61,7 @@ public class DeclarationEvaluatorNode extends VariableEvaluatorNode {
             // evaluate strings
             else if (!isKeyWord(token)) {
                 if (!isDeclared()) {
-                    System.out.printf(indent + "Declaring variable name : %s", token.string);
+                    System.out.printf(indent + "Declaring variable name : %s%n", token.string);
                     variableName = token.string;
 
                 } else {

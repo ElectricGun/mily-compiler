@@ -52,6 +52,6 @@ public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
 
     @Override
     public String toString() {
-        return "while loop";
+        return "while loop #" + hashCode();
     }
 }

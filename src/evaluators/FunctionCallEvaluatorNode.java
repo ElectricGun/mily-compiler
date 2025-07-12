@@ -35,7 +35,7 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "function call : %s:%n", token);
+            System.out.printf(indent + "function call %s: %s:%n", this.token, token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -54,7 +54,6 @@ public class FunctionCallEvaluatorNode extends EvaluatorNode {
             }
             isInitialized = true;
         }
-
         throw new Exception("Unexpected end of file");
     }
 
