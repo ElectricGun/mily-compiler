@@ -18,6 +18,9 @@ public class Pruning {
     }
 
     private static void pruneEmptyOperationGroupsHelper(EvaluatorNode evaluatorNode) {
+        if (evaluatorNode == null)
+            return;
+
         for (int i = 0; i< evaluatorNode.members.size(); i++) {
             EvaluatorNode member = evaluatorNode.members.get(i);
 
@@ -25,7 +28,11 @@ public class Pruning {
                 while (operationEvaluatorNode.isEmpty()) {
                     member = operationEvaluatorNode.members.getFirst();
                     if (member instanceof OperationEvaluatorNode operationEvaluatorNode1) {
-                        evaluatorNode.members.set(i, member);
+                        if (i == 0) {
+                            ((OperationEvaluatorNode) evaluatorNode).setLeftSide(operationEvaluatorNode1);
+                        } else if (i == 1) {
+                            ((OperationEvaluatorNode) evaluatorNode).setRightSide(operationEvaluatorNode1);
+                        }
 
                         operationEvaluatorNode = operationEvaluatorNode1;
                     }
@@ -42,12 +49,15 @@ public class Pruning {
     }
 
     private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode) {
-        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
+        if (evaluatorNode == null)
+            return;
 
+        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
             if (operationEvaluatorNode.isConstant()) {
                 return;
 
             } else if (!operationEvaluatorNode.isUnary()) {
+
                 boolean leftIsConstant = operationEvaluatorNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationEvaluatorNode.getRightSide().isConstant();
 

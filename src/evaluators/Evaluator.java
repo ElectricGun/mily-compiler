@@ -22,6 +22,9 @@ public class Evaluator {
     }
 
     protected static void printRecursiveHelper(EvaluatorNode node, int depth) {
+        if (node == null)
+            return;
+
         String prefix = depth > 0 ? "| ".repeat(depth) : "";
         System.out.println(prefix + node);
         depth++;

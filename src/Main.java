@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         String code = """
 
-           let numeric = (1.2 + 3 + 2 + 5 - 3) / 3 * 29 + 33 + +(100 - 398);
+           let numeric = 60 + (1 + 3 + 2 + 5 - 3) / 30 * (92 + 20) - 100;
 
            let test_function_1(h, j) {
               return h + j;
@@ -42,6 +42,7 @@ public class Main {
                return (1 - ((h + j) * 4) + 1) == test_function_2(h, 4) && test_function_1(j, 5) > 10;
            }
            """;
+
 
         int among = 1;
         System.out.println(among);

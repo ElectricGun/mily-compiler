@@ -27,15 +27,23 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     public List<Token> operationTokens = new ArrayList<>();
     public boolean isReturnOperation;
 
+//    private OperationEvaluatorNode leftSide = null;
+//    private OperationEvaluatorNode rightSide = null;
+
     public OperationEvaluatorNode(Token token, int depth) {
         super(token, depth);
+
+        members = new ArrayList<>(Arrays.asList(null, null));
     }
 
     public OperationEvaluatorNode(Token token, int depth, boolean isReturnOperation) {
         super(token, depth);
 
         this.isReturnOperation = true;
+        members = new ArrayList<>(Arrays.asList(null, null));
     }
+
+    // TODO bad code, fix later
 
     public OperationEvaluatorNode getLeftSide() {
         if (members.isEmpty())
@@ -50,19 +58,11 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     }
 
     public void setLeftSide(OperationEvaluatorNode leftSide) {
-        if (members.isEmpty()) {
-            members.add(leftSide);
-        } else {
-            members.set(0, leftSide);
-        }
+        members.set(0, leftSide);
     }
 
     public void setRightSide(OperationEvaluatorNode rightSide) {
-        if (members.size() < 2) {
-            members.add(rightSide);
-        } else {
-            members.set(1, rightSide);
-        }
+        members.set(1, rightSide);
     }
 
     @Override
