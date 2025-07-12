@@ -2,6 +2,11 @@
  - post increment var ++
  - pre increment ++ var
 
+# Compound Operators
+ - += += -= *= /= %= &= ^= |= <<= >>= **=
+ - for lexing and evaluating
+ - i += x + y    is equivalent to   i = i + (x + y) 
+
 # Datatypes
  - (int, double, boolean). Mlog doesn't really support that many datatypes, but implementing them here should be nice
  - static typing
