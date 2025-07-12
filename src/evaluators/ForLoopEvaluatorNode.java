@@ -38,7 +38,7 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                     isExpectingOpeningBracket = false;
 
                 } else {
-                    throw new Exception("Unexpected token \"%s\" in function call at line %s".formatted(token, token.line));
+                    throw new Exception("Unexpected token \"%s\" in for loop at line %s".formatted(token, token.line));
                 }
             } else if (initial == null) {
                 if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
@@ -51,8 +51,8 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                     initial.evaluate(tokenList, evaluator);
                     members.add(initial);
 
-                } else {
-                    throw new Exception("Unexpected tokens \"%s\" in function call at line %s".formatted(token, token.line));
+                } else if (!isVariableName(token)) {
+                    throw new Exception("Unexpected tokens \"%s\" in for loop at line %s".formatted(token, token.line));
                 }
             } else if (condition == null) {
                 List<Token> operationTokens = new ArrayList<>();

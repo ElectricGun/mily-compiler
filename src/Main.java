@@ -16,7 +16,7 @@ public class Main {
            
            test_function_1(2,4);
            
-           for (let i = 0; i < 100; i = i + 1) {
+           for (i = 0; i < 100; i = i + 1) {
             print(i);
            }
            
