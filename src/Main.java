@@ -6,7 +6,6 @@ import src.tokens.Token;
 import static src.structure.Lexing.*;
 import static src.structure.Pruning.*;
 
-// TODO leading whitespaces causes errors
 public class Main {
 
     public static void main(String[] args) {
