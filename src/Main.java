@@ -61,4 +61,3 @@ public class Main {
         Evaluator.printRecursive(pruneEmptyOperations(node));
     }
 }
-

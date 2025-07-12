@@ -42,7 +42,7 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                 }
             } else if (initial == null) {
                 if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
-                    initial = new AssignmentEvaluatorNode(token, depth + 1);
+                    initial = new AssignmentEvaluatorNode(previousToken, depth + 1);
                     initial.evaluate(tokenList, evaluator);
                     members.add(initial);
 
