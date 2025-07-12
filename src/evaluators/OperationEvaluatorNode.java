@@ -275,6 +275,10 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         this.members.clear();
     }
 
+    public boolean isUnary() {
+        return (getLeftSide() == null || getRightSide() == null) && !type.equals(KEY_OP_TYPE_CONSTANT) && !type.equals(KEY_OP_TYPE_GROUP);
+    }
+
     @Override
     public String toString() {
 

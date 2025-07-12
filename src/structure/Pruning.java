@@ -35,30 +35,28 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorNode simplifyExpressions(EvaluatorNode evaluatorNode) {
-        simplifyExpressionsHelper(evaluatorNode);
+    public static EvaluatorNode simplifyBinaryExpressions(EvaluatorNode evaluatorNode) {
+        simplifyBinaryExpressionsHelper(evaluatorNode);
 
         return evaluatorNode;
     }
 
-    private static void simplifyExpressionsHelper(EvaluatorNode evaluatorNode) {
+    private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode) {
         if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
 
             if (operationEvaluatorNode.isConstant()) {
                 return;
 
-            } else {
-                System.out.println(operationEvaluatorNode.members);
-                System.out.println(operationEvaluatorNode.getLeftSide());
+            } else if (!operationEvaluatorNode.isUnary()) {
                 boolean leftIsConstant = operationEvaluatorNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationEvaluatorNode.getRightSide().isConstant();
 
                 if (!leftIsConstant) {
-                    simplifyExpressionsHelper(operationEvaluatorNode.getLeftSide());
+                    simplifyBinaryExpressionsHelper(operationEvaluatorNode.getLeftSide());
                 }
 
                 if (!rightIsConstant) {
-                    simplifyExpressionsHelper(operationEvaluatorNode.getRightSide());
+                    simplifyBinaryExpressionsHelper(operationEvaluatorNode.getRightSide());
                 }
 
                 boolean leftIsNumeric = isNumeric(operationEvaluatorNode.getLeftSide().constantToken);
@@ -98,7 +96,7 @@ public class Pruning {
             for (int i = 0; i< evaluatorNode.members.size(); i++) {
                 EvaluatorNode member = evaluatorNode.members.get(i);
 
-                simplifyExpressionsHelper(member);
+                simplifyBinaryExpressionsHelper(member);
             }
         }
     }
