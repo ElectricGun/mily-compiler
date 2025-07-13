@@ -2,6 +2,10 @@ package src.structure;
 
 import src.constants.*;
 import src.evaluators.*;
+
+import java.util.*;
+import java.util.function.Consumer;
+
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
 
@@ -12,33 +16,43 @@ import static src.constants.Functions.*;
 
 public class Pruning {
     public static EvaluatorNode pruneEmptyOperations(EvaluatorNode evaluatorNode) {
-        pruneEmptyOperationGroupsHelper(evaluatorNode);
+        pruneEmptyOperationsHelper(evaluatorNode, null);
 
         return evaluatorNode;
     }
 
-    private static void pruneEmptyOperationGroupsHelper(EvaluatorNode evaluatorNode) {
+    private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
         if (evaluatorNode == null)
             return;
+
+        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
+
+            // truncate children of self if they are empty
+            truncateEmptyOperationChildrenRecursive(operationEvaluatorNode);
+
+            // truncate self if empty
+            if (operationEvaluatorNode.isEmpty()) {
+                parent.members.set(parent.members.indexOf(operationEvaluatorNode), operationEvaluatorNode.getLeftSide());
+            }
+        }
 
         for (int i = 0; i< evaluatorNode.members.size(); i++) {
             EvaluatorNode member = evaluatorNode.members.get(i);
 
-            if (member instanceof OperationEvaluatorNode operationEvaluatorNode) {
-                while (operationEvaluatorNode.isEmpty()) {
-                    member = operationEvaluatorNode.members.getFirst();
-                    if (member instanceof OperationEvaluatorNode operationEvaluatorNode1) {
-                        if (i == 0) {
-                            ((OperationEvaluatorNode) evaluatorNode).setLeftSide(operationEvaluatorNode1);
-                        } else if (i == 1) {
-                            ((OperationEvaluatorNode) evaluatorNode).setRightSide(operationEvaluatorNode1);
-                        }
+            pruneEmptyOperationsHelper(member, evaluatorNode);
+        }
+    }
 
-                        operationEvaluatorNode = operationEvaluatorNode1;
-                    }
-                }
+    private static void truncateEmptyOperationChildrenRecursive(OperationEvaluatorNode operationEvaluatorNode) {
+        if (operationEvaluatorNode.getLeftSide() != null && operationEvaluatorNode.getLeftSide().isEmpty()) {
+            while (operationEvaluatorNode.getLeftSide().isEmpty()) {
+                operationEvaluatorNode.setLeftSide(operationEvaluatorNode.getLeftSide().getLeftSide());
             }
-            pruneEmptyOperationGroupsHelper(member);
+        }
+
+        if (operationEvaluatorNode.getRightSide() != null && operationEvaluatorNode.getRightSide().isEmpty()) {
+            while (operationEvaluatorNode.getRightSide().isEmpty())
+                operationEvaluatorNode.setRightSide(operationEvaluatorNode.getRightSide().getLeftSide());
         }
     }
 
@@ -48,16 +62,51 @@ public class Pruning {
         return evaluatorNode;
     }
 
+    public static final Map<String, Consumer<OperationEvaluatorNode>> operationsParserMap = new HashMap<>();
+    static {
+        operationsParserMap.put(KEY_OP_ADD, o -> o.makeConstant(
+            o.getLeftConstantNumeric() +
+            o.getRightConstantNumeric()
+        ));
+        operationsParserMap.put(KEY_OP_SUB, o -> o.makeConstant(
+            o.getLeftConstantNumeric() -
+            o.getRightConstantNumeric()
+        ));
+        operationsParserMap.put(KEY_OP_MUL, o -> o.makeConstant(
+            o.getLeftConstantNumeric() *
+            o.getRightConstantNumeric()
+        ));
+        operationsParserMap.put(KEY_OP_DIV, o -> o.makeConstant(
+            o.getLeftConstantNumeric() /
+            o.getRightConstantNumeric()
+        ));
+        operationsParserMap.put(KEY_OP_MOD, o -> o.makeConstant(
+            o.getLeftConstantNumeric() %
+            o.getRightConstantNumeric()
+        ));
+        operationsParserMap.put(KEY_OP_IDIV, o -> o.makeConstant(
+            Math.floor(
+                o.getLeftConstantNumeric() /
+                o.getRightConstantNumeric()
+            )
+        ));
+        operationsParserMap.put(KEY_OP_POW, o -> o.makeConstant(
+            Math.pow(
+                o.getLeftConstantNumeric(),
+                o.getRightConstantNumeric()
+            )
+        ));
+    }
+
     private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode) {
         if (evaluatorNode == null)
             return;
 
-        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
+        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode && !operationEvaluatorNode.isUnary()) {
             if (operationEvaluatorNode.isConstant()) {
                 return;
 
             } else if (!operationEvaluatorNode.isUnary()) {
-
                 boolean leftIsConstant = operationEvaluatorNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationEvaluatorNode.getRightSide().isConstant();
 
@@ -76,37 +125,14 @@ public class Pruning {
                 rightIsConstant = operationEvaluatorNode.getRightSide().isConstant();
 
                 if (leftIsConstant && rightIsConstant && leftIsNumeric && rightIsNumeric) {
-                    String leftConstantString = operationEvaluatorNode.getLeftSide().constantToken.string;
-                    String rightConstantString = operationEvaluatorNode.getRightSide().constantToken.string;
-
-                    if (Functions.equals(KEY_OP_ADD, operationEvaluatorNode.type)) {
-                        operationEvaluatorNode.makeConstant( String.valueOf (
-                            Double.parseDouble(leftConstantString) + Double.parseDouble(rightConstantString)
-                            )
-                        );
-                    } else if (Functions.equals(KEY_OP_SUB, operationEvaluatorNode.type)) {
-                        operationEvaluatorNode.makeConstant(String.valueOf(
-                            Double.parseDouble(leftConstantString) - Double.parseDouble(rightConstantString)
-                            )
-                        );
-                    } else if (Functions.equals(KEY_OP_MUL, operationEvaluatorNode.type)) {
-                        operationEvaluatorNode.makeConstant( String.valueOf(
-                            Double.parseDouble(leftConstantString) * Double.parseDouble(rightConstantString)
-                            )
-                        );
-                    } else if (Functions.equals(KEY_OP_DIV, operationEvaluatorNode.type)) {
-                        operationEvaluatorNode.makeConstant( String.valueOf(
-                            Double.parseDouble(leftConstantString) / Double.parseDouble(rightConstantString)
-                            )
-                        );
+                    if (operationsParserMap.containsKey(operationEvaluatorNode.type)) {
+                        operationsParserMap.get(operationEvaluatorNode.type).accept(operationEvaluatorNode);
                     }
                 }
             }
         } else {
             for (int i = 0; i< evaluatorNode.members.size(); i++) {
-                EvaluatorNode member = evaluatorNode.members.get(i);
-
-                simplifyBinaryExpressionsHelper(member);
+                simplifyBinaryExpressionsHelper(evaluatorNode.members.get(i));
             }
         }
     }

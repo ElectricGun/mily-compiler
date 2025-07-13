@@ -27,42 +27,82 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     public List<Token> operationTokens = new ArrayList<>();
     public boolean isReturnOperation;
 
-//    private OperationEvaluatorNode leftSide = null;
-//    private OperationEvaluatorNode rightSide = null;
+    private OperationEvaluatorNode leftSide = null;
+    private OperationEvaluatorNode rightSide = null;
 
     public OperationEvaluatorNode(Token token, int depth) {
         super(token, depth);
 
-        members = new ArrayList<>(Arrays.asList(null, null));
+//        members = new ArrayList<>(Arrays.asList(null, null));
     }
 
     public OperationEvaluatorNode(Token token, int depth, boolean isReturnOperation) {
         super(token, depth);
 
         this.isReturnOperation = true;
-        members = new ArrayList<>(Arrays.asList(null, null));
+//        members = new ArrayList<>(Arrays.asList(null, null));
     }
 
     // TODO bad code, fix later
 
     public OperationEvaluatorNode getLeftSide() {
-        if (members.isEmpty())
-            return null;
-        return (OperationEvaluatorNode) members.get(0);
+//        if (members.isEmpty())
+//            return null;
+//        return (OperationEvaluatorNode) members.get(0);
+        return this.leftSide;
     }
 
     public OperationEvaluatorNode getRightSide() {
-        if (members.size() < 2)
-            return null;
-        return (OperationEvaluatorNode) members.get(1);
+//        if (members.size() < 2)
+//            return null;
+//        return (OperationEvaluatorNode) members.get(1);
+        return this.rightSide;
     }
 
     public void setLeftSide(OperationEvaluatorNode leftSide) {
-        members.set(0, leftSide);
+//        members.set(0, leftSide);
+        if (members.contains(this.leftSide)) {
+            members.set(members.indexOf(this.leftSide), leftSide);
+        } else {
+            members.addFirst(leftSide);
+        }
+        this.leftSide = leftSide;
     }
 
     public void setRightSide(OperationEvaluatorNode rightSide) {
-        members.set(1, rightSide);
+//        members.set(1, rightSide);
+        if (members.contains(this.rightSide)) {
+            members.set(members.indexOf(this.rightSide), rightSide);
+        } else {
+            members.addLast(rightSide);
+        }
+        this.rightSide = rightSide;
+    }
+
+    private String getSideConstantTokenString(OperationEvaluatorNode side) {
+        if (side != null && !side.isEmpty()) {
+            return side.constantToken.string;
+        } else {
+            return null;
+        }
+    }
+
+    public String getLeftConstantString() {
+        return getSideConstantTokenString(getLeftSide());
+    }
+
+    public String getRightConstantString() {
+        return getSideConstantTokenString(getRightSide());
+    }
+
+    public Double getLeftConstantNumeric() {
+        return getLeftConstantString() != null ?
+            Double.parseDouble(getLeftConstantString()) : null;
+    }
+
+    public Double getRightConstantNumeric() {
+        return getRightConstantString() != null ?
+                Double.parseDouble(getRightConstantString()) : null;
     }
 
     @Override
@@ -266,6 +306,10 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         return Functions.equals(KEY_OP_TYPE_CONSTANT, type);
     }
 
+    public boolean isGroup() {
+        return Functions.equals(KEY_OP_TYPE_GROUP, type);
+    }
+
     public void makeConstant(String newConstantValue) {
         this.constantToken = new Token(newConstantValue, this.token.line);
         this.type = KEY_OP_TYPE_CONSTANT;
@@ -274,21 +318,24 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         this.members.clear();
     }
 
+    public void makeConstant(Double newConstantValueNumeric) {
+        makeConstant(String.valueOf(newConstantValueNumeric));
+    }
+
     public boolean isUnary() {
-        return (getLeftSide() == null || getRightSide() == null) && !type.equals(KEY_OP_TYPE_CONSTANT) && !type.equals(KEY_OP_TYPE_GROUP);
+        return (getLeftSide() == null || getRightSide() == null) && !isConstant() && !isGroup();
     }
 
     @Override
     public String toString() {
-
         String out = "";
 
         if (isEmpty()) {
-            return "group";
+            return "empty";
         }
 
         if (isReturnOperation) {
-            out += "return ";
+            out = "return ";
         }
 
         // TODO fix this silly thing
