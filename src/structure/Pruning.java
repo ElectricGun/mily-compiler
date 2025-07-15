@@ -1,10 +1,8 @@
 package src.structure;
 
-import src.constants.*;
 import src.evaluators.*;
-
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
