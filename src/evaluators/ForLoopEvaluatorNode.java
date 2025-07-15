@@ -43,13 +43,11 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
             } else if (initial == null) {
                 if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
                     initial = new AssignmentEvaluatorNode(previousToken, depth + 1);
-                    initial.evaluate(tokenList, evaluator);
-                    members.add(initial);
+                    members.add(initial.evaluate(tokenList, evaluator));
 
                 } else if (Functions.equals(KEY_LET, token)) {
                     initial = new DeclarationEvaluatorNode(token, depth + 1);
-                    initial.evaluate(tokenList, evaluator);
-                    members.add(initial);
+                    members.add(initial.evaluate(tokenList, evaluator));
 
                 } else if (!isVariableName(token)) {
                     throw new Exception("Unexpected tokens \"%s\" in for loop at line %s".formatted(token, token.line));
@@ -63,8 +61,7 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                     operationTokens.add(currentToken);
                 }
                 condition = new OperationEvaluatorNode(this.token, depth + 1);
-                condition.evaluate(operationTokens, evaluator);
-                members.add(condition);
+                members.add(condition.evaluate(operationTokens, evaluator));
 
             } else if (updater == null) {
                 List<Token> operationTokens = new ArrayList<>();
@@ -86,8 +83,7 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                         if (Functions.equals(KEY_OP_ASSIGN, opToken)) {
                             operationTokens.add(new Token(KEY_SEMICOLON, token.line));
                             updater = new AssignmentEvaluatorNode(variableName, depth + 1);
-                            updater.evaluate(operationTokens, evaluator);
-                            members.add(updater);
+                            members.add(updater.evaluate(operationTokens, evaluator));
                             break;
 
                         } else if (!isWhiteSpace(opToken)) {
@@ -101,8 +97,7 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
                 scope = new ScopeEvaluatorNode(this.token, depth + 1, true);
-                scope.evaluate(tokenList, evaluator);
-                members.add(scope);
+                members.add(scope.evaluate(tokenList, evaluator));
                 return this;
 
             } else {

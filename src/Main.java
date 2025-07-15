@@ -8,7 +8,7 @@ import static src.structure.Pruning.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String code = """
 
            let numeric = ------------(((60 + (1 + 3 + 2 + 5 - 3) // 6 / 30 * (92 + 20) - 100 ** 2 / 3)));
@@ -43,7 +43,6 @@ public class Main {
            }
            """;
 
-
         int among = 1;
         System.out.println(among);
 
@@ -68,6 +67,7 @@ public class Main {
         EvaluatorNode prunedNode = pruneEmptyOperations(node);
 
         simplifyBinaryExpressions(prunedNode);
+        simplifyUnaries(prunedNode);
 
         Evaluator.printRecursive(prunedNode);
     }

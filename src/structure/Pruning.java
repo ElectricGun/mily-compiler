@@ -13,6 +13,7 @@ import static src.constants.Functions.*;
  */
 
 public class Pruning {
+
     public static EvaluatorNode pruneEmptyOperations(EvaluatorNode evaluatorNode) {
         pruneEmptyOperationsHelper(evaluatorNode, null);
 
@@ -29,15 +30,39 @@ public class Pruning {
             truncateEmptyOperationChildrenRecursive(operationEvaluatorNode);
 
             // truncate self if empty
-            if (operationEvaluatorNode.isEmpty()) {
-                parent.members.set(parent.members.indexOf(operationEvaluatorNode), operationEvaluatorNode.getLeftSide());
+            if (operationEvaluatorNode.isEmpty() && parent != null) {
+                parent.replaceMember(operationEvaluatorNode, operationEvaluatorNode.getLeftSide());
+//                parent.members.set(parent.members.indexOf(operationEvaluatorNode), operationEvaluatorNode.getLeftSide());
             }
         }
 
-        for (int i = 0; i< evaluatorNode.members.size(); i++) {
-            EvaluatorNode member = evaluatorNode.members.get(i);
+        for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+            EvaluatorNode member = evaluatorNode.getMember(i);
 
             pruneEmptyOperationsHelper(member, evaluatorNode);
+        }
+    }
+
+    public static EvaluatorNode simplifyUnaries(EvaluatorNode evaluatorNode) throws Exception {
+        simplifyUnariesHelper(evaluatorNode, null);
+
+        return evaluatorNode;
+    }
+
+    private static void simplifyUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
+        if (evaluatorNode == null)
+            return;
+
+
+        for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+            EvaluatorNode member = evaluatorNode.getMember(i);
+
+            if (member instanceof OperationEvaluatorNode opMember) {
+                if (opMember.isUnary()) {
+                    // todo: implement
+                }
+            }
+            simplifyUnariesHelper(member, evaluatorNode);
         }
     }
 
@@ -100,7 +125,7 @@ public class Pruning {
         if (evaluatorNode == null)
             return;
 
-        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode && !operationEvaluatorNode.isUnary()) {
+        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode && operationEvaluatorNode.isUnary()) {
             if (operationEvaluatorNode.isConstant()) {
                 return;
 
@@ -129,8 +154,8 @@ public class Pruning {
                 }
             }
         } else {
-            for (int i = 0; i< evaluatorNode.members.size(); i++) {
-                simplifyBinaryExpressionsHelper(evaluatorNode.members.get(i));
+            for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+                simplifyBinaryExpressionsHelper(evaluatorNode.getMember(i));
             }
         }
     }

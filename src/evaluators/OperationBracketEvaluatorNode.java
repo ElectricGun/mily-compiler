@@ -47,12 +47,12 @@ public class OperationBracketEvaluatorNode extends EvaluatorNode {
             if (bracketCounter < 0) {
                 OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token(this.token.string, this.token.line), depth + 1);
                 operationTokens.add(new Token(";", this.token.line));
-                operationEvaluatorNode.evaluate(operationTokens, evaluator);
+                OperationEvaluatorNode evaluated = (OperationEvaluatorNode) operationEvaluatorNode.evaluate(operationTokens, evaluator);
 
                 // substitute the operator removed with a BracketToken
                 // an integer is not added to orders because we are not removing one on this final loop
-                tokenList.add(operatorIndex, new BracketToken("BRACKET", this.token.line, operationEvaluatorNode));
-                members.add(operationEvaluatorNode);
+                tokenList.add(operatorIndex, new BracketToken("BRACKET", this.token.line, evaluated));
+                members.add(evaluated);
                 return this;
             }
 

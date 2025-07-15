@@ -56,8 +56,7 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode {
 
                     operationTokens.add(new Token(";", token.line));
                     OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(this.token, depth + 1);
-                    operationEvaluatorNode.evaluate(operationTokens, evaluator);
-                    members.add(operationEvaluatorNode);
+                    members.add(operationEvaluatorNode.evaluate(operationTokens, evaluator));
                     this.expression = operationEvaluatorNode;
                     break;
                 }

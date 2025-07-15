@@ -139,9 +139,9 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         operationTokens.removeLast();
 
                         FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
-                        functionCallEvaluatorNode.evaluate(tokenList, evaluator);
+                        FunctionCallEvaluatorNode evaluated = (FunctionCallEvaluatorNode) functionCallEvaluatorNode.evaluate(tokenList, evaluator);
 
-                        FunctionCallToken functionCallToken = new FunctionCallToken(functionCallEvaluatorNode.token.string, token.line, functionCallEvaluatorNode);
+                        FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.token.string, token.line, evaluated);
                         operationTokens.add(functionCallToken);
 
                     } else {
@@ -184,8 +184,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         // start bracket
                         if (currentOrder == -4) {
                             OperationBracketEvaluatorNode bracketOperation = new OperationBracketEvaluatorNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
-                            bracketOperation.evaluate(operationTokens, orders, evaluator);
-                            bracketOperations.add(bracketOperation);
+                            bracketOperations.add((OperationBracketEvaluatorNode) bracketOperation.evaluate(operationTokens, orders, evaluator));
                         }
 
                         // because parentheses are constants
@@ -234,13 +233,13 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         right.add(new Token(";", operationTokens.getLast().line));
 
                         if (left.size() > 1) {
-                            setLeftSide(new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1));
-                            getLeftSide().evaluate(left, evaluator);
+                            OperationEvaluatorNode op = new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1);
+                            setLeftSide((OperationEvaluatorNode) op.evaluate(left, evaluator));
                         }
 
                         if (right.size() > 1) {
-                            setRightSide(new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1));
-                            getRightSide().evaluate(right, evaluator);
+                            OperationEvaluatorNode op = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
+                            setRightSide((OperationEvaluatorNode) op.evaluate(right, evaluator));
 
                         } else {
                             throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
@@ -264,18 +263,17 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     // if it has -1 or -4 on the right and a -2 operator on the left
                     // for unary operators
                     else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
+//                        UnaryOperationEvaluatorNode unary = new UnaryOperationEvaluatorNode(this.token, depth);
                         type = operationTokens.removeFirst().string;
                         Token newConstantToken = operationTokens.removeFirst();
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
-                            return this;
-
                         } else {
                             constantToken = newConstantToken;
-                            return this;
                         }
+                        return this;
                     }
                     // if all the values are -1 or -4 or -2 then funny error
                     else {
@@ -323,11 +321,12 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     }
 
     public boolean isUnary() {
-        return (getLeftSide() == null || getRightSide() == null) && !isConstant() && !isGroup();
+        return (getLeftSide() == null || getRightSide() == null) && members.size() == 1;
     }
 
     @Override
     public String toString() {
+        //TODO fix this stupid thing
         String out = "";
 
         if (isEmpty()) {
@@ -338,10 +337,19 @@ public class OperationEvaluatorNode extends EvaluatorNode {
             out = "return ";
         }
 
-        // TODO fix this silly thing
-        if (getLeftSide() == null || getRightSide() == null)
-            return out + "%s%s".formatted(type.equals(KEY_OP_TYPE_GROUP) ? "group" : !type.equals(KEY_OP_TYPE_CONSTANT) ? "unary operator " + type + " " : "", constantToken != null ? "const " + constantToken : "");
+        if (isUnary()) {
+            out += "unary ";
+        }
 
-        return out + "%s %s".formatted("operator", type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
+        if (!members.isEmpty()) {
+            out += "operation " + (type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type + " ");
+        }
+
+        if (getLeftSide() == null || getRightSide() == null) {
+            out += type.equals(KEY_OP_TYPE_GROUP) ? "group " : "";
+            out += constantToken != null ? "const " + constantToken : "";
+        }
+
+        return out;
     }
 }

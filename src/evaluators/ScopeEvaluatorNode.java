@@ -71,14 +71,12 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             } else if (isVariableName(previousToken)) {
                 if (Functions.equals(KEY_BRACKET_OPEN, token)) {
                     FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
-                    functionCallEvaluatorNode.evaluate(tokenList, evaluator);
-                    members.add(functionCallEvaluatorNode);
+                    members.add(functionCallEvaluatorNode.evaluate(tokenList, evaluator));
                     expectingSemicolon = true;
 
                 } else if (Functions.equals(KEY_OP_ASSIGN, token)) {
                     AssignmentEvaluatorNode assignmentEvaluatorNode = new AssignmentEvaluatorNode(previousToken, depth + 1);
-                    assignmentEvaluatorNode.evaluate(tokenList, evaluator);
-                    members.add(assignmentEvaluatorNode);
+                    members.add(assignmentEvaluatorNode.evaluate(tokenList, evaluator));
 
                 } else {
                     throw new Exception("Cannot resolve symbol \"%s\" at line %s".formatted(previousToken, previousToken.line));
@@ -104,27 +102,23 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
                 System.out.printf(indent + "Creating if statement loop %n");
                 IfStatementEvaluatorNode ifStatementEvaluatorNode = new IfStatementEvaluatorNode(token, depth+1);
-                ifStatementEvaluatorNode.evaluate(tokenList, evaluator);
-                members.add(ifStatementEvaluatorNode);
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluator));
 
             } else if (Functions.equals(KEY_LOOPING_WHILE, token)) {
                 System.out.printf(indent + "Creating while loop %n");
                 WhileLoopEvaluatorNode whileLoopEvaluatorNode = new WhileLoopEvaluatorNode(token, depth+1);
-                whileLoopEvaluatorNode.evaluate(tokenList, evaluator);
-                members.add(whileLoopEvaluatorNode);
+                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluator));
 
             } else if (Functions.equals(KEY_LOOPING_FOR, token)) {
                 System.out.printf(indent + "Creating for loop %n");
                 ForLoopEvaluatorNode forLoopEvaluatorNode = new ForLoopEvaluatorNode(token, depth+1);
-                forLoopEvaluatorNode.evaluate(tokenList, evaluator);
-                members.add(forLoopEvaluatorNode);
+                members.add(forLoopEvaluatorNode.evaluate(tokenList, evaluator));
 
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
                 if (functionDeclareEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
                     OperationEvaluatorNode returnOp = new OperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
-                    members.add(returnOp);
-                    returnOp.evaluate(tokenList, evaluator);
+                    members.add(returnOp.evaluate(tokenList, evaluator));
 
                 } else if (Functions.equals(KEY_LET, token)) {
                     // VARIABLE DECLARATION

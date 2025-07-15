@@ -39,14 +39,12 @@ public class ElseEvaluatorNode extends EvaluatorNode {
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
                 ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
-                scopeEvaluatorNode.evaluate(tokenList, evaluator);
-                members.add(scopeEvaluatorNode);
+                members.add(scopeEvaluatorNode.evaluate(tokenList, evaluator));
                 return this;
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
                 IfStatementEvaluatorNode ifStatementEvaluatorNode = new IfStatementEvaluatorNode(this.token, depth + 1);
-                ifStatementEvaluatorNode.evaluate(tokenList, evaluator);
-                members.add(ifStatementEvaluatorNode);
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluator));
                 return this;
 
             } else {

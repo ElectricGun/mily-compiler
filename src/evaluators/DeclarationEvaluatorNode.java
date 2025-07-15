@@ -47,8 +47,7 @@ public class DeclarationEvaluatorNode extends VariableEvaluatorNode {
                 // check for equal sign
                 if (Functions.equals(KEY_OP_ASSIGN, token) && isDeclared()) {
                     OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token("op_"+ this.token, this.token.line), depth + 1);
-                    operationEvaluatorNode.evaluate(tokenList, evaluator);
-                    members.add(operationEvaluatorNode);
+                    members.add(operationEvaluatorNode.evaluate(tokenList, evaluator));
                     return this;
 
                 } else if (!isDeclared()) {

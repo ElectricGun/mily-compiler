@@ -51,8 +51,7 @@ public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
             } else if (scope != null) {
                 if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
                     ElseEvaluatorNode elseEvaluatorNode = new ElseEvaluatorNode(this.token, depth + 1);
-                    elseEvaluatorNode.evaluate(tokenList, evaluator);
-                    members.add(elseEvaluatorNode);
+                    members.add(elseEvaluatorNode.evaluate(tokenList, evaluator));
                     elseNode = elseEvaluatorNode;
 
                 } else {
