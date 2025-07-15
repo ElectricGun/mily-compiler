@@ -14,10 +14,10 @@ import static src.constants.Functions.*;
 
 public class Pruning {
 
-    public static EvaluatorNode pruneEmptyOperations(EvaluatorNode evaluatorNode) {
-        pruneEmptyOperationsHelper(evaluatorNode, null);
+    public static Evaluator pruneEmptyOperations(Evaluator evaluator) {
+        pruneEmptyOperationsHelper(evaluator.mainBlock, null);
 
-        return evaluatorNode;
+        return evaluator;
     }
 
     private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
@@ -43,10 +43,10 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorNode simplifyUnaries(EvaluatorNode evaluatorNode) throws Exception {
-        simplifyUnariesHelper(evaluatorNode, null);
+    public static Evaluator simplifyUnaries(Evaluator evaluator) throws Exception {
+        simplifyUnariesHelper(evaluator.mainBlock, null);
 
-        return evaluatorNode;
+        return evaluator;
     }
 
     private static void simplifyUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
@@ -79,8 +79,8 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorNode simplifyBinaryExpressions(EvaluatorNode evaluatorNode) {
-        simplifyBinaryExpressionsHelper(evaluatorNode);
+    public static Evaluator simplifyBinaryExpressions(Evaluator evaluatorNode) {
+        simplifyBinaryExpressionsHelper(evaluatorNode.mainBlock);
 
         return evaluatorNode;
     }

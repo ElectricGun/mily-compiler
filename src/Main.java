@@ -43,32 +43,25 @@ public class Main {
            }
            """;
 
-        int among = 1;
-        System.out.println(among);
-
         System.out.printf("%n---------------\tInput Code\t%n%n");
         System.out.println(code);
-        System.out.printf("%n---------------\tTokenization\t%n%n");
 
+        System.out.printf("%n---------------\tTokenization\t%n%n");
         List<Token> tokenList = tokenize(code);
         System.out.println(tokenList);
 
         System.out.printf("%n---------------\tLogs\t%n%n");
-
         Evaluator evaluator = new Evaluator();
-        EvaluatorNode node = evaluator.begin(tokenList);
+        evaluator.begin(tokenList);
 
         System.out.printf("%n---------------\tSyntax Tree\t%n%n");
-
-        Evaluator.printRecursive(node);
+        evaluator.printRecursive();
 
         System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");
+        Evaluator pruned = pruneEmptyOperations(evaluator);
+        simplifyBinaryExpressions(pruned);
+        simplifyUnaries(pruned);
 
-        EvaluatorNode prunedNode = pruneEmptyOperations(node);
-
-        simplifyBinaryExpressions(prunedNode);
-        simplifyUnaries(prunedNode);
-
-        Evaluator.printRecursive(prunedNode);
+        pruned.printRecursive();
     }
 }

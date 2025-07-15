@@ -17,6 +17,10 @@ public class Evaluator {
         return mainBlock;
     }
 
+    public void printRecursive() {
+        printRecursive(mainBlock);
+    }
+
     public static void printRecursive(EvaluatorNode node) {
         printRecursiveHelper(node, 0);
     }
