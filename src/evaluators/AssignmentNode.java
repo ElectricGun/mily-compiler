@@ -8,21 +8,21 @@ import java.util.*;
  *  @author ElectricGun
  */
 
-public class AssignmentEvaluatorNode extends VariableEvaluatorNode {
+public class AssignmentNode extends VariableNode {
 
-    OperationEvaluatorNode expression = null;
+    OperationNode expression = null;
 
-    public AssignmentEvaluatorNode(Token token, int depth) {
+    public AssignmentNode(Token token, int depth) {
         super(token, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
         System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
 
         if (!tokenList.isEmpty()) {
-            expression = (OperationEvaluatorNode) new OperationEvaluatorNode(this.token, depth + 1).evaluate(tokenList, evaluator);
+            expression = (OperationNode) new OperationNode(this.token, depth + 1).evaluate(tokenList, evaluatorTree);
             members.add(expression);
             variableName = this.token.string;
             return this;

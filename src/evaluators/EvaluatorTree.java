@@ -8,9 +8,9 @@ import src.tokens.*;
  * @author ElectricGun
  */
 
-public class Evaluator {
+public class EvaluatorTree {
 
-    public ScopeEvaluatorNode mainBlock = new ScopeEvaluatorNode(new Token("__MAIN__", 1), 0);
+    public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", 1), 0);
 
     public EvaluatorNode begin(List<Token> tokenList) {
         mainBlock.evaluate(tokenList, this);

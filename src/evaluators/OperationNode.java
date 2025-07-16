@@ -17,26 +17,26 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class OperationEvaluatorNode extends EvaluatorNode {
+public class OperationNode extends EvaluatorNode {
 
     public String type = KEY_OP_TYPE_CONSTANT;
     public Token constantToken = null;
-    public List<OperationBracketEvaluatorNode> bracketOperations = new ArrayList<>();
+    public List<OperationBracketNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
     public boolean isReturnOperation;
 
-    private OperationEvaluatorNode leftSide = null;
-    private OperationEvaluatorNode rightSide = null;
+    private OperationNode leftSide = null;
+    private OperationNode rightSide = null;
 
-    public OperationEvaluatorNode(Token token, int depth) {
+    public OperationNode(Token token, int depth) {
         super(token, depth);
 
 //        members = new ArrayList<>(Arrays.asList(null, null));
     }
 
-    public OperationEvaluatorNode(Token token, int depth, boolean isReturnOperation) {
+    public OperationNode(Token token, int depth, boolean isReturnOperation) {
         super(token, depth);
 
         this.isReturnOperation = true;
@@ -45,21 +45,21 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
     // TODO bad code, fix later
 
-    public OperationEvaluatorNode getLeftSide() {
+    public OperationNode getLeftSide() {
 //        if (members.isEmpty())
 //            return null;
 //        return (OperationEvaluatorNode) members.get(0);
         return this.leftSide;
     }
 
-    public OperationEvaluatorNode getRightSide() {
+    public OperationNode getRightSide() {
 //        if (members.size() < 2)
 //            return null;
 //        return (OperationEvaluatorNode) members.get(1);
         return this.rightSide;
     }
 
-    public void setLeftSide(OperationEvaluatorNode leftSide) {
+    public void setLeftSide(OperationNode leftSide) {
 //        members.set(0, leftSide);
         if (members.contains(this.leftSide)) {
             members.set(members.indexOf(this.leftSide), leftSide);
@@ -69,7 +69,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         this.leftSide = leftSide;
     }
 
-    public void setRightSide(OperationEvaluatorNode rightSide) {
+    public void setRightSide(OperationNode rightSide) {
 //        members.set(1, rightSide);
         if (members.contains(this.rightSide)) {
             members.set(members.indexOf(this.rightSide), rightSide);
@@ -79,7 +79,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         this.rightSide = rightSide;
     }
 
-    private String getSideConstantTokenString(OperationEvaluatorNode side) {
+    private String getSideConstantTokenString(OperationNode side) {
         if (side != null && !side.isBlank()) {
             return side.constantToken.string;
         } else {
@@ -106,7 +106,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         System.out.printf(indent + "Parsing Operation Declaration %s:%n", token);
@@ -138,8 +138,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         // remove last token because it will be replaced by a single FunctionCallToken
                         operationTokens.removeLast();
 
-                        FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
-                        FunctionCallEvaluatorNode evaluated = (FunctionCallEvaluatorNode) functionCallEvaluatorNode.evaluate(tokenList, evaluator);
+                        FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
+                        FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree);
 
                         FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.token.string, token.line, evaluated);
                         operationTokens.add(functionCallToken);
@@ -183,8 +183,8 @@ public class OperationEvaluatorNode extends EvaluatorNode {
 
                         // start bracket
                         if (currentOrder == -4) {
-                            OperationBracketEvaluatorNode bracketOperation = new OperationBracketEvaluatorNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
-                            bracketOperations.add((OperationBracketEvaluatorNode) bracketOperation.evaluate(operationTokens, orders, evaluator));
+                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
+                            bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, orders, evaluatorTree));
                         }
 
                         // because parentheses are constants
@@ -233,13 +233,13 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                         right.add(new Token(";", operationTokens.getLast().line));
 
                         if (left.size() > 1) {
-                            OperationEvaluatorNode op = new OperationEvaluatorNode(new Token("l_" + this.token, this.token.line), depth + 1);
-                            setLeftSide((OperationEvaluatorNode) op.evaluate(left, evaluator));
+                            OperationNode op = new OperationNode(new Token("l_" + this.token, this.token.line), depth + 1);
+                            setLeftSide((OperationNode) op.evaluate(left, evaluatorTree));
                         }
 
                         if (right.size() > 1) {
-                            OperationEvaluatorNode op = new OperationEvaluatorNode(new Token("r_" + this.token, this.token.line), depth + 1);
-                            setRightSide((OperationEvaluatorNode) op.evaluate(right, evaluator));
+                            OperationNode op = new OperationNode(new Token("r_" + this.token, this.token.line), depth + 1);
+                            setRightSide((OperationNode) op.evaluate(right, evaluatorTree));
 
                         } else {
                             throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
@@ -270,7 +270,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
                         } else {
-                            OperationEvaluatorNode op = new OperationEvaluatorNode(this.token, depth + 1);
+                            OperationNode op = new OperationNode(this.token, depth + 1);
                             op.constantToken = newConstantToken;
                             setLeftSide(op);
                         }

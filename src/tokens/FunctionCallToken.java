@@ -9,20 +9,20 @@ import src.evaluators.*;
 
 public class FunctionCallToken extends Token {
 
-    private FunctionCallEvaluatorNode functionCallEvaluatorNode;
+    private FunctionCallNode functionCallNode;
 
-    public FunctionCallToken(String string, int line, FunctionCallEvaluatorNode functionCallEvaluatorNode) {
+    public FunctionCallToken(String string, int line, FunctionCallNode functionCallNode) {
         super(string, line);
 
-        this.functionCallEvaluatorNode = functionCallEvaluatorNode;
+        this.functionCallNode = functionCallNode;
     }
 
-    public FunctionCallEvaluatorNode getNode() {
-        return functionCallEvaluatorNode;
+    public FunctionCallNode getNode() {
+        return functionCallNode;
     }
 
     @Override
     public String toString() {
-        return functionCallEvaluatorNode.toString();
+        return functionCallNode.toString();
     }
 }

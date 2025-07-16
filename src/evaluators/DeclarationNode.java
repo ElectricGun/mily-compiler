@@ -11,14 +11,14 @@ import static src.constants.Keywords.*;
  *  @author ElectricGun
  */
 
-public class DeclarationEvaluatorNode extends VariableEvaluatorNode {
+public class DeclarationNode extends VariableNode {
 
-    public DeclarationEvaluatorNode(Token name, int depth) {
+    public DeclarationNode(Token name, int depth) {
         super(name, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
         System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
 
@@ -34,7 +34,7 @@ public class DeclarationEvaluatorNode extends VariableEvaluatorNode {
                 } else if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     // FUNCTION DECLARATION
                     System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
-                    EvaluatorNode node = new FunctionDeclareEvaluatorNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluator);
+                    EvaluatorNode node = new FunctionDeclareNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree);
                     members.add(node);
                     return this;
 
@@ -46,8 +46,8 @@ public class DeclarationEvaluatorNode extends VariableEvaluatorNode {
             else if (isOperator(token)) {
                 // check for equal sign
                 if (Functions.equals(KEY_OP_ASSIGN, token) && isDeclared()) {
-                    OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token("op_"+ this.token, this.token.line), depth + 1);
-                    members.add(operationEvaluatorNode.evaluate(tokenList, evaluator));
+                    OperationNode operationNode = new OperationNode(new Token("op_"+ this.token, this.token.line), depth + 1);
+                    members.add(operationNode.evaluate(tokenList, evaluatorTree));
                     return this;
 
                 } else if (!isDeclared()) {

@@ -11,14 +11,14 @@ import static src.constants.Keywords.*;
  *  @author ElectricGun
  */
 
-public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
+public class WhileLoopNode extends ConditionalNode {
 
-    public WhileLoopEvaluatorNode(Token token, int depth) {
+    public WhileLoopNode(Token token, int depth) {
         super(token, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
         String indent = " ".repeat(depth);
 
@@ -33,11 +33,11 @@ public class WhileLoopEvaluatorNode extends ConditionalEvaluatorNode {
                 continue;
 
             } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                parseOperation(tokenList, evaluator, depth);
+                parseOperation(tokenList, evaluatorTree, depth);
 
             } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                    createBlock(tokenList, evaluator);
+                    createBlock(tokenList, evaluatorTree);
                     return this;
 
                 } else {

@@ -14,23 +14,23 @@ import static src.constants.Functions.*;
 
 public class Pruning {
 
-    public static Evaluator pruneEmptyOperations(Evaluator evaluator) {
-        pruneEmptyOperationsHelper(evaluator.mainBlock, null);
+    public static EvaluatorTree pruneEmptyOperations(EvaluatorTree evaluatorTree) {
+        pruneEmptyOperationsHelper(evaluatorTree.mainBlock, null);
 
-        return evaluator;
+        return evaluatorTree;
     }
 
     private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
         if (evaluatorNode == null)
             return;
 
-        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
+        if (evaluatorNode instanceof OperationNode operationNode) {
             // truncate children of self if they are empty
-            truncateEmptyOperationChildrenRecursive(operationEvaluatorNode);
+            truncateEmptyOperationChildrenRecursive(operationNode);
 
             // truncate self if empty
-            if (operationEvaluatorNode.isBlank() && parent != null) {
-                parent.replaceMember(operationEvaluatorNode, operationEvaluatorNode.getLeftSide());
+            if (operationNode.isBlank() && parent != null) {
+                parent.replaceMember(operationNode, operationNode.getLeftSide());
             }
         }
 
@@ -39,32 +39,32 @@ public class Pruning {
         }
     }
 
-    private static void truncateEmptyOperationChildrenRecursive(OperationEvaluatorNode operationEvaluatorNode) {
-        if (operationEvaluatorNode.getLeftSide() != null && operationEvaluatorNode.getLeftSide().isBlank()) {
-            while (operationEvaluatorNode.getLeftSide().isBlank()) {
-                operationEvaluatorNode.setLeftSide(operationEvaluatorNode.getLeftSide().getLeftSide());
+    private static void truncateEmptyOperationChildrenRecursive(OperationNode operationNode) {
+        if (operationNode.getLeftSide() != null && operationNode.getLeftSide().isBlank()) {
+            while (operationNode.getLeftSide().isBlank()) {
+                operationNode.setLeftSide(operationNode.getLeftSide().getLeftSide());
             }
         }
 
-        if (operationEvaluatorNode.getRightSide() != null && operationEvaluatorNode.getRightSide().isBlank()) {
-            while (operationEvaluatorNode.getRightSide().isBlank())
-                operationEvaluatorNode.setRightSide(operationEvaluatorNode.getRightSide().getLeftSide());
+        if (operationNode.getRightSide() != null && operationNode.getRightSide().isBlank()) {
+            while (operationNode.getRightSide().isBlank())
+                operationNode.setRightSide(operationNode.getRightSide().getLeftSide());
         }
     }
 
-    public static Evaluator simplifyNestedUnaries(Evaluator evaluator) throws Exception {
-        simplifyUnariesHelper(evaluator.mainBlock, null);
+    public static EvaluatorTree simplifyNestedUnaries(EvaluatorTree evaluatorTree) throws Exception {
+        simplifyUnariesHelper(evaluatorTree.mainBlock, null);
 
-        return evaluator;
+        return evaluatorTree;
     }
 
     private static void simplifyUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
         if (evaluatorNode == null)
             return;
 
-        if (parent != null && evaluatorNode instanceof OperationEvaluatorNode opCurrent) {
+        if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
             while (opCurrent.isUnary()) {
-                if (opCurrent.getMember(0) instanceof OperationEvaluatorNode opChild && opChild.isUnary()) {
+                if (opCurrent.getMember(0) instanceof OperationNode opChild && opChild.isUnary()) {
                     parent.replaceMember(opCurrent, opChild);
 
                     if (KEY_OP_SUB.equals(opCurrent.type)) {
@@ -89,13 +89,13 @@ public class Pruning {
         }
     }
 
-    public static Evaluator simplifyBinaryExpressions(Evaluator evaluatorNode) {
-        simplifyBinaryExpressionsHelper(evaluatorNode.mainBlock);
+    public static EvaluatorTree simplifyBinaryExpressions(EvaluatorTree evaluatorTreeNode) {
+        simplifyBinaryExpressionsHelper(evaluatorTreeNode.mainBlock);
 
-        return evaluatorNode;
+        return evaluatorTreeNode;
     }
 
-    public static final Map<String, Consumer<OperationEvaluatorNode>> operationsParserMap = new HashMap<>();
+    public static final Map<String, Consumer<OperationNode>> operationsParserMap = new HashMap<>();
     static {
         operationsParserMap.put(KEY_OP_ADD, o -> o.makeConstant(
             o.getLeftConstantNumeric() +
@@ -135,31 +135,31 @@ public class Pruning {
         if (evaluatorNode == null)
             return;
 
-        if (evaluatorNode instanceof OperationEvaluatorNode operationEvaluatorNode) {
-            if (operationEvaluatorNode.isConstant()) {
+        if (evaluatorNode instanceof OperationNode operationNode) {
+            if (operationNode.isConstant()) {
                 return;
 
-            } else if (!operationEvaluatorNode.isUnary()) {
-                boolean leftIsConstant = operationEvaluatorNode.getLeftSide().isConstant();
-                boolean rightIsConstant = operationEvaluatorNode.getRightSide().isConstant();
+            } else if (!operationNode.isUnary()) {
+                boolean leftIsConstant = operationNode.getLeftSide().isConstant();
+                boolean rightIsConstant = operationNode.getRightSide().isConstant();
 
                 if (!leftIsConstant) {
-                    simplifyBinaryExpressionsHelper(operationEvaluatorNode.getLeftSide());
+                    simplifyBinaryExpressionsHelper(operationNode.getLeftSide());
                 }
 
                 if (!rightIsConstant) {
-                    simplifyBinaryExpressionsHelper(operationEvaluatorNode.getRightSide());
+                    simplifyBinaryExpressionsHelper(operationNode.getRightSide());
                 }
 
-                boolean leftIsNumeric = isNumeric(operationEvaluatorNode.getLeftSide().constantToken);
-                boolean rightIsNumeric = isNumeric(operationEvaluatorNode.getRightSide().constantToken);
+                boolean leftIsNumeric = isNumeric(operationNode.getLeftSide().constantToken);
+                boolean rightIsNumeric = isNumeric(operationNode.getRightSide().constantToken);
 
-                leftIsConstant = operationEvaluatorNode.getLeftSide().isConstant();
-                rightIsConstant = operationEvaluatorNode.getRightSide().isConstant();
+                leftIsConstant = operationNode.getLeftSide().isConstant();
+                rightIsConstant = operationNode.getRightSide().isConstant();
 
                 if (leftIsConstant && rightIsConstant && leftIsNumeric && rightIsNumeric) {
-                    if (operationsParserMap.containsKey(operationEvaluatorNode.type)) {
-                        operationsParserMap.get(operationEvaluatorNode.type).accept(operationEvaluatorNode);
+                    if (operationsParserMap.containsKey(operationNode.type)) {
+                        operationsParserMap.get(operationNode.type).accept(operationNode);
                     }
                 }
             } else {

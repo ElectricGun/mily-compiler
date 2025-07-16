@@ -51,14 +51,14 @@ public class Main {
         System.out.println(tokenList);
 
         System.out.printf("%n---------------\tLogs\t%n%n");
-        Evaluator evaluator = new Evaluator();
-        evaluator.begin(tokenList);
+        EvaluatorTree evaluatorTree = new EvaluatorTree();
+        evaluatorTree.begin(tokenList);
 
         System.out.printf("%n---------------\tSyntax Tree\t%n%n");
-        evaluator.printRecursive();
+        evaluatorTree.printRecursive();
 
         System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");
-        Evaluator pruned = pruneEmptyOperations(evaluator);
+        EvaluatorTree pruned = pruneEmptyOperations(evaluatorTree);
         simplifyNestedUnaries(pruned);
         simplifyBinaryExpressions(pruned);
 

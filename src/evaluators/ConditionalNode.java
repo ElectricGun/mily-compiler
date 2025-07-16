@@ -10,20 +10,20 @@ import static src.constants.Keywords.*;
  *  @author ElectricGun
  */
 
-public abstract class ConditionalEvaluatorNode extends EvaluatorNode {
+public abstract class ConditionalNode extends EvaluatorNode {
 
-    ScopeEvaluatorNode scope = null;
-    OperationEvaluatorNode expression = null;
+    ScopeNode scope = null;
+    OperationNode expression = null;
 
-    public ConditionalEvaluatorNode(Token token, int depth) {
+    public ConditionalNode(Token token, int depth) {
         super(token, depth);
     }
 
-    public OperationEvaluatorNode getExpression() {
+    public OperationNode getExpression() {
         return expression;
     }
 
-    public void parseOperation(List<Token> tokenList, Evaluator evaluator, int depth) throws Exception {
+    public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth) throws Exception {
         String indent = " ".repeat(depth);
         List<Token> operationTokens = new ArrayList<>();
         int bracketCount = 1;
@@ -55,9 +55,9 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode {
                     }
 
                     operationTokens.add(new Token(";", token.line));
-                    OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(this.token, depth + 1);
-                    members.add(operationEvaluatorNode.evaluate(operationTokens, evaluator));
-                    this.expression = operationEvaluatorNode;
+                    OperationNode operationNode = new OperationNode(this.token, depth + 1);
+                    members.add(operationNode.evaluate(operationTokens, evaluatorTree));
+                    this.expression = operationNode;
                     break;
                 }
             } else {
@@ -66,10 +66,10 @@ public abstract class ConditionalEvaluatorNode extends EvaluatorNode {
         }
     }
 
-    public void createBlock(List<Token> tokenList, Evaluator evaluator) {
-        ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
-        scopeEvaluatorNode.evaluate(tokenList, evaluator);
-        members.add(scopeEvaluatorNode);
-        scope = scopeEvaluatorNode;
+    public void createBlock(List<Token> tokenList, EvaluatorTree evaluatorTree) {
+        ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
+        scopeNode.evaluate(tokenList, evaluatorTree);
+        members.add(scopeNode);
+        scope = scopeNode;
     }
 }

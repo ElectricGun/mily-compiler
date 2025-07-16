@@ -11,44 +11,44 @@ import static src.constants.Keywords.*;
  * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function) <br>
  * Conditionals / Routes:
  *  <ul>
- *      <li> Token "let"                  -> {@link DeclarationEvaluatorNode}</li>
- *      <li> Token "return"               -> {@link OperationEvaluatorNode}</li>
- *      <li> Any token + "("              -> {@link FunctionCallEvaluatorNode}</li>
- *      <li> Token "if"                   -> {@link IfStatementEvaluatorNode}</li>
- *      <li> Token "while"                -> {@link WhileLoopEvaluatorNode}</li>
- *      <li> Token "for"                  -> {@link ForLoopEvaluatorNode}</li>
+ *      <li> Token "let"                  -> {@link DeclarationNode}</li>
+ *      <li> Token "return"               -> {@link OperationNode}</li>
+ *      <li> Any token + "("              -> {@link FunctionCallNode}</li>
+ *      <li> Token "if"                   -> {@link IfStatementNode}</li>
+ *      <li> Token "while"                -> {@link WhileLoopNode}</li>
+ *      <li> Token "for"                  -> {@link ForLoopNode}</li>
  *      <li> Token "}" when needs closing -> return this</li>
  * </ul>
  * @author ElectricGun
  */
 
-public class ScopeEvaluatorNode extends EvaluatorNode {
+public class ScopeNode extends EvaluatorNode {
 
     // if true, then the block is finalized after finding a '}'. Usually for functions
     public boolean needsClosing = false;
     public boolean expectingSemicolon = false;
     // if the block is a function block, this is the parent function
-    public FunctionDeclareEvaluatorNode functionDeclareEvaluatorNode = null;
+    public FunctionDeclareNode functionDeclareNode = null;
 
     private Token previousToken = null;
 
-    public ScopeEvaluatorNode(Token name, int depth) {
+    public ScopeNode(Token name, int depth) {
         super(name, depth);
     }
 
-    public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing) {
+    public ScopeNode(Token name, int depth, boolean needsClosing) {
         super(name, depth);
         this.needsClosing = needsClosing;
     }
 
-    public ScopeEvaluatorNode(Token name, int depth, boolean needsClosing, FunctionDeclareEvaluatorNode functionDeclareEvaluatorNode) {
+    public ScopeNode(Token name, int depth, boolean needsClosing, FunctionDeclareNode functionDeclareNode) {
         super(name, depth);
         this.needsClosing = needsClosing;
-        this.functionDeclareEvaluatorNode = functionDeclareEvaluatorNode;
+        this.functionDeclareNode = functionDeclareNode;
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         System.out.printf(indent + "Parsing Block %s:%n", token);
@@ -70,13 +70,13 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
             } else if (isVariableName(previousToken)) {
                 if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                    FunctionCallEvaluatorNode functionCallEvaluatorNode = new FunctionCallEvaluatorNode(previousToken, depth + 1);
-                    members.add(functionCallEvaluatorNode.evaluate(tokenList, evaluator));
+                    FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
+                    members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
                     expectingSemicolon = true;
 
                 } else if (Functions.equals(KEY_OP_ASSIGN, token)) {
-                    AssignmentEvaluatorNode assignmentEvaluatorNode = new AssignmentEvaluatorNode(previousToken, depth + 1);
-                    members.add(assignmentEvaluatorNode.evaluate(tokenList, evaluator));
+                    AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
+                    members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
                 } else {
                     throw new Exception("Cannot resolve symbol \"%s\" at line %s".formatted(previousToken, previousToken.line));
@@ -101,28 +101,28 @@ public class ScopeEvaluatorNode extends EvaluatorNode {
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
                 System.out.printf(indent + "Creating if statement loop %n");
-                IfStatementEvaluatorNode ifStatementEvaluatorNode = new IfStatementEvaluatorNode(token, depth+1);
-                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluator));
+                IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(token, depth+1);
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree));
 
             } else if (Functions.equals(KEY_LOOPING_WHILE, token)) {
                 System.out.printf(indent + "Creating while loop %n");
-                WhileLoopEvaluatorNode whileLoopEvaluatorNode = new WhileLoopEvaluatorNode(token, depth+1);
-                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluator));
+                WhileLoopNode whileLoopEvaluatorNode = new WhileLoopNode(token, depth+1);
+                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluatorTree));
 
             } else if (Functions.equals(KEY_LOOPING_FOR, token)) {
                 System.out.printf(indent + "Creating for loop %n");
-                ForLoopEvaluatorNode forLoopEvaluatorNode = new ForLoopEvaluatorNode(token, depth+1);
-                members.add(forLoopEvaluatorNode.evaluate(tokenList, evaluator));
+                ForLoopNode forLoopNode = new ForLoopNode(token, depth+1);
+                members.add(forLoopNode.evaluate(tokenList, evaluatorTree));
 
             } else {
                 // RETURN STATEMENT FOR FUNCTIONS
-                if (functionDeclareEvaluatorNode != null && Functions.equals(KEY_RETURN, token)) {
-                    OperationEvaluatorNode returnOp = new OperationEvaluatorNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
-                    members.add(returnOp.evaluate(tokenList, evaluator));
+                if (functionDeclareNode != null && Functions.equals(KEY_RETURN, token)) {
+                    OperationNode returnOp = new OperationNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
+                    members.add(returnOp.evaluate(tokenList, evaluatorTree));
 
                 } else if (Functions.equals(KEY_LET, token)) {
                     // VARIABLE DECLARATION
-                    EvaluatorNode node = new DeclarationEvaluatorNode(token, depth + 1).evaluate(tokenList, evaluator);
+                    EvaluatorNode node = new DeclarationNode(token, depth + 1).evaluate(tokenList, evaluatorTree);
                     members.add(node);
                 }
             }

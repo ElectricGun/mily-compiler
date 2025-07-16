@@ -11,21 +11,21 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
+public class FunctionDeclareNode extends EvaluatorNode {
 
-    public FunctionDeclareEvaluatorNode(Token name, int depth) {
+    public FunctionDeclareNode(Token name, int depth) {
         super(name, depth);
     }
 
     List<String> argumentNames = new ArrayList<>();
-    ScopeEvaluatorNode scope;
+    ScopeNode scope;
 
     private boolean isInitialized = false;
     private boolean functionDeclared = false;
     private boolean argumentWanted = false;
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         System.out.printf(indent + "Parsing Function %s:%n", token);
@@ -50,8 +50,8 @@ public class FunctionDeclareEvaluatorNode extends EvaluatorNode {
 
                 } else if (functionDeclared && Functions.equals(KEY_CURLY_OPEN, token)) {
                     System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
-                    scope = new ScopeEvaluatorNode(this.token, depth + 1, true, this);
-                    members.add(scope.evaluate(tokenList, evaluator));
+                    scope = new ScopeNode(this.token, depth + 1, true, this);
+                    members.add(scope.evaluate(tokenList, evaluatorTree));
                     return this;
 
                 } else {

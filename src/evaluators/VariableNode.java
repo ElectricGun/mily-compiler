@@ -7,11 +7,11 @@ import src.tokens.*;
  *  @author ElectricGun
  */
 
-public abstract class VariableEvaluatorNode extends EvaluatorNode {
+public abstract class VariableNode extends EvaluatorNode {
 
     String variableName = "";
 
-    public VariableEvaluatorNode(Token token, int depth) {
+    public VariableNode(Token token, int depth) {
         super(token, depth);
     }
 

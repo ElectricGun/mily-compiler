@@ -9,20 +9,20 @@ import src.evaluators.*;
 
 public class BracketToken extends TypedToken {
 
-    private final OperationEvaluatorNode operationEvaluatorNode;
+    private final OperationNode operationNode;
 
-    public BracketToken(String string, int line, OperationEvaluatorNode operationEvaluatorNode) {
+    public BracketToken(String string, int line, OperationNode operationNode) {
         super(string, line);
 
-        this.operationEvaluatorNode = operationEvaluatorNode;
+        this.operationNode = operationNode;
     }
 
-    public OperationEvaluatorNode getOperationEvaluator() {
-        return operationEvaluatorNode;
+    public OperationNode getOperationEvaluator() {
+        return operationNode;
     }
 
     @Override
     public String toString() {
-        return operationEvaluatorNode.toString();
+        return operationNode.toString();
     }
 }

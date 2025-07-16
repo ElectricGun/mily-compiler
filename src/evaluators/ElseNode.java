@@ -11,20 +11,20 @@ import static src.constants.Keywords.*;
  * <h3> Else statements </h3>
  * Conditionals / Routes:
  * <ul>
- *     <li> Token "{"   -> {@link ScopeEvaluatorNode} and return this </li>
- *     <li> Token "if"  -> {@link IfStatementEvaluatorNode} and return this </li>
+ *     <li> Token "{"   -> {@link ScopeNode} and return this </li>
+ *     <li> Token "if"  -> {@link IfStatementNode} and return this </li>
  * </ul>
  * @author ElectricGun
  */
 
-public class ElseEvaluatorNode extends EvaluatorNode {
+public class ElseNode extends EvaluatorNode {
 
-    public ElseEvaluatorNode(Token token, int depth) {
+    public ElseNode(Token token, int depth) {
         super(token, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         System.out.printf(indent + "Parsing else block %s:%n", token);
@@ -38,13 +38,13 @@ public class ElseEvaluatorNode extends EvaluatorNode {
                 continue;
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                ScopeEvaluatorNode scopeEvaluatorNode = new ScopeEvaluatorNode(this.token, depth + 1, true);
-                members.add(scopeEvaluatorNode.evaluate(tokenList, evaluator));
+                ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
+                members.add(scopeNode.evaluate(tokenList, evaluatorTree));
                 return this;
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
-                IfStatementEvaluatorNode ifStatementEvaluatorNode = new IfStatementEvaluatorNode(this.token, depth + 1);
-                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluator));
+                IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(this.token, depth + 1);
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree));
                 return this;
 
             } else {

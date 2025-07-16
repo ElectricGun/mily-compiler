@@ -7,20 +7,20 @@ import src.tokens.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
-public class ForLoopEvaluatorNode extends EvaluatorNode {
+public class ForLoopNode extends EvaluatorNode {
 
-    VariableEvaluatorNode initial;
-    OperationEvaluatorNode condition;
-    AssignmentEvaluatorNode updater;
-    ScopeEvaluatorNode scope;
+    VariableNode initial;
+    OperationNode condition;
+    AssignmentNode updater;
+    ScopeNode scope;
     private boolean isExpectingOpeningBracket = true;
 
-    public ForLoopEvaluatorNode(Token token, int depth) {
+    public ForLoopNode(Token token, int depth) {
         super(token, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         Token previousToken = null;
@@ -42,12 +42,12 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                 }
             } else if (initial == null) {
                 if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
-                    initial = new AssignmentEvaluatorNode(previousToken, depth + 1);
-                    members.add(initial.evaluate(tokenList, evaluator));
+                    initial = new AssignmentNode(previousToken, depth + 1);
+                    members.add(initial.evaluate(tokenList, evaluatorTree));
 
                 } else if (Functions.equals(KEY_LET, token)) {
-                    initial = new DeclarationEvaluatorNode(token, depth + 1);
-                    members.add(initial.evaluate(tokenList, evaluator));
+                    initial = new DeclarationNode(token, depth + 1);
+                    members.add(initial.evaluate(tokenList, evaluatorTree));
 
                 } else if (!isVariableName(token)) {
                     throw new Exception("Unexpected tokens \"%s\" in for loop at line %s".formatted(token, token.line));
@@ -60,8 +60,8 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                     Token currentToken = tokenList.removeFirst();
                     operationTokens.add(currentToken);
                 }
-                condition = new OperationEvaluatorNode(this.token, depth + 1);
-                members.add(condition.evaluate(operationTokens, evaluator));
+                condition = new OperationNode(this.token, depth + 1);
+                members.add(condition.evaluate(operationTokens, evaluatorTree));
 
             } else if (updater == null) {
                 List<Token> operationTokens = new ArrayList<>();
@@ -82,8 +82,8 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
 
                         if (Functions.equals(KEY_OP_ASSIGN, opToken)) {
                             operationTokens.add(new Token(KEY_SEMICOLON, token.line));
-                            updater = new AssignmentEvaluatorNode(variableName, depth + 1);
-                            members.add(updater.evaluate(operationTokens, evaluator));
+                            updater = new AssignmentNode(variableName, depth + 1);
+                            members.add(updater.evaluate(operationTokens, evaluatorTree));
                             break;
 
                         } else if (!isWhiteSpace(opToken)) {
@@ -96,8 +96,8 @@ public class ForLoopEvaluatorNode extends EvaluatorNode {
                 }
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                scope = new ScopeEvaluatorNode(this.token, depth + 1, true);
-                members.add(scope.evaluate(tokenList, evaluator));
+                scope = new ScopeNode(this.token, depth + 1, true);
+                members.add(scope.evaluate(tokenList, evaluatorTree));
                 return this;
 
             } else {

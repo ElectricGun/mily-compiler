@@ -17,19 +17,19 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionCallEvaluatorNode extends EvaluatorNode {
+public class FunctionCallNode extends EvaluatorNode {
 
     public List<Token> arguments = new ArrayList<>();
 
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
 
-    public FunctionCallEvaluatorNode(Token token, int depth) {
+    public FunctionCallNode(Token token, int depth) {
         super(token, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         while (!tokenList.isEmpty()) {

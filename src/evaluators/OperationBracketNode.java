@@ -10,18 +10,18 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class OperationBracketEvaluatorNode extends EvaluatorNode {
+public class OperationBracketNode extends EvaluatorNode {
 
     public int operatorIndex;
 
     protected List<Token> operationTokens = new ArrayList<>();
 
-    public OperationBracketEvaluatorNode(Token token, int depth, int operatorIndex) {
+    public OperationBracketNode(Token token, int depth, int operatorIndex) {
         super(token, depth);
         this.operatorIndex = operatorIndex;
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, List<Integer> orders, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree) throws Exception {
 
         String indent = " ".repeat(depth);
         System.out.printf(indent + "Parsing Brackets %s:%n", token);
@@ -45,9 +45,9 @@ public class OperationBracketEvaluatorNode extends EvaluatorNode {
             }
 
             if (bracketCounter < 0) {
-                OperationEvaluatorNode operationEvaluatorNode = new OperationEvaluatorNode(new Token(this.token.string, this.token.line), depth + 1);
+                OperationNode operationNode = new OperationNode(new Token(this.token.string, this.token.line), depth + 1);
                 operationTokens.add(new Token(";", this.token.line));
-                OperationEvaluatorNode evaluated = (OperationEvaluatorNode) operationEvaluatorNode.evaluate(operationTokens, evaluator);
+                OperationNode evaluated = (OperationNode) operationNode.evaluate(operationTokens, evaluatorTree);
 
                 // substitute the operator removed with a BracketToken
                 // an integer is not added to orders because we are not removing one on this final loop
@@ -62,9 +62,9 @@ public class OperationBracketEvaluatorNode extends EvaluatorNode {
         throw new Exception("Unexpected end of file");
     }
 
-    public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, Evaluator evaluator) {
+    public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree) {
         try {
-            return evaluator(tokenList, orders, evaluator);
+            return evaluator(tokenList, orders, evaluatorTree);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

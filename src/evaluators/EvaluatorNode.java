@@ -32,13 +32,13 @@ public class EvaluatorNode {
         return members.get(i);
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
-    public final EvaluatorNode evaluate(List<Token> tokenList, Evaluator evaluator) {
+    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         try {
-            return evaluator(tokenList, evaluator);
+            return evaluator(tokenList, evaluatorTree);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,6 +48,6 @@ public class EvaluatorNode {
     }
 
     public void printRecursive() {
-        Evaluator.printRecursive(this);
+        EvaluatorTree.printRecursive(this);
     }
 }

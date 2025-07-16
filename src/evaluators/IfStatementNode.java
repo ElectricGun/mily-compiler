@@ -12,21 +12,21 @@ import static src.constants.Keywords.*;
  * Conditionals / Routes:
  * <ul>
  *     <li> Token ")" if expression not null -> return this </li>
- *     <li> Token "{" if scope not null      -> {@link ScopeEvaluatorNode} </li>
+ *     <li> Token "{" if scope not null      -> {@link ScopeNode} </li>
  * </ul>
  * @author ElectricGun
  */
 
-public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
+public class IfStatementNode extends ConditionalNode {
 
-    ElseEvaluatorNode elseNode = null;
+    ElseNode elseNode = null;
 
-    public IfStatementEvaluatorNode(Token token, int depth) {
+    public IfStatementNode(Token token, int depth) {
         super(token, depth);
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, Evaluator evaluator) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
         System.out.printf(indent + "Parsing if statement %n");
 
@@ -37,11 +37,11 @@ public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
                 continue;
 
             } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                    parseOperation(tokenList, evaluator, depth);
+                    parseOperation(tokenList, evaluatorTree, depth);
 
             } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                    createBlock(tokenList, evaluator);
+                    createBlock(tokenList, evaluatorTree);
                     // dont return yet, check for an else statement
 
                 } else {
@@ -50,9 +50,9 @@ public class IfStatementEvaluatorNode extends ConditionalEvaluatorNode{
 
             } else if (scope != null) {
                 if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
-                    ElseEvaluatorNode elseEvaluatorNode = new ElseEvaluatorNode(this.token, depth + 1);
-                    members.add(elseEvaluatorNode.evaluate(tokenList, evaluator));
-                    elseNode = elseEvaluatorNode;
+                    ElseNode elseNode = new ElseNode(this.token, depth + 1);
+                    members.add(elseNode.evaluate(tokenList, evaluatorTree));
+                    this.elseNode = elseNode;
 
                 } else {
                     // undo the token consumption
