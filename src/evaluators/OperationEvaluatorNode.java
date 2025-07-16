@@ -80,7 +80,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
     }
 
     private String getSideConstantTokenString(OperationEvaluatorNode side) {
-        if (side != null && !side.isEmpty()) {
+        if (side != null && !side.isBlank()) {
             return side.constantToken.string;
         } else {
             return null;
@@ -263,7 +263,6 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                     // if it has -1 or -4 on the right and a -2 operator on the left
                     // for unary operators
                     else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
-//                        UnaryOperationEvaluatorNode unary = new UnaryOperationEvaluatorNode(this.token, depth);
                         type = operationTokens.removeFirst().string;
                         Token newConstantToken = operationTokens.removeFirst();
 
@@ -271,7 +270,9 @@ public class OperationEvaluatorNode extends EvaluatorNode {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
                         } else {
-                            constantToken = newConstantToken;
+                            OperationEvaluatorNode op = new OperationEvaluatorNode(this.token, depth + 1);
+                            op.constantToken = newConstantToken;
+                            setLeftSide(op);
                         }
                         return this;
                     }
@@ -296,7 +297,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         return this;
     }
 
-    public boolean isEmpty() {
+    public boolean isBlank() {
         return constantToken == null && type.equals(KEY_OP_TYPE_CONSTANT);
     }
 
@@ -329,7 +330,7 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         //TODO fix this stupid thing
         String out = "";
 
-        if (isEmpty()) {
+        if (isBlank()) {
             return "empty";
         }
 
@@ -342,14 +343,16 @@ public class OperationEvaluatorNode extends EvaluatorNode {
         }
 
         if (!members.isEmpty()) {
-            out += "operation " + (type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type + " ");
+            out += "operation " + (type.equals(KEY_OP_TYPE_CONSTANT) ? "" : type);
         }
 
         if (getLeftSide() == null || getRightSide() == null) {
             out += type.equals(KEY_OP_TYPE_GROUP) ? "group " : "";
-            out += constantToken != null ? "const " + constantToken : "";
+            out += constantToken != null ? "const " + type + " " + constantToken : "";
         }
 
-        return out;
+        return out
+//                + " #" + hashCode()
+                ;
     }
 }

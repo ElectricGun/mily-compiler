@@ -22,3 +22,7 @@
  - use encapsulation for node members instead of having separate variables to prevent errors
  - Support for non hardcoded evaluators
  - Unary operator orders
+
+
+# Correct Pipeline
+ - Lexixng -> AST -> Validation -> Pruning -> IR
