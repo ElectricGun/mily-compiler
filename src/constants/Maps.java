@@ -66,6 +66,7 @@ public class Maps {
 
     protected static final HashMap<String, Integer> PEMDAS = new HashMap<>();
     static {
+        // TODO this system is not good, a separate ordering for unary operators can be nice, and negatives are too arbitrary.
         // negatives are reserved for special characters
 
         PEMDAS.put(KEY_BRACKET_OPEN, -4);
@@ -73,7 +74,7 @@ public class Maps {
         // -2 is reserved for unary operators
         PEMDAS.put(KEY_OP_NEGATE, -2);
         // -1 is reserved for constants (default value)
-        PEMDAS.put(KEY_OP_POW, 0); // 0 is the highest priority, supersedes unary operators
+        PEMDAS.put(KEY_OP_POW, 0); // 0 is the highest priority, supersedes unary operators (special case)
         PEMDAS.put(KEY_OP_MUL, 1);
         PEMDAS.put(KEY_OP_DIV, 1);
         PEMDAS.put(KEY_OP_IDIV, 1);
