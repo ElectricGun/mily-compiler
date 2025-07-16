@@ -73,7 +73,7 @@ public class Maps {
         // -2 is reserved for unary operators
         PEMDAS.put(KEY_OP_NEGATE, -2);
         // -1 is reserved for constants (default value)
-        PEMDAS.put(KEY_OP_POW, 0);
+        PEMDAS.put(KEY_OP_POW, 0); // 0 is the highest priority, supersedes unary operators
         PEMDAS.put(KEY_OP_MUL, 1);
         PEMDAS.put(KEY_OP_DIV, 1);
         PEMDAS.put(KEY_OP_IDIV, 1);

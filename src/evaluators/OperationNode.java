@@ -59,6 +59,17 @@ public class OperationNode extends EvaluatorNode {
         return this.rightSide;
     }
 
+    @Override
+    public void replaceMember(EvaluatorNode replaced, EvaluatorNode replacement) {
+        super.replaceMember(replaced, replacement);
+
+        if (leftSide == replaced) {
+            leftSide = (OperationNode) replacement;
+        } else if (rightSide == replaced) {
+            rightSide = (OperationNode) replacement;
+        }
+    }
+
     public void setLeftSide(OperationNode leftSide) {
 //        members.set(0, leftSide);
         if (members.contains(this.leftSide)) {
@@ -179,8 +190,6 @@ public class OperationNode extends EvaluatorNode {
 
                         int currentOrder = operationOrder(currentOperationToken);
 
-                        System.out.printf(indent + "%s order : %s%n", currentOperationToken, currentOrder);
-
                         // start bracket
                         if (currentOrder == -4) {
                             OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
@@ -202,16 +211,26 @@ public class OperationNode extends EvaluatorNode {
 
                         // if it is an operator, then set the order
                         if (orders.get(i) >= 0 && (largestOrder == -1 || orders.get(i) >= largestOrder)) {
-                            largestOrder = orders.get(i);
-                            largestOrderIndex = i;
+
+                            // special case for exponents, because they supersede unary operators
+                            if (largestOrder != -2 || orders.get(i) != 0) {
+                                largestOrder = orders.get(i);
+                                largestOrderIndex = i;
+                            }
 
                         } else if (orders.get(i) == -2 && largestOrderIndex == -1) {
                             largestOrder = orders.get(i);
                             largestOrderIndex = i;
                         }
 
+                        System.out.printf(indent + "%s order : %s : %s %n", currentOperationToken, largestOrder, orders.get(i));
+
                         previousOrder = currentOrder;
                     }
+
+                    System.out.println(orders);
+                    System.out.println(largestOrderIndex);
+                    System.out.println(largestOrder);
 
                     if (operationTokens.isEmpty()) {
                         constantToken = new VoidToken("void", token.line);
@@ -294,7 +313,7 @@ public class OperationNode extends EvaluatorNode {
 
             previousToken = token;
         }
-        return this;
+        throw new Exception("Unexpected end of file");
     }
 
     public boolean isBlank() {
@@ -323,6 +342,21 @@ public class OperationNode extends EvaluatorNode {
 
     public boolean isUnary() {
         return (getLeftSide() == null || getRightSide() == null) && members.size() == 1;
+    }
+
+    public OperationNode asBinaryFromMember(int memberIndex) {
+        OperationNode newOp = new OperationNode(this.token, depth);
+
+        OperationNode memberChild = (OperationNode) this.getMember(memberIndex);
+        memberChild.depth += 1;
+        newOp.type = KEY_OP_MUL;
+        newOp.setLeftSide(memberChild);
+
+        OperationNode factorConstant = new OperationNode(this.token, depth + 1);
+        factorConstant.constantToken = new Token(this.type.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line);
+        newOp.setRightSide(factorConstant);
+
+        return newOp;
     }
 
     @Override

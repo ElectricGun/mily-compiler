@@ -89,6 +89,27 @@ public class Pruning {
         }
     }
 
+    public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree) throws Exception {
+        convertUnariesToBinaryHelper(evaluatorTree.mainBlock, null);
+
+        return evaluatorTree;
+    }
+
+    private static void convertUnariesToBinaryHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
+        if (evaluatorNode == null)
+            return;
+
+        if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
+            if (opCurrent.isUnary()) {
+                parent.replaceMember(opCurrent, opCurrent.asBinaryFromMember(0));
+            }
+        }
+
+        for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+            convertUnariesToBinaryHelper(evaluatorNode.getMember(i), evaluatorNode);
+        }
+    }
+
     public static EvaluatorTree simplifyBinaryExpressions(EvaluatorTree evaluatorTreeNode) {
         simplifyBinaryExpressionsHelper(evaluatorTreeNode.mainBlock);
 
@@ -135,6 +156,7 @@ public class Pruning {
         if (evaluatorNode == null)
             return;
 
+
         if (evaluatorNode instanceof OperationNode operationNode) {
             if (operationNode.isConstant()) {
                 return;
@@ -143,6 +165,8 @@ public class Pruning {
                 boolean leftIsConstant = operationNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationNode.getRightSide().isConstant();
 
+//                System.out.println(evaluatorNode + " " + operationNode.getLeftSide() + " " + operationNode.getRightSide());
+
                 if (!leftIsConstant) {
                     simplifyBinaryExpressionsHelper(operationNode.getLeftSide());
                 }
@@ -150,7 +174,6 @@ public class Pruning {
                 if (!rightIsConstant) {
                     simplifyBinaryExpressionsHelper(operationNode.getRightSide());
                 }
-
                 boolean leftIsNumeric = isNumeric(operationNode.getLeftSide().constantToken);
                 boolean rightIsNumeric = isNumeric(operationNode.getRightSide().constantToken);
 
