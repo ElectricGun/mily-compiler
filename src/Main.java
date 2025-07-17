@@ -16,7 +16,7 @@ public class Main {
         CodeFile code = readFile("tests/main.mily");
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
-        System.out.println(code);
+        System.out.println(code.getCode());
 
         System.out.printf("%n---------------\tTokenization\t%n%n");
         List<Token> tokenList = tokenize(code.getCode());
