@@ -28,6 +28,8 @@ public class Keywords {
         KEY_CONDITIONAL_ELSE = "else",
         KEY_LOOPING_WHILE = "while",
         KEY_LOOPING_FOR = "for",
+        KEY_BOOLEAN_FALSE = "false",
+        KEY_BOOLEAN_TRUE = "true",
 
     // operators
         KEY_OP_ASSIGN = "=",

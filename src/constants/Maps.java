@@ -57,12 +57,17 @@ public class Maps {
             KEY_OP_NEGATE
     ));
 
-    protected final static List<String> allKeywordKeys = new ArrayList<>();
+    protected final static List<String> puncOperatorKeywords = new ArrayList<>();
     static {
-        allKeywordKeys.addAll(punctuationKeys);
-        allKeywordKeys.addAll(keywordKeys);
-        allKeywordKeys.addAll(operatorKeys);
+        puncOperatorKeywords.addAll(punctuationKeys);
+        puncOperatorKeywords.addAll(keywordKeys);
+        puncOperatorKeywords.addAll(operatorKeys);
     }
+
+    protected final static List<String> booleanKeys = new ArrayList<>(Arrays.asList(
+            KEY_BOOLEAN_TRUE,
+            KEY_BOOLEAN_FALSE
+    ));
 
     protected static final HashMap<String, Integer> PEMDAS = new HashMap<>();
     static {

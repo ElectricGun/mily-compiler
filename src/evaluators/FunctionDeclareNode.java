@@ -65,6 +65,10 @@ public class FunctionDeclareNode extends EvaluatorNode {
                     if (!isInitialized || argumentWanted) {
                         argumentNames.add(token.string);
                         argumentWanted = false;
+
+                        DeclarationNode declarationNode = new DeclarationNode(token, depth + 1);
+                        declarationNode.variableName = token.string;
+                        members.add(declarationNode);
                         System.out.printf("Added argument %s%n", token);
 
                     } else {

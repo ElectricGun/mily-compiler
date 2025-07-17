@@ -59,7 +59,7 @@ public class Functions {
     public static boolean isKeywordIncomplete(String c) {
         if (isWhiteSpace(c) || c.isEmpty())
             return false;
-        for (String op : allKeywordKeys) {
+        for (String op : puncOperatorKeywords) {
             boolean partialEquals = op.contains(c) && !op.equals(c);
             if (partialEquals) return true;
         }
@@ -114,8 +114,20 @@ public class Functions {
         return isKeyWord(String.valueOf(c));
     }
 
+    public static boolean isBoolean(String s) {
+        return booleanKeys.contains(s);
+    }
+
+    public static boolean isBoolean(Token t) {
+        return isBoolean(t.string);
+    }
+
+    public static boolean isBoolean(char c) {
+        return isBoolean(String.valueOf(c));
+    }
+
     public static boolean isVariableName(String s) {
-        return !isKeyWord(s) && !isOperator(s) && !isPunctuation(s) && !isNumeric(s) && s != null;
+        return !isKeyWord(s) && !isOperator(s) && !isPunctuation(s) && !isNumeric(s) && !isBoolean(s) && s != null;
     }
 
     public static boolean isVariableName(Token t) {

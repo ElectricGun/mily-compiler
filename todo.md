@@ -23,6 +23,8 @@
  - Support for non hardcoded evaluators
  - Unary operator orders
 
+# Possible improvements
+ - (Technical debt) Unaries, consts and binary operators being just one class may cause complications in the long run. 
 
 # Correct Pipeline
  - Lexixng -> AST -> Validation -> Pruning -> IR

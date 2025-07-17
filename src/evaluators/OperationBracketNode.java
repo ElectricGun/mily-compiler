@@ -13,7 +13,6 @@ import static src.constants.Keywords.*;
 public class OperationBracketNode extends EvaluatorNode {
 
     public int operatorIndex;
-
     protected List<Token> operationTokens = new ArrayList<>();
 
     public OperationBracketNode(Token token, int depth, int operatorIndex) {
