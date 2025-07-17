@@ -18,11 +18,21 @@ public class Validation {
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
 
+            // TODO not optimal implementation
+
             if (member instanceof DeclarationNode memberDeclaration) {
                 // TODO: type is hardcoded, remember to change after implementing datatypes
                 Variable declaredVar = new Variable("var", memberDeclaration.getVariableName());
                 if (declaredVariables.contains(declaredVar)) {
                     throw new Exception("Variable \"%s\" on line %s is already declared in scope".formatted(memberDeclaration.getVariableName(), evaluatorNode.token.line));
+                }
+                declaredVariables.add(declaredVar);
+
+            } else if (member instanceof FunctionArgNode functionArgNode) {
+                // TODO: type is hardcoded, remember to change after implementing datatypes
+                Variable declaredVar = new Variable("var", functionArgNode.getVariableName());
+                if (declaredVariables.contains(declaredVar)) {
+                    throw new Exception("Variable \"%s\" on line %s is already declared in scope".formatted(functionArgNode.getVariableName(), evaluatorNode.token.line));
                 }
                 declaredVariables.add(declaredVar);
 
