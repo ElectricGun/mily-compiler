@@ -126,8 +126,35 @@ public class Functions {
         return isBoolean(String.valueOf(c));
     }
 
+    public static boolean isDeclarator(String s) {
+        return declaratorKeys.contains(s);
+    }
+
+    public static boolean isDeclarator(Token t) {
+        return isDeclarator(t.string);
+    }
+
+    public static boolean isDeclarator(char c) {
+        return isDeclarator(String.valueOf(c));
+    }
+
+    public static boolean isDeclaratorAmbiguous(String s) {
+        return declaratorKeys.contains(s) || isVariableName(s);
+    }
+
+    public static boolean isDeclaratorAmbiguous(Token t) {
+        if (t == null)
+            return false;
+
+        return isDeclaratorAmbiguous(t.string);
+    }
+
+    public static boolean isDeclaratorAmbiguous(char c) {
+        return isDeclaratorAmbiguous(String.valueOf(c));
+    }
+
     public static boolean isVariableName(String s) {
-        return !isKeyWord(s) && !isOperator(s) && !isPunctuation(s) && !isNumeric(s) && !isBoolean(s) && s != null;
+        return !isDeclarator(s) && !isKeyWord(s) && !isOperator(s) && !isPunctuation(s) && !isNumeric(s) && !isBoolean(s) && s != null;
     }
 
     public static boolean isVariableName(Token t) {

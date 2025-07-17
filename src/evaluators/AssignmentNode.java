@@ -13,7 +13,7 @@ public class AssignmentNode extends VariableNode {
     OperationNode expression = null;
 
     public AssignmentNode(Token token, int depth) {
-        super(token, depth);
+        super(null, token, depth);
     }
 
     @Override
@@ -32,6 +32,6 @@ public class AssignmentNode extends VariableNode {
 
     @Override
     public String toString() {
-        return "assign %s =".formatted(token);
+        return "assign %s =".formatted(variableName);
     }
 }

@@ -41,16 +41,23 @@ public class ForLoopNode extends EvaluatorNode {
                     throw new Exception("Unexpected token \"%s\" in for loop at line %s".formatted(token, token.line));
                 }
             } else if (initial == null) {
-                if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
-                    initial = new AssignmentNode(previousToken, depth + 1);
-                    members.add(initial.evaluate(tokenList, evaluatorTree));
+                if (!Functions.equals(KEY_BRACKET_OPEN, previousToken)) {
+                    if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
+                        initial = new AssignmentNode(previousToken, depth + 1);
+                        members.add(initial.evaluate(tokenList, evaluatorTree));
 
-                } else if (Functions.equals(KEY_LET, token)) {
-                    initial = new DeclarationNode(token, depth + 1);
-                    members.add(initial.evaluate(tokenList, evaluatorTree));
-
-                } else if (!isVariableName(token)) {
-                    throw new Exception("Unexpected tokens \"%s\" in for loop at line %s".formatted(token, token.line));
+                    } else if (isDeclaratorAmbiguous(previousToken)) {
+                        if (isVariableName(token)) {
+                            // VARIABLE DECLARATION
+                            initial = new DeclarationNode(previousToken.string, token, depth + 1);
+                            members.add(initial.evaluate(tokenList, evaluatorTree));
+                        } else {
+                            throw new Exception("Unexpected token \"%s\" in for loop initial variable declaration at line %s".formatted(token, token.line));
+                        }
+                    } else if (!isDeclaratorAmbiguous(token)) {
+                        throw new Exception("Unexpected token \"%s\" in for loop initial at line %s".formatted(token, token.line));
+                    }
+                    System.out.println(indent + " Created initial " + initial);
                 }
             } else if (condition == null) {
                 List<Token> operationTokens = new ArrayList<>();

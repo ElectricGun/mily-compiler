@@ -29,7 +29,7 @@ public class Lexing {
             boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
-            System.out.printf("line: %s   token: %s   is_partial_operator: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString));
+            System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString));
 
             if (isWhiteSpace(cs)) {
                 if (Functions.equals(KEY_NEWLINE, cs)) {
@@ -37,7 +37,7 @@ public class Lexing {
                 }
 
                 if (!previousIsWhitespace) {
-                    tokens.add(new Token(tokenString, currentLine));
+                    tokens.add(new Token(tokenString.trim(), currentLine));
                 }
                 tokenString = " ";
 

@@ -227,10 +227,6 @@ public class OperationNode extends EvaluatorNode {
                         previousOrder = currentOrder;
                     }
 
-                    System.out.println(orders);
-                    System.out.println(largestOrderIndex);
-                    System.out.println(largestOrder);
-
                     if (operationTokens.isEmpty()) {
                         constantToken = new VoidToken("void", token.line);
                         return this;

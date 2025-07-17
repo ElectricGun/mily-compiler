@@ -28,7 +28,7 @@ public class FunctionDeclareNode extends EvaluatorNode {
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing Function %s:%n", token);
+        System.out.printf(indent + "Parsing Function %s:%n", this.token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
@@ -60,23 +60,31 @@ public class FunctionDeclareNode extends EvaluatorNode {
             } else if (isOperator(token)) {
                 throw new Exception("Unexpected operator at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
 
-            } else {
-                if (isVariableName(token)) {
-                    if (!isInitialized || argumentWanted) {
-                        argumentNames.add(token.string);
-                        argumentWanted = false;
+            } else if (isDeclaratorAmbiguous(token)) {
+                Token variableName = tokenList.removeFirst();
 
-                        FunctionArgNode functionArgNode = new FunctionArgNode(token, depth + 1);
-                        functionArgNode.variableName = token.string;
-                        members.add(functionArgNode);
-                        System.out.printf("Added argument %s%n", token);
+                System.out.println(token.string);
 
-                    } else {
-                        throw new Exception("Unexpected token at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
-                    }
+                while (isWhiteSpace(variableName)) {
+                    variableName = tokenList.removeFirst();
                 }
-                isInitialized = true;
+                if (!isVariableName(variableName)) {
+                    throw new Exception("Not a variable name at function declaration %s: \"%s\" at line %s".formatted(this.token, variableName, variableName.line));
+
+                } else if (!isInitialized || argumentWanted) {
+                    argumentNames.add(variableName.string);
+                    argumentWanted = false;
+
+                    FunctionArgNode functionArgNode = new FunctionArgNode(token.string, variableName, depth + 1);
+                    functionArgNode.variableName = variableName.string;
+                    members.add(functionArgNode);
+                    System.out.printf("Added argument %s%n", variableName);
+
+                } else {
+                    throw new Exception("Unexpected token at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                }
             }
+            isInitialized = true;
         }
         throw new Exception("Unexpected end of file");
     }

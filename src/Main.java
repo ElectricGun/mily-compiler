@@ -13,7 +13,7 @@ public class Main {
         String code = """
            let numeric = -(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)));
 
-           let test_function_1(h, j) {
+           let test_function_1(let h, let j) {
               return h + j;
            }
 
@@ -38,8 +38,8 @@ public class Main {
                print(variable_3);
                variable_3 = variable_3 + 1;
            }
-                       
-           let test_function_2(h, j) {
+
+           let test_function_2(let h, let j) {
                return (1 - ((h + j) * 4) + 1) == test_function_2(h, 4) && test_function_1(j, 5) > 10;
            }
            """;

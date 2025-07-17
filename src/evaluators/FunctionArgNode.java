@@ -2,14 +2,14 @@ package src.evaluators;
 
 import src.tokens.Token;
 
-public class FunctionArgNode extends VariableNode {
+public class FunctionArgNode extends DeclarationNode {
 
-    public FunctionArgNode(Token token, int depth) {
-        super(token, depth);
+    public FunctionArgNode(String type, Token token, int depth) {
+        super(type, token, depth);
     }
 
     @Override
     public String toString() {
-        return "arg : " + token;
+        return "arg : " + type + " " + variableName;
     }
 }

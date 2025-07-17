@@ -24,12 +24,15 @@ public class Maps {
     ));
 
     protected final static List<String> keywordKeys = new ArrayList<>(Arrays.asList(
-            KEY_LET,
             KEY_RETURN,
             KEY_CONDITIONAL_IF,
             KEY_CONDITIONAL_ELSE,
             KEY_LOOPING_WHILE,
             KEY_LOOPING_FOR
+    ));
+
+    protected final static List<String> declaratorKeys = new ArrayList<>(Arrays.asList(
+            KEY_LET
     ));
 
     protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(
@@ -62,6 +65,7 @@ public class Maps {
         puncOperatorKeywords.addAll(punctuationKeys);
         puncOperatorKeywords.addAll(keywordKeys);
         puncOperatorKeywords.addAll(operatorKeys);
+        puncOperatorKeywords.addAll(declaratorKeys);
     }
 
     protected final static List<String> booleanKeys = new ArrayList<>(Arrays.asList(

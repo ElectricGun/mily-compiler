@@ -56,8 +56,6 @@ public class ScopeNode extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "scope\t:\t%s\t:\t%s%n", this.token, token);
-
             if (isWhiteSpace(token)) {
                 continue;
 
@@ -67,8 +65,7 @@ public class ScopeNode extends EvaluatorNode {
                     }
                 expectingSemicolon = false;
 
-
-            } else if (isVariableName(previousToken)) {
+            } else if (isDeclaratorAmbiguous(previousToken)) {
                 if (Functions.equals(KEY_BRACKET_OPEN, token)) {
                     FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
                     members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
@@ -77,6 +74,11 @@ public class ScopeNode extends EvaluatorNode {
                 } else if (Functions.equals(KEY_OP_ASSIGN, token)) {
                     AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
                     members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
+
+                } else if (isVariableName(token)) {
+                    // VARIABLE DECLARATION
+                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree);
+                    members.add(node);
 
                 } else {
                     throw new Exception("Cannot resolve symbol \"%s\" at line %s".formatted(previousToken, previousToken.line));
@@ -114,19 +116,14 @@ public class ScopeNode extends EvaluatorNode {
                 ForLoopNode forLoopNode = new ForLoopNode(token, depth+1);
                 members.add(forLoopNode.evaluate(tokenList, evaluatorTree));
 
-            } else {
-                // RETURN STATEMENT FOR FUNCTIONS
-                if (functionDeclareNode != null && Functions.equals(KEY_RETURN, token)) {
-                    OperationNode returnOp = new OperationNode(new Token(this.token +"_return", this.token.line), depth + 1, true);
-                    members.add(returnOp.evaluate(tokenList, evaluatorTree));
-
-                } else if (Functions.equals(KEY_LET, token)) {
-                    // VARIABLE DECLARATION
-                    EvaluatorNode node = new DeclarationNode(token, depth + 1).evaluate(tokenList, evaluatorTree);
-                    members.add(node);
-                }
+            } else if (functionDeclareNode != null && Functions.equals(KEY_RETURN, token)) {
+                // FUNCTION RETURN
+                OperationNode returnOp = new OperationNode(new Token(this.token + "_return", this.token.line), depth + 1, true);
+                members.add(returnOp.evaluate(tokenList, evaluatorTree));
             }
+
             previousToken = token;
+
         } if (needsClosing) {
             // after running out of tokens
             throw new Exception("Scope \"%s\" is unclosed".formatted(token));

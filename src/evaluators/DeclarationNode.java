@@ -13,8 +13,8 @@ import static src.constants.Keywords.*;
 
 public class DeclarationNode extends VariableNode {
 
-    public DeclarationNode(Token name, int depth) {
-        super(name, depth);
+    public DeclarationNode(String type, Token token, int depth) {
+        super(type, token, depth);
     }
 
     @Override
@@ -44,14 +44,12 @@ public class DeclarationNode extends VariableNode {
             }
             // evaluate operators
             else if (isOperator(token)) {
+                System.out.println(variableName);
                 // check for equal sign
                 if (Functions.equals(KEY_OP_ASSIGN, token) && isDeclared()) {
                     OperationNode operationNode = new OperationNode(new Token("op_"+ this.token, this.token.line), depth + 1);
                     members.add(operationNode.evaluate(tokenList, evaluatorTree));
                     return this;
-
-                } else if (!isDeclared()) {
-                    throw new Exception("Missing variable name : \"%s\"".formatted(token));
 
                 } else {
                     throw new Exception("Missing '=' sign %s : \"%s\"".formatted(this.token, token));
@@ -77,6 +75,6 @@ public class DeclarationNode extends VariableNode {
 
     @Override
     public String toString() {
-        return "declare %s :=".formatted(variableName);
+        return "declare %s %s :=".formatted(type, variableName);
     }
 }

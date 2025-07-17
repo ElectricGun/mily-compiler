@@ -25,6 +25,7 @@
 
 # Possible improvements
  - (Technical debt) Unaries, consts and binary operators being just one class may cause complications in the long run. 
+ - Migrate from using java's exceptions with a custom one with tree traversal
 
 # Correct Pipeline
  - Lexixng -> AST -> Validation -> Pruning -> IR
