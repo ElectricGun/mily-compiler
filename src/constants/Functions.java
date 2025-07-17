@@ -1,6 +1,7 @@
 package src.constants;
 
 import src.tokens.*;
+
 import static src.constants.Maps.*;
 import static src.constants.Keywords.*;
 

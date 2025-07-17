@@ -1,8 +1,9 @@
 package src;
 
 import java.util.*;
+import src.tokens.*;
 import src.evaluators.*;
-import src.tokens.Token;
+
 import static src.structure.Lexing.*;
 import static src.structure.Pruning.*;
 import static src.structure.Validation.*;
@@ -13,7 +14,7 @@ public class Main {
         String code = """
            let numeric = -(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)));
 
-           let test_function_1(let h, let j) {
+           int test_function_1(let h, let j) {
               return h + j;
            }
 
@@ -71,7 +72,5 @@ public class Main {
         System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");
 
         pruned.printRecursive();
-
-
     }
 }

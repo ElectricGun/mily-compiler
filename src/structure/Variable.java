@@ -1,6 +1,14 @@
 package src.structure;
 
-import java.util.Objects;
+import java.util.*;
+
+/**
+ * <h3> Variable </h3>
+ * Contains name and type, used in validation
+ * @see Validation
+ * @author ElectricGun
+ */
+
 
 public class Variable {
 
@@ -8,15 +16,15 @@ public class Variable {
     String type;
 
     public Variable(String type, String name) {
-        this.type = Objects.requireNonNullElse(type, "");
-        this.name = Objects.requireNonNullElse(name, "");
+        this.type = type;
+        this.name = name;
     }
 
     @Override
     public boolean equals(Object variable) {
         return variable.getClass() == this.getClass() &&
-                this.name.equals(((Variable) variable).name) &&
-                this.type.equals(((Variable) variable).type);
+                Objects.equals(((Variable) variable).type, this.type) &&
+                Objects.equals(((Variable) variable).name, this.name);
     }
 
     @Override

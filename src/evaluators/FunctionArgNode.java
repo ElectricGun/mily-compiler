@@ -1,6 +1,12 @@
 package src.evaluators;
 
-import src.tokens.Token;
+import src.tokens.*;
+/**
+ * Variable declaration node for function arguments,
+ * functionally the same
+ * @see src.evaluators.DeclarationNode
+ * @author ElectricGun
+ */
 
 public class FunctionArgNode extends DeclarationNode {
 
