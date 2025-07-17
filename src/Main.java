@@ -1,9 +1,11 @@
 package src;
 
 import java.util.*;
+import src.constants.*;
 import src.tokens.*;
 import src.evaluators.*;
 
+import static src.constants.Functions.*;
 import static src.structure.Lexing.*;
 import static src.structure.Pruning.*;
 import static src.structure.Validation.*;
@@ -11,49 +13,17 @@ import static src.structure.Validation.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        String code = """
-           let numeric = -(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)));
-
-           int test_function_1(let h, let j) {
-              return h + j;
-           }
-
-           test_function_1(2,4);
-
-           for (let i = 0; i < 100; i = i + 1) {
-            print(i);
-           }
-
-           let variable_1 = 10;
-           let variable_2 = 60 + 10;
-           let variable_3 = 2;
-
-           if (test_function_1(4, 2) > 100 + variable_1 * variable_2) {
-               variable_1 = 1;
-
-           } else if (true) {
-               variable_2 = 5;
-           }
-
-           while (true) {
-               print(variable_3);
-               variable_3 = variable_3 + 1;
-           }
-
-           let test_function_2(let h, let j) {
-               return (1 - ((h + j) * 4) + 1) == test_function_2(h, 4) && test_function_1(j, 5) > 10;
-           }
-           """;
+        CodeFile code = readFile("tests/main.mily");
 
         System.out.printf("%n---------------\tInput Code\t%n%n");
         System.out.println(code);
 
         System.out.printf("%n---------------\tTokenization\t%n%n");
-        List<Token> tokenList = tokenize(code);
+        List<Token> tokenList = tokenize(code.getCode());
         System.out.println(tokenList);
 
         System.out.printf("%n---------------\tLogs\t%n%n");
-        EvaluatorTree evaluatorTree = new EvaluatorTree();
+        EvaluatorTree evaluatorTree = new EvaluatorTree(code.getName());
         evaluatorTree.begin(tokenList);
 
         System.out.printf("%n---------------\tSyntax Tree\t%n%n");

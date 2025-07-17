@@ -23,6 +23,7 @@
  - use encapsulation for node members instead of having separate variables to prevent errors
  - Support for non hardcoded evaluators
  - Unary operator orders
+ - Multiple error messages in one compilation for when there are multiple errors (requires ditching java's exceptions)
 
 # Possible improvements
  - (Technical debt) Unaries, consts and binary operators being just one class may cause complications in the long run. 

@@ -10,6 +10,16 @@ import src.tokens.*;
 
 public class EvaluatorTree {
 
+    public String name = "";
+
+    public EvaluatorTree() {
+
+    }
+
+    public EvaluatorTree(String name) {
+        this.name = name;
+    }
+
     public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", 1), 0);
 
     public EvaluatorNode begin(List<Token> tokenList) {

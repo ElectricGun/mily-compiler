@@ -1,7 +1,8 @@
 package src.constants;
 
 import src.tokens.*;
-
+import java.io.*;
+import java.util.*;
 import static src.constants.Maps.*;
 import static src.constants.Keywords.*;
 
@@ -11,6 +12,23 @@ import static src.constants.Keywords.*;
  */
 
 public class Functions {
+
+    public static CodeFile readFile(String relpath) throws FileNotFoundException {
+        File file = new File(relpath);
+        String filename = file.getName();
+
+        System.out.println(file.getAbsoluteFile());
+
+        StringBuilder code = new StringBuilder();
+
+        Scanner sc = new Scanner(file);
+        while (sc.hasNextLine()) {
+            code.append(sc.nextLine()).append("\n");
+        }
+        sc.close();
+
+        return new CodeFile(filename, code.toString());
+    }
 
     public static boolean equals(String key, String compare) {
         return key.equals(compare);
