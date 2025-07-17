@@ -20,7 +20,10 @@ public class Maps {
             KEY_COMMA,
             KEY_NEWLINE,
             KEY_SPACE,
-            KEY_TAB
+            KEY_TAB,
+            KEY_COMMENT_MULTILINE_START,
+            KEY_COMMENT_MULTILINE_END,
+            KEY_COMMENT_INLINE
     ));
 
     protected final static List<String> keywordKeys = new ArrayList<>(Arrays.asList(

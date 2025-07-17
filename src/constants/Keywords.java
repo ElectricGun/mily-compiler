@@ -21,6 +21,11 @@ public class Keywords {
         KEY_SPACE = " ",
         KEY_TAB =   "\t",
 
+    // comment punctuations TODO change these probably
+        KEY_COMMENT_MULTILINE_START = "!-",
+        KEY_COMMENT_MULTILINE_END = "-!",
+        KEY_COMMENT_INLINE = "!--",
+
     // keywords
         KEY_LET = "let",
         KEY_RETURN = "return",
