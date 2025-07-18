@@ -32,7 +32,7 @@ This stage, although rarely, may produce syntax errors e.g. on unclosed comments
 2. AST building: the abstract syntax tree is built by feeding it a string of tokens. The AST builds itself, starting from a single seed.
 This stage produces syntax errors if the code is not written properly.
 3. Semantic validation: the fully built AST is then read to check if the variables are logically correct i.e. they exist in the scopes they are in 
-and their datatypes are consistent. Otherwise, this stage will produce semantic errors
+and their datatypes are consistent. Otherwise, this stage will produce semantic errors.
 4. Pruning: expressions are simplified and unneeded nodes are cut.
 5. Intermediate representation: the pruned AST is then used to produce pseucode-like representation.
 6. Final transpilation: the IR is directly translated into the target bytecode, in this case, mlog.
