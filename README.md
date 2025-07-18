@@ -5,7 +5,7 @@ This program is an implementation of Milyscript (a custom programming language) 
 ## What is Milyscript?
 
 Milyscript is a high-level programming language largely based on the C syntax (although very different).
-It is designed in order to be easily usable for mlog coders
+It is designed in order to be easily usable for mlog coders.
 
 ### Key Features
 - Functions
