@@ -257,25 +257,6 @@ public class Functions {
         return isInteger(String.valueOf(c));
     }
 
-    public static String getTokenType(Token t) {
-        if (t == null)
-            return null;
-
-        if (isInteger(t)) {
-            return KEY_DATA_INT;
-
-        } else if (isNumeric(t)) {
-            return KEY_DATA_DOUBLE;
-
-        } else if (t instanceof StringToken) {
-            return KEY_DATA_STRING;
-
-        } else if (t instanceof BooleanToken) {
-            return KEY_DATA_BOOLEAN;
-        }
-        return null;
-    }
-
     public static String getValueType(String s) {
         if (s == null)
             return null;

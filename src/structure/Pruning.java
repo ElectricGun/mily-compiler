@@ -8,7 +8,7 @@ import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
 
 /**
- * <h1> AST Pruning </h1>
+ * <h1> Class Pruning </h1>
  * Static functions for pruning and simplifying the {@link EvaluatorTree}
  * @author ElectricGun
  */

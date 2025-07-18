@@ -8,8 +8,8 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h1> Lexing Utilities </h1>
- * For converting text into a list of tokens.
+ * <h1> Class Lexing </h1>
+ * Utility for converting text into a list of tokens.
  * @see Keywords
  * @author ElectricGun
  */

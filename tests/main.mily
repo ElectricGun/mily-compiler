@@ -19,6 +19,9 @@ num = 30;
 x = 10;
 y = 40;
 
+/---------- Explicit Casting (Primitive) ----------
+int test = (int) (30 / 4);
+
 /---------- Inline Statements ----------
 num = 30; x = 10; y = 40;
 
