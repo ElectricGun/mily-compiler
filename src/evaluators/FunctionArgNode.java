@@ -2,6 +2,8 @@ package src.evaluators;
 
 import src.tokens.*;
 /**
+ * <h1> Class FunctionArgNode </h1>
+ * Function Args
  * Variable declaration node for function arguments,
  * functionally the same
  * @see src.evaluators.DeclarationNode

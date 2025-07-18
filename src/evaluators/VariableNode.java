@@ -3,8 +3,9 @@ package src.evaluators;
 import src.tokens.*;
 
 /**
- * <h3> Template for Declaration and Assignment </h3>
- *  @author ElectricGun
+ * <h1> Class VariableNode </h1>
+ * Template for Declaration and Assignment
+ * @author ElectricGun
  */
 
 public abstract class VariableNode extends EvaluatorNode {

@@ -8,7 +8,9 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Parses function declarations </h3>
+ * <h1> Class FunctionDeclareNode </h1>
+ * Function Declarations
+ * Parses function declarations; not to be confused with the {@link FunctionCallNode}
  * @author ElectricGun
  */
 

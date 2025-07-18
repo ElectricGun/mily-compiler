@@ -3,12 +3,11 @@ package src.structure;
 import java.util.*;
 
 /**
- * <h3> Variable </h3>
+ * <h1> Variable </h1>
  * Contains name and type, used in validation
  * @see Validation
  * @author ElectricGun
  */
-
 
 public class Variable {
 

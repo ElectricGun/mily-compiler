@@ -1,24 +1,22 @@
-!-- MILY CODE
+/- MILY CODE
 
-!-- Main file for testing
+/- Main file for testing
 
-!-
+/*
 Variables and functions declared below here are supposed to be
 in the standard library (bulb.mily)
 but the library import feature (#include) has not been implemented yet (too eepy rn)
--!
+*/
 
-!-- start placeholders
+/- start placeholders
 void print() {}
-!-- end placeholders
+/- end placeholders
 
 let numeric = -(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)) - 10) + 289;
 
 int test_function_1(let h, let j) {
     return h + j;
 }
-
-test = 3;
 
 test_function_1(2,4);
 

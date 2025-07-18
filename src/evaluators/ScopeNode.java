@@ -8,17 +8,17 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Parses code blocks </h3>
+ * <h1> Class ScopeNode </h1>
+ * Code Block Parser
  * Purpose: finds variable and function declarations, function calls and return statements (if is child of a function) <br>
- * Conditionals / Routes:
+ * Routes:
  *  <ul>
- *      <li> Token "let"                  -> {@link DeclarationNode}</li>
- *      <li> Token "return"               -> {@link OperationNode}</li>
- *      <li> Any token + "("              -> {@link FunctionCallNode}</li>
- *      <li> Token "if"                   -> {@link IfStatementNode}</li>
- *      <li> Token "while"                -> {@link WhileLoopNode}</li>
- *      <li> Token "for"                  -> {@link ForLoopNode}</li>
- *      <li> Token "}" when needs closing -> return this</li>
+ *      <li> {@link DeclarationNode}</li>
+ *      <li> {@link OperationNode}</li>
+ *      <li> {@link FunctionCallNode}</li>
+ *      <li> {@link IfStatementNode}</li>
+ *      <li> {@link WhileLoopNode}</li>
+ *      <li> {@link ForLoopNode}</li>
  * </ul>
  * @author ElectricGun
  */
@@ -57,6 +57,9 @@ public class ScopeNode extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
+            System.out.printf(indent + "block : %s%n", token);
+
+
             if (isWhiteSpace(token)) {
                 continue;
 
@@ -67,12 +70,12 @@ public class ScopeNode extends EvaluatorNode {
                 expectingSemicolon = false;
 
             } else if (isDeclaratorAmbiguous(previousToken)) {
-                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+                if (isVariableName(previousToken) && Functions.equals(KEY_BRACKET_OPEN, token)) {
                     FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
                     members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
                     expectingSemicolon = true;
 
-                } else if (Functions.equals(KEY_OP_ASSIGN, token)) {
+                } else if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
                     AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
                     members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
@@ -82,12 +85,11 @@ public class ScopeNode extends EvaluatorNode {
                     members.add(node);
 
                 } else {
-                    throw new Exception("Cannot resolve symbol \"%s\" at line %s".formatted(previousToken, previousToken.line));
+                    throw new Exception("Invalid token \"%s\" at line %s".formatted(token, token.line));
                 }
                 // clear previous token otherwise it won't be true to reality
                 // as the evaluators below will consume newer tokens
                 previousToken = null;
-
                 continue;
 
             } else if (isPunctuation(token)) {

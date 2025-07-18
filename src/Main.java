@@ -23,7 +23,7 @@ public class Main {
         System.out.println(tokenList);
 
         System.out.printf("%n---------------\tLogs\t%n%n");
-        EvaluatorTree evaluatorTree = new EvaluatorTree(code.getName());
+        EvaluatorTree evaluatorTree = new EvaluatorTree(code.getFilename());
         evaluatorTree.begin(tokenList);
 
         System.out.printf("%n---------------\tSyntax Tree\t%n%n");

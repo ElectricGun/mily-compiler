@@ -8,7 +8,8 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Variable and Function Declaration </h3>
+ * <h1> Class DeclarationNode </h1>
+ * Variable and Function Declaration
  *  @author ElectricGun
  */
 

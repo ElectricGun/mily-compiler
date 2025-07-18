@@ -7,8 +7,9 @@ import java.util.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Template for If and While Statements </h3>
- *  @author ElectricGun
+ * <h1> Class ConditionalNode </h1>
+ * Template for If and While Statements
+ * @author ElectricGun
  */
 
 public abstract class ConditionalNode extends EvaluatorNode {

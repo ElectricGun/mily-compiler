@@ -8,8 +8,10 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> While Loop </h3>
- *  @author ElectricGun
+ * <h1> Class WhileLoopNode </h1>
+ * While Loops
+ * Parses while loops
+ * @author ElectricGun
  */
 
 public class WhileLoopNode extends ConditionalNode {
@@ -53,6 +55,6 @@ public class WhileLoopNode extends ConditionalNode {
 
     @Override
     public String toString() {
-        return "while loop #" + hashCode();
+        return "while loop";
     }
 }

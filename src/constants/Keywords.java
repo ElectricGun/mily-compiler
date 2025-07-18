@@ -1,6 +1,7 @@
 package src.constants;
 
 /**
+ * <h1> Class Keywords </h1>
  * Static lexicon of pre-defined keywords
  * @author ElectricGun
  */
@@ -22,12 +23,11 @@ public class Keywords {
         KEY_TAB =   "\t",
 
     // comment punctuations TODO change these probably
-        KEY_COMMENT_MULTILINE_START = "!-",
-        KEY_COMMENT_MULTILINE_END = "-!",
-        KEY_COMMENT_INLINE = "!--",
+        KEY_COMMENT_MULTILINE_START = "/*",
+        KEY_COMMENT_MULTILINE_END = "*/",
+        KEY_COMMENT_INLINE = "/-",
 
     // keywords
-        KEY_LET = "let",
         KEY_RETURN = "return",
         KEY_CONDITIONAL_IF = "if",
         KEY_CONDITIONAL_ELSE = "else",
@@ -35,6 +35,13 @@ public class Keywords {
         KEY_LOOPING_FOR = "for",
         KEY_BOOLEAN_FALSE = "false",
         KEY_BOOLEAN_TRUE = "true",
+
+    // keywords: datatypes
+        KEY_LET = "let",
+        KEY_INT = "int",
+        KEY_DOUBLE = "double",
+        KEY_STRING = "string",
+        KEY_BOOLEAN = "boolean",
 
     // operators
         KEY_OP_ASSIGN = "=",
@@ -51,7 +58,7 @@ public class Keywords {
 //        KEY_OP_INCREMENT = "++",
 //        KEY_OP_DECREMENT = "--",
 
-    // boolean/comparator operators
+    // operators: boolean/comparator
         KEY_OP_EQUALS = "==",
         KEY_OP_NOT_EQUAL = "!=",
         KEY_OP_STRICT_EQUALS = "===",
@@ -68,7 +75,7 @@ public class Keywords {
         KEY_BOP_OR = "|",
         KEY_OP_NEGATE = "!",
 
-    // operator types
+    // operator: operation types
         KEY_OP_TYPE_CONSTANT = "key_constant",
         KEY_OP_TYPE_GROUP = "key_group";
 }

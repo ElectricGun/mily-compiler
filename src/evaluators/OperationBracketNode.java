@@ -7,7 +7,9 @@ import src.constants.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Helper node for parsing parenthesis within operations, such as (x + y) * z </h3>
+ * <h1> Class OperationBracketNode </h1>
+ * Operation Brackets
+ * Helper node for parsing parenthesis within operations, such as (x + y) * z
  * @author ElectricGun
  */
 

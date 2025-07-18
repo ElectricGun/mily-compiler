@@ -5,6 +5,12 @@ import src.evaluators.*;
 
 import static src.constants.Functions.*;
 
+/**
+ * <h1> Semantic Validation </h1>
+ * Contains utilities for semantic validation, such as type and scope checking.
+ * @author ElectricGun
+ */
+
 public class Validation {
 
     public static void validateDeclarations(EvaluatorTree evaluatorTree) throws Exception {

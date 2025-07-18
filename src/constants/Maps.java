@@ -4,6 +4,7 @@ import java.util.*;
 import static src.constants.Keywords.*;
 
 /**
+ * <h1> Class Maps </h1>
  * Lists and maps of keywords
  * @author ElectricGun
  * @see Keywords
@@ -35,7 +36,11 @@ public class Maps {
     ));
 
     protected final static List<String> declaratorKeys = new ArrayList<>(Arrays.asList(
-            KEY_LET
+            KEY_LET,
+            KEY_DOUBLE,
+            KEY_INT,
+            KEY_STRING,
+            KEY_BOOLEAN
     ));
 
     protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(

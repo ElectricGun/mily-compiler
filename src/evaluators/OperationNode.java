@@ -8,12 +8,14 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Parses expressions </h3>
+ * <h1> Class OperationNode </h1>
+ * Operation Parser
  * Parses expressions, such as 1 + 1, x * y, and f(x) > 10. <br>
- * Conditionals / Routes: <br>
+ * Routes:
  * <ul>
- *     <li> Token ";"          -> return this </li>
- *     <li> String token + "(" -> appends a new FunctionCallEvaluatorNode in a FunctionCallToken into operationTokens </li>
+ *     <li> {@link OperationNode}</li>
+ *     <li> {@link FunctionCallNode}</li>
+ *     <li> {@link OperationBracketNode}</li>
  * </ul>
  * @author ElectricGun
  */
@@ -41,22 +43,14 @@ public class OperationNode extends EvaluatorNode {
         super(token, depth);
 
         this.isReturnOperation = true;
-//        members = new ArrayList<>(Arrays.asList(null, null));
     }
 
     // TODO bad code, fix later
-
     public OperationNode getLeftSide() {
-//        if (members.isEmpty())
-//            return null;
-//        return (OperationEvaluatorNode) members.get(0);
         return this.leftSide;
     }
 
     public OperationNode getRightSide() {
-//        if (members.size() < 2)
-//            return null;
-//        return (OperationEvaluatorNode) members.get(1);
         return this.rightSide;
     }
 
@@ -66,15 +60,16 @@ public class OperationNode extends EvaluatorNode {
 
         if (leftSide == replaced) {
             leftSide = (OperationNode) replacement;
+
         } else if (rightSide == replaced) {
             rightSide = (OperationNode) replacement;
         }
     }
 
     public void setLeftSide(OperationNode leftSide) {
-//        members.set(0, leftSide);
         if (members.contains(this.leftSide)) {
             members.set(members.indexOf(this.leftSide), leftSide);
+
         } else {
             members.addFirst(leftSide);
         }
@@ -82,9 +77,9 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public void setRightSide(OperationNode rightSide) {
-//        members.set(1, rightSide);
         if (members.contains(this.rightSide)) {
             members.set(members.indexOf(this.rightSide), rightSide);
+
         } else {
             members.addLast(rightSide);
         }
@@ -94,6 +89,7 @@ public class OperationNode extends EvaluatorNode {
     private String getSideConstantTokenString(OperationNode side) {
         if (side != null && !side.isBlank()) {
             return side.constantToken.string;
+
         } else {
             return null;
         }
@@ -140,7 +136,7 @@ public class OperationNode extends EvaluatorNode {
                 // and can be regarded as constants
                 // store them as class FunctionCallToken
 
-                // TODO IMPLEMENT DATATYPES BEFORE CASTS
+                // TODO IMPLEMENT CASTS
                 // casts also should be regarded as unary operators
                 // store them as class CastToken
 
@@ -381,8 +377,6 @@ public class OperationNode extends EvaluatorNode {
             out += constantToken != null ? "const " + type + " " + constantToken : "";
         }
 
-        return out
-//                + " #" + hashCode()
-                ;
+        return out;
     }
 }

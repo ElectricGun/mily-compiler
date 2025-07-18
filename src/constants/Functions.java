@@ -7,6 +7,7 @@ import static src.constants.Maps.*;
 import static src.constants.Keywords.*;
 
 /**
+ * <h1> Class Functions </h1>
  * Basic utilities
  * @author ElectricGun
  */
@@ -158,7 +159,7 @@ public class Functions {
     }
 
     public static boolean isDeclaratorAmbiguous(String s) {
-        return declaratorKeys.contains(s) || isVariableName(s);
+        return isDeclarator(s) || isVariableName(s);
     }
 
     public static boolean isDeclaratorAmbiguous(Token t) {

@@ -7,6 +7,13 @@ import src.tokens.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * <h1> Class ForLoopNode </h1>
+ * For Loops
+ * Parsing AST node for for loops.
+ * @author ElectricGun
+ */
+
 public class ForLoopNode extends EvaluatorNode {
 
     VariableNode initial;
@@ -117,6 +124,6 @@ public class ForLoopNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return "for loop #" + hashCode();
+        return "for loop";
     }
 }

@@ -8,7 +8,9 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * Parsing utilities
+ * <h1> Lexing Utilities </h1>
+ * For converting text into a list of tokens.
+ * @see Keywords
  * @author ElectricGun
  */
 

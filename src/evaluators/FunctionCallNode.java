@@ -8,7 +8,8 @@ import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- * <h3> Parses function calls </h3>
+ * <h1> Class FunctionCallNode </h1>
+ * Function Calls
  * Purpose: Parses function calls, such as f(), f(x), and f(x, y) <br>
  * Conditionals / Routes:
  * <ul>

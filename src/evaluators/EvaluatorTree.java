@@ -4,7 +4,9 @@ import java.util.*;
 import src.tokens.*;
 
 /**
- * <h3> The container for the syntax tree </h3>
+ * <h1> Class EvaluatorTree </h1>
+ * Parsing Abstract Syntax Tree
+ * The container for the parsing AST
  * @author ElectricGun
  */
 
@@ -12,9 +14,7 @@ public class EvaluatorTree {
 
     public String name = "";
 
-    public EvaluatorTree() {
-
-    }
+    public EvaluatorTree() {}
 
     public EvaluatorTree(String name) {
         this.name = name;

@@ -9,11 +9,11 @@ import static src.constants.Keywords.*;
 
 /**
  *
- * <h3> If statements </h3>
- * Conditionals / Routes:
+ * <h1> Class IfStatementNode </h1>
+ * If Statements
+ * Routes:
  * <ul>
- *     <li> Token ")" if expression not null -> return this </li>
- *     <li> Token "{" if scope not null      -> {@link ScopeNode} </li>
+ *     <li> {@link ScopeNode} </li>
  * </ul>
  * @author ElectricGun
  */

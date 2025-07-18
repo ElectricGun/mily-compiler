@@ -9,11 +9,12 @@ import static src.constants.Keywords.*;
 
 /**
  *
- * <h3> Else statements </h3>
- * Conditionals / Routes:
+ * <h1> Class ElseNode </h1>
+ * Else Statements
+ * Routes:
  * <ul>
- *     <li> Token "{"   -> {@link ScopeNode} and return this </li>
- *     <li> Token "if"  -> {@link IfStatementNode} and return this </li>
+ *     <li> {@link ScopeNode} </li>
+ *     <li> {@link IfStatementNode} </li>
  * </ul>
  * @author ElectricGun
  */
@@ -57,6 +58,6 @@ public class ElseNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return "else #" + hashCode();
+        return "else";
     }
 }

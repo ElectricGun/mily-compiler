@@ -4,8 +4,11 @@ import src.tokens.*;
 import java.util.*;
 
 /**
- * <h3> Variable Assignments </h3>
- *  @author ElectricGun
+ * <h1> Class AssignmentNode </h1>
+ * Used for both operation and function assignments.
+ * @see src.evaluators.OperationNode
+ * @see src.evaluators.FunctionDeclareNode
+ * @author ElectricGun
  */
 
 public class AssignmentNode extends VariableNode {
