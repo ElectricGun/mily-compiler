@@ -146,7 +146,7 @@ public class Pruning {
         if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
             while (opCurrent.isUnary()) {
                 if (opCurrent.getMember(0) instanceof OperationNode opChild && opChild.isUnary()) {
-                    if (!opCurrent.isCast()) {
+                    if (!opCurrent.isCast() && !opChild.isCast()) {
                         parent.replaceMember(opCurrent, opChild);
 
                         if (KEY_OP_SUB.equals(opCurrent.getOperator())) {
