@@ -6,6 +6,9 @@
  - Numeric expression solving
  - Loop simplifying
 
+# Correct Pipeline
+- Lexing -> AST -> Validation -> Pruning -> IR -> Mlog
+
 # Datatypes
  - Static typing
  - Datatype validation:
@@ -14,25 +17,22 @@
   - Unary operation checking (i.e. you cant have things like strings and booleans within - and + unary operations)
  - Datatype guessing (for doubles, ints and strings within operations)
  - Explicit and implicit casting:
-  - Explicit casting should be checked semantically 
+  - Explicit casting should be checked semantically
+
+# Custom Exception Handling
+- Exception types:
+ - Syntax, Semantic
+- Multiple error messages in one compilation for when there are multiple errors (requires ditching java's exceptions)
 
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
  - for lexing and evaluating
  - i += x + y    is equivalent to   i = i + (x + y)
 
-# Functions
- - return types, such as void, int, double, boolean.
-
-# Aliasing and Macros
- - should be processed during the AST building stage
- - #define keyword
-
 # Technical Stuff
  - use encapsulation for node members instead of having separate variables to prevent errors
  - Support for non hardcoded evaluators
  - Unary operator orders
- - Multiple error messages in one compilation for when there are multiple errors (requires ditching java's exceptions)
  - Add toggleable debugMode
 
 # Possible Improvements
@@ -43,5 +43,11 @@
 # Syntax Document
  - A syntax document for Milyscript
 
-# Correct Pipeline
- - Lexixng -> AST -> Validation -> Pruning -> IR
+# Future Features (low priority)
+ - Arrays
+ - Structs and Classes
+ - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
+ - Aliasing and Macros:
+  - should be processed during the AST building stage
+  - #define keyword
+ - Inline raw mlog
