@@ -34,9 +34,14 @@ public class Main {
 
         System.out.printf("%n---------------\tSyntax Tree (CLEANED)\t%n%n");
         EvaluatorTree pruned = pruneEmptyOperations(evaluatorTree);
+        simplifyUnaries(pruned);
         pruned.printRecursive();
-        simplifyNestedUnaries(pruned);
+
         convertUnariesToBinary(pruned);
+
+        System.out.printf("%n---------------\tSyntax Tree (BINARY)\t%n%n");
+        pruned.printRecursive();
+
         simplifyBinaryExpressions(pruned);
 
         System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");

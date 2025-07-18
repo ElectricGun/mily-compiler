@@ -36,12 +36,13 @@ public class Maps {
     ));
 
     protected final static List<String> declaratorKeys = new ArrayList<>(Arrays.asList(
-            KEY_LET,
-            KEY_DOUBLE,
-            KEY_INT,
-            KEY_STRING,
-            KEY_BOOLEAN
+            KEY_DATA_LET,
+            KEY_DATA_DOUBLE,
+            KEY_DATA_INT,
+            KEY_DATA_STRING,
+            KEY_DATA_BOOLEAN
     ));
+
 
     protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,
@@ -67,6 +68,14 @@ public class Maps {
             KEY_BOP_OR,
             KEY_OP_NEGATE
     ));
+    protected final static List<String> unaryOperatorKeys = new ArrayList<>(Arrays.asList(
+            KEY_OP_ADD,
+            KEY_OP_SUB
+    ));
+
+    static {
+        operatorKeys.addAll(unaryOperatorKeys);
+    }
 
     protected final static List<String> puncOperatorKeywords = new ArrayList<>();
     static {

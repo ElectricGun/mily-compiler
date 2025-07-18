@@ -7,7 +7,20 @@ package src.tokens;
 
 public class CastToken extends Token {
 
-    public CastToken(String string, int line) {
+    String type;
+
+    public CastToken(String string, String type, int line) {
         super(string, line);
+
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("cast(\"%s\")", type);
     }
 }

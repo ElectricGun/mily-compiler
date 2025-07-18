@@ -37,11 +37,11 @@ public class Keywords {
         KEY_BOOLEAN_TRUE = "true",
 
     // keywords: datatypes
-        KEY_LET = "let",
-        KEY_INT = "int",
-        KEY_DOUBLE = "double",
-        KEY_STRING = "string",
-        KEY_BOOLEAN = "boolean",
+        KEY_DATA_LET = "let",
+        KEY_DATA_INT = "int",
+        KEY_DATA_DOUBLE = "double",
+        KEY_DATA_STRING = "string",
+        KEY_DATA_BOOLEAN = "boolean",
 
     // operators
         KEY_OP_ASSIGN = "=",
@@ -77,5 +77,7 @@ public class Keywords {
 
     // operator: operation types
         KEY_OP_TYPE_CONSTANT = "key_constant",
-        KEY_OP_TYPE_GROUP = "key_group";
+        KEY_OP_TYPE_OPERATION = "key_operation",
+        KEY_OP_TYPE_GROUP = "key_group",
+        KEY_OP_TYPE_CAST = "key_cast";
 }

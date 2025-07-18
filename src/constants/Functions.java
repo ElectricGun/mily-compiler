@@ -76,6 +76,21 @@ public class Functions {
         return isOperator(String.valueOf(c));
     }
 
+    public static boolean isUnaryOperator(String c) {
+        for (String s : unaryOperatorKeys) {
+            if (c.equals(s)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isUnaryOperator(Token t) {
+        return isUnaryOperator(t.string);
+    }
+
+    public static boolean isUnaryOperator(char c) {
+        return isUnaryOperator(String.valueOf(c));
+    }
+
     public static boolean isKeywordIncomplete(String c) {
         if (isWhiteSpace(c) || c.isEmpty())
             return false;
@@ -219,5 +234,64 @@ public class Functions {
 
     public static boolean isNumeric(char c) {
         return isNumeric(String.valueOf(c));
+    }
+
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean isInteger(Token t) {
+        if (t == null)
+            return false;
+
+        return isInteger(t.string);
+    }
+
+    public static boolean isInteger(char c) {
+        return isInteger(String.valueOf(c));
+    }
+
+    public static String getTokenType(Token t) {
+        if (t == null)
+            return null;
+
+        if (isInteger(t)) {
+            return KEY_DATA_INT;
+
+        } else if (isNumeric(t)) {
+            return KEY_DATA_DOUBLE;
+
+        } else if (t instanceof StringToken) {
+            return KEY_DATA_STRING;
+
+        } else if (t instanceof BooleanToken) {
+            return KEY_DATA_BOOLEAN;
+        }
+        return null;
+    }
+
+    public static String getValueType(String s) {
+        if (s == null)
+            return null;
+
+        if (isInteger(s)) {
+            return KEY_DATA_INT;
+
+        } else if (isNumeric(s)) {
+            return KEY_DATA_DOUBLE;
+
+        } else if (s.startsWith("\"") && s.endsWith("\"")) {
+            return KEY_DATA_STRING;
+
+        } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
+            return KEY_DATA_BOOLEAN;
+        }
+        return null;
     }
 }

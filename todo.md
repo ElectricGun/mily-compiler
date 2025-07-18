@@ -1,6 +1,8 @@
 # Priority Features:
- - Numeric expression solving
- - Datatypes
+ - Static typing
+ - Datatype validation
+ - Datatype guessing
+ - Explicit and implicit casting
 
 # AST Pruning
  - Numeric expression solving
@@ -15,6 +17,7 @@
   - Function return arg checking
   - Binary operation checking (check if both are the same type, or are able to be implicitly casted)
   - Unary operation checking (i.e. you cant have things like strings and booleans within - and + unary operations)
+  - Type validation should be done in binary op pruning to reduce the number of steps
  - Datatype guessing (for doubles, ints and strings within operations)
  - Explicit and implicit casting:
   - Explicit casting should be checked semantically
@@ -29,6 +32,10 @@
  - for lexing and evaluating
  - i += x + y    is equivalent to   i = i + (x + y)
 
+# Optimisation
+ - Var simplification
+ - Loops optimisation
+
 # Technical Stuff
  - use encapsulation for node members instead of having separate variables to prevent errors
  - Support for non hardcoded evaluators
@@ -37,8 +44,12 @@
 
 # Possible Improvements
  - (Technical debt) Unaries, consts and binary operators being just one class may cause complications in the long run. 
+  - OperationNode IS A MESS!
  - Migrate from using java's exceptions to a custom one with tree traversal
  - Docstrings can be improved
+ - Validation functions can be unified to reduce compile time
+ - add an instance method equals() within Token
+ - Pruning::operationsParserMap
 
 # Syntax Document
  - A syntax document for Milyscript

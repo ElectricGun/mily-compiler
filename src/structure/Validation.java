@@ -63,4 +63,9 @@ public class Validation {
             validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames));
         }
     }
+
+    //TODO implement
+    public static void validateTypes (EvaluatorTree evaluatorTree) throws Exception {
+
+    }
 }
