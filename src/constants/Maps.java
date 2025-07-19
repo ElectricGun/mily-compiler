@@ -40,9 +40,9 @@ public class Maps {
             KEY_DATA_DOUBLE,
             KEY_DATA_INT,
             KEY_DATA_STRING,
-            KEY_DATA_BOOLEAN
+            KEY_DATA_BOOLEAN,
+            KEY_DATA_VOID
     ));
-
 
     protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,

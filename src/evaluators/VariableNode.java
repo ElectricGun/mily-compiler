@@ -1,5 +1,6 @@
 package src.evaluators;
 
+import src.interfaces.Typed;
 import src.tokens.*;
 
 /**
@@ -8,7 +9,7 @@ import src.tokens.*;
  * @author ElectricGun
  */
 
-public abstract class VariableNode extends EvaluatorNode {
+public abstract class VariableNode extends EvaluatorNode implements Typed {
 
     String variableName;
     String type;
@@ -23,12 +24,18 @@ public abstract class VariableNode extends EvaluatorNode {
         return variableName;
     }
 
+    @Override
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
     public String getType() {
         return type;
     }
 
-
     public boolean isDeclared() {
         return !variableName.isEmpty();
     }
+
 }

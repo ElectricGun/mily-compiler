@@ -1,3 +1,6 @@
+# Urgent TODO:
+ - type checking for functionns
+
 # Priority Features:
  - Static typing
  - Datatype validation

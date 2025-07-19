@@ -1,11 +1,10 @@
 package src.structure;
 
 import src.evaluators.*;
-import java.util.*;
-import java.util.function.*;
 
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
+import static src.constants.Data.*;
 
 /**
  * <h1> Class Pruning </h1>
@@ -14,86 +13,6 @@ import static src.constants.Functions.*;
  */
 
 public class Pruning {
-
-    // TODO implement more operators
-    // This doesn't look elegant and can be improved, but eh
-    public static final Map<String, Consumer<OperationNode>> operationsParserMap = new HashMap<>();
-    static {
-        operationsParserMap.put(KEY_OP_ADD, o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftConstantType()) && KEY_DATA_INT.equals(o.getRightConstantType()))) {
-                o.makeConstant((int) (o.getLeftConstantNumeric() + o.getRightConstantNumeric()));
-            } else {
-                o.makeConstant(o.getLeftConstantNumeric() + o.getRightConstantNumeric());
-            }
-        });
-        operationsParserMap.put(KEY_OP_SUB, o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftConstantType()) && KEY_DATA_INT.equals(o.getRightConstantType()))) {
-                o.makeConstant((int) (o.getLeftConstantNumeric() - o.getRightConstantNumeric()));
-
-            } else {
-                o.makeConstant(o.getLeftConstantNumeric() - o.getRightConstantNumeric());
-            }
-        });
-        operationsParserMap.put(KEY_OP_MUL, o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftConstantType()) && KEY_DATA_INT.equals(o.getRightConstantType()))) {
-                o.makeConstant((int) (o.getLeftConstantNumeric() * o.getRightConstantNumeric()));
-
-            } else {
-                o.makeConstant(o.getLeftConstantNumeric() * o.getRightConstantNumeric());
-            }
-        });
-        operationsParserMap.put(KEY_OP_DIV, o -> o.makeConstant(o.getLeftConstantNumeric() / o.getRightConstantNumeric()));
-        operationsParserMap.put(KEY_OP_MOD, o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftConstantType()) && KEY_DATA_INT.equals(o.getRightConstantType()))) {
-                o.makeConstant((int) (o.getLeftConstantNumeric() % o.getRightConstantNumeric()));
-
-            } else {
-                o.makeConstant(o.getLeftConstantNumeric() % o.getRightConstantNumeric());
-            }
-        });
-        operationsParserMap.put(KEY_OP_IDIV, o -> o.makeConstant(
-                (int) Math.floor(
-                        o.getLeftConstantNumeric()
-                                /
-                        o.getRightConstantNumeric()
-                )
-        ));
-        operationsParserMap.put(KEY_OP_POW, o ->{
-            if ((KEY_DATA_INT.equals(o.getLeftConstantType()) && KEY_DATA_INT.equals(o.getRightConstantType()))) {
-                o.makeConstant((int) Math.pow(
-                        o.getLeftConstantNumeric(),
-                        o.getRightConstantNumeric()
-                ));
-
-            } else {
-                o.makeConstant( Math.pow(
-                        o.getLeftConstantNumeric(),
-                        o.getRightConstantNumeric()
-                ));
-            }
-        });
-    }
-
-    public static final Map<String, Consumer<OperationNode>> castsParserMap = new HashMap<>();
-    static {
-        castsParserMap.put(KEY_DATA_INT, o -> {
-            o.setType(KEY_DATA_INT);
-            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string)
-            );
-        });
-        castsParserMap.put(KEY_DATA_DOUBLE, o -> {
-            // TODO currently this does nothing, why would you cast to a double?
-        });
-        castsParserMap.put(KEY_DATA_BOOLEAN, o -> {
-            // TODO currently this does nothing
-        });
-        castsParserMap.put(KEY_DATA_STRING, o -> {
-            // TODO currently this does nothing
-        });
-        castsParserMap.put(KEY_DATA_LET, o -> {
-            // TODO currently this does nothing
-        });
-    }
 
     public static EvaluatorTree pruneEmptyOperations(EvaluatorTree evaluatorTree) {
         pruneEmptyOperationsHelper(evaluatorTree.mainBlock, null);
@@ -110,7 +29,7 @@ public class Pruning {
             truncateEmptyOperationChildrenRecursive(operationNode);
 
             // truncate self if empty
-            if (operationNode.isBlank() && parent != null) {
+            if (operationNode.isEmptyConstant() && parent != null) {
                 parent.replaceMember(operationNode, operationNode.getLeftSide());
             }
         }
@@ -121,14 +40,14 @@ public class Pruning {
     }
 
     private static void truncateEmptyOperationChildrenRecursive(OperationNode operationNode) {
-        if (operationNode.getLeftSide() != null && operationNode.getLeftSide().isBlank()) {
-            while (operationNode.getLeftSide().isBlank()) {
+        if (operationNode.getLeftSide() != null && operationNode.getLeftSide().isEmptyConstant()) {
+            while (operationNode.getLeftSide().isEmptyConstant()) {
                 operationNode.setLeftSide(operationNode.getLeftSide().getLeftSide());
             }
         }
 
-        if (operationNode.getRightSide() != null && operationNode.getRightSide().isBlank()) {
-            while (operationNode.getRightSide().isBlank())
+        if (operationNode.getRightSide() != null && operationNode.getRightSide().isEmptyConstant()) {
+            while (operationNode.getRightSide().isEmptyConstant())
                 operationNode.setRightSide(operationNode.getRightSide().getLeftSide());
         }
     }
@@ -173,26 +92,6 @@ public class Pruning {
             simplifyNestedUnariesHelper(evaluatorNode.getMember(i), evaluatorNode);
         }
     }
-
-//    public static EvaluatorTree simplifyCasts(EvaluatorTree evaluatorTree) throws Exception {
-//        simplifyCastsHelper(evaluatorTree.mainBlock, null);
-//
-//        return evaluatorTree;
-//    }
-//
-//    private static void simplifyCastsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
-//        if (evaluatorNode == null)
-//            return;
-//
-//        if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
-//            while (opCurrent.isUnary()) {
-//                if (opCurrent.getMember(0) instanceof OperationNode opChild && opChild.isUnary()) {
-//                    parent.replaceMember(opCurrent, opChild);
-//                }
-//            }
-//        }
-//
-//    }
 
     public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree) throws Exception {
         convertUnariesToBinaryHelper(evaluatorTree.mainBlock, null);

@@ -31,6 +31,7 @@ public class Main {
 
         System.out.printf("%n---------------\tValidating Tree\t%n%n");
         validateDeclarations(evaluatorTree);
+        validateTypes(evaluatorTree);
 
         System.out.printf("%n---------------\tSyntax Tree (CLEANED)\t%n%n");
         EvaluatorTree pruned = pruneEmptyOperations(evaluatorTree);

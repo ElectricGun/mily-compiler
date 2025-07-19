@@ -25,7 +25,7 @@ public class OperationNode extends EvaluatorNode {
     String type = KEY_OP_TYPE_CONSTANT;
     String operator = "";
 
-    public Token constantToken = null;
+    public TypedToken constantToken = null;
     public List<OperationBracketNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
@@ -103,7 +103,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     private String getSideConstantTokenString(OperationNode side) {
-        if (side != null && !side.isBlank()) {
+        if (side != null && !side.isEmptyConstant()) {
             return side.constantToken.string;
 
         } else {
@@ -140,12 +140,12 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public String getLeftConstantType() {
-        return getValueType(getLeftConstantString());
+        return Functions.getValueType(getLeftConstantString());
 
     }
 
     public String getRightConstantType() {
-        return getValueType(getRightConstantString());
+        return Functions.getValueType(getRightConstantString());
     }
 
     @Override
@@ -167,7 +167,7 @@ public class OperationNode extends EvaluatorNode {
                     continue;
                 }
 
-                // function calls should be evaluated here because they dont change the order of operations
+                // function calls should be evaluated here because they don't change the order of operations
                 // and can be regarded as constants
                 // store them as class FunctionCallToken
 
@@ -189,7 +189,7 @@ public class OperationNode extends EvaluatorNode {
 
                     } else {
                         System.out.println(indent + "bracket found");
-                        // see if its an explicit cast
+                        // see if it's an explicit cast
                         // it has to be in this order:
                         // variable name or datatype -> ) -> constant or opening bracket
                         List<Token> castTokens = new ArrayList<>();
@@ -233,7 +233,6 @@ public class OperationNode extends EvaluatorNode {
 
                         if (!datatypeFound || !closeBracketFound || !constantFound) {
                             operationTokens.add(token);
-                            System.out.println(operationTokens);
                         } else {
                             System.out.println(indent + "cast found (" + datatypeToken.string + ")");
                             CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.line);
@@ -287,7 +286,7 @@ public class OperationNode extends EvaluatorNode {
                         }
 
                         // this is checking for unary operators,
-                        // if its an explicit cast
+                        // if it's an explicit cast
                         if (currentOperationToken instanceof CastToken) {
                             orders.set(i, -2);
                         }
@@ -366,12 +365,11 @@ public class OperationNode extends EvaluatorNode {
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             setLeftSide(bracketToken.getOperationEvaluator());
-                            return this;
 
                         } else {
-                            constantToken = newConstantToken;
-                            return this;
+                            constantToken = TypedToken.fromToken(newConstantToken, Functions.getValueType(newConstantToken.string));
                         }
+                        return this;
                     }
                     // if it has -1 or -4 on the right and a -2 operator on the left
                     // for unary operators
@@ -394,7 +392,7 @@ public class OperationNode extends EvaluatorNode {
 
                         } else {
                             OperationNode op = new OperationNode(this.token, depth + 1);
-                            op.constantToken = newConstantToken;
+                            op.constantToken = TypedToken.fromToken(newConstantToken, Functions.getValueType(newConstantToken.string));
                             setLeftSide(op);
                         }
                         return this;
@@ -420,7 +418,7 @@ public class OperationNode extends EvaluatorNode {
         throw new Exception("Unexpected end of file");
     }
 
-    public boolean isBlank() {
+    public boolean isEmptyConstant() {
         return constantToken == null && type.equals(KEY_OP_TYPE_CONSTANT);
     }
 
@@ -428,12 +426,9 @@ public class OperationNode extends EvaluatorNode {
         return Functions.equals(KEY_OP_TYPE_CONSTANT, type);
     }
 
-    public boolean isGroup() {
-        return Functions.equals(KEY_OP_TYPE_GROUP, type);
-    }
-
     public void makeConstant(String newString) {
-        this.constantToken = new Token(newString, this.token.line);
+        String newTokenType = Functions.getValueType(newString);
+        this.constantToken = new TypedToken(newString, this.token.line, newTokenType);
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);
         setRightSide(null);
@@ -452,6 +447,10 @@ public class OperationNode extends EvaluatorNode {
         return (getLeftSide() == null || getRightSide() == null) && members.size() == 1;
     }
 
+    public boolean isBinary() {
+        return !isUnary() && !isConstant();
+    }
+
     public OperationNode asBinaryFromMember(int memberIndex) {
         OperationNode newOp = new OperationNode(this.token, depth);
 
@@ -462,7 +461,7 @@ public class OperationNode extends EvaluatorNode {
         newOp.setLeftSide(memberChild);
 
         OperationNode factorConstant = new OperationNode(this.token, depth + 1);
-        factorConstant.constantToken = new Token(this.operator.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line);
+        factorConstant.constantToken = new TypedToken(this.operator.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line, KEY_DATA_INT);
         newOp.setRightSide(factorConstant);
 
         return newOp;
@@ -481,7 +480,7 @@ public class OperationNode extends EvaluatorNode {
             return "unary cast(\"" + operator + "\")";
         }
 
-        if (isBlank()) {
+        if (isEmptyConstant()) {
             return "empty";
         }
 

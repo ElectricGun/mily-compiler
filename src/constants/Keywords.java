@@ -42,6 +42,10 @@ public class Keywords {
         KEY_DATA_DOUBLE = "double",
         KEY_DATA_STRING = "string",
         KEY_DATA_BOOLEAN = "boolean",
+        KEY_DATA_VOID = "void",
+
+    // keywords: other datatypes (not in maps)
+        KEY_DATA_UNKNOWN = "key_unknown",
 
     // operators
         KEY_OP_ASSIGN = "=",

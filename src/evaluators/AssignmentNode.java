@@ -3,6 +3,8 @@ package src.evaluators;
 import src.tokens.*;
 import java.util.*;
 
+import static src.constants.Keywords.*;
+
 /**
  * <h1> Class AssignmentNode </h1>
  * Used for both operation and function assignments.
@@ -16,7 +18,7 @@ public class AssignmentNode extends VariableNode {
     OperationNode expression = null;
 
     public AssignmentNode(Token token, int depth) {
-        super(null, token, depth);
+        super(KEY_DATA_UNKNOWN, token, depth);
     }
 
     @Override
@@ -35,6 +37,6 @@ public class AssignmentNode extends VariableNode {
 
     @Override
     public String toString() {
-        return "assign %s =".formatted(variableName);
+        return String.format("assign %s = %s", type, variableName);
     }
 }

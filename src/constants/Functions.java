@@ -273,6 +273,6 @@ public class Functions {
         } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
             return KEY_DATA_BOOLEAN;
         }
-        return null;
+        return KEY_DATA_UNKNOWN;
     }
 }

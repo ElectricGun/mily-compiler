@@ -2,6 +2,8 @@ package src.tokens;
 
 import src.evaluators.*;
 
+import static src.constants.Keywords.*;
+
 /**
  * A token used to store parentheses within expressions
  * @author ElectricGun
@@ -12,7 +14,7 @@ public class BracketToken extends TypedToken {
     private final OperationNode operationNode;
 
     public BracketToken(String string, int line, OperationNode operationNode) {
-        super(string, line);
+        super(string, line, KEY_DATA_UNKNOWN);
 
         this.operationNode = operationNode;
     }

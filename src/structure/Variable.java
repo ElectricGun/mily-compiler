@@ -1,6 +1,10 @@
 package src.structure;
 
+import src.interfaces.Typed;
+
 import java.util.*;
+
+import static src.constants.Keywords.*;
 
 /**
  * <h1> Class Variable </h1>
@@ -9,7 +13,7 @@ import java.util.*;
  * @author ElectricGun
  */
 
-public class Variable {
+public class Variable implements Typed {
 
     String name;
     String type;
@@ -24,6 +28,16 @@ public class Variable {
         return variable.getClass() == this.getClass() &&
                 Objects.equals(((Variable) variable).type, this.type) &&
                 Objects.equals(((Variable) variable).name, this.name);
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

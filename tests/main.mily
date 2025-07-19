@@ -9,6 +9,7 @@ but the library import feature (#include) has not been implemented yet (too eepy
 void print() {}
 /- end placeholders
 
+
 /---------- Variable Declarations ----------
 let num = 20;
 int x = 6;
@@ -60,4 +61,25 @@ boolean complex_function(let h, let j) {
 }
 
 let complex = (int) (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)) - 10)) + 289;
+
+/-------------------- Semantic Errors (uncomment the lines to see)  --------------------
+
+/---------- Undeclared Variable
+/- amongus = 100;                    /- Variable "amongus" on line 68 is undeclared on file "main.mily"
+
+/---------- Wrong Type Declaration
+/- int value = false;                /- Cannot cast "boolean" into "int" on line 71
+
+/---------- Wrong Type Assignment
+/- boolean check = true;
+/- check = 10.4;                     /- Cannot cast "double" into "boolean" on line 75
+
+/---------- Wrong Type in Operation
+/- let wrong_op = (7 * 9) + false;   /- Invalid types "int" and "boolean" in operation on line 78
+
+/---------- Redeclaration
+/- let red = 10;
+/- boolean red = 39;                 /- Variable "red" on line 1 is already declared within scope, file "main.mily"
+
+
 
