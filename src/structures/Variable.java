@@ -1,10 +1,9 @@
-package src.structure;
+package src.structures;
 
 import src.interfaces.Typed;
+import src.processing.Validation;
 
 import java.util.*;
-
-import static src.constants.Keywords.*;
 
 /**
  * <h1> Class Variable </h1>

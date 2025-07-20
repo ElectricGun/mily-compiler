@@ -1,14 +1,15 @@
 package src;
 
 import java.util.*;
-import src.constants.*;
+
+import src.structures.CodeFile;
 import src.tokens.*;
 import src.evaluators.*;
 
 import static src.constants.Functions.*;
-import static src.structure.Lexing.*;
-import static src.structure.Pruning.*;
-import static src.structure.Validation.*;
+import static src.processing.Lexing.*;
+import static src.processing.Pruning.*;
+import static src.processing.Validation.*;
 
 public class Main {
 
