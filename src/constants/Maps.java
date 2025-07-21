@@ -183,7 +183,7 @@ public class Maps {
         Consumer<OperationNode> divConsumer = o ->
                 o.makeConstant(o.getLeftConstantNumeric() / o.getRightConstantNumeric());
 
-        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT,    divConsumer);
+        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_DOUBLE, divConsumer);
         operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, divConsumer);
         operationMap.addOperation(KEY_OP_DIV, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, divConsumer);
         operationMap.addOperation(KEY_OP_DIV, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, divConsumer);

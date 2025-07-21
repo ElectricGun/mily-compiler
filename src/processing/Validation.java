@@ -42,7 +42,7 @@ public class Validation {
             if (member instanceof FunctionArgNode functionArgNode) {
                 String declaredVar = functionArgNode.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, on file \"%s\"".formatted(functionArgNode.getVariableName(), evaluatorNode.token.line, evaluatorTree.name));
+                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, on file \"%s\"".formatted(functionArgNode.getVariableName(), member.token.line, evaluatorTree.name));
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(functionArgNode.getType());
@@ -50,7 +50,7 @@ public class Validation {
             } else if (member instanceof DeclarationNode memberDeclaration) {
                 String declaredVar = memberDeclaration.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, file \"%s\"".formatted(memberDeclaration.getVariableName(), evaluatorNode.token.line, evaluatorTree.name));
+                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, file \"%s\"".formatted(memberDeclaration.getVariableName(), member.token.line, evaluatorTree.name));
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(memberDeclaration.getType());
@@ -58,7 +58,7 @@ public class Validation {
             } else if (member instanceof AssignmentNode memberAssignment) {
                 String assignedVar = memberAssignment.getVariableName();
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberAssignment.getVariableName(), memberAssignment.token.line, evaluatorTree.name));
+                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberAssignment.getVariableName(), member.token.line, evaluatorTree.name));
                 }
 
                 if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
@@ -71,7 +71,7 @@ public class Validation {
             } else if (member instanceof OperationNode memberOp && isVariableName(memberOp.constantToken)) {
                 String assignedVar = memberOp.constantToken.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberOp.constantToken.string, memberOp.token.line, evaluatorTree.name));
+                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberOp.constantToken.string, member.token.line, evaluatorTree.name));
                 }
 
                 if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
@@ -83,7 +83,7 @@ public class Validation {
             } else if (member instanceof FunctionCallNode functionDeclareMember) {
                 String assignedVar = functionDeclareMember.token.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    throw new Exception("Function \"%s\" on line %s is undeclared on file \"%s\"".formatted(functionDeclareMember.token.string, functionDeclareMember.token.line, evaluatorTree.name));
+                    throw new Exception("Function \"%s\" on line %s is undeclared on file \"%s\"".formatted(functionDeclareMember.token.string, member.token.line, evaluatorTree.name));
                 }
             }
             validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames), new ArrayList<>(variableTypes), doAssignTypes);

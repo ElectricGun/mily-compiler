@@ -5,6 +5,7 @@
 
 # Problems:
  - Doing this /* *********/ throws unclosed comment error
+ - division always returns a double, so int x = 5 / 7 (should be intentional, because // intdiv exists)
 
 # Priority Features:
  - Static typing
