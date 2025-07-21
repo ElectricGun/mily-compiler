@@ -228,28 +228,25 @@ public class Maps {
         };
         addGenericNumericOperation(KEY_OP_POW, powConsumer);
 
-        // implicit casts
-        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, o -> {
+        // ---- Casts
+
+        Consumer<OperationNode> castToInt = o -> {
+            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
+        };
+        Consumer<OperationNode> castToDouble = o -> {
             o.makeConstant(Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        });
+        };
+
+        // implicit casts
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
 
         // explicit casts
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, o -> {
-            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        });
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
 
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, o -> {
-            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        });
-
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, o -> {
-            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        });
-
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, o -> {
-            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        });
-
+        // TODO implement
         // comparisons
         addGenericNumericComparison(KEY_OP_LESS_THAN, o -> {});
         addGenericNumericComparison(KEY_OP_GREATER_THAN, o -> {});
