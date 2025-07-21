@@ -1,8 +1,8 @@
 package src.evaluators;
 
-import src.constants.*;
-import src.tokens.*;
 import java.util.*;
+import src.tokens.*;
+import src.constants.*;
 
 import static src.constants.Keywords.*;
 

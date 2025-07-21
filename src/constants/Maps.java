@@ -1,10 +1,9 @@
 package src.constants;
 
-import src.evaluators.OperationNode;
-import src.structures.OperationMap;
-
+import src.evaluators.*;
+import src.structures.*;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 import static src.constants.Keywords.*;
 

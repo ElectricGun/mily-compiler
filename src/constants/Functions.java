@@ -1,9 +1,10 @@
 package src.constants;
 
-import src.structures.CodeFile;
-import src.tokens.*;
 import java.io.*;
 import java.util.*;
+import src.tokens.*;
+import src.structures.*;
+
 import static src.constants.Maps.*;
 import static src.constants.Keywords.*;
 

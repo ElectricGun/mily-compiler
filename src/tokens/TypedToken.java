@@ -1,6 +1,6 @@
 package src.tokens;
 
-import src.interfaces.Typed;
+import src.interfaces.*;
 
 /**
  * A token with a datatype

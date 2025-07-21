@@ -2,7 +2,7 @@ package src;
 
 import java.util.*;
 
-import src.structures.CodeFile;
+import src.structures.*;
 import src.tokens.*;
 import src.evaluators.*;
 

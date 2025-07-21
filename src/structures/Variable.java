@@ -1,7 +1,7 @@
 package src.structures;
 
-import src.interfaces.Typed;
-import src.processing.Validation;
+import src.interfaces.*;
+import src.processing.*;
 
 import java.util.*;
 

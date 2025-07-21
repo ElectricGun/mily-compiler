@@ -1,6 +1,6 @@
 package src.evaluators;
 
-import src.interfaces.Typed;
+import src.interfaces.*;
 import src.tokens.*;
 
 /**
