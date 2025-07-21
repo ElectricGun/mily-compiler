@@ -258,7 +258,7 @@ public class Functions {
         return isInteger(String.valueOf(c));
     }
 
-    public static String getValueType(String s) {
+    public static String guessValueType(String s) {
         if (s == null)
             return null;
 

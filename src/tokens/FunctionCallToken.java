@@ -9,7 +9,7 @@ import src.evaluators.*;
 
 public class FunctionCallToken extends Token {
 
-    private FunctionCallNode functionCallNode;
+    FunctionCallNode functionCallNode;
 
     public FunctionCallToken(String string, int line, FunctionCallNode functionCallNode) {
         super(string, line);

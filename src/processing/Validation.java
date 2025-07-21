@@ -3,9 +3,9 @@ package src.processing;
 import java.util.*;
 import src.evaluators.*;
 
-import static src.constants.Data.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
+import static src.constants.Maps.*;
 
 /**
  * <h1> Class Validation </h1>
@@ -21,14 +21,14 @@ public class Validation {
      * @throws Exception When declaring a variable that is already declared
      * @throws Exception When referencing a variable that does not exist
      */
-    public static void validateDeclarations(EvaluatorTree evaluatorTree) throws Exception {
+    public static void validateDeclarations(EvaluatorTree evaluatorTree, boolean doAssignTypes) throws Exception {
         List<String> declaredVariablesNames = new ArrayList<>();
         List<String> variableTypes = new ArrayList<>();
 
-        validateDeclarationsHelper(evaluatorTree, evaluatorTree.mainBlock, declaredVariablesNames, variableTypes);
+        validateDeclarationsHelper(evaluatorTree, evaluatorTree.mainBlock, declaredVariablesNames, variableTypes, doAssignTypes);
     }
 
-    private static void validateDeclarationsHelper(EvaluatorTree evaluatorTree,  EvaluatorNode evaluatorNode, List<String> declaredVariablesNames, List<String> variableTypes) throws Exception {
+    private static void validateDeclarationsHelper(EvaluatorTree evaluatorTree,  EvaluatorNode evaluatorNode, List<String> declaredVariablesNames, List<String> variableTypes, boolean doAssignTypes) throws Exception {
         System.out.println("Node: " + evaluatorNode + "\nVariables: " + declaredVariablesNames + "\nTypes: " + variableTypes);
 
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
@@ -65,7 +65,8 @@ public class Validation {
 
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
-                    memberAssignment.setType(type);
+                    if (doAssignTypes)
+                        memberAssignment.setType(type);
                 }
             } else if (member instanceof OperationNode memberOp && isVariableName(memberOp.constantToken)) {
                 String assignedVar = memberOp.constantToken.string;
@@ -76,7 +77,8 @@ public class Validation {
                 if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
-                    memberOp.constantToken.setType(type);
+                    if (doAssignTypes)
+                        memberOp.constantToken.setType(type);
                 }
             } else if (member instanceof FunctionCallNode functionDeclareMember) {
                 String assignedVar = functionDeclareMember.token.string;
@@ -84,7 +86,7 @@ public class Validation {
                     throw new Exception("Function \"%s\" on line %s is undeclared on file \"%s\"".formatted(functionDeclareMember.token.string, functionDeclareMember.token.line, evaluatorTree.name));
                 }
             }
-            validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames), new ArrayList<>(variableTypes));
+            validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames), new ArrayList<>(variableTypes), doAssignTypes);
         }
     }
 
@@ -96,42 +98,36 @@ public class Validation {
         validateTypesHelper(evaluatorTree.mainBlock, null);
     }
 
-    public static boolean checkTypeValidity(String type, String type2) throws Exception {
-        if (!validTypesMap.containsKey(type))
-            throw new Exception("Unknown type " + type);
-
-        if (type.equals(type2))
-            return true;
-
-        return validTypesMap.get(type).contains(type2);
-    }
-
+//    public static boolean checkTypeValidity(String type, String type2) throws Exception {
+//        if (!validTypesMap.containsKey(type))
+//            throw new Exception("Unknown type " + type);
+//
+//        if (type.equals(type2))
+//            return true;
+//
+//        return validTypesMap.get(type).contains(type2);
+//    }
+//
     public static boolean canImplicitCast(String type, String type2) {
-        if (!implicitCastsMap.containsKey(type))
-            return false;
-
-        if (type.equals(type2))
-            return true;
-
-        return implicitCastsMap.get(type).contains(type2);
+        return operationMap.isOperationValid(KEY_OP_CAST_IMPLICIT, type, type2);
     }
-
-    public static String getImplicitCastType(String type, String type2) throws Exception {
-        if (type.equals(type2))
-            return type;
-
-        if (implicitCastsMap.containsKey(type)) {
-            implicitCastsMap.get(type).contains(type2);
-            return type2;
-        }
-
-        if (implicitCastsMap.containsKey(type2)) {
-            implicitCastsMap.get(type2).contains(type);
-            return type;
-        }
-
-        throw new Exception("Illegal relation between types " + type + " and " + type2);
-    }
+//
+//    public static String getImplicitCastType(String type, String type2) throws Exception {
+//        if (type.equals(type2))
+//            return type;
+//
+//        if (implicitCastsMap.containsKey(type)) {
+//            implicitCastsMap.get(type).contains(type2);
+//            return type2;
+//        }
+//
+//        if (implicitCastsMap.containsKey(type2)) {
+//            implicitCastsMap.get(type2).contains(type);
+//            return type;
+//        }
+//
+//        throw new Exception("Illegal relation between types " + type + " and " + type2);
+//    }
 
     private static String validateTypesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
         String type = KEY_DATA_UNKNOWN;
@@ -152,14 +148,7 @@ public class Validation {
                     rightType = validateTypesHelper(operationNode.getRightSide(), operationNode);
                 }
 
-                // check if the types are valid together
-                if (!checkTypeValidity(leftType, rightType)) {
-                    throw new Exception(String.format("Invalid types \"%s\" and \"%s\" in operation on line %s", leftType, rightType, evaluatorNode.token.line));
-                }
-
-                type = getImplicitCastType(leftType, rightType);
-
-                // TODO check if the operators can apply
+                type = operationMap.getCastTo(operationNode.getOperator(), leftType, rightType);
 
             } else if (operationNode.isUnary()) {
 

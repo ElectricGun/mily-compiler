@@ -1,5 +1,10 @@
 # Urgent TODO:
- - type checking for functionns
+ - OperationMap; map for operations and casting
+ - casts should be able to be converted into binary operations, with the datatype as the 2nd operand
+ - type checking for functions
+
+# Problems:
+ - Doing this /* *********/ throws unclosed comment error
 
 # Priority Features:
  - Static typing
@@ -11,8 +16,11 @@
  - Numeric expression solving
  - Loop simplifying
 
-# Correct Pipeline
+# Planned Pipeline
 - Lexing -> AST -> Validation -> Pruning -> IR -> Mlog
+
+# Actual Pipeline
+- Lexing -> AST -> Unary to Binary -> Validation -> Pruning
 
 # Datatypes
  - Static typing

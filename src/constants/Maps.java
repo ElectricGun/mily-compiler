@@ -1,6 +1,11 @@
 package src.constants;
 
+import src.evaluators.OperationNode;
+import src.structures.OperationMap;
+
 import java.util.*;
+import java.util.function.Consumer;
+
 import static src.constants.Keywords.*;
 
 /**
@@ -120,5 +125,139 @@ public class Maps {
         PEMDAS.put(KEY_BOP_OR, 8);
         PEMDAS.put(KEY_OP_AND, 9);
         PEMDAS.put(KEY_OP_OR, 10);
+    }
+
+    static void addGenericNumericOperation(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT,    consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+    }
+
+    static void addGenericNumericComparison(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
+    }
+
+    public static final OperationMap operationMap = new OperationMap();
+    static {
+
+        // TODO looks quite horrible rn
+        // TODO add more operators
+
+        // addition
+        Consumer<OperationNode> addConsumer = o -> {
+            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+                o.makeConstant((int) (o.getLeftConstantNumeric() + o.getRightConstantNumeric()));
+            } else {
+                o.makeConstant(o.getLeftConstantNumeric() + o.getRightConstantNumeric());
+            }
+        };
+        addGenericNumericOperation(KEY_OP_ADD, addConsumer);
+
+        // subtraction
+        Consumer<OperationNode> subConsumer = o -> {
+            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+                o.makeConstant((int) (o.getLeftConstantNumeric() - o.getRightConstantNumeric()));
+
+            } else {
+                o.makeConstant(o.getLeftConstantNumeric() - o.getRightConstantNumeric());
+            }
+        };
+        addGenericNumericOperation(KEY_OP_SUB, subConsumer);
+
+        // multiplication
+        Consumer<OperationNode> mulConsumer = o -> {
+            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+                o.makeConstant((int) (o.getLeftConstantNumeric() * o.getRightConstantNumeric()));
+
+            } else {
+                o.makeConstant(o.getLeftConstantNumeric() * o.getRightConstantNumeric());
+            }
+        };
+        addGenericNumericOperation(KEY_OP_MUL, mulConsumer);
+
+        // division
+        Consumer<OperationNode> divConsumer = o ->
+                o.makeConstant(o.getLeftConstantNumeric() / o.getRightConstantNumeric());
+
+        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT,    divConsumer);
+        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, divConsumer);
+        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, divConsumer);
+        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, divConsumer);
+
+        // modulo
+        Consumer<OperationNode> modConsumer = o -> {
+            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+                o.makeConstant((int) (o.getLeftConstantNumeric() % o.getRightConstantNumeric()));
+
+            } else {
+                o.makeConstant(o.getLeftConstantNumeric() % o.getRightConstantNumeric());
+            }
+        };
+        addGenericNumericOperation(KEY_OP_MOD, modConsumer);
+
+        // integer division
+        Consumer<OperationNode> intdivConsumer = o -> o.makeConstant(
+                (int) Math.floor(
+                        o.getLeftConstantNumeric()
+                                /
+                                o.getRightConstantNumeric()
+                )
+        );
+        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT, intdivConsumer);
+        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_INT, intdivConsumer);
+        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_INT, intdivConsumer);
+        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, intdivConsumer);
+
+        // power
+        Consumer<OperationNode> powConsumer = o ->{
+            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+                o.makeConstant((int) Math.pow(
+                        o.getLeftConstantNumeric(),
+                        o.getRightConstantNumeric()
+                ));
+
+            } else {
+                o.makeConstant( Math.pow(
+                        o.getLeftConstantNumeric(),
+                        o.getRightConstantNumeric()
+                ));
+            }
+        };
+        addGenericNumericOperation(KEY_OP_POW, powConsumer);
+
+        // implicit casts
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, o -> {
+            o.makeConstant(Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
+        });
+
+        // explicit casts
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, o -> {
+            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
+        });
+
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, o -> {
+            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
+        });
+
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, o -> {
+            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
+        });
+
+        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, o -> {
+            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
+        });
+
+        // comparisons
+        addGenericNumericComparison(KEY_OP_LESS_THAN, o -> {});
+        addGenericNumericComparison(KEY_OP_GREATER_THAN, o -> {});
+        addGenericNumericComparison(KEY_OP_LESS_THAN_EQUALS, o -> {});
+        addGenericNumericComparison(KEY_OP_GREATER_THAN_EQUALS, o -> {});
+        addGenericNumericComparison(KEY_OP_EQUALS, o -> {});
+        addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
+        addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
     }
 }

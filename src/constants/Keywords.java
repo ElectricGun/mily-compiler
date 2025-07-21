@@ -45,7 +45,7 @@ public class Keywords {
         KEY_DATA_VOID = "void",
 
     // keywords: other datatypes (not in maps)
-        KEY_DATA_UNKNOWN = "key_unknown",
+        KEY_DATA_UNKNOWN = "unknown_type",
 
     // operators
         KEY_OP_ASSIGN = "=",
@@ -83,5 +83,6 @@ public class Keywords {
         KEY_OP_TYPE_CONSTANT = "key_constant",
         KEY_OP_TYPE_OPERATION = "key_operation",
         KEY_OP_TYPE_GROUP = "key_group",
-        KEY_OP_TYPE_CAST = "key_cast";
+        KEY_OP_CAST_EXPLICIT = "key_cast_explicit",
+        KEY_OP_CAST_IMPLICIT = "key_op_type_cast_implicit";
 }

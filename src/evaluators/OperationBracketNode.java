@@ -40,12 +40,11 @@ public class OperationBracketNode extends EvaluatorNode {
             System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
             if (token.length() == 1 && Functions.equals(KEY_BRACKET_OPEN, token)) {
                 bracketCounter ++;
-            } else
-            if (token.length() == 1 && Functions.equals(KEY_BRACKET_CLOSE, token)) {
+
+            } else if (token.length() == 1 && Functions.equals(KEY_BRACKET_CLOSE, token)) {
                 // replace closing bracket with a constant indicator
                 bracketCounter --;
             }
-
             if (bracketCounter < 0) {
                 OperationNode operationNode = new OperationNode(new Token(this.token.string, this.token.line), depth + 1);
                 operationTokens.add(new Token(";", this.token.line));

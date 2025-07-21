@@ -139,13 +139,20 @@ public class OperationNode extends EvaluatorNode {
                 (int) Double.parseDouble(getRightConstantString()) : null;
     }
 
-    public String getLeftConstantType() {
-        return Functions.getValueType(getLeftConstantString());
-
+    public String guessLeftType() {
+        return Functions.guessValueType(getLeftConstantString());
     }
 
-    public String getRightConstantType() {
-        return Functions.getValueType(getRightConstantString());
+    public String guessRightType() {
+        return Functions.guessValueType(getRightConstantString());
+    }
+
+    public String getLeftTokenType() {
+        return getLeftSide().constantToken.getType();
+    }
+
+    public String getRightTokenType() {
+        return getRightSide().constantToken.getType();
     }
 
     @Override
@@ -331,7 +338,7 @@ public class OperationNode extends EvaluatorNode {
                         Token largestOp = operationTokens.get(largestOrderIndex);
 
                         if (largestOp instanceof CastToken castToken) {
-                            type = KEY_OP_TYPE_CAST;
+                            type = KEY_OP_CAST_EXPLICIT;
                             operator = castToken.getType();
                         } else {
                             type = KEY_OP_TYPE_OPERATION;
@@ -367,7 +374,7 @@ public class OperationNode extends EvaluatorNode {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
                         } else {
-                            constantToken = TypedToken.fromToken(newConstantToken, Functions.getValueType(newConstantToken.string));
+                            constantToken = TypedToken.fromToken(newConstantToken, Functions.guessValueType(newConstantToken.string));
                         }
                         return this;
                     }
@@ -378,7 +385,7 @@ public class OperationNode extends EvaluatorNode {
                         Token unaryOp = operationTokens.removeFirst();
 
                         if (unaryOp instanceof CastToken castToken) {
-                            type = KEY_OP_TYPE_CAST;
+                            type = KEY_OP_CAST_EXPLICIT;
                             operator = castToken.getType();
 
                         } else {
@@ -392,7 +399,7 @@ public class OperationNode extends EvaluatorNode {
 
                         } else {
                             OperationNode op = new OperationNode(this.token, depth + 1);
-                            op.constantToken = TypedToken.fromToken(newConstantToken, Functions.getValueType(newConstantToken.string));
+                            op.constantToken = TypedToken.fromToken(newConstantToken, Functions.guessValueType(newConstantToken.string));
                             setLeftSide(op);
                         }
                         return this;
@@ -427,7 +434,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public void makeConstant(String newString) {
-        String newTokenType = Functions.getValueType(newString);
+        String newTokenType = Functions.guessValueType(newString);
         this.constantToken = new TypedToken(newString, this.token.line, newTokenType);
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);
@@ -455,20 +462,25 @@ public class OperationNode extends EvaluatorNode {
         OperationNode newOp = new OperationNode(this.token, depth);
 
         OperationNode memberChild = (OperationNode) this.getMember(memberIndex);
-        memberChild.depth += 1;
-        newOp.operator = KEY_OP_MUL;
-        newOp.type = KEY_OP_TYPE_OPERATION;
-        newOp.setLeftSide(memberChild);
-
         OperationNode factorConstant = new OperationNode(this.token, depth + 1);
-        factorConstant.constantToken = new TypedToken(this.operator.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line, KEY_DATA_INT);
-        newOp.setRightSide(factorConstant);
+        memberChild.depth += 1;
+        newOp.type = KEY_OP_TYPE_OPERATION;
 
+        if (!isCast()) {
+            newOp.operator = KEY_OP_MUL;
+            factorConstant.constantToken = new TypedToken(this.operator.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line, KEY_DATA_INT);
+        } else {
+            newOp.operator = KEY_OP_CAST_EXPLICIT;
+            factorConstant.constantToken = new TypedToken("1", this.token.line, this.operator);
+        }
+
+        newOp.setLeftSide(memberChild);
+        newOp.setRightSide(factorConstant);
         return newOp;
     }
 
     public boolean isCast() {
-        return Functions.equals(KEY_OP_TYPE_CAST, type);
+        return Functions.equals(KEY_OP_CAST_EXPLICIT, type);
     }
 
     @Override
@@ -476,7 +488,7 @@ public class OperationNode extends EvaluatorNode {
         //TODO fix this stupid thing
         String out = "";
 
-        if (Functions.equals(KEY_OP_TYPE_CAST, type)) {
+        if (Functions.equals(KEY_OP_CAST_EXPLICIT, type)) {
             return "unary cast(\"" + operator + "\")";
         }
 

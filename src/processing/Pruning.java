@@ -4,7 +4,7 @@ import src.evaluators.*;
 
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
-import static src.constants.Data.*;
+import static src.constants.Maps.*;
 
 /**
  * <h1> Class Pruning </h1>
@@ -93,20 +93,21 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree) throws Exception {
+    public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree) {
         convertUnariesToBinaryHelper(evaluatorTree.mainBlock, null);
 
         return evaluatorTree;
     }
 
-    private static void convertUnariesToBinaryHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
+    private static void convertUnariesToBinaryHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
         if (evaluatorNode == null)
             return;
 
         if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
-            if (opCurrent.isUnary() && !opCurrent.isCast()) {
-                System.out.println("converted unary operator" + opCurrent);
-                parent.replaceMember(opCurrent, opCurrent.asBinaryFromMember(0));
+            if (opCurrent.isUnary()) {
+                System.out.println("converted unary operator " + opCurrent);
+                evaluatorNode = opCurrent.asBinaryFromMember(0);
+                parent.replaceMember(opCurrent, evaluatorNode);
             }
         }
 
@@ -147,9 +148,7 @@ public class Pruning {
                 rightIsConstant = operationNode.getRightSide().isConstant();
 
                 if (leftIsConstant && rightIsConstant && leftIsNumeric && rightIsNumeric) {
-                    if (operationsParserMap.containsKey(operationNode.getOperator())) {
-                        operationsParserMap.get(operationNode.getOperator()).accept(operationNode);
-                    }
+                    operationMap.parseOperation(operationNode);
                 }
             } else {
                 simplifyBinaryExpressionsHelper(evaluatorNode.getMember(0), evaluatorNode, parseCasts);
@@ -163,12 +162,13 @@ public class Pruning {
         // validate and parse casts (has to be here because of how binary simplification works)
         if (evaluatorNode instanceof OperationNode operationNode && operationNode.isCast()) {
             if (operationNode.getMember(0) instanceof OperationNode opChild && opChild.isConstant()) {
-                if (castsParserMap.containsKey(operationNode.getOperator())) {
-                    castsParserMap.get(operationNode.getOperator()).accept(operationNode);
-
-                } else {
-                    throw new Exception(String.format("Unknown cast type \"%s\" on line %s", operationNode.getOperator(), evaluatorNode.token.line));
-                }
+//                if (castSolverMap.containsKey(operationNode.getOperator())) {
+//                    castSolverMap.get(operationNode.getOperator()).accept(operationNode);
+//
+//                } else {
+//                    throw new Exception(String.format("Unknown cast type \"%s\" on line %s", operationNode.getOperator(), evaluatorNode.token.line));
+//                }
+                System.out.println("SECTION NOT IMPLEMENTED");
             }
         }
     }
