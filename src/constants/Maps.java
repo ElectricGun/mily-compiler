@@ -140,6 +140,20 @@ public class Maps {
         operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
     }
 
+    static void addNumericOperationToInt(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
+    }
+
+    static void addNumericOperationToDouble(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+    }
+
     public static final OperationMap operationMap = new OperationMap();
     static {
 
@@ -182,10 +196,7 @@ public class Maps {
         Consumer<OperationNode> divConsumer = o ->
                 o.makeConstant(o.getLeftConstantNumeric() / o.getRightConstantNumeric());
 
-        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_DOUBLE, divConsumer);
-        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, divConsumer);
-        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, divConsumer);
-        operationMap.addOperation(KEY_OP_DIV, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, divConsumer);
+        addNumericOperationToDouble(KEY_OP_DIV, divConsumer);
 
         // modulo
         Consumer<OperationNode> modConsumer = o -> {
@@ -206,10 +217,7 @@ public class Maps {
                                 o.getRightConstantNumeric()
                 )
         );
-        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT, intdivConsumer);
-        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_INT, intdivConsumer);
-        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_INT, intdivConsumer);
-        operationMap.addOperation(KEY_OP_IDIV, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, intdivConsumer);
+        addNumericOperationToInt(KEY_OP_IDIV, intdivConsumer);
 
         // power
         Consumer<OperationNode> powConsumer = o ->{
@@ -229,7 +237,6 @@ public class Maps {
         addGenericNumericOperation(KEY_OP_POW, powConsumer);
 
         // ---- Casts
-
         Consumer<OperationNode> castToInt = o -> {
             o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
         };
