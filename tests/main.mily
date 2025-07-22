@@ -84,7 +84,7 @@ let complex_cast_int = (int) (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 +
 /- check = 10.4;                     /- Cannot cast "double" into "boolean" on line 84
 
 /---------- Wrong Type in Operation
-/- let wrong_op = (7 * 9) + false;   /- Invalid types "int" and "boolean" in operation on line 87
+/- let wrong_op = (7 * 9) + false;   /- Operator + cannot be applied to int and boolean
 
 /---------- Redeclaration
 /- let red = 10;

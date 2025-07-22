@@ -52,10 +52,9 @@ public class Lexing {
             else {
                 tokens.add(new Token(tokenString, currentLine));
             }
-        } else {if (Functions.equals(KEY_COMMENT_MULTILINE_END, tokenString)) {
+        } else if (Functions.equals(KEY_COMMENT_MULTILINE_END, tokenString)) {
             commentModeInline = false;
             commentMode = false;
-        }
         }
     }
 
