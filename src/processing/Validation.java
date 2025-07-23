@@ -44,7 +44,6 @@ public class Validation {
         }
     }
 
-
     /**
      * Validates variable declarations and assigns types to variable references.
      * @param evaluatorTree Abstract syntax tree
@@ -130,36 +129,9 @@ public class Validation {
         validateTypesHelper(evaluatorTree.mainBlock, null, debugMode);
     }
 
-//    public static boolean checkTypeValidity(String type, String type2) throws Exception {
-//        if (!validTypesMap.containsKey(type))
-//            throw new Exception("Unknown type " + type);
-//
-//        if (type.equals(type2))
-//            return true;
-//
-//        return validTypesMap.get(type).contains(type2);
-//    }
-//
     public static boolean canImplicitCast(String type, String type2) {
         return operationMap.isOperationValid(KEY_OP_CAST_IMPLICIT, type, type2);
     }
-//
-//    public static String getImplicitCastType(String type, String type2) throws Exception {
-//        if (type.equals(type2))
-//            return type;
-//
-//        if (implicitCastsMap.containsKey(type)) {
-//            implicitCastsMap.get(type).contains(type2);
-//            return type2;
-//        }
-//
-//        if (implicitCastsMap.containsKey(type2)) {
-//            implicitCastsMap.get(type2).contains(type);
-//            return type;
-//        }
-//
-//        throw new Exception("Illegal relation between types " + type + " and " + type2);
-//    }
 
     private static String validateTypesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) throws Exception {
         String type = KEY_DATA_UNKNOWN;
@@ -185,7 +157,7 @@ public class Validation {
 
             } else if (operationNode.isUnary()) {
 
-                // TODO check if the operator can apply
+                // TODO check if the unary operator can apply
                 type = validateTypesHelper(operationNode.getMember(0), evaluatorNode, debugMode);
 
             } else if (operationNode.isConstant()) {

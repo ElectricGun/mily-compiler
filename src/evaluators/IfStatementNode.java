@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -68,7 +67,11 @@ public class IfStatementNode extends ConditionalNode {
                 return throwException("Unexpected token on if statement", token);
             }
         }
-        return throwException("Unexpected end of file", token);
+
+        if (scope == null)
+            return throwException("Unexpected end of file", token);
+        else
+            return this;
     }
 
     @Override

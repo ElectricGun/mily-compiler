@@ -2,7 +2,6 @@ package src;
 
 import java.util.*;
 
-import src.interfaces.MilyThrowable;
 import src.structures.*;
 import src.tokens.*;
 import src.evaluators.*;
@@ -18,7 +17,6 @@ public class Main {
         final boolean debugMode = false;
 
         long startTime = System.nanoTime();
-
         CodeFile code = readFile("tests/main.mily");
 
 //        System.out.printf("%n---------------\tInput Code\t%n%n");

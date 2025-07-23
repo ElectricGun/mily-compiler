@@ -2,6 +2,7 @@
  - OperationMap; map for operations and casting
  - casts should be able to be converted into binary operations, with the datatype as the 2nd operand
  - type checking for functions
+ - semantic validation for function calls
 
 # Problems:
  - Doing this /* *********/ throws unclosed comment error
