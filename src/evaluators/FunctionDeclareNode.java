@@ -1,6 +1,7 @@
 package src.evaluators;
 
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -28,22 +29,24 @@ public class FunctionDeclareNode extends EvaluatorNode {
     private boolean argumentWanted = false;
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing Function %s:%n", this.token);
+        if (debugMode)
+            System.out.printf(indent + "Parsing Function %s:%n", this.token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.token, token);
+            if (debugMode)
+                System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.token, token);
 
             if (isWhiteSpace(token)) {
                 continue;
 
             } else if (isPunctuation(token) && !isWhiteSpace(token)) {
                  if (argumentWanted) {
-                    throw new Exception("Expecting an argument at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                     return throwException("Expecting an argument on function declaration", token);
 
                 } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;
@@ -52,27 +55,28 @@ public class FunctionDeclareNode extends EvaluatorNode {
                     argumentWanted = true;
 
                 } else if (functionDeclared && Functions.equals(KEY_CURLY_OPEN, token)) {
-                    System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
-                    scope = new ScopeNode(this.token, depth + 1, true, this);
-                    members.add(scope.evaluate(tokenList, evaluatorTree));
-                    return this;
+                     if (debugMode)
+                         System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
+
+                     scope = new ScopeNode(this.token, depth + 1, true, this);
+                     members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
+                     return this;
 
                 } else {
-                    throw new Exception("Unexpected punctuation at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                     return throwException("Unexpected punctuation on function declaration", token);
+
                 }
             } else if (isOperator(token)) {
-                throw new Exception("Unexpected operator at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                return throwException("Unexpected operator on function declaration", token);
 
             } else if (isDeclaratorAmbiguous(token)) {
                 Token variableName = tokenList.removeFirst();
-
-                System.out.println(token.string);
 
                 while (isWhiteSpace(variableName)) {
                     variableName = tokenList.removeFirst();
                 }
                 if (!isVariableName(variableName)) {
-                    throw new Exception("Not a variable name at function declaration %s: \"%s\" at line %s".formatted(this.token, variableName, variableName.line));
+                    return throwException("Not a variable name on function declaration", token);
 
                 } else if (!isInitialized || argumentWanted) {
                     argumentNames.add(variableName.string);
@@ -81,15 +85,18 @@ public class FunctionDeclareNode extends EvaluatorNode {
                     FunctionArgNode functionArgNode = new FunctionArgNode(token.string, variableName, depth + 1);
                     functionArgNode.variableName = variableName.string;
                     members.add(functionArgNode);
-                    System.out.printf("Added argument %s%n", variableName);
+
+                    if (debugMode)
+                        System.out.printf("Added argument %s%n", variableName);
 
                 } else {
-                    throw new Exception("Unexpected token at function declaration %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                    return throwException("Unexpected token on function declaration", token);
+
                 }
             }
             isInitialized = true;
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     @Override

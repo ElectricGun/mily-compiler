@@ -14,13 +14,13 @@ import static src.constants.Maps.*;
 
 public class Pruning {
 
-    public static EvaluatorTree pruneEmptyOperations(EvaluatorTree evaluatorTree) {
-        pruneEmptyOperationsHelper(evaluatorTree.mainBlock, null);
+    public static EvaluatorTree pruneEmptyOperations(EvaluatorTree evaluatorTree, boolean debugMode) {
+        pruneEmptyOperationsHelper(evaluatorTree.mainBlock, null, debugMode);
 
         return evaluatorTree;
     }
 
-    private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
+    private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
         if (evaluatorNode == null)
             return;
 
@@ -35,7 +35,7 @@ public class Pruning {
         }
 
         for (int i = 0; i< evaluatorNode.memberCount(); i++) {
-            pruneEmptyOperationsHelper(evaluatorNode.getMember(i), evaluatorNode);
+            pruneEmptyOperationsHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
 
@@ -52,13 +52,13 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorTree simplifyUnaries(EvaluatorTree evaluatorTree) throws Exception {
-        simplifyNestedUnariesHelper(evaluatorTree.mainBlock, null);
+    public static EvaluatorTree simplifyUnaries(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+        simplifyNestedUnariesHelper(evaluatorTree.mainBlock, null, debugMode);
 
         return evaluatorTree;
     }
 
-    private static void simplifyNestedUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) throws Exception {
+    private static void simplifyNestedUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) throws Exception {
         if (evaluatorNode == null)
             return;
 
@@ -89,40 +89,42 @@ public class Pruning {
             }
         }
         for (int i = 0; i< evaluatorNode.memberCount(); i++) {
-            simplifyNestedUnariesHelper(evaluatorNode.getMember(i), evaluatorNode);
+            simplifyNestedUnariesHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
 
-    public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree) {
-        convertUnariesToBinaryHelper(evaluatorTree.mainBlock, null);
+    public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree, boolean debugMode) {
+        convertUnariesToBinaryHelper(evaluatorTree.mainBlock, null, debugMode);
 
         return evaluatorTree;
     }
 
-    private static void convertUnariesToBinaryHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent) {
+    private static void convertUnariesToBinaryHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
         if (evaluatorNode == null)
             return;
 
         if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
             if (opCurrent.isUnary()) {
-                System.out.println("converted unary operator " + opCurrent);
+                if (debugMode)
+                    System.out.println("converted unary operator " + opCurrent);
+
                 evaluatorNode = opCurrent.asBinaryFromMember(0);
                 parent.replaceMember(opCurrent, evaluatorNode);
             }
         }
 
         for (int i = 0; i< evaluatorNode.memberCount(); i++) {
-            convertUnariesToBinaryHelper(evaluatorNode.getMember(i), evaluatorNode);
+            convertUnariesToBinaryHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
 
-    public static EvaluatorTree simplifyBinaryExpressions(EvaluatorTree evaluatorTreeNode) throws Exception {
-        simplifyBinaryExpressionsHelper(evaluatorTreeNode.mainBlock, null, true);
+    public static EvaluatorTree simplifyBinaryExpressions(EvaluatorTree evaluatorTreeNode, boolean debugMode) throws Exception {
+        simplifyBinaryExpressionsHelper(evaluatorTreeNode.mainBlock, null, true, debugMode);
 
         return evaluatorTreeNode;
     }
 
-    private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean parseCasts) throws Exception {
+    private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean parseCasts, boolean debugMode) throws Exception {
         if (evaluatorNode == null)
             return;
 
@@ -135,11 +137,11 @@ public class Pruning {
                 boolean rightIsConstant = operationNode.getRightSide().isConstant();
 
                 if (!leftIsConstant) {
-                    simplifyBinaryExpressionsHelper(operationNode.getLeftSide(), evaluatorNode, parseCasts);
+                    simplifyBinaryExpressionsHelper(operationNode.getLeftSide(), evaluatorNode, parseCasts, debugMode);
                 }
 
                 if (!rightIsConstant) {
-                    simplifyBinaryExpressionsHelper(operationNode.getRightSide(), evaluatorNode, parseCasts);
+                    simplifyBinaryExpressionsHelper(operationNode.getRightSide(), evaluatorNode, parseCasts, debugMode);
                 }
                 boolean leftIsNumeric = isNumeric(operationNode.getLeftSide().constantToken);
                 boolean rightIsNumeric = isNumeric(operationNode.getRightSide().constantToken);
@@ -151,11 +153,11 @@ public class Pruning {
                     operationMap.parseOperation(operationNode);
                 }
             } else {
-                simplifyBinaryExpressionsHelper(evaluatorNode.getMember(0), evaluatorNode, parseCasts);
+                simplifyBinaryExpressionsHelper(evaluatorNode.getMember(0), evaluatorNode, parseCasts, debugMode);
             }
         } else {
             for (int i = 0; i< evaluatorNode.memberCount(); i++) {
-                simplifyBinaryExpressionsHelper(evaluatorNode.getMember(i), evaluatorNode, parseCasts);
+                simplifyBinaryExpressionsHelper(evaluatorNode.getMember(i), evaluatorNode, parseCasts, debugMode);
             }
         }
 

@@ -2,6 +2,7 @@ package src.evaluators;
 
 import java.util.*;
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -49,15 +50,17 @@ public class ScopeNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing Block %s:%n", token);
+        if (debugMode)
+            System.out.printf(indent + "Parsing Block %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "block : %s%n", token);
+            if (debugMode)
+                System.out.printf(indent + "block : %s%n", token);
 
 
             if (isWhiteSpace(token)) {
@@ -65,27 +68,28 @@ public class ScopeNode extends EvaluatorNode {
 
             } else if (expectingSemicolon) {
                 if (!Functions.equals(KEY_SEMICOLON, token)) {
-                    throw new Exception("Missing semicolon on line %s".formatted(token.line));
+
+                    return throwException("Missing semicolon", token);
                     }
                 expectingSemicolon = false;
 
             } else if (isDeclaratorAmbiguous(previousToken)) {
                 if (isVariableName(previousToken) && Functions.equals(KEY_BRACKET_OPEN, token)) {
                     FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
-                    members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
+                    members.add(functionCallNode.evaluate(tokenList, evaluatorTree, debugMode));
                     expectingSemicolon = true;
 
                 } else if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
                     AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
-                    members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
+                    members.add(assignmentNode.evaluate(tokenList, evaluatorTree, debugMode));
 
                 } else if (isVariableName(token)) {
                     // VARIABLE DECLARATION
-                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree);
+                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
                     members.add(node);
 
                 } else {
-                    throw new Exception("Invalid token \"%s\" at line %s".formatted(token, token.line));
+                    return throwException("Invalid token", token);
                 }
                 // clear previous token otherwise it won't be true to reality
                 // as the evaluators below will consume newer tokens
@@ -94,43 +98,53 @@ public class ScopeNode extends EvaluatorNode {
 
             } else if (isPunctuation(token)) {
                 if (needsClosing && Functions.equals(KEY_CURLY_CLOSE, token)) {
-                    System.out.printf(indent + "Created scope \"%s\"%n", this.token);
+                    if (debugMode)
+                        System.out.printf(indent + "Created scope \"%s\"%n", this.token);
                     return this;
 
                 } else {
-                    throw new Exception("Illegal punctuation on scope %s \"%s\" at line %s".formatted(this.token, token, token.line));
+                    return throwException("Illegal punctuation on scope", token);
                 }
 
             } else if (isOperator(token)) {
-                throw new Exception("Unexpected operator on scope %s: \"%s\" at line %s".formatted(this.token, token, token.line));
+                return throwException("Unexpected operator on scope", token);
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
-                System.out.printf(indent + "Creating if statement loop %n");
+                if (debugMode)
+                    System.out.printf(indent + "Creating if statement loop %n");
                 IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(token, depth+1);
-                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree));
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (Functions.equals(KEY_LOOPING_WHILE, token)) {
-                System.out.printf(indent + "Creating while loop %n");
+                if (debugMode)
+                    System.out.printf(indent + "Creating while loop %n");
                 WhileLoopNode whileLoopEvaluatorNode = new WhileLoopNode(token, depth+1);
-                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluatorTree));
+                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (Functions.equals(KEY_LOOPING_FOR, token)) {
-                System.out.printf(indent + "Creating for loop %n");
+                if (debugMode)
+                    System.out.printf(indent + "Creating for loop %n");
                 ForLoopNode forLoopNode = new ForLoopNode(token, depth+1);
-                members.add(forLoopNode.evaluate(tokenList, evaluatorTree));
+                members.add(forLoopNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (functionDeclareNode != null && Functions.equals(KEY_RETURN, token)) {
                 // FUNCTION RETURN
                 OperationNode returnOp = new OperationNode(new Token(this.token + "_return", this.token.line), depth + 1, true);
-                members.add(returnOp.evaluate(tokenList, evaluatorTree));
+                members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
             }
-
             previousToken = token;
 
-        } if (needsClosing) {
-            // after running out of tokens
-            throw new Exception("Scope \"%s\" is unclosed".formatted(token));
         }
+
+        if (needsClosing) {
+            // after running out of tokens
+            return throwException("Scoped is undeclared", token);
+        }
+
+        if (isDeclaratorAmbiguous(previousToken)) {
+            return throwException("Unexpected end of file", token);
+        }
+
         return this;
     }
 

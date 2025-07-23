@@ -1,6 +1,8 @@
 package src.evaluators;
 
 import java.util.*;
+
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import src.constants.*;
 
@@ -25,7 +27,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
         return expression;
     }
 
-    public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth) throws Exception {
+    public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
         List<Token> operationTokens = new ArrayList<>();
         int bracketCount = 1;
@@ -34,7 +36,9 @@ public abstract class ConditionalNode extends EvaluatorNode {
         // before passing its tokens into an OperationEvaluatorNode
         while (true) {
             Token expressionToken = tokenList.removeFirst();
-            System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
+
+            if (debugMode)
+                System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
 
             if (Functions.equals(KEY_BRACKET_CLOSE, expressionToken)) {
                 bracketCount--;
@@ -46,19 +50,22 @@ public abstract class ConditionalNode extends EvaluatorNode {
 
             } else if (bracketCount == 0) {
                 if (operationTokens.isEmpty()) {
-                    throw new Exception("Expecting expression on if statement on line " + token.line);
+                    // todo: why is this method void
+                    throwException("Expecting expression on if statement", token);
+                    return;
 
                 } else {
                     // remove the last bracket )
                     operationTokens.removeLast();
 
                     if (operationTokens.isEmpty()) {
-                        throw new Exception("Expecting expression on conditional at line " + token.line);
+                        throwException("Expecting expression on conditional", token);
+                        return;
                     }
 
                     operationTokens.add(new Token(";", token.line));
                     OperationNode operationNode = new OperationNode(this.token, depth + 1);
-                    members.add(operationNode.evaluate(operationTokens, evaluatorTree));
+                    members.add(operationNode.evaluate(operationTokens, evaluatorTree, debugMode));
                     this.expression = operationNode;
                     break;
                 }
@@ -68,9 +75,9 @@ public abstract class ConditionalNode extends EvaluatorNode {
         }
     }
 
-    public void createBlock(List<Token> tokenList, EvaluatorTree evaluatorTree) {
+    public void createBlock(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
-        scopeNode.evaluate(tokenList, evaluatorTree);
+        scopeNode.evaluate(tokenList, evaluatorTree, debugMode);
         members.add(scopeNode);
         scope = scopeNode;
     }

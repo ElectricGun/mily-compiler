@@ -1,6 +1,7 @@
 package src.evaluators;
 
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -20,13 +21,17 @@ public class DeclarationNode extends VariableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
-        System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
+
+        if (debugMode)
+            System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
-            System.out.printf(indent + "declaration :  %s : %s%n", this.token, token);
+
+            if (debugMode)
+                System.out.printf(indent + "declaration :  %s : %s%n", this.token, token);
 
             // evaluate punctuations
             if (isPunctuation(token)) {
@@ -35,44 +40,53 @@ public class DeclarationNode extends VariableNode {
 
                 } else if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     // FUNCTION DECLARATION
-                    System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
-                    EvaluatorNode node = new FunctionDeclareNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree);
+                    if (debugMode)
+                        System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
+
+                    EvaluatorNode node = new FunctionDeclareNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
                     members.add(node);
                     return this;
 
                 } else {
-                    throw new Exception("Unexpected punctuation on variable declaration %s: \"%s\"".formatted(this.token, token));
+                    return throwException("Unexpected punctuation on variable declaration", token);
                 }
             }
             // evaluate operators
             else if (isOperator(token)) {
-                System.out.println(variableName);
+
+                if (debugMode)
+                    System.out.println(variableName);
                 // check for equal sign
                 if (Functions.equals(KEY_OP_ASSIGN, token) && isDeclared()) {
                     OperationNode operationNode = new OperationNode(new Token("op_"+ this.token, this.token.line), depth + 1);
-                    members.add(operationNode.evaluate(tokenList, evaluatorTree));
+                    members.add(operationNode.evaluate(tokenList, evaluatorTree, debugMode));
                     return this;
 
                 } else {
-                    throw new Exception("Missing '=' sign %s : \"%s\"".formatted(this.token, token));
+                    return throwException("Missing '=' sign", token);
+
                 }
             }
             // evaluate strings
             else if (!isKeyWord(token)) {
                 if (!isDeclared()) {
-                    System.out.printf(indent + "Declaring variable name : %s%n", token.string);
+                    if (debugMode)
+                        System.out.printf(indent + "Declaring variable name : %s%n", token.string);
                     variableName = token.string;
 
                 } else {
-                    throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(this.token, token));
+                    return throwException("Unexpected token on variable declaration", token);
+
                 }
             }
             // evaluate the rest
             else {
-                throw new Exception("Unexpected token on variable declaration %s: \"%s\"".formatted(this.token, token));
+                return throwException("Unexpected token on variable declaration", token);
+
             }
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
+
     }
 
     @Override

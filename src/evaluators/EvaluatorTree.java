@@ -1,11 +1,13 @@
 package src.evaluators;
 
 import java.util.*;
+
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 /**
  * <h1> Class EvaluatorTree </h1>
- * Parsing Abstract Syntax Tree
+ * Parsing Abstract Syntax Tree <br>
  * The container for the parsing AST
  * @author ElectricGun
  */
@@ -13,17 +15,21 @@ import src.tokens.*;
 public class EvaluatorTree {
 
     public String name = "";
-
-    public EvaluatorTree() {}
-
-    public EvaluatorTree(String name) {
-        this.name = name;
-    }
-
     public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", 1), 0);
 
+    protected final boolean debugMode;
+
+    public EvaluatorTree(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    public EvaluatorTree(String name, boolean debugMode) {
+        this.name = name;
+        this.debugMode = debugMode;
+    }
+
     public EvaluatorNode begin(List<Token> tokenList) {
-        mainBlock.evaluate(tokenList, this);
+        mainBlock.evaluate(tokenList, this, debugMode);
         return mainBlock;
     }
 

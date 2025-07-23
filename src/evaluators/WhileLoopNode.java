@@ -1,6 +1,7 @@
 package src.evaluators;
 
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -21,36 +22,38 @@ public class WhileLoopNode extends ConditionalNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
 
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing While Loop %s:%n", token);
+        if (debugMode)
+            System.out.printf(indent + "Parsing While Loop %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "while\t:\t%s\t:\t%s%n", this.token, token);
+            if (debugMode)
+                System.out.printf(indent + "while\t:\t%s\t:\t%s%n", this.token, token);
 
             if (isWhiteSpace(token)) {
                 continue;
 
             } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                parseOperation(tokenList, evaluatorTree, depth);
+                parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                    createBlock(tokenList, evaluatorTree);
+                    createBlock(tokenList, evaluatorTree, debugMode);
                     return this;
 
                 } else {
-                    throw new Exception();
+                    return throwException("Unexpected token on while loop on line", token);
                 }
             } else {
-                throw new Exception(("Unexpected token \"%s\" on while loop on line " + token.line).formatted(token));
+                return throwException("Unexpected token on while loop on line", token);
             }
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     @Override

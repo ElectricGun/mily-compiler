@@ -1,6 +1,7 @@
 package src.evaluators;
 
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -25,34 +26,36 @@ public class ElseNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing else block %s:%n", token);
+        if (debugMode)
+            System.out.printf(indent + "Parsing else block %s:%n", token);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "else\t:\t%s\t:\t%s%n", this.token, token);
+            if (debugMode)
+                System.out.printf(indent + "else\t:\t%s\t:\t%s%n", this.token, token);
 
             if (isWhiteSpace(token)) {
                 continue;
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
                 ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
-                members.add(scopeNode.evaluate(tokenList, evaluatorTree));
+                members.add(scopeNode.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
                 IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(this.token, depth + 1);
-                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree));
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
             } else {
                 throw new Exception();
             }
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     @Override

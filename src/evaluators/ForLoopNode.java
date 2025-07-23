@@ -2,6 +2,7 @@ package src.evaluators;
 
 import java.util.*;
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -27,7 +28,7 @@ public class ForLoopNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
         Token previousToken = null;
@@ -35,7 +36,8 @@ public class ForLoopNode extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "for loop : %s%n", token);
+            if (debugMode)
+                System.out.printf(indent + "for loop : %s%n", token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -45,26 +47,27 @@ public class ForLoopNode extends EvaluatorNode {
                     isExpectingOpeningBracket = false;
 
                 } else {
-                    throw new Exception("Unexpected token \"%s\" in for loop at line %s".formatted(token, token.line));
+                    return throwException("Unexpected token in for loop", token);
                 }
             } else if (initial == null) {
                 if (!Functions.equals(KEY_BRACKET_OPEN, previousToken)) {
                     if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
                         initial = new AssignmentNode(previousToken, depth + 1);
-                        members.add(initial.evaluate(tokenList, evaluatorTree));
+                        members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
 
                     } else if (isDeclaratorAmbiguous(previousToken)) {
                         if (isVariableName(token)) {
                             // VARIABLE DECLARATION
                             initial = new DeclarationNode(previousToken.string, token, depth + 1);
-                            members.add(initial.evaluate(tokenList, evaluatorTree));
+                            members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
                         } else {
-                            throw new Exception("Unexpected token \"%s\" in for loop initial variable declaration at line %s".formatted(token, token.line));
+                            return throwException("Unexpected token in for loop initial variable declaration", token);
                         }
                     } else if (!isDeclaratorAmbiguous(token)) {
-                        throw new Exception("Unexpected token \"%s\" in for loop initial at line %s".formatted(token, token.line));
+                        return throwException("Unexpected token in for loop initial", token);
                     }
-                    System.out.println(indent + " Created initial " + initial);
+                    if (debugMode)
+                        System.out.println(indent + " Created initial " + initial);
                 }
             } else if (condition == null) {
                 List<Token> operationTokens = new ArrayList<>();
@@ -75,7 +78,7 @@ public class ForLoopNode extends EvaluatorNode {
                     operationTokens.add(currentToken);
                 }
                 condition = new OperationNode(this.token, depth + 1);
-                members.add(condition.evaluate(operationTokens, evaluatorTree));
+                members.add(condition.evaluate(operationTokens, evaluatorTree, debugMode));
 
             } else if (updater == null) {
                 List<Token> operationTokens = new ArrayList<>();
@@ -97,29 +100,28 @@ public class ForLoopNode extends EvaluatorNode {
                         if (Functions.equals(KEY_OP_ASSIGN, opToken)) {
                             operationTokens.add(new Token(KEY_SEMICOLON, token.line));
                             updater = new AssignmentNode(variableName, depth + 1);
-                            members.add(updater.evaluate(operationTokens, evaluatorTree));
+                            members.add(updater.evaluate(operationTokens, evaluatorTree, debugMode));
                             break;
 
                         } else if (!isWhiteSpace(opToken)) {
-                            throw new Exception("Malform update expression on for loop from token \"%s\" at line %s".formatted(token, token.line));
+                            return throwException("Malformed update expression in for loop", token);
                         }
                     }
-
                 } else {
-                    throw new Exception("Malform update expression on for loop from token \"%s\" at line %s".formatted(token, token.line));
+                    return throwException("Malformed update expression in for loop", token);
                 }
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
                 scope = new ScopeNode(this.token, depth + 1, true);
-                members.add(scope.evaluate(tokenList, evaluatorTree));
+                members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
             } else {
-                throw new Exception("Unexpected token \"%s\" in for loop at line %s".formatted(token, token.line));
+                return throwException("Unexpected token in for loop", token);
             }
         previousToken = token;
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     @Override

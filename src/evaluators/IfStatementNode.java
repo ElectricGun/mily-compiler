@@ -1,6 +1,7 @@
 package src.evaluators;
 
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -27,9 +28,11 @@ public class IfStatementNode extends ConditionalNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
-        System.out.printf(indent + "Parsing if statement %n");
+
+        if (debugMode)
+            System.out.printf(indent + "Parsing if statement %n");
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
@@ -38,21 +41,21 @@ public class IfStatementNode extends ConditionalNode {
                 continue;
 
             } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
-                    parseOperation(tokenList, evaluatorTree, depth);
+                    parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {
                 if (Functions.equals(KEY_CURLY_OPEN, token)) {
-                    createBlock(tokenList, evaluatorTree);
+                    createBlock(tokenList, evaluatorTree, debugMode);
                     // dont return yet, check for an else statement
 
                 } else {
-                    throw new Exception();
+                    return throwException("Unexpected token on if statement", token);
                 }
 
             } else if (scope != null) {
                 if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
                     ElseNode elseNode = new ElseNode(this.token, depth + 1);
-                    members.add(elseNode.evaluate(tokenList, evaluatorTree));
+                    members.add(elseNode.evaluate(tokenList, evaluatorTree, debugMode));
                     this.elseNode = elseNode;
 
                 } else {
@@ -60,11 +63,12 @@ public class IfStatementNode extends ConditionalNode {
                     tokenList.addFirst(token);
                 }
                 return this;
+
             } else {
-                throw new Exception(("Unexpected token \"%s\" on if statement on line " + token.line).formatted(token));
+                return throwException("Unexpected token on if statement", token);
             }
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package src.evaluators;
 
 import java.util.*;
+
+import src.interfaces.MilyThrowable;
+import src.structures.MilyException;
 import src.tokens.*;
 
 /**
@@ -11,14 +14,25 @@ import src.tokens.*;
 
 public class EvaluatorNode {
 
+    protected MilyThrowable milyThrowable;
+
     public int depth;
     public Token token;
+    // can be used to for storing assembly line numbers, or some other general information
     public Map<String, String> flags = new HashMap<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
 
     public EvaluatorNode(Token token, int depth) {
         this.token = token;
         this.depth = depth;
+    }
+
+    public boolean isErrored() {
+        return milyThrowable != null;
+    }
+
+    public MilyThrowable getThrowable() {
+        return milyThrowable;
     }
 
     public int memberCount() {
@@ -33,19 +47,36 @@ public class EvaluatorNode {
         return members.get(i);
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
-    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree) {
+    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         try {
-            return evaluator(tokenList, evaluatorTree);
+            EvaluatorNode newEvaluator = evaluator(tokenList, evaluatorTree, debugMode);
 
+            // TODO: maybe for future optimisation
+//            for (int i = 0; i < newEvaluator.memberCount(); i++) {
+//                if (newEvaluator.getMember(i).errored) {
+//                    this.errored = true;
+//                }
+//            }
+
+            return newEvaluator;
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
             return null;
         }
+    }
+
+    protected EvaluatorNode throwException(String message, Token token) {
+        // TODO: unhardcode
+        String errorMessage = String.format("Syntax error on line: %s, token: \"%s\": ", token.line, token) + message;
+
+        this.milyThrowable = new MilyException(errorMessage);
+
+        return this;
     }
 
     public void printRecursive() {

@@ -1,6 +1,8 @@
 package src.evaluators;
 
 import java.util.*;
+
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import src.constants.*;
 
@@ -23,10 +25,12 @@ public class OperationBracketNode extends EvaluatorNode {
         this.operatorIndex = operatorIndex;
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
 
         String indent = " ".repeat(depth);
-        System.out.printf(indent + "Parsing Brackets %s:%n", token);
+
+        if (debugMode)
+            System.out.printf(indent + "Parsing Brackets %s:%n", token);
 
         // remove the start bracket
         tokenList.remove(operatorIndex);
@@ -37,7 +41,9 @@ public class OperationBracketNode extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(operatorIndex);
 
-            System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
+            if (debugMode)
+                System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
+
             if (token.length() == 1 && Functions.equals(KEY_BRACKET_OPEN, token)) {
                 bracketCounter ++;
 
@@ -48,7 +54,7 @@ public class OperationBracketNode extends EvaluatorNode {
             if (bracketCounter < 0) {
                 OperationNode operationNode = new OperationNode(new Token(this.token.string, this.token.line), depth + 1);
                 operationTokens.add(new Token(";", this.token.line));
-                OperationNode evaluated = (OperationNode) operationNode.evaluate(operationTokens, evaluatorTree);
+                OperationNode evaluated = (OperationNode) operationNode.evaluate(operationTokens, evaluatorTree, debugMode);
 
                 // substitute the operator removed with a BracketToken
                 // an integer is not added to orders because we are not removing one on this final loop
@@ -60,12 +66,12 @@ public class OperationBracketNode extends EvaluatorNode {
             orders.remove(operatorIndex);
             operationTokens.add(token);
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
-    public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree) {
+    public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree, boolean debugMode) {
         try {
-            return evaluator(tokenList, orders, evaluatorTree);
+            return evaluator(tokenList, orders, evaluatorTree, debugMode);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

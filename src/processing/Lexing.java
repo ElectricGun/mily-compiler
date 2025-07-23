@@ -58,7 +58,7 @@ public class Lexing {
         }
     }
 
-    public static List<Token> tokenize(String input) throws Exception {
+    public static List<Token> tokenize(String input, boolean debugMode) throws Exception {
         init(input);
 
         for (int index = 0; index < charArray.length; index++) {
@@ -68,7 +68,8 @@ public class Lexing {
             boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
-            System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s    comment_mode: %s  inline: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString),  commentMode, commentModeInline);
+            if (debugMode)
+                System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s    comment_mode: %s  inline: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString),  commentMode, commentModeInline);
 
             if (isWhiteSpace(cs)) {
                 if (Functions.equals(KEY_NEWLINE, cs)) {

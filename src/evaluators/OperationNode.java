@@ -2,6 +2,7 @@ package src.evaluators;
 
 import java.util.*;
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -156,17 +157,19 @@ public class OperationNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        System.out.printf(indent + "Parsing Operation Declaration %s:%n", token);
+        if (debugMode)
+            System.out.printf(indent + "Parsing Operation Declaration %s:%n", token);
 
         Token previousToken = null;
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "operation : %s : %s%n", this.token, token);
+            if (debugMode)
+                System.out.printf(indent + "operation : %s : %s%n", this.token, token);
 
             // evaluate punctuations
             if (token.length() == 1 && isPunctuation(token)) {
@@ -184,18 +187,21 @@ public class OperationNode extends EvaluatorNode {
 
                 if (Functions.equals(KEY_BRACKET_OPEN, token)) {
                     if (isVariableName(previousToken)) {
-                        System.out.printf(indent + "Parsing function call : prev %s : %s%n", previousToken, token);
+
+                        if (debugMode)
+                            System.out.printf(indent + "Parsing function call : prev %s : %s%n", previousToken, token);
                         // remove last token because it will be replaced by a single FunctionCallToken
                         operationTokens.removeLast();
 
                         FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
-                        FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree);
+                        FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree, debugMode);
 
                         FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.token.string, token.line, evaluated);
                         operationTokens.add(functionCallToken);
 
                     } else {
-                        System.out.println(indent + "bracket found");
+                        if (debugMode)
+                            System.out.println(indent + "bracket found");
                         // see if it's an explicit cast
                         // it has to be in this order:
                         // variable name or datatype -> ) -> constant or opening bracket
@@ -212,7 +218,8 @@ public class OperationNode extends EvaluatorNode {
                             Token currToken = tokenList.removeFirst();
                             castTokens.add(currToken);
 
-                            System.out.println(indent + "parsing cast : " + currToken);
+                            if (debugMode)
+                                System.out.println(indent + "parsing cast : " + currToken);
 
                             if (isWhiteSpace(currToken)) {
                                 continue;
@@ -220,20 +227,25 @@ public class OperationNode extends EvaluatorNode {
                             } else if (!datatypeFound && isDeclaratorAmbiguous(currToken)) {
                                 datatypeToken = currToken;
                                 datatypeFound = true;
-                                System.out.println(indent + "datatype found : " + datatypeToken);
+
+                                if (debugMode)
+                                    System.out.println(indent + "datatype found : " + datatypeToken);
 
                             } else if (!closeBracketFound && Functions.equals(KEY_BRACKET_CLOSE, currToken)) {
                                 closeBracketFound = true;
-                                System.out.println(indent + "close bracket found");
+                                if (debugMode)
+                                    System.out.println(indent + "close bracket found");
 
                             } else if (!constantFound && (isDeclaratorAmbiguous(currToken) || isNumeric(currToken) || Functions.equals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
                                 constantFound = true;
                                 castConstantToken = currToken;
-                                System.out.println(indent + "constant found");
+                                if (debugMode)
+                                    System.out.println(indent + "constant found");
 
                             } else {
                                 tokenList.addAll(0, castTokens);
-                                System.out.println(indent + "cancelling cast");
+                                if (debugMode)
+                                    System.out.println(indent + "cancelling cast");
                                 break;
                             }
                         }
@@ -241,7 +253,8 @@ public class OperationNode extends EvaluatorNode {
                         if (!datatypeFound || !closeBracketFound || !constantFound) {
                             operationTokens.add(token);
                         } else {
-                            System.out.println(indent + "cast found (" + datatypeToken.string + ")");
+                            if (debugMode)
+                                System.out.println(indent + "cast found (" + datatypeToken.string + ")");
                             CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.line);
                             operationTokens.add(castToken);
 
@@ -256,7 +269,8 @@ public class OperationNode extends EvaluatorNode {
 
                 // entire operations are evaluated after a semicolon is detected
                 else if (Functions.equals(KEY_SEMICOLON, token)) {
-                    System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
+                    if (debugMode)
+                        System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
                     List<Integer> orders = new ArrayList<>();
 
                     for (int i = 0; i < operationTokens.size(); i++) {
@@ -276,7 +290,7 @@ public class OperationNode extends EvaluatorNode {
                         Token currentOperationToken = operationTokens.get(i);
 
                         if (isReserved(currentOperationToken)) {
-                            throw new Exception("Reserved keyword \"%s\" found on operation at line %s".formatted(currentOperationToken, token.line));
+                            return throwException("Illegal keyword found on operation", token);
                         }
 
                         int currentOrder = operationOrder(currentOperationToken);
@@ -284,7 +298,7 @@ public class OperationNode extends EvaluatorNode {
                         // start bracket
                         if (currentOrder == -4) {
                             OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
-                            bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, orders, evaluatorTree));
+                            bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, orders, evaluatorTree, debugMode));
                         }
 
                         // because parentheses are constants
@@ -319,7 +333,8 @@ public class OperationNode extends EvaluatorNode {
                             largestOrderIndex = i;
                         }
 
-                        System.out.printf(indent + "%s order : %s : %s %n", currentOperationToken, largestOrder, orders.get(i));
+                        if (debugMode)
+                            System.out.printf(indent + "%s order : %s : %s %n", currentOperationToken, largestOrder, orders.get(i));
 
                         previousOrder = currentOrder;
                     }
@@ -329,8 +344,10 @@ public class OperationNode extends EvaluatorNode {
                         return this;
                     }
 
-                    System.out.printf(indent + "operation tokens post : %s : %s%n", this.token, operationTokens);
-                    System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
+                    if (debugMode) {
+                        System.out.printf(indent + "operation tokens post : %s : %s%n", this.token, operationTokens);
+                        System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
+                    }
 
                     // if amount of elements > 2
                     // for binary operations
@@ -353,15 +370,15 @@ public class OperationNode extends EvaluatorNode {
 
                         if (left.size() > 1) {
                             OperationNode op = new OperationNode(new Token("l_" + this.token, this.token.line), depth + 1);
-                            setLeftSide((OperationNode) op.evaluate(left, evaluatorTree));
+                            setLeftSide((OperationNode) op.evaluate(left, evaluatorTree, debugMode));
                         }
 
                         if (right.size() > 1) {
                             OperationNode op = new OperationNode(new Token("r_" + this.token, this.token.line), depth + 1);
-                            setRightSide((OperationNode) op.evaluate(right, evaluatorTree));
+                            setRightSide((OperationNode) op.evaluate(right, evaluatorTree, debugMode));
 
                         } else {
-                            throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
+                            return throwException("Unexpected token on operation", token);
                         }
                         return this;
                     }
@@ -410,10 +427,10 @@ public class OperationNode extends EvaluatorNode {
                         for (Token operationToken : operationTokens)
                             out.append(" ").append(operationToken.string);
 
-                        throw new Exception("Invalid operation %s \"%s\" at line %s".formatted(this.token, out +"...", token.line));
+                        return throwException("Invalid operation", token);
                     }
                 } else {
-                    throw new Exception("Unexpected token on operation %s, \"%s\" at line %s".formatted(this.token, token, token.line));
+                    return throwException("Unexpected token on operation", token);
                 }
             }
             else {
@@ -422,7 +439,7 @@ public class OperationNode extends EvaluatorNode {
 
             previousToken = token;
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     public boolean isEmptyConstant() {

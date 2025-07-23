@@ -1,6 +1,7 @@
 package src.evaluators;
 
 import src.constants.*;
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -31,13 +32,14 @@ public class FunctionCallNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
-            System.out.printf(indent + "function call %s: %s:%n", this.token, token);
+            if (debugMode)
+                System.out.printf(indent + "function call %s: %s:%n", this.token, token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -49,14 +51,18 @@ public class FunctionCallNode extends EvaluatorNode {
                 expectingArgument = true;
 
             } else if (expectingArgument) {
-                tryAddArgument(token);
+                try {
+                    tryAddArgument(token);
+                } catch (Exception e) {
+                    return throwException("Malformed function parameter", token);
+                }
 
             } else if (isInitialized) {
-                throw new Exception("Unexpected token \"%s\" in function call at line %s".formatted(token, token.line));
+                return throwException("Unexpected token in function call", token);
             }
             isInitialized = true;
         }
-        throw new Exception("Unexpected end of file");
+        return throwException("Unexpected end of file", token);
     }
 
     private void tryAddArgument(Token token) throws Exception {

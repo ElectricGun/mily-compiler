@@ -1,5 +1,6 @@
 package src.evaluators;
 
+import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -22,17 +23,21 @@ public class AssignmentNode extends VariableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
-        System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
+
+        if (debugMode)
+            System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
 
         if (!tokenList.isEmpty()) {
-            expression = (OperationNode) new OperationNode(this.token, depth + 1).evaluate(tokenList, evaluatorTree);
+            expression = (OperationNode) new OperationNode(this.token, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
             members.add(expression);
             variableName = this.token.string;
             return this;
         }
-        throw new Exception("Unexpected end of file");
+
+
+        return throwException("Unexpected end of file", token);
     }
 
     @Override
