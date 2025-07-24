@@ -20,7 +20,7 @@
  - Numeric expression solving
  - Loop simplifying
 
-# Planned Pipeline
+# Target Pipeline
 - Lexing -> AST -> Validation -> Pruning -> IR -> Mlog
 
 # Datatypes
