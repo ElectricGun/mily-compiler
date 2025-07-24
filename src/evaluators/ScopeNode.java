@@ -133,11 +133,10 @@ public class ScopeNode extends EvaluatorNode {
                 members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
             }
             previousToken = token;
-
         }
 
+        // after running out of tokens
         if (needsClosing) {
-            // after running out of tokens
             return throwException("Scoped is undeclared", token);
         }
 

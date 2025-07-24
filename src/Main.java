@@ -27,7 +27,6 @@ public class Main {
         List<Token> tokenList = tokenize(code.getCode(), debugMode);
         long lexingDuration = (System.nanoTime() - startCompileTime);
 
-
 //        System.out.println(tokenList);
 
 //        System.out.printf("%n---------------\tLogs\t%n%n");
@@ -38,55 +37,40 @@ public class Main {
         long astBuildDuration = (System.nanoTime() - startAstBuildDuration);
 
         long validationTime = System.nanoTime();
-        validateThrowables(evaluatorTree, debugMode);
+        boolean errored = validateThrowables(evaluatorTree, debugMode);
 
-//        System.out.printf("%n---------------\tSyntax Tree\t%n%n");
-//        evaluatorTree.printRecursive();
+        if (!errored) {
+            boolean doAssignTypes = true;
+            validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
+            convertUnariesToBinary(evaluatorTree, debugMode);
+            validateTypes(evaluatorTree, debugMode);
+            long validationDuration = (System.nanoTime() - validationTime);
 
-//        System.out.printf("%n---------------\tValidating Tree\t%n%n");
-        boolean doAssignTypes = true;
-        validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
+            long pruningTime = System.nanoTime();
+            pruneEmptyOperations(evaluatorTree, debugMode);
+            simplifyUnaries(evaluatorTree, debugMode);
+            simplifyBinaryExpressions(evaluatorTree, debugMode);
+            evaluatorTree.printRecursive();
 
-        convertUnariesToBinary(evaluatorTree, debugMode);
+            long endTime = System.nanoTime();
+            long pruningDuration = (endTime - pruningTime);
+            long compileDuration = (endTime - startCompileTime);
+            long totalDuration = (endTime - startTime);
 
-        validateTypes(evaluatorTree, debugMode);
-        long validationDUration = (System.nanoTime() - validationTime);
-
-//        System.out.printf("%n---------------\tSyntax Tree (CLEANED)\t%n%n");
-
-        long pruningTime = System.nanoTime();
-        EvaluatorTree pruned = pruneEmptyOperations(evaluatorTree, debugMode);
-        simplifyUnaries(pruned, debugMode);
-//        pruned.printRecursive();
-
-//        System.out.printf("%n---------------\tSyntax Tree (BINARY)\t%n%n");
-//        pruned.printRecursive();
-
-        simplifyBinaryExpressions(pruned, debugMode);
-
-//        System.out.printf("%n---------------\tSyntax Tree (PRUNED)\t%n%n");
-
-//        pruned.printRecursive();
-
-        long endTime = System.nanoTime();
-
-        long pruningDuration = (endTime - pruningTime);
-        long compileDuration = (endTime - startCompileTime);
-        long totalDuration = (endTime - startTime);
-
-        System.out.printf(
-                "Lexing time: %sms%n" +
-                "AST building time: %sms%n" +
-                "Semantic validation time: %sms%n" +
-                "Pruning time: %sms%n" +
-                "Total compile time: %sms%n" +
-                "Total run time: %sms%n",
-                lexingDuration / 1000000,
-                astBuildDuration / 1000000,
-                validationDUration / 1000000,
-                pruningDuration / 1000000,
-                compileDuration / 1000000,
-                totalDuration / 1000000
-        );
+            System.out.printf(
+                    "Lexing time: %sms%n" +
+                            "AST building time: %sms%n" +
+                            "Semantic validation time: %sms%n" +
+                            "Pruning time: %sms%n" +
+                            "Total compile time: %sms%n" +
+                            "Total run time: %sms%n",
+                    lexingDuration / 1000000,
+                    astBuildDuration / 1000000,
+                    validationDuration / 1000000,
+                    pruningDuration / 1000000,
+                    compileDuration / 1000000,
+                    totalDuration / 1000000
+            );
+        }
     }
 }

@@ -15,32 +15,42 @@ import static src.constants.Maps.*;
 
 public class Validation {
 
-    public static void validateThrowables(EvaluatorTree evaluatorTree, boolean debugMode) {
+    public static boolean validateThrowables(EvaluatorTree evaluatorTree, boolean debugMode) {
+        boolean[] errored = new boolean[] {false};
+
         Stack<EvaluatorNode> traceStack = new Stack<>();
-        validateThrowablesHelper(evaluatorTree.mainBlock, traceStack, debugMode);
+        validateThrowablesHelper(evaluatorTree.mainBlock, traceStack, errored, debugMode);
+
+        return errored[0];
     }
 
-    public static void validateThrowablesHelper(EvaluatorNode evaluatorNode, Stack<EvaluatorNode> traceStack, boolean debugMode) {
+    public static void validateThrowablesHelper(EvaluatorNode evaluatorNode, Stack<EvaluatorNode> traceStack, boolean[] errored, boolean debugMode) {
+
+        // TODO: not the most elegant solution
+
+        traceStack.push(evaluatorNode);
 
         if (evaluatorNode.isErrored()) {
+            errored[0] = true;
+
             System.out.print("\033[31m");
             System.out.println(evaluatorNode.getThrowable().getErrorMessage());
 
-            while (!traceStack.isEmpty()) {
-                EvaluatorNode trace = traceStack.pop();
-                System.out.println(String.format("\t at %s, line %s", trace, trace.token.line));
+            Stack<EvaluatorNode> newStack = new Stack<>();
+            newStack.addAll(traceStack);
+
+            while (!newStack.isEmpty()) {
+                EvaluatorNode trace = newStack.pop();
+                System.out.printf("\t at %s, line %s%n", trace, trace.token.line);
             }
             System.out.print("\033[0m");
-
         }
-
-        traceStack.push(evaluatorNode);
 
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
             Stack<EvaluatorNode> newStack = new Stack<>();
             newStack.addAll(traceStack);
 
-            validateThrowablesHelper(evaluatorNode.getMember(i), newStack, debugMode);
+            validateThrowablesHelper(evaluatorNode.getMember(i), newStack, errored, debugMode);
         }
     }
 

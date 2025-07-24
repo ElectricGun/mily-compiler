@@ -1,18 +1,15 @@
 # Urgent TODO:
- - OperationMap; map for operations and casting
- - casts should be able to be converted into binary operations, with the datatype as the 2nd operand
+ - custom exceptions for semantic validation
  - type checking for functions
  - semantic validation for function calls
 
 # Problems:
- - Doing this /* *********/ throws unclosed comment error
- - division always returns a double, so int x = 5 / 7 (should be intentional, because // intdiv exists)
+ - Doing this /* **/ throws unclosed comment error
  - Comparison operation lambda functions are empty
 
 # Priority Features:
  - Static typing
  - Datatype validation
- - Datatype guessing
  - Explicit and implicit casting
 
 # AST Pruning
@@ -22,7 +19,7 @@
 # Planned Pipeline
 - Lexing -> AST -> Validation -> Pruning -> IR -> Mlog
 
-# Actual Pipeline
+# Current Pipeline
 - Lexing -> AST -> Unary to Binary -> Validation -> Pruning
 
 # Datatypes

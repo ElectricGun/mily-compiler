@@ -14,10 +14,8 @@ import static src.constants.Maps.*;
 
 public class Pruning {
 
-    public static EvaluatorTree pruneEmptyOperations(EvaluatorTree evaluatorTree, boolean debugMode) {
+    public static void pruneEmptyOperations(EvaluatorTree evaluatorTree, boolean debugMode) {
         pruneEmptyOperationsHelper(evaluatorTree.mainBlock, null, debugMode);
-
-        return evaluatorTree;
     }
 
     private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
