@@ -38,28 +38,17 @@ public class Main {
 
         removeEmptyOperations(evaluatorTree, debugMode);
 
-        validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-//        // check for validation errors
-//        if (checkThrowables(evaluatorTree, debugMode))
-//            return;
-
-        // todo: unary validation should be done in its own method validateUnaries()
+        // todo: unary validation should probably be done in its own method validateUnaries()
         convertUnariesToBinary(evaluatorTree, debugMode);
-        // check for unary errors
-        boolean unaryError = checkThrowables(evaluatorTree, debugMode);
+
+        validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
+
+        // this step is kinda redundant
+//        pruneNestedUnaries(evaluatorTree, debugMode);
 
         validateTypes(evaluatorTree, debugMode);
-//        // check for type errors
-//        if (checkThrowables(evaluatorTree, debugMode))
-//            return;
-
         long validationDuration = (System.nanoTime() - validationTime);
         long pruningTime = System.nanoTime();
-
-        if (!unaryError) {
-            // custom exceptions not used here because unary validation is already done above
-            pruneNestedUnaries(evaluatorTree, debugMode);
-        }
 
         solveBinaryExpressions(evaluatorTree, debugMode);
 

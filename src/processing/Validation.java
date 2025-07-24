@@ -141,7 +141,8 @@ public class Validation {
     }
 
     /**
-     * Validates type consistency
+     * Validates type consistency <br>
+     * Requires all operations within the AST to be binary
      * @param evaluatorTree Abstract syntax tree
      */
     public static void validateTypes (EvaluatorTree evaluatorTree, boolean debugMode)  {
@@ -180,12 +181,13 @@ public class Validation {
                     return type;
                 }
 
-            } else if (operationNode.isUnary()) {
-
-                // TODO check if the unary operator can apply
-                type = validateTypesHelper(operationNode.getMember(0), evaluatorNode, debugMode);
-
-            } else if (operationNode.isConstant()) {
+            }
+//            else if (operationNode.isUnary()) {
+//
+//                type = validateTypesHelper(operationNode.getMember(0), evaluatorNode, debugMode);
+//
+//            }
+            else if (operationNode.isConstant()) {
 
                 type = operationNode.constantToken.getType();
             }
