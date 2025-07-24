@@ -2,6 +2,8 @@ package src.processing;
 
 import src.evaluators.*;
 
+import javax.naming.OperationNotSupportedException;
+
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
 import static src.constants.Maps.*;
@@ -14,11 +16,11 @@ import static src.constants.Maps.*;
 
 public class Pruning {
 
-    public static void pruneEmptyOperations(EvaluatorTree evaluatorTree, boolean debugMode) {
-        pruneEmptyOperationsHelper(evaluatorTree.mainBlock, null, debugMode);
+    public static void removeEmptyOperations(EvaluatorTree evaluatorTree, boolean debugMode) {
+        removeEmptyOperationsHelper(evaluatorTree.mainBlock, null, debugMode);
     }
 
-    private static void pruneEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
+    private static void removeEmptyOperationsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
         if (evaluatorNode == null)
             return;
 
@@ -33,7 +35,7 @@ public class Pruning {
         }
 
         for (int i = 0; i< evaluatorNode.memberCount(); i++) {
-            pruneEmptyOperationsHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
+            removeEmptyOperationsHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
 
@@ -50,13 +52,11 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorTree simplifyUnaries(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
-        simplifyNestedUnariesHelper(evaluatorTree.mainBlock, null, debugMode);
-
-        return evaluatorTree;
+    public static void pruneNestedUnaries(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+        pruneNestedUnariesHelper(evaluatorTree.mainBlock, null, debugMode);
     }
 
-    private static void simplifyNestedUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) throws Exception {
+    private static void pruneNestedUnariesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) throws Exception {
         if (evaluatorNode == null)
             return;
 
@@ -73,7 +73,7 @@ public class Pruning {
                             // todo implement something
 
                         } else {
-                            throw new Exception("Illegal unary operator detected on pruning stage");
+                            throw new Exception(String.format("Illegal unary operator %s. Is it not validated?", opCurrent.getOperator()));
                         }
                     } else {
                         // todo implement something for nested casts
@@ -87,14 +87,12 @@ public class Pruning {
             }
         }
         for (int i = 0; i< evaluatorNode.memberCount(); i++) {
-            simplifyNestedUnariesHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
+            pruneNestedUnariesHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
 
-    public static EvaluatorTree convertUnariesToBinary(EvaluatorTree evaluatorTree, boolean debugMode) {
+    public static void convertUnariesToBinary(EvaluatorTree evaluatorTree, boolean debugMode) {
         convertUnariesToBinaryHelper(evaluatorTree.mainBlock, null, debugMode);
-
-        return evaluatorTree;
     }
 
     private static void convertUnariesToBinaryHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
@@ -106,7 +104,12 @@ public class Pruning {
                 if (debugMode)
                     System.out.println("converted unary operator " + opCurrent);
 
-                evaluatorNode = opCurrent.asBinaryFromMember(0);
+                try {
+                    evaluatorNode = opCurrent.asBinaryFromMember(0);
+
+                } catch (IllegalArgumentException e) {
+                    evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.token);
+                }
                 parent.replaceMember(opCurrent, evaluatorNode);
             }
         }
@@ -116,13 +119,11 @@ public class Pruning {
         }
     }
 
-    public static EvaluatorTree simplifyBinaryExpressions(EvaluatorTree evaluatorTreeNode, boolean debugMode) throws Exception {
+    public static void solveBinaryExpressions(EvaluatorTree evaluatorTreeNode, boolean debugMode) {
         simplifyBinaryExpressionsHelper(evaluatorTreeNode.mainBlock, null, true, debugMode);
-
-        return evaluatorTreeNode;
     }
 
-    private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean parseCasts, boolean debugMode) throws Exception {
+    private static void simplifyBinaryExpressionsHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean parseCasts, boolean debugMode) {
         if (evaluatorNode == null)
             return;
 
@@ -148,7 +149,11 @@ public class Pruning {
                 rightIsConstant = operationNode.getRightSide().isConstant();
 
                 if (leftIsConstant && rightIsConstant && leftIsNumeric && rightIsNumeric) {
-                    operationMap.parseOperation(operationNode);
+                    try {
+                        operationMap.parseOperation(operationNode);
+                    } catch (IllegalArgumentException e) {
+                        evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.token);
+                    }
                 }
             } else {
                 simplifyBinaryExpressionsHelper(evaluatorNode.getMember(0), evaluatorNode, parseCasts, debugMode);

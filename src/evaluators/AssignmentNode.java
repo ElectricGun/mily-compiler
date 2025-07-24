@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -37,7 +36,7 @@ public class AssignmentNode extends VariableNode {
         }
 
 
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     @Override

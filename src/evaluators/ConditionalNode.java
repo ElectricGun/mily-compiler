@@ -2,7 +2,6 @@ package src.evaluators;
 
 import java.util.*;
 
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import src.constants.*;
 
@@ -51,7 +50,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
             } else if (bracketCount == 0) {
                 if (operationTokens.isEmpty()) {
                     // todo: why is this method void
-                    throwException("Expecting expression on if statement", token);
+                    throwSyntaxError("Expecting expression on if statement", token);
                     return;
 
                 } else {
@@ -59,7 +58,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
                     operationTokens.removeLast();
 
                     if (operationTokens.isEmpty()) {
-                        throwException("Expecting expression on conditional", token);
+                        throwSyntaxError("Expecting expression on conditional", token);
                         return;
                     }
 

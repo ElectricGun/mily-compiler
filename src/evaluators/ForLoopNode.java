@@ -2,7 +2,6 @@ package src.evaluators;
 
 import java.util.*;
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -47,7 +46,7 @@ public class ForLoopNode extends EvaluatorNode {
                     isExpectingOpeningBracket = false;
 
                 } else {
-                    return throwException("Unexpected token in for loop", token);
+                    return throwSyntaxError("Unexpected token in for loop", token);
                 }
             } else if (initial == null) {
                 if (!Functions.equals(KEY_BRACKET_OPEN, previousToken)) {
@@ -61,10 +60,10 @@ public class ForLoopNode extends EvaluatorNode {
                             initial = new DeclarationNode(previousToken.string, token, depth + 1);
                             members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
                         } else {
-                            return throwException("Unexpected token in for loop initial variable declaration", token);
+                            return throwSyntaxError("Unexpected token in for loop initial variable declaration", token);
                         }
                     } else if (!isDeclaratorAmbiguous(token)) {
-                        return throwException("Unexpected token in for loop initial", token);
+                        return throwSyntaxError("Unexpected token in for loop initial", token);
                     }
                     if (debugMode)
                         System.out.println(indent + " Created initial " + initial);
@@ -104,11 +103,11 @@ public class ForLoopNode extends EvaluatorNode {
                             break;
 
                         } else if (!isWhiteSpace(opToken)) {
-                            return throwException("Malformed update expression in for loop", token);
+                            return throwSyntaxError("Malformed update expression in for loop", token);
                         }
                     }
                 } else {
-                    return throwException("Malformed update expression in for loop", token);
+                    return throwSyntaxError("Malformed update expression in for loop", token);
                 }
 
             } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
@@ -117,11 +116,11 @@ public class ForLoopNode extends EvaluatorNode {
                 return this;
 
             } else {
-                return throwException("Unexpected token in for loop", token);
+                return throwSyntaxError("Unexpected token in for loop", token);
             }
         previousToken = token;
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     @Override

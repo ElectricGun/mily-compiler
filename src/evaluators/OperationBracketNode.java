@@ -2,7 +2,6 @@ package src.evaluators;
 
 import java.util.*;
 
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import src.constants.*;
 
@@ -66,9 +65,10 @@ public class OperationBracketNode extends EvaluatorNode {
             orders.remove(operatorIndex);
             operationTokens.add(token);
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
+    // todo why did i write this???
     public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree, boolean debugMode) {
         try {
             return evaluator(tokenList, orders, evaluatorTree, debugMode);

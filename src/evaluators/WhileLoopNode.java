@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -47,13 +46,13 @@ public class WhileLoopNode extends ConditionalNode {
                     return this;
 
                 } else {
-                    return throwException("Unexpected token on while loop on line", token);
+                    return throwSyntaxError("Unexpected token on while loop on line", token);
                 }
             } else {
-                return throwException("Unexpected token on while loop on line", token);
+                return throwSyntaxError("Unexpected token on while loop on line", token);
             }
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     @Override

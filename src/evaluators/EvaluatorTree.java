@@ -2,7 +2,6 @@ package src.evaluators;
 
 import java.util.*;
 
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 /**
@@ -43,7 +42,7 @@ public class EvaluatorTree {
 
     protected static void printRecursiveHelper(EvaluatorNode node, int depth) {
         if (node == null)
-            return;
+            System.out.println("null");
 
         String prefix = depth > 0 ? "| ".repeat(depth) : "";
         System.out.println(prefix + node);

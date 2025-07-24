@@ -2,7 +2,6 @@ package src.evaluators;
 
 import java.util.*;
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -69,7 +68,7 @@ public class ScopeNode extends EvaluatorNode {
             } else if (expectingSemicolon) {
                 if (!Functions.equals(KEY_SEMICOLON, token)) {
 
-                    return throwException("Missing semicolon", token);
+                    return throwSyntaxError("Missing semicolon", token);
                     }
                 expectingSemicolon = false;
 
@@ -89,7 +88,7 @@ public class ScopeNode extends EvaluatorNode {
                     members.add(node);
 
                 } else {
-                    return throwException("Invalid token", token);
+                    return throwSyntaxError("Invalid token", token);
                 }
                 // clear previous token otherwise it won't be true to reality
                 // as the evaluators below will consume newer tokens
@@ -103,11 +102,11 @@ public class ScopeNode extends EvaluatorNode {
                     return this;
 
                 } else {
-                    return throwException("Illegal punctuation on scope", token);
+                    return throwSyntaxError("Illegal punctuation in scope", token);
                 }
 
             } else if (isOperator(token)) {
-                return throwException("Unexpected operator on scope", token);
+                return throwSyntaxError("Unexpected operator in scope", token);
 
             } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
                 if (debugMode)
@@ -137,11 +136,11 @@ public class ScopeNode extends EvaluatorNode {
 
         // after running out of tokens
         if (needsClosing) {
-            return throwException("Scoped is undeclared", token);
+            return throwSyntaxError("Scoped is undeclared", token);
         }
 
         if (isDeclaratorAmbiguous(previousToken)) {
-            return throwException("Unexpected end of file", token);
+            return throwSyntaxError("Unexpected end of file", token);
         }
 
         return this;

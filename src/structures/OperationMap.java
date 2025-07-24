@@ -1,6 +1,8 @@
 package src.structures;
 
 import src.evaluators.*;
+
+import javax.naming.OperationNotSupportedException;
 import java.util.*;
 import java.util.function.*;
 
@@ -47,7 +49,7 @@ public class OperationMap {
         operationCastMap.put(newOperationKey, castsTo);
     }
 
-    public void parseOperation(OperationNode operationNode) throws Exception {
+    public void parseOperation(OperationNode operationNode) throws IllegalArgumentException {
         String operator = operationNode.getOperator();
         String leftType = operationNode.getLeftTokenType();
         String rightType = operationNode.getRightTokenType();
@@ -56,7 +58,7 @@ public class OperationMap {
         String castTo = operationCastMap.get(operationKeyCheck);
 
         if (!operationValidityMap.containsKey(operationKeyCheck) || !operationCastMap.containsKey(operationKeyCheck)) {
-            throw new Exception(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.token.line));
+            throw new IllegalArgumentException(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.token.line));
         }
 
         operationValidityMap.get(operationKeyCheck).accept(operationNode);
@@ -64,17 +66,17 @@ public class OperationMap {
         try {
             operationNode.constantToken.setType(castTo);
         } catch (NullPointerException e) {
-            throw new Exception(String.format("Unabled to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
+            throw new IllegalArgumentException(String.format("Unable to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
         }
     }
 
-    public String getCastTo(String operator, String leftType, String rightType) throws Exception {
+    public String getCastTo(String operator, String leftType, String rightType) throws IllegalArgumentException {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
 
         if (operationCastMap.containsKey(operationKeyCheck)) {
             return operationCastMap.get(operationKeyCheck);
         } else {
-            throw new Exception(String.format("Operator %s cannot be applied to %s and %s", operator, leftType, rightType));
+            throw new IllegalArgumentException(String.format("Operator %s cannot be applied to %s and %s", operator, leftType, rightType));
         }
     }
 

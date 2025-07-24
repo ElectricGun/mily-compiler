@@ -2,8 +2,9 @@ package src.evaluators;
 
 import java.util.*;
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
+
+import javax.naming.OperationNotSupportedException;
 
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
@@ -290,7 +291,7 @@ public class OperationNode extends EvaluatorNode {
                         Token currentOperationToken = operationTokens.get(i);
 
                         if (isReserved(currentOperationToken)) {
-                            return throwException("Illegal keyword found on operation", token);
+                            return throwSyntaxError("Illegal keyword found in operation", token);
                         }
 
                         int currentOrder = operationOrder(currentOperationToken);
@@ -378,7 +379,7 @@ public class OperationNode extends EvaluatorNode {
                             setRightSide((OperationNode) op.evaluate(right, evaluatorTree, debugMode));
 
                         } else {
-                            return throwException("Unexpected token on operation", token);
+                            return throwSyntaxError("Unexpected token in operation", token);
                         }
                         return this;
                     }
@@ -427,10 +428,10 @@ public class OperationNode extends EvaluatorNode {
                         for (Token operationToken : operationTokens)
                             out.append(" ").append(operationToken.string);
 
-                        return throwException("Invalid operation", token);
+                        return throwSyntaxError("Invalid operation", token);
                     }
                 } else {
-                    return throwException("Unexpected token on operation", token);
+                    return throwSyntaxError("Unexpected token in operation", token);
                 }
             }
             else {
@@ -439,7 +440,7 @@ public class OperationNode extends EvaluatorNode {
 
             previousToken = token;
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     public boolean isEmptyConstant() {
@@ -475,7 +476,7 @@ public class OperationNode extends EvaluatorNode {
         return !isUnary() && !isConstant();
     }
 
-    public OperationNode asBinaryFromMember(int memberIndex) {
+    public OperationNode asBinaryFromMember(int memberIndex) throws IllegalArgumentException {
         OperationNode newOp = new OperationNode(this.token, depth);
 
         OperationNode memberChild = (OperationNode) this.getMember(memberIndex);
@@ -484,6 +485,11 @@ public class OperationNode extends EvaluatorNode {
         newOp.type = KEY_OP_TYPE_OPERATION;
 
         if (!isCast()) {
+            // todo not optimal implementation, use maps
+
+            if (!this.operator.equals(KEY_OP_SUB) && !this.operator.equals(KEY_OP_ADD)) {
+                throw new IllegalArgumentException(String.format("Invalid unary operator \"%s\"", this.operator));
+            }
             newOp.operator = KEY_OP_MUL;
             factorConstant.constantToken = new TypedToken(this.operator.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line, KEY_DATA_INT);
         } else {

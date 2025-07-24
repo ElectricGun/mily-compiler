@@ -2,8 +2,8 @@ package src.evaluators;
 
 import java.util.*;
 
-import src.interfaces.MilyThrowable;
-import src.structures.MilyException;
+import src.interfaces.*;
+import src.structures.*;
 import src.tokens.*;
 
 /**
@@ -70,11 +70,22 @@ public class EvaluatorNode {
         }
     }
 
-    protected EvaluatorNode throwException(String message, Token token) {
-        // TODO: unhardcode
+    public EvaluatorNode throwSyntaxError(String message, Token token) {
         String errorMessage = String.format("Syntax error on line: %s, token: \"%s\": ", token.line, token) + message;
+        this.milyThrowable = new MilySyntaxError(errorMessage);
 
-        this.milyThrowable = new MilyException(errorMessage);
+        return this;
+    }
+
+    public EvaluatorNode throwSemanticError(String message, Token token) {
+        String errorMessage = String.format("Semantic error on line: %s, token: \"%s\": ", token.line, token) + message;
+        this.milyThrowable = new MilySemanticError(errorMessage);
+
+        return this;
+    }
+
+    public EvaluatorNode throwThrowable(MilyThrowable throwable) {
+        this.milyThrowable = throwable;
 
         return this;
     }

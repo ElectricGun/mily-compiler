@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -48,7 +47,7 @@ public class DeclarationNode extends VariableNode {
                     return this;
 
                 } else {
-                    return throwException("Unexpected punctuation on variable declaration", token);
+                    return throwSyntaxError("Unexpected punctuation on variable declaration", token);
                 }
             }
             // evaluate operators
@@ -63,7 +62,7 @@ public class DeclarationNode extends VariableNode {
                     return this;
 
                 } else {
-                    return throwException("Missing '=' sign", token);
+                    return throwSyntaxError("Missing '=' sign", token);
 
                 }
             }
@@ -75,17 +74,17 @@ public class DeclarationNode extends VariableNode {
                     variableName = token.string;
 
                 } else {
-                    return throwException("Unexpected token on variable declaration", token);
+                    return throwSyntaxError("Unexpected token on variable declaration", token);
 
                 }
             }
             // evaluate the rest
             else {
-                return throwException("Unexpected token on variable declaration", token);
+                return throwSyntaxError("Unexpected token on variable declaration", token);
 
             }
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
 
     }
 

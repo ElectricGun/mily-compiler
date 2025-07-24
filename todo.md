@@ -1,16 +1,20 @@
 # Urgent TODO:
- - custom exceptions for semantic validation
+ - map for unary operators
  - type checking for functions
  - semantic validation for function calls
 
 # Problems:
  - Doing this /* **/ throws unclosed comment error
  - Comparison operation lambda functions are empty
+ - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
 
 # Priority Features:
  - Static typing
  - Datatype validation
  - Explicit and implicit casting
+
+# Operations
+ - Declaring strings in operations
 
 # AST Pruning
  - Numeric expression solving
@@ -19,11 +23,7 @@
 # Planned Pipeline
 - Lexing -> AST -> Validation -> Pruning -> IR -> Mlog
 
-# Current Pipeline
-- Lexing -> AST -> Unary to Binary -> Validation -> Pruning
-
 # Datatypes
- - Static typing
  - Datatype validation:
   - Function return arg checking
   - Binary operation checking (check if both are the same type, or are able to be implicitly casted)

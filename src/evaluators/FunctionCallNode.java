@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -54,15 +53,15 @@ public class FunctionCallNode extends EvaluatorNode {
                 try {
                     tryAddArgument(token);
                 } catch (Exception e) {
-                    return throwException("Malformed function parameter", token);
+                    return throwSyntaxError("Malformed function parameter", token);
                 }
 
             } else if (isInitialized) {
-                return throwException("Unexpected token in function call", token);
+                return throwSyntaxError("Unexpected token in function call", token);
             }
             isInitialized = true;
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     private void tryAddArgument(Token token) throws Exception {

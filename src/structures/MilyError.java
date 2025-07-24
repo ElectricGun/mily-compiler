@@ -2,11 +2,11 @@ package src.structures;
 
 import src.interfaces.*;
 
-public class MilyException implements MilyThrowable {
+public class MilyError implements MilyThrowable {
 
     String message;
 
-    public MilyException(String message) {
+    public MilyError(String message) {
         this.message = message;
     }
 
@@ -17,6 +17,6 @@ public class MilyException implements MilyThrowable {
 
     @Override
     public String getErrorMessage() {
-        return "MilyException: " + message;
+        return "MilyError: " + message;
     }
 }

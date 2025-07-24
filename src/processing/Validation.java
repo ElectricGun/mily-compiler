@@ -15,16 +15,16 @@ import static src.constants.Maps.*;
 
 public class Validation {
 
-    public static boolean validateThrowables(EvaluatorTree evaluatorTree, boolean debugMode) {
+    public static boolean checkThrowables(EvaluatorTree evaluatorTree, boolean debugMode) {
         boolean[] errored = new boolean[] {false};
 
         Stack<EvaluatorNode> traceStack = new Stack<>();
-        validateThrowablesHelper(evaluatorTree.mainBlock, traceStack, errored, debugMode);
+        checkThrowablesHelper(evaluatorTree.mainBlock, traceStack, errored, debugMode);
 
         return errored[0];
     }
 
-    public static void validateThrowablesHelper(EvaluatorNode evaluatorNode, Stack<EvaluatorNode> traceStack, boolean[] errored, boolean debugMode) {
+    public static void checkThrowablesHelper(EvaluatorNode evaluatorNode, Stack<EvaluatorNode> traceStack, boolean[] errored, boolean debugMode) {
 
         // TODO: not the most elegant solution
 
@@ -50,7 +50,7 @@ public class Validation {
             Stack<EvaluatorNode> newStack = new Stack<>();
             newStack.addAll(traceStack);
 
-            validateThrowablesHelper(evaluatorNode.getMember(i), newStack, errored, debugMode);
+            checkThrowablesHelper(evaluatorNode.getMember(i), newStack, errored, debugMode);
         }
     }
 
@@ -80,10 +80,15 @@ public class Validation {
             // types are hardcoded because type checking is not done in this function;
             // only declarations
 
+            String alreadyDeclaredMessage = "Variable \"%s\" is already declared within scope";
+            String undeclaredMessage = "Variable \"%s\" is undeclared";
+
             if (member instanceof FunctionArgNode functionArgNode) {
                 String declaredVar = functionArgNode.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, on file \"%s\"".formatted(functionArgNode.getVariableName(), member.token.line, evaluatorTree.name));
+                    member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.token);
+
+//                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, on file \"%s\"".formatted(functionArgNode.getVariableName(), member.token.line, evaluatorTree.name));
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(functionArgNode.getType());
@@ -91,7 +96,9 @@ public class Validation {
             } else if (member instanceof DeclarationNode memberDeclaration) {
                 String declaredVar = memberDeclaration.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, file \"%s\"".formatted(memberDeclaration.getVariableName(), member.token.line, evaluatorTree.name));
+                    member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.token);
+
+//                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, file \"%s\"".formatted(memberDeclaration.getVariableName(), member.token.line, evaluatorTree.name));
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(memberDeclaration.getType());
@@ -99,10 +106,10 @@ public class Validation {
             } else if (member instanceof AssignmentNode memberAssignment) {
                 String assignedVar = memberAssignment.getVariableName();
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberAssignment.getVariableName(), member.token.line, evaluatorTree.name));
-                }
+                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
 
-                if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
+//                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberAssignment.getVariableName(), member.token.line, evaluatorTree.name));
+                } else if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
 
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
@@ -112,10 +119,10 @@ public class Validation {
             } else if (member instanceof OperationNode memberOp && isVariableName(memberOp.constantToken)) {
                 String assignedVar = memberOp.constantToken.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberOp.constantToken.string, member.token.line, evaluatorTree.name));
-                }
+                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
 
-                if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
+//                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberOp.constantToken.string, member.token.line, evaluatorTree.name));
+                } else if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
                     if (doAssignTypes)
@@ -124,7 +131,9 @@ public class Validation {
             } else if (member instanceof FunctionCallNode functionDeclareMember) {
                 String assignedVar = functionDeclareMember.token.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    throw new Exception("Function \"%s\" on line %s is undeclared on file \"%s\"".formatted(functionDeclareMember.token.string, member.token.line, evaluatorTree.name));
+                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
+
+//                    throw new Exception("Function \"%s\" on line %s is undeclared on file \"%s\"".formatted(functionDeclareMember.token.string, member.token.line, evaluatorTree.name));
                 }
             }
             validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames), new ArrayList<>(variableTypes), doAssignTypes, debugMode);
@@ -135,7 +144,7 @@ public class Validation {
      * Validates type consistency
      * @param evaluatorTree Abstract syntax tree
      */
-    public static void validateTypes (EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    public static void validateTypes (EvaluatorTree evaluatorTree, boolean debugMode)  {
         validateTypesHelper(evaluatorTree.mainBlock, null, debugMode);
     }
 
@@ -143,7 +152,7 @@ public class Validation {
         return operationMap.isOperationValid(KEY_OP_CAST_IMPLICIT, type, type2);
     }
 
-    private static String validateTypesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) throws Exception {
+    private static String validateTypesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
         String type = KEY_DATA_UNKNOWN;
 
         if (debugMode)
@@ -163,7 +172,13 @@ public class Validation {
                     rightType = validateTypesHelper(operationNode.getRightSide(), operationNode, debugMode);
                 }
 
-                type = operationMap.getCastTo(operationNode.getOperator(), leftType, rightType);
+                try {
+                    type = operationMap.getCastTo(operationNode.getOperator(), leftType, rightType);
+
+                } catch (IllegalArgumentException e) {
+                    operationNode.throwSemanticError(e.getMessage(), operationNode.token);
+                    return type;
+                }
 
             } else if (operationNode.isUnary()) {
 
@@ -180,7 +195,10 @@ public class Validation {
             String compare = validateTypesHelper(evaluatorNode.getMember(0), evaluatorNode, debugMode);
 
             if (!assignmentNode.getType().equals(compare) && !KEY_DATA_LET.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
-                throw new Exception(String.format("Cannot cast \"%s\" into \"%s\" on line %s", compare, assignmentNode.getType(), evaluatorNode.token.line));
+                assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.token);
+                return type;
+
+//                throw new Exception(String.format("Cannot cast \"%s\" into \"%s\" on line %s", compare, assignmentNode.getType(), evaluatorNode.token.line));
             }
 
         } else if (evaluatorNode instanceof DeclarationNode declarationNode) {
@@ -189,7 +207,10 @@ public class Validation {
                 String compare = validateTypesHelper(innerMember, evaluatorNode, debugMode);
 
                 if (!declarationNode.getType().equals(compare) && !KEY_DATA_LET.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
-                    throw new Exception(String.format("Cannot cast \"%s\" into \"%s\" on line %s", compare, declarationNode.getType(), evaluatorNode.token.line));
+                    declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.token);
+                    return type;
+
+//                    throw new Exception(String.format("Cannot cast \"%s\" into \"%s\" on line %s", compare, declarationNode.getType(), evaluatorNode.token.line));
                 }
             }
         } else {

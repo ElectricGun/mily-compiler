@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -55,7 +54,7 @@ public class ElseNode extends EvaluatorNode {
                 throw new Exception();
             }
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     @Override

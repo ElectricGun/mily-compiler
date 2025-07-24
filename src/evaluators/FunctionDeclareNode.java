@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import src.constants.*;
-import src.interfaces.MilyThrowable;
 import src.tokens.*;
 import java.util.*;
 
@@ -46,7 +45,7 @@ public class FunctionDeclareNode extends EvaluatorNode {
 
             } else if (isPunctuation(token) && !isWhiteSpace(token)) {
                  if (argumentWanted) {
-                     return throwException("Expecting an argument on function declaration", token);
+                     return throwSyntaxError("Expecting an argument on function declaration", token);
 
                 } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;
@@ -63,11 +62,11 @@ public class FunctionDeclareNode extends EvaluatorNode {
                      return this;
 
                 } else {
-                     return throwException("Unexpected punctuation on function declaration", token);
+                     return throwSyntaxError("Unexpected punctuation on function declaration", token);
 
                 }
             } else if (isOperator(token)) {
-                return throwException("Unexpected operator on function declaration", token);
+                return throwSyntaxError("Unexpected operator on function declaration", token);
 
             } else if (isDeclaratorAmbiguous(token)) {
                 Token variableName = tokenList.removeFirst();
@@ -76,7 +75,7 @@ public class FunctionDeclareNode extends EvaluatorNode {
                     variableName = tokenList.removeFirst();
                 }
                 if (!isVariableName(variableName)) {
-                    return throwException("Not a variable name on function declaration", token);
+                    return throwSyntaxError("Not a variable name on function declaration", token);
 
                 } else if (!isInitialized || argumentWanted) {
                     argumentNames.add(variableName.string);
@@ -90,13 +89,13 @@ public class FunctionDeclareNode extends EvaluatorNode {
                         System.out.printf("Added argument %s%n", variableName);
 
                 } else {
-                    return throwException("Unexpected token on function declaration", token);
+                    return throwSyntaxError("Unexpected token on function declaration", token);
 
                 }
             }
             isInitialized = true;
         }
-        return throwException("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", token);
     }
 
     @Override

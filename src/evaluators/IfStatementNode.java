@@ -48,7 +48,7 @@ public class IfStatementNode extends ConditionalNode {
                     // dont return yet, check for an else statement
 
                 } else {
-                    return throwException("Unexpected token on if statement", token);
+                    return throwSyntaxError("Unexpected token on if statement", token);
                 }
 
             } else if (scope != null) {
@@ -64,12 +64,12 @@ public class IfStatementNode extends ConditionalNode {
                 return this;
 
             } else {
-                return throwException("Unexpected token on if statement", token);
+                return throwSyntaxError("Unexpected token on if statement", token);
             }
         }
 
         if (scope == null)
-            return throwException("Unexpected end of file", token);
+            return throwSyntaxError("Unexpected end of file", token);
         else
             return this;
     }

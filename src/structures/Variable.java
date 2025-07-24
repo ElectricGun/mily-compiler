@@ -2,7 +2,6 @@ package src.structures;
 
 import src.interfaces.*;
 import src.processing.*;
-
 import java.util.*;
 
 /**
