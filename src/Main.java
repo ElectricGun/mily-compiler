@@ -17,20 +17,23 @@ public class Main {
         final boolean debugMode = false;
 
         long startTime = System.nanoTime();
+
+        // read code
         CodeFile code = readFile("tests/main.mily");
 
         long startCompileTime = System.nanoTime();
+
+        // tokenise
         List<Token> tokenList = tokenize(code.getCode(), debugMode);
         long lexingDuration = (System.nanoTime() - startCompileTime);
 
+        // build ast
         long startAstBuildDuration = System.nanoTime();
         EvaluatorTree evaluatorTree = new EvaluatorTree(code.getFilename(), debugMode);
         evaluatorTree.begin(tokenList);
         long astBuildDuration = (System.nanoTime() - startAstBuildDuration);
 
-        long validationTime = System.nanoTime();
-
-        boolean doAssignTypes = true;
+        long optimizationTime = System.nanoTime();
 
         // check for syntax errors
         if (checkThrowables(evaluatorTree, debugMode))
@@ -38,17 +41,15 @@ public class Main {
 
         removeEmptyOperations(evaluatorTree, debugMode);
 
-        // todo: unary validation should probably be done in its own method validateUnaries()
         convertUnariesToBinary(evaluatorTree, debugMode);
 
+        boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
 
         // this step is kinda redundant
 //        pruneNestedUnaries(evaluatorTree, debugMode);
 
         validateTypes(evaluatorTree, debugMode);
-        long validationDuration = (System.nanoTime() - validationTime);
-        long pruningTime = System.nanoTime();
 
         solveBinaryExpressions(evaluatorTree, debugMode);
 
@@ -56,26 +57,25 @@ public class Main {
         if (checkThrowables(evaluatorTree, debugMode))
             return;
 
-        evaluatorTree.printRecursive();
+        long optimizationDuration = (System.nanoTime() - optimizationTime);
 
         long endTime = System.nanoTime();
-        long pruningDuration = (endTime - pruningTime);
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
+
+        evaluatorTree.printRecursive();
 
         System.out.println();
 
         System.out.printf(
                 "Lexing time: %sms%n" +
                 "AST building time: %sms%n" +
-                "Semantic validation time: %sms%n" +
-                "Pruning time: %sms%n" +
+                "Optimisation time: %sms%n" +
                 "Total compile time: %sms%n" +
                 "Total run time: %sms%n",
                 lexingDuration / 1000000,
                 astBuildDuration / 1000000,
-                validationDuration / 1000000,
-                pruningDuration / 1000000,
+                optimizationDuration / 1000000,
                 compileDuration / 1000000,
                 totalDuration / 1000000
         );
