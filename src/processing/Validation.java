@@ -41,7 +41,7 @@ public class Validation {
 
             while (!newStack.isEmpty()) {
                 EvaluatorNode trace = newStack.pop();
-                System.out.printf("\t at %s, line %s%n", trace, trace.token.line);
+                System.out.printf("\tat %s, line %s%n", trace, trace.token.line);
             }
             System.out.print("\033[0m");
         }
