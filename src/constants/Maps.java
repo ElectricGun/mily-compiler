@@ -2,6 +2,8 @@ package src.constants;
 
 import src.evaluators.*;
 import src.structures.*;
+import src.tokens.*;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -160,6 +162,8 @@ public class Maps {
         // TODO looks quite horrible rn
         // TODO add more operators
 
+        // -------- Binary Operators --------
+
         // addition
         Consumer<OperationNode> addConsumer = o -> {
             if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
@@ -262,5 +266,18 @@ public class Maps {
         addGenericNumericComparison(KEY_OP_EQUALS, o -> {});
         addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
         addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
+
+        // -------- Unary Operators --------
+
+        Consumer<UnaryToBinaryBuilder> baseUnaryConsumer = b -> {
+            b.getNewOp().setOperator(KEY_OP_MUL);
+            b.getFactor().constantToken = new TypedToken(b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1", b.getOldOp().token.line, KEY_DATA_INT);
+        };
+
+        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_DOUBLE, baseUnaryConsumer);
+        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_DOUBLE, baseUnaryConsumer);
+
+        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_INT, baseUnaryConsumer);
+        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_INT, baseUnaryConsumer);
     }
 }

@@ -1,10 +1,12 @@
 package src.structures;
 
 import src.evaluators.*;
+import src.tokens.*;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.*;
 import java.util.function.*;
+
+import static src.constants.Keywords.*;
 
 /**
  * <h1> Class OperationMap </h1>
@@ -39,13 +41,79 @@ public class OperationMap {
         }
     }
 
-    Map<OperationKey, Consumer<OperationNode>> operationValidityMap = new HashMap<>();
+//    static class UnaryOperationKey {
+//        String operator;
+//        String operandType;
+//
+//        public UnaryOperationKey(String operator, String operandType) {
+//            this.operator = operator;
+//            this.operandType = operandType;
+//        }
+//
+//        @Override
+//        public boolean equals(Object o) {
+//            if (o == null || getClass() != o.getClass()) return false;
+//            UnaryOperationKey that = (UnaryOperationKey) o;
+//            return Objects.equals(operator, that.operator) && Objects.equals(operandType, that.operandType);
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            return Objects.hash(operator, operandType);
+//        }
+//    }
+
+    Map<String, Consumer<UnaryToBinaryBuilder>> unaryOperationConversionMap = new HashMap<>();
+    Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
     Map<OperationKey, String> operationCastMap = new HashMap<>();
+
+    /**
+     * Adds a converter for unary operations to binary
+     */
+    public void addUnaryOperationConverter(String operator, String operandType, Consumer<UnaryToBinaryBuilder> operationConsumer) {
+//        UnaryOperationKey unaryOperationKey = new UnaryOperationKey(operator, operandType);
+
+        unaryOperationConversionMap.put(operator, operationConsumer);
+    }
+
+    public OperationNode generateBinaryFromUnaryAtMember(OperationNode operationNode, int memberIndex) {
+        OperationNode newOp = new OperationNode(operationNode.token, operationNode.depth);
+        OperationNode memberChild = (OperationNode) operationNode.getMember(memberIndex);
+        OperationNode factorConstant = new OperationNode(operationNode.token, operationNode.depth + 1);
+        memberChild.depth += 1;
+        // todo might reduce flexibility
+        newOp.setType(KEY_OP_TYPE_OPERATION);
+
+        UnaryToBinaryBuilder unaryToBinaryBuilder = new UnaryToBinaryBuilder(operationNode, newOp, memberChild, factorConstant);
+
+        if (!operationNode.isCast()) {
+            String key = operationNode.getOperator();
+
+            if (unaryOperationConversionMap.containsKey(key)) {
+                unaryOperationConversionMap.get(key).accept(unaryToBinaryBuilder);
+            } else {
+                throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
+
+            }
+        } else {
+            newOp.setOperator(KEY_OP_CAST_EXPLICIT);
+            factorConstant.constantToken = new TypedToken("1", operationNode.token.line, operationNode.getOperator());
+        }
+
+        newOp.setLeftSide(memberChild);
+        newOp.setRightSide(factorConstant);
+
+        return newOp;
+    }
+
+    public void generateBinaryFromUnary(OperationNode operationNode, int memberIndex) {
+        generateBinaryFromUnaryAtMember(operationNode, 0);
+    }
 
     public void addOperation(String operator, String leftType, String rightType, String castsTo, Consumer<OperationNode> operationConsumer) {
         OperationKey newOperationKey = new OperationKey(operator, leftType, rightType);
         
-        operationValidityMap.put(newOperationKey, operationConsumer);
+        operationParseMap.put(newOperationKey, operationConsumer);
         operationCastMap.put(newOperationKey, castsTo);
     }
 
@@ -57,11 +125,11 @@ public class OperationMap {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
         String castTo = operationCastMap.get(operationKeyCheck);
 
-        if (!operationValidityMap.containsKey(operationKeyCheck) || !operationCastMap.containsKey(operationKeyCheck)) {
+        if (!operationParseMap.containsKey(operationKeyCheck) || !operationCastMap.containsKey(operationKeyCheck)) {
             throw new IllegalArgumentException(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.token.line));
         }
 
-        operationValidityMap.get(operationKeyCheck).accept(operationNode);
+        operationParseMap.get(operationKeyCheck).accept(operationNode);
 
         try {
             operationNode.constantToken.setType(castTo);

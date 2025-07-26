@@ -151,6 +151,7 @@ public class Pruning {
                 if (leftIsConstant && rightIsConstant && leftIsNumeric && rightIsNumeric) {
                     try {
                         operationMap.parseOperation(operationNode);
+
                     } catch (IllegalArgumentException e) {
                         evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.token);
                     }

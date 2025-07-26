@@ -87,8 +87,6 @@ public class Validation {
                 String declaredVar = functionArgNode.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
                     member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.token);
-
-//                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, on file \"%s\"".formatted(functionArgNode.getVariableName(), member.token.line, evaluatorTree.name));
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(functionArgNode.getType());
@@ -97,8 +95,6 @@ public class Validation {
                 String declaredVar = memberDeclaration.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
                     member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.token);
-
-//                    throw new Exception("Variable \"%s\" on line %s is already declared within scope, file \"%s\"".formatted(memberDeclaration.getVariableName(), member.token.line, evaluatorTree.name));
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(memberDeclaration.getType());
@@ -108,7 +104,6 @@ public class Validation {
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
 
-//                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberAssignment.getVariableName(), member.token.line, evaluatorTree.name));
                 } else if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
 
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
@@ -121,7 +116,6 @@ public class Validation {
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
 
-//                    throw new Exception("Variable \"%s\" on line %s is undeclared on file \"%s\"".formatted(memberOp.constantToken.string, member.token.line, evaluatorTree.name));
                 } else if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
@@ -133,7 +127,6 @@ public class Validation {
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
 
-//                    throw new Exception("Function \"%s\" on line %s is undeclared on file \"%s\"".formatted(functionDeclareMember.token.string, member.token.line, evaluatorTree.name));
                 }
             }
             validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames), new ArrayList<>(variableTypes), doAssignTypes, debugMode);
@@ -200,7 +193,6 @@ public class Validation {
                 assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.token);
                 return type;
 
-//                throw new Exception(String.format("Cannot cast \"%s\" into \"%s\" on line %s", compare, assignmentNode.getType(), evaluatorNode.token.line));
             }
 
         } else if (evaluatorNode instanceof DeclarationNode declarationNode) {
@@ -212,7 +204,6 @@ public class Validation {
                     declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.token);
                     return type;
 
-//                    throw new Exception(String.format("Cannot cast \"%s\" into \"%s\" on line %s", compare, declarationNode.getType(), evaluatorNode.token.line));
                 }
             }
         } else {

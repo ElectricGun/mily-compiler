@@ -43,6 +43,10 @@ public class Main {
 
         convertUnariesToBinary(evaluatorTree, debugMode);
 
+//        evaluatorTree.printRecursive();
+
+        System.out.println();
+
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
 

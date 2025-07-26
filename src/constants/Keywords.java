@@ -22,7 +22,7 @@ public class Keywords {
         KEY_SPACE = " ",
         KEY_TAB =   "\t",
 
-    // comment punctuations TODO change these probably
+    // comment punctuations
         KEY_COMMENT_MULTILINE_START = "/*",
         KEY_COMMENT_MULTILINE_END = "*/",
         KEY_COMMENT_INLINE = "/-",

@@ -4,10 +4,9 @@ import java.util.*;
 import src.constants.*;
 import src.tokens.*;
 
-import javax.naming.OperationNotSupportedException;
-
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
+import static src.constants.Maps.*;
 
 /**
  * <h1> Class OperationNode </h1>
@@ -155,6 +154,10 @@ public class OperationNode extends EvaluatorNode {
 
     public String getRightTokenType() {
         return getRightSide().constantToken.getType();
+    }
+
+    public TypedToken getConstantToken() {
+        return constantToken;
     }
 
     @Override
@@ -477,29 +480,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public OperationNode asBinaryFromMember(int memberIndex) throws IllegalArgumentException {
-        OperationNode newOp = new OperationNode(this.token, depth);
-
-        OperationNode memberChild = (OperationNode) this.getMember(memberIndex);
-        OperationNode factorConstant = new OperationNode(this.token, depth + 1);
-        memberChild.depth += 1;
-        newOp.type = KEY_OP_TYPE_OPERATION;
-
-        if (!isCast()) {
-            // todo not optimal implementation, use maps
-
-            if (!this.operator.equals(KEY_OP_SUB) && !this.operator.equals(KEY_OP_ADD)) {
-                throw new IllegalArgumentException(String.format("Invalid unary operator \"%s\"", this.operator));
-            }
-            newOp.operator = KEY_OP_MUL;
-            factorConstant.constantToken = new TypedToken(this.operator.equals(KEY_OP_SUB) ? "-1" : "1", this.token.line, KEY_DATA_INT);
-        } else {
-            newOp.operator = KEY_OP_CAST_EXPLICIT;
-            factorConstant.constantToken = new TypedToken("1", this.token.line, this.operator);
-        }
-
-        newOp.setLeftSide(memberChild);
-        newOp.setRightSide(factorConstant);
-        return newOp;
+        return operationMap.generateBinaryFromUnaryAtMember(this, memberIndex);
     }
 
     public boolean isCast() {

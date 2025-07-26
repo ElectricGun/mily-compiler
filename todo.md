@@ -1,17 +1,15 @@
 # Urgent TODO:
- - map for unary operators
  - type checking for functions
+ - dynamic datatypes cannot be used in operations; throws semantic errors; change how dynamic typing works
  - semantic validation for function calls
 
 # Problems:
- - Doing this /* **/ throws unclosed comment error
+ - Doing this /* **/ throws unclosed comment error because of how the lexing works
  - Comparison operation lambda functions are empty
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
 
 # Priority Features:
  - Static typing
- - Datatype validation
- - Explicit and implicit casting
 
 # Operations
  - Declaring strings in operations
@@ -60,16 +58,17 @@
  - Docstrings can be improved
  - Validation functions can be unified to reduce compile time
  - add an instance method equals() within Token
- - Pruning::operationsParserMap
+ - unary operators are hardcoded and cannot be overloaded, implement a map for them to convert to binaries
 
 # Syntax Document
  - A syntax document for Milyscript
 
 # Future Features (low priority)
- - Arrays
- - Structs and Classes
+ - Arrays and structs
+ - Libraries
  - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
  - Aliasing and Macros:
   - should be processed during the AST building stage
   - #define keyword
  - Inline raw mlog
+ - Header files for declarations and configs
