@@ -1,5 +1,4 @@
 # Urgent TODO:
- - dynamic datatypes cannot be used in operations; throws semantic errors; change how dynamic typing works
  - type checking for functions
  - semantic validation for function calls
 
@@ -59,6 +58,7 @@
  - Validation functions can be unified to reduce compile time
  - add an instance method equals() within Token
  - unary operators are hardcoded and cannot be overloaded, implement a map for them to convert to binaries
+ - operations with dynamic variables are not typed checked or parsed
 
 # Syntax Document
  - A syntax document for Milyscript
