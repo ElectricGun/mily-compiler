@@ -2,13 +2,13 @@ package src.structures;
 
 import src.evaluators.*;
 
-public class UnaryToBinaryBuilder {
+public class UnaryToBinaryStruct {
     OperationNode oldOp;
     OperationNode newOp;
     OperationNode child;
     OperationNode factor;
 
-    public UnaryToBinaryBuilder(OperationNode oldOp, OperationNode newOp, OperationNode child, OperationNode factor) {
+    public UnaryToBinaryStruct(OperationNode oldOp, OperationNode newOp, OperationNode child, OperationNode factor) {
         this.oldOp = oldOp;
         this.newOp = newOp;
         this.child = child;

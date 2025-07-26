@@ -1,6 +1,6 @@
 # Urgent TODO:
- - type checking for functions
  - dynamic datatypes cannot be used in operations; throws semantic errors; change how dynamic typing works
+ - type checking for functions
  - semantic validation for function calls
 
 # Problems:

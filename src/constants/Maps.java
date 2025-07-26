@@ -269,7 +269,7 @@ public class Maps {
 
         // -------- Unary Operators --------
 
-        Consumer<UnaryToBinaryBuilder> baseUnaryConsumer = b -> {
+        Consumer<UnaryToBinaryStruct> baseUnaryConsumer = b -> {
             b.getNewOp().setOperator(KEY_OP_MUL);
             b.getFactor().constantToken = new TypedToken(b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1", b.getOldOp().token.line, KEY_DATA_INT);
         };

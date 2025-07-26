@@ -63,14 +63,14 @@ public class OperationMap {
 //        }
 //    }
 
-    Map<String, Consumer<UnaryToBinaryBuilder>> unaryOperationConversionMap = new HashMap<>();
+    Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
     Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
     Map<OperationKey, String> operationCastMap = new HashMap<>();
 
     /**
      * Adds a converter for unary operations to binary
      */
-    public void addUnaryOperationConverter(String operator, String operandType, Consumer<UnaryToBinaryBuilder> operationConsumer) {
+    public void addUnaryOperationConverter(String operator, String operandType, Consumer<UnaryToBinaryStruct> operationConsumer) {
 //        UnaryOperationKey unaryOperationKey = new UnaryOperationKey(operator, operandType);
 
         unaryOperationConversionMap.put(operator, operationConsumer);
@@ -84,13 +84,13 @@ public class OperationMap {
         // todo might reduce flexibility
         newOp.setType(KEY_OP_TYPE_OPERATION);
 
-        UnaryToBinaryBuilder unaryToBinaryBuilder = new UnaryToBinaryBuilder(operationNode, newOp, memberChild, factorConstant);
+        UnaryToBinaryStruct unaryToBinaryStruct = new UnaryToBinaryStruct(operationNode, newOp, memberChild, factorConstant);
 
         if (!operationNode.isCast()) {
             String key = operationNode.getOperator();
 
             if (unaryOperationConversionMap.containsKey(key)) {
-                unaryOperationConversionMap.get(key).accept(unaryToBinaryBuilder);
+                unaryOperationConversionMap.get(key).accept(unaryToBinaryStruct);
             } else {
                 throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
 
