@@ -42,7 +42,7 @@ public class Maps {
     ));
 
     protected final static List<String> declaratorKeys = new ArrayList<>(Arrays.asList(
-            KEY_DATA_LET,
+            KEY_DATA_DYNAMIC,
             KEY_DATA_DOUBLE,
             KEY_DATA_INT,
             KEY_DATA_STRING,

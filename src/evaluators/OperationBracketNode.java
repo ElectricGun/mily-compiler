@@ -5,6 +5,7 @@ import java.util.*;
 import src.tokens.*;
 import src.constants.*;
 
+import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
@@ -43,10 +44,10 @@ public class OperationBracketNode extends EvaluatorNode {
             if (debugMode)
                 System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
 
-            if (token.length() == 1 && Functions.equals(KEY_BRACKET_OPEN, token)) {
+            if (token.length() == 1 && keyEquals(KEY_BRACKET_OPEN, token)) {
                 bracketCounter ++;
 
-            } else if (token.length() == 1 && Functions.equals(KEY_BRACKET_CLOSE, token)) {
+            } else if (token.length() == 1 && keyEquals(KEY_BRACKET_CLOSE, token)) {
                 // replace closing bracket with a constant indicator
                 bracketCounter --;
             }

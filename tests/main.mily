@@ -8,7 +8,7 @@ but the library import feature (#include) has not been implemented yet (too eepy
 /- start placeholders
 void print() {}
 /- end placeholders
-
+/*
 /---------- Variable Declarations ----------
 let num = 20;
 int x = 6;
@@ -75,9 +75,7 @@ let complex_cast_int = (int) (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 +
 /- simplifies to 243 int on compilation
 
 /-------------------- Semantic Errors (uncomment to see)  --------------------
-
 /*
-
 /---------- Undeclared Variable
 amongus = 100;                     /- MilySemanticError: Semantic error on line: 80, token: "amongus": Variable "amongus" is undeclared
 
@@ -93,15 +91,17 @@ let wrong_op =  false * (7 * 9);   /- MilySemanticError: Semantic error on line:
 
 /---------- Redeclaration
 let red = 10;
-boolean red = false;              /- MilySemanticError: Semantic error on line: 94, token: "red": Variable "red" is already declared within scope
+boolean red = false;               /- MilySemanticError: Semantic error on line: 94, token: "red": Variable "red" is already declared within scope
 
 /---------- Illegal Implicit Casting
-int amogus3 = 5 / 2;              /- MilySemanticError: Semantic error on line: 97, token: "amogus3": Cannot cast "double" into "int"
+int amogus3 = 5 / 2;               /- MilySemanticError: Semantic error on line: 97, token: "amogus3": Cannot cast "double" into "int"
 
 /---- The right way for this is to use integer division //
 int amogus4 = 5 // 2;
 
 /---- Or use an explicit cast
 int amogus5 = (int) (5 / 2);
-
 */
+
+let test = 1;
+let test2 = test + 1;

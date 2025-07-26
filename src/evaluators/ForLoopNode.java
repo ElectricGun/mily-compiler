@@ -42,15 +42,15 @@ public class ForLoopNode extends EvaluatorNode {
                 continue;
 
             } else if (isExpectingOpeningBracket) {
-                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+                if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     isExpectingOpeningBracket = false;
 
                 } else {
                     return throwSyntaxError("Unexpected token in for loop", token);
                 }
             } else if (initial == null) {
-                if (!Functions.equals(KEY_BRACKET_OPEN, previousToken)) {
-                    if (isVariableName(previousToken) && Functions.equals(KEY_OP_ASSIGN, token)) {
+                if (!keyEquals(KEY_BRACKET_OPEN, previousToken)) {
+                    if (isVariableName(previousToken) && keyEquals(KEY_OP_ASSIGN, token)) {
                         initial = new AssignmentNode(previousToken, depth + 1);
                         members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
 
@@ -72,7 +72,7 @@ public class ForLoopNode extends EvaluatorNode {
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
-                while (!Functions.equals(KEY_SEMICOLON, operationTokens.getLast())) {
+                while (!keyEquals(KEY_SEMICOLON, operationTokens.getLast())) {
                     Token currentToken = tokenList.removeFirst();
                     operationTokens.add(currentToken);
                 }
@@ -83,7 +83,7 @@ public class ForLoopNode extends EvaluatorNode {
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
-                while (!Functions.equals(KEY_BRACKET_CLOSE, operationTokens.getLast())) {
+                while (!keyEquals(KEY_BRACKET_CLOSE, operationTokens.getLast())) {
                     Token currentToken = tokenList.removeFirst();
                     operationTokens.add(currentToken);
                 }
@@ -96,7 +96,7 @@ public class ForLoopNode extends EvaluatorNode {
                     while (true) {
                         Token opToken = operationTokens.removeFirst();
 
-                        if (Functions.equals(KEY_OP_ASSIGN, opToken)) {
+                        if (keyEquals(KEY_OP_ASSIGN, opToken)) {
                             operationTokens.add(new Token(KEY_SEMICOLON, token.line));
                             updater = new AssignmentNode(variableName, depth + 1);
                             members.add(updater.evaluate(operationTokens, evaluatorTree, debugMode));
@@ -110,7 +110,7 @@ public class ForLoopNode extends EvaluatorNode {
                     return throwSyntaxError("Malformed update expression in for loop", token);
                 }
 
-            } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
+            } else if (keyEquals(KEY_CURLY_OPEN, token)) {
                 scope = new ScopeNode(this.token, depth + 1, true);
                 members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;

@@ -47,13 +47,13 @@ public class FunctionDeclareNode extends EvaluatorNode {
                  if (argumentWanted) {
                      return throwSyntaxError("Expecting an argument on function declaration", token);
 
-                } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
+                } else if (keyEquals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;
 
-                } else if (Functions.equals(KEY_COMMA, token)) {
+                } else if (keyEquals(KEY_COMMA, token)) {
                     argumentWanted = true;
 
-                } else if (functionDeclared && Functions.equals(KEY_CURLY_OPEN, token)) {
+                } else if (functionDeclared && keyEquals(KEY_CURLY_OPEN, token)) {
                      if (debugMode)
                          System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
 

@@ -37,7 +37,7 @@ public class Keywords {
         KEY_BOOLEAN_TRUE = "true",
 
     // keywords: datatypes
-        KEY_DATA_LET = "let",
+        KEY_DATA_DYNAMIC = "let",
         KEY_DATA_INT = "int",
         KEY_DATA_DOUBLE = "double",
         KEY_DATA_STRING = "string",

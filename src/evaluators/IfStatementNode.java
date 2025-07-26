@@ -39,11 +39,11 @@ public class IfStatementNode extends ConditionalNode {
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+            } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {
-                if (Functions.equals(KEY_CURLY_OPEN, token)) {
+                if (keyEquals(KEY_CURLY_OPEN, token)) {
                     createBlock(tokenList, evaluatorTree, debugMode);
                     // dont return yet, check for an else statement
 
@@ -52,7 +52,7 @@ public class IfStatementNode extends ConditionalNode {
                 }
 
             } else if (scope != null) {
-                if (Functions.equals(KEY_CONDITIONAL_ELSE, token)) {
+                if (keyEquals(KEY_CONDITIONAL_ELSE, token)) {
                     ElseNode elseNode = new ElseNode(this.token, depth + 1);
                     members.add(elseNode.evaluate(tokenList, evaluatorTree, debugMode));
                     this.elseNode = elseNode;

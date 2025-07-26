@@ -37,11 +37,11 @@ public class WhileLoopNode extends ConditionalNode {
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+            } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
                 parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {
-                if (Functions.equals(KEY_CURLY_OPEN, token)) {
+                if (keyEquals(KEY_CURLY_OPEN, token)) {
                     createBlock(tokenList, evaluatorTree, debugMode);
                     return this;
 

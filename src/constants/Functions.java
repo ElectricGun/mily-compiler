@@ -33,19 +33,19 @@ public class Functions {
         return new CodeFile(filename, code.toString());
     }
 
-    public static boolean equals(String key, String compare) {
+    public static boolean keyEquals(String key, String compare) {
         return key.equals(compare);
     }
 
-    public static boolean equals(String key, Token token) {
+    public static boolean keyEquals(String key, Token token) {
         if (token == null) {
             throw new IllegalArgumentException("token is null");
         }
-        return equals(key, token.string);
+        return keyEquals(key, token.string);
     }
 
-    public static boolean equals(String key, char c) {
-        return equals(key, String.valueOf(c));
+    public static boolean keyEquals(String key, char c) {
+        return keyEquals(key, String.valueOf(c));
     }
 
     public static boolean isPunctuation(String compare) {

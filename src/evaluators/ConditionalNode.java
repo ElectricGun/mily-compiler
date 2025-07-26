@@ -3,8 +3,8 @@ package src.evaluators;
 import java.util.*;
 
 import src.tokens.*;
-import src.constants.*;
 
+import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
@@ -39,11 +39,11 @@ public abstract class ConditionalNode extends EvaluatorNode {
             if (debugMode)
                 System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
 
-            if (Functions.equals(KEY_BRACKET_CLOSE, expressionToken)) {
+            if (keyEquals(KEY_BRACKET_CLOSE, expressionToken)) {
                 bracketCount--;
                 operationTokens.add(expressionToken);
 
-            } else if (Functions.equals(KEY_BRACKET_OPEN, expressionToken)) {
+            } else if (keyEquals(KEY_BRACKET_OPEN, expressionToken)) {
                 bracketCount++;
                 operationTokens.add(expressionToken);
 

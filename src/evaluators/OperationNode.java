@@ -189,7 +189,7 @@ public class OperationNode extends EvaluatorNode {
                 // casts also should be regarded as unary operators
                 // store them as class CastToken
 
-                if (Functions.equals(KEY_BRACKET_OPEN, token)) {
+                if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     if (isVariableName(previousToken)) {
 
                         if (debugMode)
@@ -235,12 +235,12 @@ public class OperationNode extends EvaluatorNode {
                                 if (debugMode)
                                     System.out.println(indent + "datatype found : " + datatypeToken);
 
-                            } else if (!closeBracketFound && Functions.equals(KEY_BRACKET_CLOSE, currToken)) {
+                            } else if (!closeBracketFound && keyEquals(KEY_BRACKET_CLOSE, currToken)) {
                                 closeBracketFound = true;
                                 if (debugMode)
                                     System.out.println(indent + "close bracket found");
 
-                            } else if (!constantFound && (isDeclaratorAmbiguous(currToken) || isNumeric(currToken) || Functions.equals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
+                            } else if (!constantFound && (isDeclaratorAmbiguous(currToken) || isNumeric(currToken) || keyEquals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
                                 constantFound = true;
                                 castConstantToken = currToken;
                                 if (debugMode)
@@ -267,12 +267,12 @@ public class OperationNode extends EvaluatorNode {
                         }
                     }
 
-                } else if (Functions.equals(KEY_BRACKET_CLOSE, token)) {
+                } else if (keyEquals(KEY_BRACKET_CLOSE, token)) {
                     operationTokens.add(token);
                 }
 
                 // entire operations are evaluated after a semicolon is detected
-                else if (Functions.equals(KEY_SEMICOLON, token)) {
+                else if (keyEquals(KEY_SEMICOLON, token)) {
                     if (debugMode)
                         System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
                     List<Integer> orders = new ArrayList<>();
@@ -451,7 +451,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public boolean isConstant() {
-        return Functions.equals(KEY_OP_TYPE_CONSTANT, type);
+        return keyEquals(KEY_OP_TYPE_CONSTANT, type);
     }
 
     public void makeConstant(String newString) {
@@ -484,7 +484,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public boolean isCast() {
-        return Functions.equals(KEY_OP_CAST_EXPLICIT, type);
+        return keyEquals(KEY_OP_CAST_EXPLICIT, type);
     }
 
     @Override
@@ -492,7 +492,7 @@ public class OperationNode extends EvaluatorNode {
         //TODO fix this stupid thing
         String out = "";
 
-        if (Functions.equals(KEY_OP_CAST_EXPLICIT, type)) {
+        if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {
             return "unary cast(\"" + operator + "\")";
         }
 

@@ -42,17 +42,17 @@ public class Lexing {
 
     private static void tryAddToken() {
         if (!commentMode) {
-            if (Functions.equals(KEY_COMMENT_INLINE, tokenString)) {
+            if (keyEquals(KEY_COMMENT_INLINE, tokenString)) {
                 commentModeInline = true;
                 commentMode = true;
-            } else if (Functions.equals(KEY_COMMENT_MULTILINE_START, tokenString)) {
+            } else if (keyEquals(KEY_COMMENT_MULTILINE_START, tokenString)) {
                 commentStartLine = currentLine;
                 commentMode = true;
             }
             else {
                 tokens.add(new Token(tokenString, currentLine));
             }
-        } else if (Functions.equals(KEY_COMMENT_MULTILINE_END, tokenString)) {
+        } else if (keyEquals(KEY_COMMENT_MULTILINE_END, tokenString)) {
             commentModeInline = false;
             commentMode = false;
         }
@@ -72,7 +72,7 @@ public class Lexing {
                 System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s    comment_mode: %s  inline: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString),  commentMode, commentModeInline);
 
             if (isWhiteSpace(cs)) {
-                if (Functions.equals(KEY_NEWLINE, cs)) {
+                if (keyEquals(KEY_NEWLINE, cs)) {
                     currentLine++;
                 }
 
@@ -110,7 +110,7 @@ public class Lexing {
             }
             // newline detection for inline comments has to be here
             // because tokens are flushed on the next iteration
-            if (Functions.equals(KEY_NEWLINE, cs)) {
+            if (keyEquals(KEY_NEWLINE, cs)) {
                 if (commentMode && commentModeInline) {
                     commentModeInline = false;
                     commentMode = false;

@@ -37,7 +37,7 @@ public class DeclarationNode extends VariableNode {
                 if (isWhiteSpace(token)) {
                     continue;
 
-                } else if (Functions.equals(KEY_BRACKET_OPEN, token) && isDeclared()) {
+                } else if (keyEquals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     // FUNCTION DECLARATION
                     if (debugMode)
                         System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
@@ -56,7 +56,7 @@ public class DeclarationNode extends VariableNode {
                 if (debugMode)
                     System.out.println(variableName);
                 // check for equal sign
-                if (Functions.equals(KEY_OP_ASSIGN, token) && isDeclared()) {
+                if (keyEquals(KEY_OP_ASSIGN, token) && isDeclared()) {
                     OperationNode operationNode = new OperationNode(new Token("op_"+ this.token, this.token.line), depth + 1);
                     members.add(operationNode.evaluate(tokenList, evaluatorTree, debugMode));
                     return this;

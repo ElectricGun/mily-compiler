@@ -43,10 +43,10 @@ public class FunctionCallNode extends EvaluatorNode {
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (Functions.equals(KEY_BRACKET_CLOSE, token) && (!expectingArgument || !isInitialized)) {
+            } else if (keyEquals(KEY_BRACKET_CLOSE, token) && (!expectingArgument || !isInitialized)) {
                 return this;
 
-            } else if (Functions.equals(KEY_COMMA, token) && isInitialized) {
+            } else if (keyEquals(KEY_COMMA, token) && isInitialized) {
                 expectingArgument = true;
 
             } else if (expectingArgument) {

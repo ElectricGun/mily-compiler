@@ -40,12 +40,12 @@ public class ElseNode extends EvaluatorNode {
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (Functions.equals(KEY_CURLY_OPEN, token)) {
+            } else if (keyEquals(KEY_CURLY_OPEN, token)) {
                 ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
                 members.add(scopeNode.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
-            } else if (Functions.equals(KEY_CONDITIONAL_IF, token)) {
+            } else if (keyEquals(KEY_CONDITIONAL_IF, token)) {
                 IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(this.token, depth + 1);
                 members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;

@@ -45,8 +45,6 @@ public class Main {
 
 //        evaluatorTree.printRecursive();
 
-        System.out.println();
-
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
 
