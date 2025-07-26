@@ -31,7 +31,7 @@ public class OperationNode extends EvaluatorNode {
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
-    public boolean isReturnOperation;
+    protected boolean isReturnOperation;
 
     private OperationNode leftSide = null;
     private OperationNode rightSide = null;
@@ -44,6 +44,10 @@ public class OperationNode extends EvaluatorNode {
         super(token, depth);
 
         this.isReturnOperation = true;
+    }
+
+    public boolean isReturnOperation() {
+        return isReturnOperation;
     }
 
     public String getType() {

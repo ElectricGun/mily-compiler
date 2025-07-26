@@ -139,14 +139,14 @@ public class Validation {
      * @param evaluatorTree Abstract syntax tree
      */
     public static void validateTypes (EvaluatorTree evaluatorTree, boolean debugMode)  {
-        validateTypesHelper(evaluatorTree.mainBlock, null, debugMode);
+        validateTypesHelper(evaluatorTree.mainBlock, debugMode);
     }
 
     public static boolean canImplicitCast(String type, String type2) {
         return operationMap.isOperationValid(KEY_OP_CAST_IMPLICIT, type, type2);
     }
 
-    private static String validateTypesHelper(EvaluatorNode evaluatorNode, EvaluatorNode parent, boolean debugMode) {
+    private static String validateTypesHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
         String type = KEY_DATA_UNKNOWN;
 
         if (debugMode)
@@ -159,11 +159,11 @@ public class Validation {
                 String rightType = KEY_DATA_UNKNOWN;
 
                 if (operationNode.getLeftSide() != null) {
-                    leftType = validateTypesHelper(operationNode.getLeftSide(), operationNode, debugMode);
+                    leftType = validateTypesHelper(operationNode.getLeftSide(), debugMode);
                 }
 
                 if (operationNode.getRightSide() != null) {
-                    rightType = validateTypesHelper(operationNode.getRightSide(), operationNode, debugMode);
+                    rightType = validateTypesHelper(operationNode.getRightSide(), debugMode);
                 }
 
                 try {
@@ -187,18 +187,18 @@ public class Validation {
 
             // TODO remove redundancies
         } else if (evaluatorNode instanceof AssignmentNode assignmentNode) {
-            String compare = validateTypesHelper(evaluatorNode.getMember(0), evaluatorNode, debugMode);
+            String compare = validateTypesHelper(evaluatorNode.getMember(0), debugMode);
 
             if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
                 assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.token);
                 return type;
-
             }
 
         } else if (evaluatorNode instanceof DeclarationNode declarationNode) {
             EvaluatorNode innerMember = evaluatorNode.getMember(0);
+
             if (innerMember instanceof OperationNode op) {
-                String compare = validateTypesHelper(innerMember, evaluatorNode, debugMode);
+                String compare = validateTypesHelper(innerMember, debugMode);
 
                 if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
                     declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.token);
@@ -208,15 +208,70 @@ public class Validation {
             }
         } else {
             for (int i = 0; i < evaluatorNode.memberCount(); i++) {
-                validateTypesHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
+                validateTypesHelper(evaluatorNode.getMember(i), debugMode);
             }
         }
 
         return type;
     }
 
-    public static String getFunctionBlockReturnType(ScopeNode scopeNode) {
-        // TODO implement
-        return null;
+    // TODO make this also validate function calls
+    // TODO this could be put inside validateTypesHelper
+    public static void validateFunctions(EvaluatorTree evaluatorTree, boolean debugMode) {
+        validateFunctionsHelper(evaluatorTree.mainBlock, debugMode);
+    }
+
+    private static void validateFunctionsHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
+        if (evaluatorNode instanceof DeclarationNode declarer) {
+            if (declarer.getMember(0) instanceof FunctionDeclareNode func) {
+                validateFunctionBlockReturnType(func, declarer, debugMode);
+            }
+        }
+
+        for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
+            validateFunctionsHelper(evaluatorNode.getMember(i), debugMode);
+        }
+    }
+
+    /**
+     * Checks if a function's return type is consistent with its returns
+     * @see FunctionDeclareNode
+     */
+    public static void validateFunctionBlockReturnType(FunctionDeclareNode func, VariableNode declarer, boolean debugMode) {
+        String returnType = declarer.getType();
+        ScopeNode scope = (ScopeNode) func.getMember(0);
+
+        boolean[] typeValid = new boolean[]{true};
+        boolean[] returnsValue = new boolean[]{false};
+
+        validateFunctionTypeHelper(scope, returnType, returnsValue, typeValid, debugMode);
+
+        // TODO add errors in validateFunctionTypeHelper as well
+        if (!typeValid[0]) {
+            declarer.throwSemanticError("Function has invalid return type", declarer.token);
+
+        } else if (returnsValue[0]) {
+            if (keyEquals(KEY_DATA_VOID, returnType)) {
+                declarer.throwSemanticError("Function must not return a value", declarer.token);
+            }
+        } else if (!keyEquals(KEY_DATA_VOID, returnType)) {
+            declarer.throwSemanticError("Missing return value", declarer.token);
+        }
+    }
+
+    // TODO this does not take into account branching paths
+    private static void validateFunctionTypeHelper(EvaluatorNode evaluatorNode, String returnType, boolean[] returnsValue, boolean[] typeValid, boolean debugMode) {
+        if (evaluatorNode instanceof OperationNode op && op.isReturnOperation()) {
+            String opType = validateTypesHelper(op, debugMode);
+
+            if (!keyEquals(KEY_DATA_VOID,opType))
+                returnsValue[0] = true;
+
+            if (!returnType.equals(opType))
+                typeValid[0] = false;
+        }
+        for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
+            validateFunctionTypeHelper(evaluatorNode.getMember(i), returnType, returnsValue, typeValid, debugMode);
+        }
     }
 }

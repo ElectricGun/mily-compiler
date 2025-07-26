@@ -51,6 +51,8 @@ public class Main {
         // this step is kinda redundant
 //        pruneNestedUnaries(evaluatorTree, debugMode);
 
+        validateFunctions(evaluatorTree, debugMode);
+
         validateTypes(evaluatorTree, debugMode);
 
         solveBinaryExpressions(evaluatorTree, debugMode);
@@ -70,16 +72,16 @@ public class Main {
         System.out.println();
 
         System.out.printf(
-                "Lexing time: %sms%n" +
-                "AST building time: %sms%n" +
-                "Optimisation time: %sms%n" +
-                "Total compile time: %sms%n" +
-                "Total run time: %sms%n",
-                lexingDuration / 1000000,
-                astBuildDuration / 1000000,
-                optimizationDuration / 1000000,
-                compileDuration / 1000000,
-                totalDuration / 1000000
+            "Lexing time: %sms%n" +
+            "AST building time: %sms%n" +
+            "Optimisation time: %sms%n" +
+            "Total compile time: %sms%n" +
+            "Total run time: %sms%n",
+            lexingDuration / 1000000,
+            astBuildDuration / 1000000,
+            optimizationDuration / 1000000,
+            compileDuration / 1000000,
+            totalDuration / 1000000
         );
     }
 }
