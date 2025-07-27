@@ -45,7 +45,7 @@ public class Main {
 
         convertUnariesToBinary(evaluatorTree, debugMode);
 
-        evaluatorTree.printRecursive();
+//        evaluatorTree.printRecursive();
 
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
@@ -70,7 +70,7 @@ public class Main {
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
-//        evaluatorTree.printRecursive();
+        evaluatorTree.printRecursive();
 
         System.out.println();
 

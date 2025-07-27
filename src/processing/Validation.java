@@ -268,7 +268,7 @@ public class Validation {
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
             if (member instanceof OperationNode op && op.isReturnOperation()) {
-                String opType = validateTypesHelper(op, true);
+                String opType = validateTypesHelper(op, debugMode);
 
                 if (!returnType.equals(opType))
                     op.throwSemanticError("Invalid return type " + opType, op.token);
