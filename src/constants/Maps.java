@@ -156,6 +156,10 @@ public class Maps {
         operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
     }
 
+    static void addBooleanOperator(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_BOOLEAN,    KEY_DATA_BOOLEAN,    KEY_DATA_BOOLEAN, consumer);
+    }
+
     public static final OperationMap operationMap = new OperationMap();
     static {
 
@@ -266,6 +270,9 @@ public class Maps {
         addGenericNumericComparison(KEY_OP_EQUALS, o -> {});
         addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
         addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
+
+        // boolean
+        operationMap.addOperation(KEY_OP_AND, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, o -> {});
 
         // -------- Unary Operators --------
 

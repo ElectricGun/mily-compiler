@@ -50,6 +50,10 @@ public class OperationNode extends EvaluatorNode {
         return isReturnOperation;
     }
 
+    public void setReturnOperation(boolean returnOperation) {
+        isReturnOperation = returnOperation;
+    }
+
     public String getType() {
         return type;
     }
@@ -496,16 +500,16 @@ public class OperationNode extends EvaluatorNode {
         //TODO fix this stupid thing
         String out = "";
 
+        if (isReturnOperation) {
+            out = "return ";
+        }
+
         if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {
-            return "unary cast(\"" + operator + "\")";
+            return out + "unary cast(\"" + operator + "\")";
         }
 
         if (isEmptyConstant()) {
-            return "empty";
-        }
-
-        if (isReturnOperation) {
-            out = "return ";
+            return out + "empty";
         }
 
         if (isUnary()) {

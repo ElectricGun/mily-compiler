@@ -78,7 +78,7 @@ public class OperationMap {
     }
 
     public OperationNode generateBinaryFromUnaryAtMember(OperationNode operationNode, int memberIndex) {
-        OperationNode newOp = new OperationNode(operationNode.token, operationNode.depth);
+        OperationNode newOp = new OperationNode(operationNode.token, operationNode.depth, operationNode.isReturnOperation());
         OperationNode memberChild = (OperationNode) operationNode.getMember(memberIndex);
         OperationNode factorConstant = new OperationNode(operationNode.token, operationNode.depth + 1);
         memberChild.depth += 1;

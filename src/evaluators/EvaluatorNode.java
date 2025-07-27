@@ -14,7 +14,7 @@ import src.tokens.*;
 
 public class EvaluatorNode {
 
-    protected MilyThrowable milyThrowable;
+    protected List<MilyThrowable> milyThrowables = new ArrayList<>();
 
     public int depth;
     public Token token;
@@ -28,11 +28,15 @@ public class EvaluatorNode {
     }
 
     public boolean isErrored() {
-        return milyThrowable != null;
+        return !milyThrowables.isEmpty();
     }
 
-    public MilyThrowable getThrowable() {
-        return milyThrowable;
+    public MilyThrowable getThrowable(int index) {
+        return milyThrowables.get(index);
+    }
+
+    public int throwablesCount() {
+        return milyThrowables.size();
     }
 
     public int memberCount() {
@@ -72,20 +76,20 @@ public class EvaluatorNode {
 
     public EvaluatorNode throwSyntaxError(String message, Token token) {
         String errorMessage = String.format("Syntax error on line: %s, token: \"%s\": ", token.line, token) + message;
-        this.milyThrowable = new MilySyntaxError(errorMessage);
+        this.milyThrowables.add(new MilySyntaxError(errorMessage));
 
         return this;
     }
 
     public EvaluatorNode throwSemanticError(String message, Token token) {
         String errorMessage = String.format("Semantic error on line: %s, token: \"%s\": ", token.line, token) + message;
-        this.milyThrowable = new MilySemanticError(errorMessage);
+        this.milyThrowables.add(new MilySemanticError(errorMessage));
 
         return this;
     }
 
     public EvaluatorNode throwThrowable(MilyThrowable throwable) {
-        this.milyThrowable = throwable;
+        this.milyThrowables.add(throwable);
 
         return this;
     }

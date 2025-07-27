@@ -33,15 +33,22 @@ public class Validation {
         if (evaluatorNode.isErrored()) {
             errored[0] = true;
 
+            boolean isMultipleErrors = evaluatorNode.throwablesCount() > 1;
+
             System.out.print("\033[31m");
-            System.out.println(evaluatorNode.getThrowable().getErrorMessage());
+            if (isMultipleErrors) {
+                System.out.println(String.format("Multiple errors on line %s, token: \"%s\":", evaluatorNode.token.line, evaluatorNode.token));
+            }
+            for (int i = 0; i < evaluatorNode.throwablesCount(); i++) {
+                System.out.println((isMultipleErrors ? "\t" : "") + evaluatorNode.getThrowable(i).getErrorMessage());
+            }
 
             Stack<EvaluatorNode> newStack = new Stack<>();
             newStack.addAll(traceStack);
 
             while (!newStack.isEmpty()) {
                 EvaluatorNode trace = newStack.pop();
-                System.out.printf("\tat %s, line %s%n", trace, trace.token.line);
+                System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, line %s%n", trace, trace.token.line);
             }
             System.out.print("\033[0m");
         }
@@ -171,6 +178,8 @@ public class Validation {
 
                 } catch (IllegalArgumentException e) {
                     operationNode.throwSemanticError(e.getMessage(), operationNode.token);
+                    if (debugMode)
+                        System.out.println("ERROR " + type + "  " + evaluatorNode);
                     return type;
                 }
 
@@ -191,6 +200,8 @@ public class Validation {
 
             if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
                 assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.token);
+                if (debugMode)
+                    System.out.println(type + "  " + evaluatorNode);
                 return type;
             }
 
@@ -202,8 +213,9 @@ public class Validation {
 
                 if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
                     declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.token);
+                    if (debugMode)
+                        System.out.println(type + "  " + evaluatorNode);
                     return type;
-
                 }
             }
         } else {
@@ -211,6 +223,9 @@ public class Validation {
                 validateTypesHelper(evaluatorNode.getMember(i), debugMode);
             }
         }
+
+        if (debugMode)
+            System.out.println(type + "  " + evaluatorNode);
 
         return type;
     }
@@ -245,7 +260,6 @@ public class Validation {
         // todo can be simplified
         if (!isReturningSomething && !keyEquals(KEY_DATA_VOID, returnType)) {
             func.throwSemanticError("Not all paths return a value", func.token);
-
         }
     }
 
@@ -253,9 +267,8 @@ public class Validation {
         // get the returns on the first layer
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
-
             if (member instanceof OperationNode op && op.isReturnOperation()) {
-                String opType = validateTypesHelper(op, debugMode);
+                String opType = validateTypesHelper(op, true);
 
                 if (!returnType.equals(opType))
                     op.throwSemanticError("Invalid return type " + opType, op.token);

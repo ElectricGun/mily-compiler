@@ -2,6 +2,7 @@
  - semantic validation for function calls
 
 # Problems:
+ - Dynamic typing is current UNSUPPORTED. I need to figure out how to mix static AND dynamic typing
  - Doing this /* **/ throws unclosed comment error because of how the lexing works
  - Comparison operation lambda functions are empty
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue

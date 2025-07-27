@@ -39,15 +39,18 @@ public class Main {
         if (checkThrowables(evaluatorTree, debugMode))
             return;
 
+//        evaluatorTree.printRecursive();
+
         removeEmptyOperations(evaluatorTree, debugMode);
 
         convertUnariesToBinary(evaluatorTree, debugMode);
 
-//        evaluatorTree.printRecursive();
+        evaluatorTree.printRecursive();
 
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
 
+//        evaluatorTree.printRecursive();
         // this step is kinda redundant
 //        pruneNestedUnaries(evaluatorTree, debugMode);
 
