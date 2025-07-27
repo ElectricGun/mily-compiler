@@ -215,15 +215,18 @@ public class Validation {
         return type;
     }
 
-    // TODO make this also validate function calls
-    // TODO this could be put inside validateTypesHelper
-    public static void validateFunctions(EvaluatorTree evaluatorTree, boolean debugMode) {
+    // TODO: why are there so many methods doing just one thing. Fix this later
+    /**
+     * Checks if a function's return type is consistent with its returns
+     * @see FunctionDeclareNode
+     */
+    public static void validateFunctions(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         validateFunctionsHelper(evaluatorTree.mainBlock, debugMode);
     }
 
-    private static void validateFunctionsHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
+    private static void validateFunctionsHelper(EvaluatorNode evaluatorNode, boolean debugMode) throws Exception {
         if (evaluatorNode instanceof DeclarationNode declarer) {
-            if (declarer.getMember(0) instanceof FunctionDeclareNode func) {
+            if (declarer.memberCount() > 0 && declarer.getMember(0) instanceof FunctionDeclareNode func) {
                 validateFunctionBlockReturnType(func, declarer, debugMode);
             }
         }
@@ -233,45 +236,74 @@ public class Validation {
         }
     }
 
-    /**
-     * Checks if a function's return type is consistent with its returns
-     * @see FunctionDeclareNode
-     */
-    public static void validateFunctionBlockReturnType(FunctionDeclareNode func, VariableNode declarer, boolean debugMode) {
+    private static void validateFunctionBlockReturnType(FunctionDeclareNode func, VariableNode declarer, boolean debugMode) throws Exception {
         String returnType = declarer.getType();
-        ScopeNode scope = (ScopeNode) func.getMember(0);
+        EvaluatorNode scope = func.getScope();
 
-        boolean[] typeValid = new boolean[]{true};
-        boolean[] returnsValue = new boolean[]{false};
+        boolean isReturningSomething = validateReturns(scope, returnType, debugMode);
 
-        validateFunctionTypeHelper(scope, returnType, returnsValue, typeValid, debugMode);
+        // todo can be simplified
+        if (!isReturningSomething && !keyEquals(KEY_DATA_VOID, returnType)) {
+            func.throwSemanticError("Not all paths return a value", func.token);
 
-        // TODO add errors in validateFunctionTypeHelper as well
-        if (!typeValid[0]) {
-            declarer.throwSemanticError("Function has invalid return type", declarer.token);
-
-        } else if (returnsValue[0]) {
-            if (keyEquals(KEY_DATA_VOID, returnType)) {
-                declarer.throwSemanticError("Function must not return a value", declarer.token);
-            }
-        } else if (!keyEquals(KEY_DATA_VOID, returnType)) {
-            declarer.throwSemanticError("Missing return value", declarer.token);
         }
     }
 
-    // TODO this does not take into account branching paths
-    private static void validateFunctionTypeHelper(EvaluatorNode evaluatorNode, String returnType, boolean[] returnsValue, boolean[] typeValid, boolean debugMode) {
-        if (evaluatorNode instanceof OperationNode op && op.isReturnOperation()) {
-            String opType = validateTypesHelper(op, debugMode);
-
-            if (!keyEquals(KEY_DATA_VOID,opType))
-                returnsValue[0] = true;
-
-            if (!returnType.equals(opType))
-                typeValid[0] = false;
-        }
+    private static boolean validateReturns(EvaluatorNode evaluatorNode, String returnType, boolean debugMode) throws Exception {
+        // get the returns on the first layer
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
-            validateFunctionTypeHelper(evaluatorNode.getMember(i), returnType, returnsValue, typeValid, debugMode);
+            EvaluatorNode member = evaluatorNode.getMember(i);
+
+            if (member instanceof OperationNode op && op.isReturnOperation()) {
+                String opType = validateTypesHelper(op, debugMode);
+
+                if (!returnType.equals(opType))
+                    op.throwSemanticError("Invalid return type " + opType, op.token);
+
+                if (debugMode)
+                    System.out.println("Return found on " + evaluatorNode);
+
+                return true;
+            }
+
+            if (member instanceof IfStatementNode ifStatementNode) {
+                List<Boolean> returnPaths = new ArrayList<>();
+                boolean[] hasElse = {false};
+                validateBranchReturns(ifStatementNode, returnType, returnPaths, hasElse, debugMode);
+
+                if (hasElse[0] && !returnPaths.contains(false)) {
+                    return true;
+                }
+            }
         }
+        return false;
+    }
+
+    private static void validateBranchReturns(IfStatementNode ifStatementNode, String returnType, List<Boolean> returnPaths, boolean[] hasElse, boolean debugMode) throws Exception {
+        ScopeNode ifBlock = ifStatementNode.getScope();
+
+        if (ifStatementNode.getElseNode() != null) {
+            ElseNode elseNode = ifStatementNode.getElseNode();
+
+            if (elseNode.getIfStatementNode() != null) {
+                if (debugMode)
+                    System.out.println("Else if found");
+
+                IfStatementNode elseIfNode = elseNode.getIfStatementNode();
+                validateBranchReturns(elseIfNode, returnType, returnPaths, hasElse, debugMode);
+
+            } else if (elseNode.getScope() != null) {
+                if (debugMode)
+                    System.out.println("Else block found");
+
+                ScopeNode elseScope = elseNode.getScope();
+                returnPaths.add(validateReturns(elseScope, returnType, debugMode));
+                hasElse[0] = true;
+
+            } else {
+                throw new Exception("Scope not found in else block");
+            }
+        }
+        returnPaths.add(validateReturns(ifBlock, returnType, debugMode));
     }
 }

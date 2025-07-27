@@ -27,6 +27,10 @@ public class FunctionDeclareNode extends EvaluatorNode {
     private boolean functionDeclared = false;
     private boolean argumentWanted = false;
 
+    public ScopeNode getScope() {
+        return scope;
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);

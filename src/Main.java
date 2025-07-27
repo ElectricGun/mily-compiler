@@ -67,7 +67,7 @@ public class Main {
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
-        evaluatorTree.printRecursive();
+//        evaluatorTree.printRecursive();
 
         System.out.println();
 

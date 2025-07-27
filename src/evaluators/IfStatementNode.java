@@ -26,6 +26,10 @@ public class IfStatementNode extends ConditionalNode {
         super(token, depth);
     }
 
+    public ElseNode getElseNode() {
+        return elseNode;
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
@@ -53,7 +57,7 @@ public class IfStatementNode extends ConditionalNode {
 
             } else if (scope != null) {
                 if (keyEquals(KEY_CONDITIONAL_ELSE, token)) {
-                    ElseNode elseNode = new ElseNode(this.token, depth + 1);
+                    ElseNode elseNode = new ElseNode(token, depth + 1);
                     members.add(elseNode.evaluate(tokenList, evaluatorTree, debugMode));
                     this.elseNode = elseNode;
 
@@ -76,6 +80,6 @@ public class IfStatementNode extends ConditionalNode {
 
     @Override
     public String toString() {
-        return "if statement";
+        return "if statement   #" + hashCode();
     }
 }

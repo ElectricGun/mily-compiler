@@ -82,7 +82,7 @@ public class OperationMap {
         OperationNode memberChild = (OperationNode) operationNode.getMember(memberIndex);
         OperationNode factorConstant = new OperationNode(operationNode.token, operationNode.depth + 1);
         memberChild.depth += 1;
-        // todo might reduce flexibility
+        // todo hardcode might reduce flexibility
         newOp.setType(KEY_OP_TYPE_OPERATION);
 
         UnaryToBinaryStruct unaryToBinaryStruct = new UnaryToBinaryStruct(operationNode, newOp, memberChild, factorConstant);

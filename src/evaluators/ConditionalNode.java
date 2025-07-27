@@ -26,6 +26,10 @@ public abstract class ConditionalNode extends EvaluatorNode {
         return expression;
     }
 
+    public ScopeNode getScope() {
+        return scope;
+    }
+
     public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
         List<Token> operationTokens = new ArrayList<>();

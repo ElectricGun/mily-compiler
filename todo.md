@@ -1,5 +1,4 @@
 # Urgent TODO:
- - type checking for functions
  - semantic validation for function calls
 
 # Problems:
@@ -8,28 +7,25 @@
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
  - "let test = 1; let test2 = test + 1 + false;" is valid
 
-# Priority Features:
- - Static typing
-
 # Operations
  - Declaring strings in operations
 
+# Useful
+ - Inline raw mlog (can be used for defining mlog commands in libraries)
+
+# Semantic Checking
+ - Check for unreachable code
+
 # AST Pruning
- - Numeric expression solving
+ - Numeric expression solving with variables
  - Loop simplifying
 
 # Target Pipeline
 - Lexing -> AST -> Validation -> Pruning -> IR -> Mlog
 
 # Datatypes
- - Datatype validation:
-  - Function return arg checking
-  - Binary operation checking (check if both are the same type, or are able to be implicitly casted)
-  - Unary operation checking (i.e. you cant have things like strings and booleans within - and + unary operations)
-  - Type validation should be done in binary op pruning to reduce the number of steps
- - Datatype guessing (for doubles, ints and strings within operations)
- - Explicit and implicit casting:
-  - Explicit casting should be checked semantically
+ - Datatype validation
+ - Constants (final keyword) 
 
 # Custom Exception Handling
 - Exception types:
@@ -44,7 +40,7 @@
 # Optimisation
  - Var simplification
  - Loops optimisation
-
+    
 # Technical Stuff
  - use encapsulation for node members instead of having separate variables to prevent errors
  - Support for non hardcoded evaluators
@@ -54,11 +50,9 @@
 # Possible Improvements
  - (Technical debt) Unaries, consts and binary operators being just one class may cause complications in the long run. 
   - OperationNode IS A MESS!
- - Migrate from using java's exceptions to a custom one with tree traversal
  - Docstrings can be improved
  - Validation functions can be unified to reduce compile time
- - add an instance method equals() within Token
- - unary operators are hardcoded and cannot be overloaded, implement a map for them to convert to binaries
+ - add an instance method equals() within Token instead of calling keyEquals()
  - operations with dynamic variables are not typed checked or parsed
 
 # Syntax Document
@@ -71,5 +65,4 @@
  - Aliasing and Macros:
   - should be processed during the AST building stage
   - #define keyword
- - Inline raw mlog
  - Header files for declarations and configs

@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -20,8 +19,19 @@ import static src.constants.Keywords.*;
 
 public class ElseNode extends EvaluatorNode {
 
+    IfStatementNode ifStatementNode = null;
+    ScopeNode block = null;
+
     public ElseNode(Token token, int depth) {
         super(token, depth);
+    }
+
+    public ScopeNode getScope() {
+        return block;
+    }
+
+    public IfStatementNode getIfStatementNode() {
+        return ifStatementNode;
     }
 
     @Override
@@ -41,13 +51,13 @@ public class ElseNode extends EvaluatorNode {
                 continue;
 
             } else if (keyEquals(KEY_CURLY_OPEN, token)) {
-                ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
-                members.add(scopeNode.evaluate(tokenList, evaluatorTree, debugMode));
+                block = new ScopeNode(this.token, depth + 1, true);
+                members.add(block.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
             } else if (keyEquals(KEY_CONDITIONAL_IF, token)) {
-                IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(this.token, depth + 1);
-                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
+                ifStatementNode = new IfStatementNode(this.token, depth + 1);
+                members.add(ifStatementNode.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
             } else {

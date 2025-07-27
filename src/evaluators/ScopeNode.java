@@ -126,7 +126,7 @@ public class ScopeNode extends EvaluatorNode {
                 ForLoopNode forLoopNode = new ForLoopNode(token, depth+1);
                 members.add(forLoopNode.evaluate(tokenList, evaluatorTree, debugMode));
 
-            } else if (functionDeclareNode != null && keyEquals(KEY_RETURN, token)) {
+            } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
                 // FUNCTION RETURN
                 OperationNode returnOp = new OperationNode(new Token(this.token + "_return", token.line), depth + 1, true);
                 members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
@@ -148,6 +148,6 @@ public class ScopeNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return ( "scope : " + token);
+        return ( "scope : " + token + "     #" + hashCode());
     }
 }
