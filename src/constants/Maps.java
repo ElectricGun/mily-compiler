@@ -281,10 +281,7 @@ public class Maps {
             b.getFactor().constantToken = new TypedToken(b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1", b.getOldOp().token.line, KEY_DATA_INT);
         };
 
-        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_DOUBLE, baseUnaryConsumer);
-        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_DOUBLE, baseUnaryConsumer);
-
-        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_INT, baseUnaryConsumer);
-        operationMap.addUnaryOperationConverter(KEY_OP_SUB, KEY_DATA_INT, baseUnaryConsumer);
+        operationMap.addUnaryOperationConverter(KEY_OP_ADD, baseUnaryConsumer);
+        operationMap.addUnaryOperationConverter(KEY_OP_SUB, baseUnaryConsumer);
     }
 }

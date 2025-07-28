@@ -42,38 +42,15 @@ public class OperationMap {
         }
     }
 
-//    static class UnaryOperationKey {
-//        String operator;
-//        String operandType;
-//
-//        public UnaryOperationKey(String operator, String operandType) {
-//            this.operator = operator;
-//            this.operandType = operandType;
-//        }
-//
-//        @Override
-//        public boolean equals(Object o) {
-//            if (o == null || getClass() != o.getClass()) return false;
-//            UnaryOperationKey that = (UnaryOperationKey) o;
-//            return Objects.equals(operator, that.operator) && Objects.equals(operandType, that.operandType);
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            return Objects.hash(operator, operandType);
-//        }
-//    }
-
     Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
     Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
     Map<OperationKey, String> operationCastMap = new HashMap<>();
 
     /**
-     * Adds a converter for unary operations to binary
+     * Adds a converter for unary operations to binary <br>
+     * There is no operand type because type checking is only done on binary operators
      */
-    public void addUnaryOperationConverter(String operator, String operandType, Consumer<UnaryToBinaryStruct> operationConsumer) {
-//        UnaryOperationKey unaryOperationKey = new UnaryOperationKey(operator, operandType);
-
+    public void addUnaryOperationConverter(String operator, Consumer<UnaryToBinaryStruct> operationConsumer) {
         unaryOperationConversionMap.put(operator, operationConsumer);
     }
 
