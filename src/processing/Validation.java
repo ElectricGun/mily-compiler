@@ -62,7 +62,8 @@ public class Validation {
     }
 
     /**
-     * Validates variable declarations and assigns types to variable references.
+     * Validates variable declarations and assigns types to variable references. <br>
+     * VARIABLE REFERENCE TYPES ARE ASSIGNED HERE
      * @param evaluatorTree Abstract syntax tree
      * @throws Exception When declaring a variable that is already declared
      * @throws Exception When referencing a variable that does not exist
@@ -196,6 +197,8 @@ public class Validation {
 
             // TODO remove redundancies
         } else if (evaluatorNode instanceof AssignmentNode assignmentNode) {
+            if (debugMode)
+                System.out.println("Assignment found");
             String compare = validateTypesHelper(evaluatorNode.getMember(0), debugMode);
 
             if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
@@ -206,6 +209,8 @@ public class Validation {
             }
 
         } else if (evaluatorNode instanceof DeclarationNode declarationNode) {
+            if (debugMode)
+                System.out.println("Declaration found");
             EvaluatorNode innerMember = evaluatorNode.getMember(0);
 
             if (innerMember instanceof OperationNode op) {
@@ -235,11 +240,11 @@ public class Validation {
      * Checks if a function's return type is consistent with its returns
      * @see FunctionDeclareNode
      */
-    public static void validateFunctions(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
-        validateFunctionsHelper(evaluatorTree.mainBlock, debugMode);
+    public static void validateFunctionDeclares(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+        validateFunctionDeclaresHelper(evaluatorTree.mainBlock, debugMode);
     }
 
-    private static void validateFunctionsHelper(EvaluatorNode evaluatorNode, boolean debugMode) throws Exception {
+    private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, boolean debugMode) throws Exception {
         if (evaluatorNode instanceof DeclarationNode declarer) {
             if (declarer.memberCount() > 0 && declarer.getMember(0) instanceof FunctionDeclareNode func) {
                 validateFunctionBlockReturnType(func, declarer, debugMode);
@@ -247,7 +252,7 @@ public class Validation {
         }
 
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
-            validateFunctionsHelper(evaluatorNode.getMember(i), debugMode);
+            validateFunctionDeclaresHelper(evaluatorNode.getMember(i), debugMode);
         }
     }
 
@@ -318,5 +323,32 @@ public class Validation {
             }
         }
         returnPaths.add(validateReturns(ifBlock, returnType, debugMode));
+    }
+
+    public static void validateFunctionCalls(EvaluatorTree evaluatorTree, boolean debugMode) {
+        validateFunctionCallsHelper(evaluatorTree.mainBlock, new ArrayList<>(), debugMode);
+    }
+
+    private static void validateFunctionCallsHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean debugMode) {
+
+    }
+
+    public static void validateConditionals(EvaluatorTree evaluatorTree, boolean debugMode) {
+        validateConditionalsHelper(evaluatorTree.mainBlock, debugMode);
+    }
+
+    private static void validateConditionalsHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
+        if (evaluatorNode instanceof ConditionalNode conditionalNode) {
+            OperationNode expression = conditionalNode.getExpression();
+            String type = validateTypesHelper(expression, debugMode);
+
+            if (!keyEquals(KEY_DATA_BOOLEAN, type)) {
+                evaluatorNode.throwSemanticError("Expression in conditional must result in a value of type boolean, is instead of type " + type, evaluatorNode.token);
+            }
+        }
+
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
+            validateConditionalsHelper(evaluatorNode.getMember(i), debugMode);
+        }
     }
 }

@@ -36,36 +36,27 @@ public class Main {
         long optimizationTime = System.nanoTime();
 
         // check for syntax errors
-        if (checkThrowables(evaluatorTree, debugMode))
+        if (checkThrowables(evaluatorTree, debugMode)) {
+            System.out.println("Failed to compile!");
             return;
-
-//        evaluatorTree.printRecursive();
-
+        }
         removeEmptyOperations(evaluatorTree, debugMode);
-
         convertUnariesToBinary(evaluatorTree, debugMode);
-
-//        evaluatorTree.printRecursive();
-
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-
-//        evaluatorTree.printRecursive();
         // this step is kinda redundant
 //        pruneNestedUnaries(evaluatorTree, debugMode);
-
-        validateFunctions(evaluatorTree, debugMode);
-
+        validateFunctionDeclares(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
-
+        validateConditionals(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree, debugMode);
 
         // check for semantic errors
-        if (checkThrowables(evaluatorTree, debugMode))
+        if (checkThrowables(evaluatorTree, debugMode)) {
+            System.out.println("Failed to compile!");
             return;
-
+        }
         long optimizationDuration = (System.nanoTime() - optimizationTime);
-
         long endTime = System.nanoTime();
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
@@ -73,7 +64,6 @@ public class Main {
         evaluatorTree.printRecursive();
 
         System.out.println();
-
         System.out.printf(
             "Lexing time: %sms%n" +
             "AST building time: %sms%n" +

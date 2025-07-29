@@ -31,6 +31,11 @@ public class FunctionDeclareNode extends EvaluatorNode {
         return scope;
     }
 
+    // todo probably give this a name var
+    public String getName() {
+        return token.string;
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
@@ -104,6 +109,6 @@ public class FunctionDeclareNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return "declare function : %s : %s(%s)".formatted(token, token, String.join(", ", argumentNames));
+        return String.format("declare function : %s | args: %s", token, String.join(", ", argumentNames));
     }
 }

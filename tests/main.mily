@@ -1,4 +1,4 @@
-/---------------------- MILYSCRIPT FEATURE DEMO ---------------------
+/---------------------- FEATURE DEMO ---------------------
 
 /*
 Variables and functions declared below here are supposed to be
@@ -8,7 +8,7 @@ but the library import feature (#include) has not been implemented yet (too eepy
 /- start placeholders
 void print() {}
 /- end placeholders
-
+/*
 /---------- Variable Declarations ----------
 let num = 20;
 int x = 6;
@@ -120,4 +120,12 @@ int branch_error(int x_) {   /- MilySemanticError: Semantic error on line: 118, 
         return 1;
     }
 }
+
+/---- Illegal conditionals
+/- They must be booleans
+if (10) {}                   /- MilySemanticError: Semantic error on line: 126, token: "if": Expression in conditional must result in value of type boolean, is instead of type int
+
+while(10) {}                 /- MilySemanticError: Semantic error on line: 128, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
+
 */
+

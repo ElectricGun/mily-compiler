@@ -26,6 +26,11 @@ public class FunctionCallNode extends EvaluatorNode {
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
 
+    // todo probably give this a name var
+    public String getName() {
+        return token.string;
+    }
+
     public FunctionCallNode(Token token, int depth) {
         super(token, depth);
     }
@@ -83,6 +88,6 @@ public class FunctionCallNode extends EvaluatorNode {
             arguments.append(i > 0 ? ", " : "").append(token.string);
             i++;
         }
-        return "call " + token.string + "("  + arguments  + ")";
+        return "call " + token.string + " | args: " + arguments;
     }
 }
