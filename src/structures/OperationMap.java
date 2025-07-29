@@ -95,7 +95,7 @@ public class OperationMap {
         operationCastMap.put(newOperationKey, castsTo);
     }
 
-    public void parseOperation(OperationNode operationNode) throws IllegalArgumentException {
+    public void parseOperation(OperationNode operationNode) throws IllegalArgumentException, NoSuchMethodError {
         String operator = operationNode.getOperator();
         String leftType = operationNode.getLeftTokenType();
         String rightType = operationNode.getRightTokenType();
@@ -117,7 +117,7 @@ public class OperationMap {
         try {
             operationNode.constantToken.setType(castTo);
         } catch (NullPointerException e) {
-            throw new IllegalArgumentException(String.format("Unable to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
+            throw new NoSuchMethodError(String.format("Unable to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
         }
     }
 

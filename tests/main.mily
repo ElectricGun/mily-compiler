@@ -128,4 +128,3 @@ if (10) {}                   /- MilySemanticError: Semantic error on line: 126, 
 while(10) {}                 /- MilySemanticError: Semantic error on line: 128, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
 
 */
-
