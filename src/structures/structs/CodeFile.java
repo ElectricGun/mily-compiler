@@ -1,4 +1,4 @@
-package src.structures;
+package src.structures.structs;
 
 /**
  * <h1> Class CodeFile </h1>

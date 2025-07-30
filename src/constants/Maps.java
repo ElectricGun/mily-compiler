@@ -1,7 +1,8 @@
 package src.constants;
 
 import src.evaluators.*;
-import src.structures.*;
+import src.structures.structs.OperationMap;
+import src.structures.structs.UnaryToBinaryStruct;
 import src.tokens.*;
 
 import java.util.*;

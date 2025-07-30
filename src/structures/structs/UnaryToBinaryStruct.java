@@ -1,4 +1,4 @@
-package src.structures;
+package src.structures.structs;
 
 import src.evaluators.*;
 

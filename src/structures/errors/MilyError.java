@@ -1,4 +1,4 @@
-package src.structures;
+package src.structures.errors;
 
 import src.interfaces.*;
 
