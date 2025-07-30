@@ -3,8 +3,7 @@ package src.evaluators;
 import java.util.*;
 
 import src.interfaces.*;
-import src.structures.errors.MilySemanticError;
-import src.structures.errors.MilySyntaxError;
+import src.structures.errors.*;
 import src.tokens.*;
 
 /**

@@ -1,7 +1,6 @@
 package src.evaluators;
 
 import java.util.*;
-
 import src.tokens.*;
 
 import static src.constants.Functions.*;

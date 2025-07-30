@@ -3,7 +3,7 @@ package src.constants;
 import java.io.*;
 import java.util.*;
 
-import src.structures.structs.CodeFile;
+import src.structures.structs.*;
 import src.tokens.*;
 
 import static src.constants.Maps.*;
