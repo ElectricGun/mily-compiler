@@ -1,7 +1,7 @@
 package src.processing;
 
 import java.util.*;
-import src.evaluators.*;
+import src.parsing.*;
 
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
@@ -336,7 +336,6 @@ public class Validation {
             EvaluatorNode member = evaluatorNode.getMember(i);
             if (member instanceof DeclarationNode declarationNode) {
                 if  (declarationNode.memberCount() > 0 &&
-                        declarationNode.getMember(0) != null &&
                         declarationNode.getMember(0) instanceof FunctionDeclareNode functionDeclareNode) {
                     functionDeclares.add(functionDeclareNode);
                 }

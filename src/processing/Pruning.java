@@ -1,6 +1,6 @@
 package src.processing;
 
-import src.evaluators.*;
+import src.parsing.*;
 
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;

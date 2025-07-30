@@ -1,6 +1,6 @@
 package src.structures.structs;
 
-import src.evaluators.*;
+import src.parsing.*;
 
 public class UnaryToBinaryStruct {
     OperationNode oldOp;

@@ -1,6 +1,6 @@
 package src.tokens;
 
-import src.evaluators.*;
+import src.parsing.*;
 
 /**
  * A token used to store function calls within expressions

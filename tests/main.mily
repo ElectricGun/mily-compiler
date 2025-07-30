@@ -8,7 +8,7 @@ but the library import feature (#include) has not been implemented yet (too eepy
 /- start placeholders
 void print() {}
 /- end placeholders
-
+/*
 /---------- Variable Declarations ----------
 let num = 20;
 int x = 6;
@@ -128,3 +128,8 @@ if (10) {}                   /- MilySemanticError: Semantic error on line: 126, 
 while(10) {}                 /- MilySemanticError: Semantic error on line: 128, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
 
 */
+int var1 = 10; int var2 = 1;
+int var3 = var1 + var2;
+int var4 = (var1 + 100) * var2 + var1 + 100 + var2 + 100;
+
+int var4 = (10 + 100) * 1 + 10 + 100 + 1 + 100;

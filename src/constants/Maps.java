@@ -1,6 +1,6 @@
 package src.constants;
 
-import src.evaluators.*;
+import src.parsing.*;
 import src.structures.structs.*;
 import src.tokens.*;
 

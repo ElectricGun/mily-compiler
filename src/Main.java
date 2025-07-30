@@ -1,10 +1,13 @@
 package src;
 
 import java.util.*;
+
+import src.codegen.*;
 import src.structures.structs.*;
 import src.tokens.*;
-import src.evaluators.*;
+import src.parsing.*;
 
+import static src.codegen.CodeGeneration.*;
 import static src.constants.Functions.*;
 import static src.processing.Lexing.*;
 import static src.processing.Pruning.*;
@@ -57,22 +60,31 @@ public class Main {
             return;
         }
         long optimizationDuration = (System.nanoTime() - optimizationTime);
+
+        long codeGenerationTime = System.nanoTime();
+        IRCode irCode = generateIRCode(evaluatorTree, debugMode);
+        long codeGenerationDuration = (System.nanoTime() - codeGenerationTime);
+
         long endTime = System.nanoTime();
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
         evaluatorTree.printRecursive();
+        System.out.println();
+        irCode.printMlog();
 
         System.out.println();
         System.out.printf(
             "Lexing time: %sms%n" +
             "AST building time: %sms%n" +
             "Optimisation time: %sms%n" +
+            "Code generation time: %sms%n" +
             "Total compile time: %sms%n" +
             "Total run time: %sms%n",
             lexingDuration / 1000000,
             astBuildDuration / 1000000,
             optimizationDuration / 1000000,
+            codeGenerationDuration / 1000000,
             compileDuration / 1000000,
             totalDuration / 1000000
         );

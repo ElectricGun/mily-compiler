@@ -1,4 +1,4 @@
-package src.evaluators;
+package src.parsing;
 
 import src.interfaces.*;
 import src.tokens.*;

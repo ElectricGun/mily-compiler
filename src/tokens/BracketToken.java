@@ -1,6 +1,6 @@
 package src.tokens;
 
-import src.evaluators.*;
+import src.parsing.*;
 
 import static src.constants.Keywords.*;
 

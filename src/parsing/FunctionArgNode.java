@@ -1,4 +1,4 @@
-package src.evaluators;
+package src.parsing;
 
 import src.tokens.*;
 /**
@@ -6,7 +6,7 @@ import src.tokens.*;
  * Function Args
  * Variable declaration node for function arguments,
  * functionally the same
- * @see src.evaluators.DeclarationNode
+ * @see src.parsing.DeclarationNode
  * @author ElectricGun
  */
 
