@@ -37,7 +37,7 @@ public class Validation {
 
             System.out.print("\033[31m");
             if (isMultipleErrors) {
-                System.out.println(String.format("Multiple errors on line %s, token: \"%s\":", evaluatorNode.token.line, evaluatorNode.token));
+                System.out.println(String.format("Multiple errors on line %s, token: \"%s\":", evaluatorNode.nameToken.line, evaluatorNode.nameToken));
             }
             for (int i = 0; i < evaluatorNode.throwablesCount(); i++) {
                 System.out.println((isMultipleErrors ? "\t" : "") + evaluatorNode.getThrowable(i).getErrorMessage());
@@ -48,7 +48,7 @@ public class Validation {
 
             while (!newStack.isEmpty()) {
                 EvaluatorNode trace = newStack.pop();
-                System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, line %s%n", trace, trace.token.line);
+                System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, line %s%n", trace, trace.nameToken.line);
             }
             System.out.print("\033[0m");
         }
@@ -94,7 +94,7 @@ public class Validation {
             if (member instanceof FunctionArgNode functionArgNode) {
                 String declaredVar = functionArgNode.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
-                    member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.token);
+                    member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.nameToken);
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(functionArgNode.getType());
@@ -102,7 +102,7 @@ public class Validation {
             } else if (member instanceof DeclarationNode memberDeclaration) {
                 String declaredVar = memberDeclaration.getVariableName();
                 if (declaredVariablesNames.contains(declaredVar)) {
-                    member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.token);
+                    member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.nameToken);
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(memberDeclaration.getType());
@@ -110,7 +110,7 @@ public class Validation {
             } else if (member instanceof AssignmentNode memberAssignment) {
                 String assignedVar = memberAssignment.getVariableName();
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
+                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
                 } else if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
 
@@ -122,7 +122,7 @@ public class Validation {
             } else if (member instanceof OperationNode memberOp && isVariableName(memberOp.constantToken)) {
                 String assignedVar = memberOp.constantToken.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
+                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
                 } else if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
@@ -131,9 +131,9 @@ public class Validation {
                         memberOp.constantToken.setType(type);
                 }
             } else if (member instanceof FunctionCallNode functionDeclareMember) {
-                String assignedVar = functionDeclareMember.token.string;
+                String assignedVar = functionDeclareMember.nameToken.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
-                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.token);
+                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
                 }
             }
@@ -178,7 +178,7 @@ public class Validation {
                     type = operationMap.getCastTo(operationNode.getOperator(), leftType, rightType);
 
                 } catch (IllegalArgumentException e) {
-                    operationNode.throwSemanticError(e.getMessage(), operationNode.token);
+                    operationNode.throwSemanticError(e.getMessage(), operationNode.nameToken);
                     if (debugMode)
                         System.out.println("ERROR " + type + "  " + evaluatorNode);
                     return type;
@@ -202,7 +202,7 @@ public class Validation {
             String compare = validateTypesHelper(evaluatorNode.getMember(0), debugMode);
 
             if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
-                assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.token);
+                assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
                 if (debugMode)
                     System.out.println(type + "  " + evaluatorNode);
                 return type;
@@ -217,7 +217,7 @@ public class Validation {
                 String compare = validateTypesHelper(innerMember, debugMode);
 
                 if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
-                    declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.token);
+                    declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
                     if (debugMode)
                         System.out.println(type + "  " + evaluatorNode);
                     return type;
@@ -264,7 +264,7 @@ public class Validation {
 
         // todo can be simplified
         if (!isReturningSomething && !keyEquals(KEY_DATA_VOID, returnType)) {
-            func.throwSemanticError("Not all paths return a value", func.token);
+            func.throwSemanticError("Not all paths return a value", func.nameToken);
         }
     }
 
@@ -276,7 +276,7 @@ public class Validation {
                 String opType = validateTypesHelper(op, debugMode);
 
                 if (!returnType.equals(opType))
-                    op.throwSemanticError("Invalid return type " + opType, op.token);
+                    op.throwSemanticError("Invalid return type " + opType, op.nameToken);
 
                 if (debugMode)
                     System.out.println("Return found on " + evaluatorNode);
@@ -330,7 +330,36 @@ public class Validation {
     }
 
     private static void validateFunctionCallsHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean debugMode) {
+//        System.out.println(evaluatorNode.token.line + "\t" + functionDeclares);
 
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
+            EvaluatorNode member = evaluatorNode.getMember(i);
+            if (member instanceof DeclarationNode declarationNode) {
+                if  (declarationNode.memberCount() > 0 &&
+                        declarationNode.getMember(0) != null &&
+                        declarationNode.getMember(0) instanceof FunctionDeclareNode functionDeclareNode) {
+                    functionDeclares.add(functionDeclareNode);
+                }
+            } else if (member instanceof FunctionCallNode functionCallNode) {
+                boolean valid = false;
+                String[] callTypes = new String[functionCallNode.arguments.size()];
+                for (int a = 0; a < callTypes.length; a++) {
+                    callTypes[a] = validateTypesHelper(functionCallNode.arguments.get(a), debugMode);
+                }
+
+                for (FunctionDeclareNode fn : functionDeclares) {
+                    if (fn.isOverload(callTypes)) {
+                        valid = true;
+                    }
+                }
+
+                if (!valid) {
+                    functionCallNode.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(callTypes)), functionCallNode.nameToken);
+                }
+            }
+
+            validateFunctionCallsHelper(member, new ArrayList<>(functionDeclares), debugMode);
+        }
     }
 
     public static void validateConditionals(EvaluatorTree evaluatorTree, boolean debugMode) {
@@ -343,7 +372,7 @@ public class Validation {
             String type = validateTypesHelper(expression, debugMode);
 
             if (!keyEquals(KEY_DATA_BOOLEAN, type)) {
-                evaluatorNode.throwSemanticError("Expression in conditional must result in a value of type boolean, is instead of type " + type, evaluatorNode.token);
+                evaluatorNode.throwSemanticError("Expression in conditional must result in a value of type boolean, is instead of type " + type, evaluatorNode.nameToken);
             }
         }
 

@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -24,13 +23,13 @@ public class DeclarationNode extends VariableNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
+            System.out.printf(indent + "Parsing Variable Declaration %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "declaration :  %s : %s%n", this.token, token);
+                System.out.printf(indent + "declaration :  %s : %s%n", this.nameToken, token);
 
             // evaluate punctuations
             if (isPunctuation(token)) {
@@ -40,7 +39,7 @@ public class DeclarationNode extends VariableNode {
                 } else if (keyEquals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     // FUNCTION DECLARATION
                     if (debugMode)
-                        System.out.printf(indent + "Creating new function \"%s\"%n", this.token);
+                        System.out.printf(indent + "Creating new function \"%s\"%n", this.nameToken);
 
                     EvaluatorNode node = new FunctionDeclareNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
                     members.add(node);
@@ -57,7 +56,7 @@ public class DeclarationNode extends VariableNode {
                     System.out.println(variableName);
                 // check for equal sign
                 if (keyEquals(KEY_OP_ASSIGN, token) && isDeclared()) {
-                    OperationNode operationNode = new OperationNode(new Token("op_"+ this.token, this.token.line), depth + 1);
+                    OperationNode operationNode = new OperationNode(new Token("op_"+ this.nameToken, this.nameToken.line), depth + 1);
                     members.add(operationNode.evaluate(tokenList, evaluatorTree, debugMode));
                     return this;
 
@@ -84,7 +83,7 @@ public class DeclarationNode extends VariableNode {
 
             }
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
 
     }
 

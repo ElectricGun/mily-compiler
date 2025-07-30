@@ -41,7 +41,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
             Token expressionToken = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "if statement : %s : %s%n", this.token.string, expressionToken.string);
+                System.out.printf(indent + "if statement : %s : %s%n", this.nameToken.string, expressionToken.string);
 
             if (keyEquals(KEY_BRACKET_CLOSE, expressionToken)) {
                 bracketCount--;
@@ -54,7 +54,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
             } else if (bracketCount == 0) {
                 if (operationTokens.isEmpty()) {
                     // todo: why is this method void
-                    throwSyntaxError("Expecting expression on if statement", token);
+                    throwSyntaxError("Expecting expression on if statement", nameToken);
                     return;
 
                 } else {
@@ -62,12 +62,12 @@ public abstract class ConditionalNode extends EvaluatorNode {
                     operationTokens.removeLast();
 
                     if (operationTokens.isEmpty()) {
-                        throwSyntaxError("Expecting expression on conditional", token);
+                        throwSyntaxError("Expecting expression on conditional", nameToken);
                         return;
                     }
 
-                    operationTokens.add(new Token(";", token.line));
-                    OperationNode operationNode = new OperationNode(this.token, depth + 1);
+                    operationTokens.add(new Token(";", nameToken.line));
+                    OperationNode operationNode = new OperationNode(this.nameToken, depth + 1);
                     members.add(operationNode.evaluate(operationTokens, evaluatorTree, debugMode));
                     this.expression = operationNode;
                     break;
@@ -79,7 +79,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
     }
 
     public void createBlock(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
-        ScopeNode scopeNode = new ScopeNode(this.token, depth + 1, true);
+        ScopeNode scopeNode = new ScopeNode(this.nameToken, depth + 1, true);
         scopeNode.evaluate(tokenList, evaluatorTree, debugMode);
         members.add(scopeNode);
         scope = scopeNode;

@@ -1,7 +1,7 @@
 package src.evaluators;
 
 import java.util.*;
-import src.constants.*;
+
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -53,7 +53,7 @@ public class ScopeNode extends EvaluatorNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing Block %s:%n", token);
+            System.out.printf(indent + "Parsing Block %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
@@ -98,7 +98,7 @@ public class ScopeNode extends EvaluatorNode {
             } else if (isPunctuation(token)) {
                 if (needsClosing && keyEquals(KEY_CURLY_CLOSE, token)) {
                     if (debugMode)
-                        System.out.printf(indent + "Created scope \"%s\"%n", this.token);
+                        System.out.printf(indent + "Created scope \"%s\"%n", this.nameToken);
                     return this;
 
                 } else {
@@ -128,7 +128,7 @@ public class ScopeNode extends EvaluatorNode {
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
                 // FUNCTION RETURN
-                OperationNode returnOp = new OperationNode(new Token(this.token + "_return", token.line), depth + 1, true);
+                OperationNode returnOp = new OperationNode(new Token(this.nameToken + "_return", token.line), depth + 1, true);
                 members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
             }
             previousToken = token;
@@ -136,11 +136,11 @@ public class ScopeNode extends EvaluatorNode {
 
         // after running out of tokens
         if (needsClosing) {
-            return throwSyntaxError("Scoped is undeclared", token);
+            return throwSyntaxError("Scoped is undeclared", nameToken);
         }
 
         if (isDeclaratorAmbiguous(previousToken)) {
-            return throwSyntaxError("Unexpected end of file", token);
+            return throwSyntaxError("Unexpected end of file", nameToken);
         }
 
         return this;
@@ -148,6 +148,6 @@ public class ScopeNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return ( "scope : " + token + "     #" + hashCode());
+        return ( "scope : " + nameToken + "     #" + hashCode());
     }
 }

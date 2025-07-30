@@ -39,24 +39,24 @@ public class ElseNode extends EvaluatorNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing else block %s:%n", token);
+            System.out.printf(indent + "Parsing else block %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "else\t:\t%s\t:\t%s%n", this.token, token);
+                System.out.printf(indent + "else\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
                 continue;
 
             } else if (keyEquals(KEY_CURLY_OPEN, token)) {
-                block = new ScopeNode(this.token, depth + 1, true);
+                block = new ScopeNode(this.nameToken, depth + 1, true);
                 members.add(block.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
             } else if (keyEquals(KEY_CONDITIONAL_IF, token)) {
-                ifStatementNode = new IfStatementNode(this.token, depth + 1);
+                ifStatementNode = new IfStatementNode(this.nameToken, depth + 1);
                 members.add(ifStatementNode.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
@@ -64,7 +64,7 @@ public class ElseNode extends EvaluatorNode {
                 throw new Exception();
             }
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override

@@ -3,7 +3,6 @@ package src.evaluators;
 import java.util.*;
 
 import src.tokens.*;
-import src.constants.*;
 
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
@@ -30,7 +29,7 @@ public class OperationBracketNode extends EvaluatorNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing Brackets %s:%n", token);
+            System.out.printf(indent + "Parsing Brackets %s:%n", nameToken);
 
         // remove the start bracket
         tokenList.remove(operatorIndex);
@@ -42,7 +41,7 @@ public class OperationBracketNode extends EvaluatorNode {
             Token token = tokenList.remove(operatorIndex);
 
             if (debugMode)
-                System.out.printf(indent + "brackets : %s : %s%n", this.token, token);
+                System.out.printf(indent + "brackets : %s : %s%n", this.nameToken, token);
 
             if (token.length() == 1 && keyEquals(KEY_BRACKET_OPEN, token)) {
                 bracketCounter ++;
@@ -52,13 +51,13 @@ public class OperationBracketNode extends EvaluatorNode {
                 bracketCounter --;
             }
             if (bracketCounter < 0) {
-                OperationNode operationNode = new OperationNode(new Token(this.token.string, this.token.line), depth + 1);
-                operationTokens.add(new Token(";", this.token.line));
+                OperationNode operationNode = new OperationNode(new Token(this.nameToken.string, this.nameToken.line), depth + 1);
+                operationTokens.add(new Token(";", this.nameToken.line));
                 OperationNode evaluated = (OperationNode) operationNode.evaluate(operationTokens, evaluatorTree, debugMode);
 
                 // substitute the operator removed with a BracketToken
                 // an integer is not added to orders because we are not removing one on this final loop
-                tokenList.add(operatorIndex, new BracketToken("BRACKET", this.token.line, evaluated));
+                tokenList.add(operatorIndex, new BracketToken("BRACKET", this.nameToken.line, evaluated));
                 members.add(evaluated);
                 return this;
             }
@@ -66,7 +65,7 @@ public class OperationBracketNode extends EvaluatorNode {
             orders.remove(operatorIndex);
             operationTokens.add(token);
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     // todo why did i write this???

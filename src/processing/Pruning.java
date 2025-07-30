@@ -2,8 +2,6 @@ package src.processing;
 
 import src.evaluators.*;
 
-import javax.naming.OperationNotSupportedException;
-
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
 import static src.constants.Maps.*;
@@ -108,7 +106,7 @@ public class Pruning {
                     evaluatorNode = opCurrent.asBinaryFromMember(0);
 
                 } catch (IllegalArgumentException e) {
-                    evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.token);
+                    evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.nameToken);
                 }
                 parent.replaceMember(opCurrent, evaluatorNode);
             }
@@ -153,7 +151,7 @@ public class Pruning {
                         operationMap.parseOperation(operationNode);
 
                     } catch (IllegalArgumentException e) {
-                        evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.token);
+                        evaluatorNode.throwSemanticError(e.getMessage(), evaluatorNode.nameToken);
                     }
                 }
             } else {

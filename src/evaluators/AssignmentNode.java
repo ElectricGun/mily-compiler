@@ -26,17 +26,17 @@ public class AssignmentNode extends VariableNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing Variable Declaration %s:%n", token);
+            System.out.printf(indent + "Parsing Variable Declaration %s:%n", nameToken);
 
         if (!tokenList.isEmpty()) {
-            expression = (OperationNode) new OperationNode(this.token, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
+            expression = (OperationNode) new OperationNode(this.nameToken, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
             members.add(expression);
-            variableName = this.token.string;
+            variableName = this.nameToken.string;
             return this;
         }
 
 
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override

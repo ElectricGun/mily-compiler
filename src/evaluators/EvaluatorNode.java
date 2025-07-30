@@ -14,29 +14,29 @@ import src.tokens.*;
 
 public class EvaluatorNode {
 
-    protected List<MilyThrowable> milyThrowables = new ArrayList<>();
+    protected List<MilyThrowable> throwables = new ArrayList<>();
 
     public int depth;
-    public Token token;
-    // can be used to for storing assembly line numbers, or some other general information
+    public Token nameToken;
+    // for storing general information
     public Map<String, String> flags = new HashMap<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
 
-    public EvaluatorNode(Token token, int depth) {
-        this.token = token;
+    public EvaluatorNode(Token nameToken, int depth) {
+        this.nameToken = nameToken;
         this.depth = depth;
     }
 
     public boolean isErrored() {
-        return !milyThrowables.isEmpty();
+        return !throwables.isEmpty();
     }
 
     public MilyThrowable getThrowable(int index) {
-        return milyThrowables.get(index);
+        return throwables.get(index);
     }
 
     public int throwablesCount() {
-        return milyThrowables.size();
+        return throwables.size();
     }
 
     public int memberCount() {
@@ -76,20 +76,20 @@ public class EvaluatorNode {
 
     public EvaluatorNode throwSyntaxError(String message, Token token) {
         String errorMessage = String.format("Syntax error on line: %s, token: \"%s\": ", token.line, token) + message;
-        this.milyThrowables.add(new MilySyntaxError(errorMessage));
+        this.throwables.add(new MilySyntaxError(errorMessage));
 
         return this;
     }
 
     public EvaluatorNode throwSemanticError(String message, Token token) {
         String errorMessage = String.format("Semantic error on line: %s, token: \"%s\": ", token.line, token) + message;
-        this.milyThrowables.add(new MilySemanticError(errorMessage));
+        this.throwables.add(new MilySemanticError(errorMessage));
 
         return this;
     }
 
     public EvaluatorNode throwThrowable(MilyThrowable throwable) {
-        this.milyThrowables.add(throwable);
+        this.throwables.add(throwable);
 
         return this;
     }

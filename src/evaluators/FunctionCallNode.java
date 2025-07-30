@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -21,14 +20,14 @@ import static src.constants.Keywords.*;
 
 public class FunctionCallNode extends EvaluatorNode {
 
-    public List<Token> arguments = new ArrayList<>();
+    public List<OperationNode> arguments = new ArrayList<>();
 
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
 
     // todo probably give this a name var
     public String getName() {
-        return token.string;
+        return nameToken.string;
     }
 
     public FunctionCallNode(Token token, int depth) {
@@ -43,7 +42,7 @@ public class FunctionCallNode extends EvaluatorNode {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "function call %s: %s:%n", this.token, token);
+                System.out.printf(indent + "function call %s: %s:%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -55,28 +54,46 @@ public class FunctionCallNode extends EvaluatorNode {
                 expectingArgument = true;
 
             } else if (expectingArgument) {
-                try {
-                    tryAddArgument(token);
-                } catch (Exception e) {
-                    return throwSyntaxError("Malformed function parameter", token);
+                List<Token> operationTokens = new ArrayList<>();
+                operationTokens.add(token);
+
+                int bracketCount = 0;
+
+                while (true) {
+                    Token currToken = tokenList.removeFirst();
+
+                    if (keyEquals(KEY_BRACKET_OPEN, currToken)) {
+                        bracketCount ++;
+
+                    } else if (keyEquals(KEY_BRACKET_CLOSE, currToken)) {
+                        if (bracketCount > 0) {
+                            bracketCount --;
+                        } else {
+                            // return the final token
+                            tokenList.addFirst(currToken);
+                            break;
+                        }
+                     } else if (keyEquals(KEY_COMMA, currToken)) {
+                        // return the final token
+                        tokenList.addFirst(currToken);
+                        break;
+                    }
+                    operationTokens.add(currToken);
                 }
+                expectingArgument = false;
+                operationTokens.add(new Token(KEY_SEMICOLON, operationTokens.getLast().line));
+
+                OperationNode newOp = new OperationNode(token, depth + 1);
+                newOp.evaluate(operationTokens, evaluatorTree, debugMode);
+                members.add(newOp);
+                arguments.add(newOp);
 
             } else if (isInitialized) {
                 return throwSyntaxError("Unexpected token in function call", token);
             }
             isInitialized = true;
         }
-        return throwSyntaxError("Unexpected end of file", token);
-    }
-
-    private void tryAddArgument(Token token) throws Exception {
-        if (isVariableName(token) || isNumeric(token)) {
-            arguments.add(token);
-            expectingArgument = false;
-
-        } else {
-            throw new Exception("ERROR" + token.string);
-        }
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override
@@ -84,10 +101,10 @@ public class FunctionCallNode extends EvaluatorNode {
         StringBuilder arguments = new StringBuilder();
         int i = 0;
 
-        for (Token token : this.arguments) {
-            arguments.append(i > 0 ? ", " : "").append(token.string);
+        for (OperationNode operationNode : this.arguments) {
+            arguments.append(i > 0 ? ", " : "").append(operationNode);
             i++;
         }
-        return "call " + token.string + " | args: " + arguments;
+        return "call " + nameToken.string + " | args: " + arguments;
     }
 }

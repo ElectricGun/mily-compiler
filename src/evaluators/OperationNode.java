@@ -173,7 +173,7 @@ public class OperationNode extends EvaluatorNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing Operation Declaration %s:%n", token);
+            System.out.printf(indent + "Parsing Operation Declaration %s:%n", nameToken);
 
         Token previousToken = null;
 
@@ -181,7 +181,7 @@ public class OperationNode extends EvaluatorNode {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "operation : %s : %s%n", this.token, token);
+                System.out.printf(indent + "operation : %s : %s%n", this.nameToken, token);
 
             // evaluate punctuations
             if (token.length() == 1 && isPunctuation(token)) {
@@ -208,7 +208,7 @@ public class OperationNode extends EvaluatorNode {
                         FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
                         FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree, debugMode);
 
-                        FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.token.string, token.line, evaluated);
+                        FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.nameToken.string, token.line, evaluated);
                         operationTokens.add(functionCallToken);
 
                     } else {
@@ -282,7 +282,7 @@ public class OperationNode extends EvaluatorNode {
                 // entire operations are evaluated after a semicolon is detected
                 else if (keyEquals(KEY_SEMICOLON, token)) {
                     if (debugMode)
-                        System.out.printf(indent + "operation : %s tokens : %s%n", this.token, operationTokens);
+                        System.out.printf(indent + "operation : %s tokens : %s%n", this.nameToken, operationTokens);
                     List<Integer> orders = new ArrayList<>();
 
                     for (int i = 0; i < operationTokens.size(); i++) {
@@ -309,7 +309,7 @@ public class OperationNode extends EvaluatorNode {
 
                         // start bracket
                         if (currentOrder == -4) {
-                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.token, this.token.line), depth + 1, i);
+                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.nameToken, this.nameToken.line), depth + 1, i);
                             bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, orders, evaluatorTree, debugMode));
                         }
 
@@ -357,8 +357,8 @@ public class OperationNode extends EvaluatorNode {
                     }
 
                     if (debugMode) {
-                        System.out.printf(indent + "operation tokens post : %s : %s%n", this.token, operationTokens);
-                        System.out.printf(indent + "operation orders : %s : %s%n", this.token, orders);
+                        System.out.printf(indent + "operation tokens post : %s : %s%n", this.nameToken, operationTokens);
+                        System.out.printf(indent + "operation orders : %s : %s%n", this.nameToken, orders);
                     }
 
                     // if amount of elements > 2
@@ -381,12 +381,12 @@ public class OperationNode extends EvaluatorNode {
                         right.add(new Token(";", operationTokens.getLast().line));
 
                         if (left.size() > 1) {
-                            OperationNode op = new OperationNode(new Token("l_" + this.token, this.token.line), depth + 1);
+                            OperationNode op = new OperationNode(new Token("l_" + this.nameToken, this.nameToken.line), depth + 1);
                             setLeftSide((OperationNode) op.evaluate(left, evaluatorTree, debugMode));
                         }
 
                         if (right.size() > 1) {
-                            OperationNode op = new OperationNode(new Token("r_" + this.token, this.token.line), depth + 1);
+                            OperationNode op = new OperationNode(new Token("r_" + this.nameToken, this.nameToken.line), depth + 1);
                             setRightSide((OperationNode) op.evaluate(right, evaluatorTree, debugMode));
 
                         } else {
@@ -427,7 +427,7 @@ public class OperationNode extends EvaluatorNode {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
                         } else {
-                            OperationNode op = new OperationNode(this.token, depth + 1);
+                            OperationNode op = new OperationNode(this.nameToken, depth + 1);
                             op.constantToken = TypedToken.fromToken(newConstantToken, Functions.guessValueType(newConstantToken.string));
                             setLeftSide(op);
                         }
@@ -451,7 +451,7 @@ public class OperationNode extends EvaluatorNode {
 
             previousToken = token;
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     public boolean isEmptyConstant() {
@@ -464,7 +464,7 @@ public class OperationNode extends EvaluatorNode {
 
     public void makeConstant(String newString) {
         String newTokenType = Functions.guessValueType(newString);
-        this.constantToken = new TypedToken(newString, this.token.line, newTokenType);
+        this.constantToken = new TypedToken(newString, this.nameToken.line, newTokenType);
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);
         setRightSide(null);

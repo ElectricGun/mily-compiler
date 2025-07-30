@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -73,7 +72,7 @@ public class IfStatementNode extends ConditionalNode {
         }
 
         if (scope == null)
-            return throwSyntaxError("Unexpected end of file", token);
+            return throwSyntaxError("Unexpected end of file", nameToken);
         else
             return this;
     }

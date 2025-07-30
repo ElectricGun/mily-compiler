@@ -1,7 +1,7 @@
 package src.evaluators;
 
 import java.util.*;
-import src.constants.*;
+
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -76,7 +76,7 @@ public class ForLoopNode extends EvaluatorNode {
                     Token currentToken = tokenList.removeFirst();
                     operationTokens.add(currentToken);
                 }
-                condition = new OperationNode(this.token, depth + 1);
+                condition = new OperationNode(this.nameToken, depth + 1);
                 members.add(condition.evaluate(operationTokens, evaluatorTree, debugMode));
 
             } else if (updater == null) {
@@ -111,7 +111,7 @@ public class ForLoopNode extends EvaluatorNode {
                 }
 
             } else if (keyEquals(KEY_CURLY_OPEN, token)) {
-                scope = new ScopeNode(this.token, depth + 1, true);
+                scope = new ScopeNode(this.nameToken, depth + 1, true);
                 members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;
 
@@ -120,7 +120,7 @@ public class ForLoopNode extends EvaluatorNode {
             }
         previousToken = token;
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override

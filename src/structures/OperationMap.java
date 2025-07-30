@@ -55,9 +55,9 @@ public class OperationMap {
     }
 
     public OperationNode generateBinaryFromUnaryAtMember(OperationNode operationNode, int memberIndex) {
-        OperationNode newOp = new OperationNode(operationNode.token, operationNode.depth, operationNode.isReturnOperation());
+        OperationNode newOp = new OperationNode(operationNode.nameToken, operationNode.depth, operationNode.isReturnOperation());
         OperationNode memberChild = (OperationNode) operationNode.getMember(memberIndex);
-        OperationNode factorConstant = new OperationNode(operationNode.token, operationNode.depth + 1);
+        OperationNode factorConstant = new OperationNode(operationNode.nameToken, operationNode.depth + 1);
         memberChild.depth += 1;
         // todo hardcode might reduce flexibility
         newOp.setType(KEY_OP_TYPE_OPERATION);
@@ -75,7 +75,7 @@ public class OperationMap {
             }
         } else {
             newOp.setOperator(KEY_OP_CAST_EXPLICIT);
-            factorConstant.constantToken = new TypedToken("1", operationNode.token.line, operationNode.getOperator());
+            factorConstant.constantToken = new TypedToken("1", operationNode.nameToken.line, operationNode.getOperator());
         }
 
         newOp.setLeftSide(memberChild);
@@ -109,7 +109,7 @@ public class OperationMap {
         String castTo = operationCastMap.get(operationKeyCheck);
 
         if (!operationParseMap.containsKey(operationKeyCheck) || !operationCastMap.containsKey(operationKeyCheck)) {
-            throw new IllegalArgumentException(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.token.line));
+            throw new IllegalArgumentException(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.nameToken.line));
         }
 
         operationParseMap.get(operationKeyCheck).accept(operationNode);

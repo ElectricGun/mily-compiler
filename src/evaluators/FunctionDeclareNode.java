@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -33,7 +32,7 @@ public class FunctionDeclareNode extends EvaluatorNode {
 
     // todo probably give this a name var
     public String getName() {
-        return token.string;
+        return nameToken.string;
     }
 
     @Override
@@ -41,13 +40,13 @@ public class FunctionDeclareNode extends EvaluatorNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing Function %s:%n", this.token);
+            System.out.printf(indent + "Parsing Function %s:%n", this.nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.token, token);
+                System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -64,9 +63,9 @@ public class FunctionDeclareNode extends EvaluatorNode {
 
                 } else if (functionDeclared && keyEquals(KEY_CURLY_OPEN, token)) {
                      if (debugMode)
-                         System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.token, String.join(", ", argumentNames));
+                         System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.nameToken, String.join(", ", argumentNames));
 
-                     scope = new ScopeNode(this.token, depth + 1, true, this);
+                     scope = new ScopeNode(this.nameToken, depth + 1, true, this);
                      members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
                      return this;
 
@@ -104,11 +103,24 @@ public class FunctionDeclareNode extends EvaluatorNode {
             }
             isInitialized = true;
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override
     public String toString() {
-        return String.format("declare function : %s | args: %s", token, String.join(", ", argumentNames));
+        return String.format("declare function : %s | args: %s", nameToken, String.join(", ", argumentNames));
+    }
+
+    public boolean isOverload(String ... types) {
+        if (types.length != argumentNames.size()) {
+            return false;
+        }
+        for (int i = 0 ; i < types.length; i++) {
+            DeclarationNode argDeclare = (DeclarationNode) this.getMember(i);
+            if (!types[i].equals(argDeclare.getType())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

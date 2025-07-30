@@ -56,6 +56,7 @@
  - Validation functions can be unified to reduce compile time
  - add an instance method equals() within Token instead of calling keyEquals()
  - operations with dynamic variables are not typed checked or parsed
+ - scope validation could use a tree instead
 
 # Syntax Document
  - A syntax document for Milyscript

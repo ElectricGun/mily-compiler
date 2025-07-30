@@ -1,6 +1,5 @@
 package src.evaluators;
 
-import src.constants.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -26,13 +25,13 @@ public class WhileLoopNode extends ConditionalNode {
         String indent = " ".repeat(depth);
 
         if (debugMode)
-            System.out.printf(indent + "Parsing While Loop %s:%n", token);
+            System.out.printf(indent + "Parsing While Loop %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "while\t:\t%s\t:\t%s%n", this.token, token);
+                System.out.printf(indent + "while\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -52,7 +51,7 @@ public class WhileLoopNode extends ConditionalNode {
                 return throwSyntaxError("Unexpected token on while loop on line", token);
             }
         }
-        return throwSyntaxError("Unexpected end of file", token);
+        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override
