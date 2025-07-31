@@ -1,5 +1,4 @@
 # Urgent TODO:
- - semantic validation for function calls
  - Doing this /* **/ throws unclosed comment error because of how the lexing works
  - Comparison operation lambda functions are empty
 
