@@ -26,6 +26,6 @@ public class Line {
     }
 
     protected String indent() {
-        return "    ".repeat(indent);
+        return "  ".repeat(indent);
     }
 }

@@ -24,7 +24,6 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_GREATER_THAN_EQUALS, "greaterThanEq");
         mlogOperationMap.put(KEY_OP_STRICT_EQUALS, "strictEqual");
     }
-
     public static String opAsMlog(String op) throws IllegalArgumentException {
         if (!mlogOperationMap.containsKey(op))
             throw new IllegalArgumentException(String.format("Operation \"%s\" has no mlog equivalent", op));

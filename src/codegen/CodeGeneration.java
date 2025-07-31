@@ -13,14 +13,14 @@ public class CodeGeneration {
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         IRCode irCode = new IRCode();
 
-        generateIRCodeHelper(evaluatorTree.mainBlock, irCode, 0, debugMode);
+        generateIRCodeHelper(evaluatorTree.mainBlock, irCode, new HashCodeSimplifier(), 0, debugMode);
 
         // todo: end is sometimes redundant
         irCode.irBlocks.add(new IREnd());
         return irCode;
     }
 
-    private static void generateIRCodeHelper(ScopeNode scopeNode, IRCode irCode, int depth, boolean debugMode) throws Exception {
+    private static void generateIRCodeHelper(ScopeNode scopeNode, IRCode irCode, HashCodeSimplifier hashSimplifier, int depth, boolean debugMode) throws Exception {
         for (int i = 0; i < scopeNode.memberCount(); i++) {
             EvaluatorNode member = scopeNode.getMember(i);
 
@@ -45,29 +45,30 @@ public class CodeGeneration {
                 addOperationIRBlock((OperationNode) member.getMember(0), irCode, as.getVariableName(), depth, debugMode);
 
             } else if (member instanceof IfStatementNode ifs) {
+                int ifHashCode = hashSimplifier.simplifyHash(ifs.hashCode());
                 // todo should put this outside in a function
-                String branchEndLabel = "branch_end@" + ifs.hashCode();
+                String branchEndLabel = "branch_end_" + ifHashCode;
 
                 while (true) {
-                    String currentIfEndLabel = ifs.nameToken + "@" + ifs.hashCode();
+                    String currentIfEndLabel = ifs.nameToken + "_" + ifHashCode;
 
                     if (ifs.getElseNode() == null)
                         currentIfEndLabel = branchEndLabel;
 
                     IRBlock startJumpBlock = new IRBlock();
-                    String conditionalVarName = "if_cond@" + ifs.hashCode();
+                    String conditionalVarName = "if_cond_" + ifHashCode;
                     IROperation conditionalOp = addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, depth, debugMode);
                     Line lastOperation = conditionalOp.lineList.removeLast();
 
                     Jump startJump;
                     if (lastOperation instanceof Set set) {
-                        startJump = new Jump("jump@" + ifs.hashCode(),
+                        startJump = new Jump("jump_" + ifHashCode,
                                 opAsMlog(KEY_OP_NOT_EQUAL) + " " + set.getValue() + " 1",
                                 currentIfEndLabel, depth);
 
                     } else if (lastOperation instanceof BinaryOp bop) {
                         System.out.println(opAsMlog(negateBooleanOperator(bop.getOp())));
-                        startJump = new Jump("jump@" + ifs.hashCode(),
+                        startJump = new Jump("jump_" + ifHashCode,
                                 opAsMlog(negateBooleanOperator(bop.getOp())) + " " + bop.getLeft() + " " + bop.getRight(),
                                 currentIfEndLabel, depth);
 
@@ -77,16 +78,16 @@ public class CodeGeneration {
 
                     startJumpBlock.lineList.add(startJump);
                     irCode.irBlocks.add(startJumpBlock);
-                    generateIRCodeHelper(ifs.getScope(), irCode, depth + 1, debugMode);
+                    generateIRCodeHelper(ifs.getScope(), irCode, hashSimplifier,depth + 1, debugMode);
 
                     if (ifs.getElseNode() != null) {
                         IRBlock alwaysJumpBlock = new IRBlock();
-                        alwaysJumpBlock.lineList.add(new Jump("jump_end@" + ifs.hashCode(), "always", branchEndLabel, depth));
+                        alwaysJumpBlock.lineList.add(new Jump("jump_end_" + ifHashCode, "always", branchEndLabel, depth));
                         irCode.irBlocks.add(alwaysJumpBlock);
                     }
 
                     IRBlock ifEndLabelBlock = new IRBlock();
-                    ifEndLabelBlock.lineList.add(new Line("if_end@" + ifs.hashCode(), currentIfEndLabel + ":", depth));
+                    ifEndLabelBlock.lineList.add(new Line("if_end_"  +ifHashCode, currentIfEndLabel + ":", depth));
                     irCode.irBlocks.add(ifEndLabelBlock);
 
                     if (ifs.getElseNode() instanceof ElseNode elseNode) {
@@ -94,10 +95,10 @@ public class CodeGeneration {
                             ifs = nestedIf;
 
                         } else {
-                            generateIRCodeHelper(elseNode.getScope(), irCode, depth + 1, debugMode);
+                            generateIRCodeHelper(elseNode.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
                             IRBlock elseEndLabelBlock = new IRBlock();
-                            elseEndLabelBlock.lineList.add(new Line("else_end@" + ifs.hashCode(), branchEndLabel + ":", depth));
+                            elseEndLabelBlock.lineList.add(new Line("else_end_" + ifHashCode, branchEndLabel + ":", depth));
                             irCode.irBlocks.add(elseEndLabelBlock);
 
                             break;
