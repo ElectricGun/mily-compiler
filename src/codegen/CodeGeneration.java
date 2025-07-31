@@ -139,9 +139,7 @@ public class CodeGeneration {
                 irOperation.lineList.add(binaryOp);
             }
         } else if (operationNode.isConstant()) {
-            // TODO should use set instead maybe?
-            BinaryOp binaryOp = new BinaryOp(operationNode.nameToken.string, "+", valueAsMlog(operationNode.getConstantToken().string), "0");
-            irOperation.lineList.add(binaryOp);
+            irOperation.lineList.add(new Set(operationNode.nameToken.string, valueAsMlog(operationNode.getConstantToken().string)));
         }
     }
 }

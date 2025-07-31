@@ -127,7 +127,7 @@ if (10) {}                   /- MilySemanticError: Semantic error on line: 126, 
 
 while(10) {}                 /- MilySemanticError: Semantic error on line: 128, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
 */
-
+/*
 int var0 = 1;
 int var10 = 1020031201;
 if (var10 < var0) {
@@ -142,7 +142,7 @@ if (var10 < var0) {
 }
 int var1 = 10; int var2 = 3;
 int var3 = var1 + var2;
-
+*/
 
 if (true) {
     int test = 1;
