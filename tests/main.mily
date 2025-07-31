@@ -75,26 +75,28 @@ let complex_cast_int = (int) (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 +
 /- simplifies to 243 int on compilation
 
 /-------------------- Semantic Errors (uncomment them to see)  --------------------
-/*
+
+/**** COMMENT START ****
+
 /---------- Undeclared Variable
-amongus = 100;                     /- MilySemanticError: Semantic error on line: 80, token: "amongus": Variable "amongus" is undeclared
+amongus = 100;                     /- MilySemanticError: Semantic error on line: <line>, token: "amongus": Variable "amongus" is undeclared
 
 /---------- Wrong Type Declaration
-int value = false;                 /- MilySemanticError: Semantic error on line: 83, token: "value": Cannot cast "boolean" into "int"
+int value = false;                 /- MilySemanticError: Semantic error on line: <line>, token: "value": Cannot cast "boolean" into "int"
 
 /---------- Wrong Type Assignment
 boolean check = true;
-check = 10.4;                      /- MilySemanticError: Semantic error on line: 87, token: "check": Cannot cast "double" into "boolean"
+check = 10.4;                      /- MilySemanticError: Semantic error on line: <line>, token: "check": Cannot cast "double" into "boolean"
 
 /---------- Wrong Type in Operation
-let wrong_op =  false * (7 * 9);   /- MilySemanticError: Semantic error on line: 90, token: "op_wrong_op": Operator * cannot be applied to boolean and int
+let wrong_op =  false * (7 * 9);   /- MilySemanticError: Semantic error on line: <line>, token: "op_wrong_op": Operator * cannot be applied to boolean and int
 
 /---------- Redeclaration
 let red = 10;
-boolean red = false;               /- MilySemanticError: Semantic error on line: 94, token: "red": Variable "red" is already declared within scope
+boolean red = false;               /- MilySemanticError: Semantic error on line: <line>, token: "red": Variable "red" is already declared within scope
 
 /---------- Illegal Implicit Casting
-int amogus3 = 5 / 2;               /- MilySemanticError: Semantic error on line: 97, token: "amogus3": Cannot cast "double" into "int"
+int amogus3 = 5 / 2;               /- MilySemanticError: Semantic error on line: <line>, token: "amogus3": Cannot cast "double" into "int"
 
 /---- The right way for this is to use integer division //
 int amogus4 = 5 // 2;
@@ -105,17 +107,17 @@ int amogus5 = (int) (5 / 2);
 
 /---------- Illegal Functions
 /---- Wrong return type
-int wrong_type() {           /- MilySemanticError: Semantic error on line: 108, token: "branching_test_return": Invalid return type boolean
+int wrong_type() {           /- MilySemanticError: Semantic error on line: <line>, token: "branching_test_return": Invalid return type boolean
     return false;
 }
 
 /---- Return value required
-int value_req() {            /- MilySemanticError: Semantic error on line: 113, token: "value_req": Not all paths return a value
+int value_req() {            /- MilySemanticError: Semantic error on line: <line>, token: "value_req": Not all paths return a value
     int test_ = 10;
 }
 
 /---- Missing returns in branching
-int branch_error(int x_) {   /- MilySemanticError: Semantic error on line: 118, token: "branch_error": Not all paths return a value
+int branch_error(int x_) {   /- MilySemanticError: Semantic error on line: <line>, token: "branch_error": Not all paths return a value
     if (x_ > 10) {
         return 1;
     }
@@ -123,11 +125,12 @@ int branch_error(int x_) {   /- MilySemanticError: Semantic error on line: 118, 
 
 /---- Illegal conditionals
 /- They must be booleans
-if (10) {}                   /- MilySemanticError: Semantic error on line: 126, token: "if": Expression in conditional must result in value of type boolean, is instead of type int
+if (10) {}                   /- MilySemanticError: Semantic error on line: <line>, token: "if": Expression in conditional must result in value of type boolean, is instead of type int
 
-while(10) {}                 /- MilySemanticError: Semantic error on line: 128, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
-*/
-/*
+while(10) {}                 /- MilySemanticError: Semantic error on line: <line>, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
+
+**** COMMENT END ****/
+
 int var0 = 1;
 int var10 = 1020031201;
 if (var10 < var0) {
@@ -142,7 +145,6 @@ if (var10 < var0) {
 }
 int var1 = 10; int var2 = 3;
 int var3 = var1 + var2;
-*/
 
 if (true) {
     int test = 1;

@@ -1,5 +1,4 @@
 # Urgent TODO:
- - Doing this /* **/ throws unclosed comment error because of how the lexing works
  - Comparison operation lambda functions are empty
  - convert true and false to 1 and 0
 
@@ -60,6 +59,7 @@
  - scope validation could use a tree instead
  - jump conditionals in if statements are separated, increasing line number
  - current variable naming in mlog may lead to issues 
+ - rewrite Lexing
 
 # Syntax Document
  - A syntax document for Milyscript

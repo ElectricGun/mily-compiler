@@ -7,6 +7,8 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+// TODO this needs a rewrite
+
 /**
  * <h1> Class Lexing </h1>
  * Utility for converting text into a list of tokens.
@@ -27,6 +29,7 @@ public class Lexing {
     private static boolean commentMode;
     private static boolean commentModeInline;
     private static int commentStartLine;
+    private static String commentBuffer;
 
     private static void init(String input) {
         tokens = new ArrayList<>();
@@ -38,9 +41,10 @@ public class Lexing {
         commentMode = false;
         commentModeInline = false;
         commentStartLine = 0;
+        commentBuffer = "";
     }
 
-    private static void tryAddToken() {
+    private static void tryAddToken(boolean debugMode) {
         if (!commentMode) {
             if (keyEquals(KEY_COMMENT_INLINE, tokenString)) {
                 commentModeInline = true;
@@ -50,6 +54,8 @@ public class Lexing {
                 commentMode = true;
             }
             else {
+                if (debugMode)
+                    System.out.println("Line " + currentLine + " added: " + tokenString);
                 tokens.add(new Token(tokenString, currentLine));
             }
         } else if (keyEquals(KEY_COMMENT_MULTILINE_END, tokenString)) {
@@ -68,16 +74,28 @@ public class Lexing {
             boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
-            if (debugMode)
+            if (debugMode) {
                 System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s    comment_mode: %s  inline: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString),  commentMode, commentModeInline);
+            }
 
-            if (isWhiteSpace(cs)) {
-                if (keyEquals(KEY_NEWLINE, cs)) {
-                    currentLine++;
+            if (keyEquals(KEY_NEWLINE, cs)) {
+                currentLine++;
+            }
+
+            if (commentMode && !commentModeInline) {
+                commentBuffer += c;
+
+                if (!KEY_COMMENT_MULTILINE_END.startsWith(commentBuffer)) {
+                    commentBuffer = "" + c;
+
+                } else if (KEY_COMMENT_MULTILINE_END.equals(commentBuffer)) {
+                    commentBuffer = "";
+                    commentMode = false;
                 }
 
+            } else if (isWhiteSpace(cs)) {
                 if (!previousIsWhitespace) {
-                    tryAddToken();
+                    tryAddToken(debugMode);
                 }
                 tokenString = " ";
 
@@ -90,15 +108,15 @@ public class Lexing {
                     !isOperator(tokenString + c) &&
                     !isPunctuation(tokenString + c)
                     ) {
-                tryAddToken();
+                tryAddToken(debugMode);
                 tokenString = "" + c;
 
             } else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
-                tryAddToken();
+                tryAddToken(debugMode);
                 tokenString = "" + c;
 
             } else if (!(isPunctuation(c) || isOperator("" + c)) && previousIsPunctuation && !isKeywordIncomplete(tokenString)) {
-                tryAddToken();
+                tryAddToken(debugMode);
                 tokenString = "" + c;
 
             } else {
@@ -106,7 +124,7 @@ public class Lexing {
             }
 
             if (index == charArray.length - 1) {
-                tryAddToken();
+                tryAddToken(debugMode);
             }
             // newline detection for inline comments has to be here
             // because tokens are flushed on the next iteration

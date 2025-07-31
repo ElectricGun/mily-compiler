@@ -1,11 +1,14 @@
 package src.processing;
 
 import java.util.*;
+
+import src.constants.Ansi;
 import src.parsing.*;
 
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 import static src.constants.Maps.*;
+import static src.constants.Ansi.*;
 
 /**
  * <h1> Class Validation </h1>
@@ -35,7 +38,7 @@ public class Validation {
 
             boolean isMultipleErrors = evaluatorNode.throwablesCount() > 1;
 
-            System.out.print("\033[31m");
+            System.out.print(ANSI_RED);
             if (isMultipleErrors) {
                 System.out.println(String.format("Multiple errors on line %s, token: \"%s\":", evaluatorNode.nameToken.line, evaluatorNode.nameToken));
             }
@@ -50,7 +53,7 @@ public class Validation {
                 EvaluatorNode trace = newStack.pop();
                 System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, line %s%n", trace, trace.nameToken.line);
             }
-            System.out.print("\033[0m");
+            System.out.print(ANSI_RESET);
         }
 
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {

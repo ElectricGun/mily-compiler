@@ -8,6 +8,7 @@ import src.tokens.*;
 import src.parsing.*;
 
 import static src.codegen.CodeGeneration.*;
+import static src.constants.Ansi.*;
 import static src.constants.Functions.*;
 import static src.processing.Lexing.*;
 import static src.processing.Pruning.*;
@@ -26,7 +27,14 @@ public class Main {
         long startCompileTime = System.nanoTime();
 
         // tokenise
-        List<Token> tokenList = tokenize(code.getCode(), debugMode);
+        List<Token> tokenList;
+        try {
+            tokenList = tokenize(code.getCode(), debugMode);
+        } catch (Exception e) {
+            // todo: unhardcode this message
+            System.out.println(ANSI_RED + "MilyLexingError: " + e.getMessage() +  ANSI_RESET);
+            return;
+        }
         long lexingDuration = (System.nanoTime() - startCompileTime);
 
         // build ast
@@ -46,13 +54,12 @@ public class Main {
         convertUnariesToBinary(evaluatorTree, debugMode);
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-        // this step is kinda redundant
-//        pruneNestedUnaries(evaluatorTree, debugMode);
+        // this step is not needed
+        //pruneNestedUnaries(evaluatorTree, debugMode);
         validateFunctionDeclares(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
         validateFunctionCalls(evaluatorTree, debugMode);
-//        solveBinaryExpressions(evaluatorTree, debugMode);
 
         // check for semantic errors
         if (checkThrowables(evaluatorTree, debugMode)) {
