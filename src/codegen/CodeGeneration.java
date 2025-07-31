@@ -67,7 +67,6 @@ public class CodeGeneration {
                                 currentIfEndLabel, depth);
 
                     } else if (lastOperation instanceof BinaryOp bop) {
-                        System.out.println(opAsMlog(negateBooleanOperator(bop.getOp())));
                         startJump = new Jump("jump_" + ifHashCode,
                                 opAsMlog(negateBooleanOperator(bop.getOp())) + " " + bop.getLeft() + " " + bop.getRight(),
                                 currentIfEndLabel, depth);
