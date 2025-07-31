@@ -6,7 +6,7 @@ import src.parsing.*;
 
 public class CodeGeneration {
 
-    public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean debugMode) {
+    public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         IRCode irCode = new IRCode();
 
         generateIRCodeHelper(evaluatorTree.mainBlock, irCode, debugMode);
@@ -14,7 +14,7 @@ public class CodeGeneration {
         return irCode;
     }
 
-    private static void generateIRCodeHelper(ScopeNode scopeNode, IRCode irCode, boolean debugMode) {
+    private static void generateIRCodeHelper(ScopeNode scopeNode, IRCode irCode, boolean debugMode) throws Exception {
         for (int i = 0; i < scopeNode.memberCount(); i++) {
             EvaluatorNode member = scopeNode.getMember(i);
 
@@ -23,17 +23,29 @@ public class CodeGeneration {
 
                     // TODO: fn
                 } else if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
-                    IROperation opBlock = generateIROperation(op, debugMode);
-                    irCode.irBlocks.add(opBlock);
-                    // change the name of the last op to the declared var name
-                    opBlock.lineList.getLast().setName(declarationNode.getVariableName());
+                    addOperationIRBlock(op, irCode, declarationNode.getVariableName(), debugMode);
 
                 } else if (declarationNode.memberCount() == 0) {
 
                     // TODO: null declaration
+                } else {
+                    throw new Exception("Malformed declaration node found on codegen stage");
                 }
+            } else if (member instanceof AssignmentNode as) {
+                // first member of assignment nodes should always be an operator
+                // otherwise throw an error
+                if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode))
+                    throw new Exception("Malformed assignment node found on codegen stage");
+                addOperationIRBlock((OperationNode) member.getMember(0), irCode, as.getVariableName(), debugMode);
             }
         }
+    }
+
+    private static void addOperationIRBlock(OperationNode op, IRCode irCode, String variableName, boolean debugMode) {
+        IROperation opBlock = generateIROperation(op, debugMode);
+        irCode.irBlocks.add(opBlock);
+        // change the name of the last op to the declared var name
+        opBlock.lineList.getLast().setName(variableName);
     }
 
     public static IROperation generateIROperation(OperationNode operationNode, boolean debugMode) {
