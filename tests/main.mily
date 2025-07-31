@@ -126,10 +126,12 @@ int branch_error(int x_) {   /- MilySemanticError: Semantic error on line: 118, 
 if (10) {}                   /- MilySemanticError: Semantic error on line: 126, token: "if": Expression in conditional must result in value of type boolean, is instead of type int
 
 while(10) {}                 /- MilySemanticError: Semantic error on line: 128, token: "while": Expression in conditional must result in a value of type boolean, is instead of type int
-
 */
-int var1 = 10; int var2 = 1;
-int var3 = var1 + var2;
-int var4 = (var1 + 100) * var2 + var1 + 100 + var2 + 100;
 
-int var4 = (10 + 100) * 1 + 10 + 100 + 1 + 100;
+int var1 = 10; int var2 = 3;
+int var3 = var1 + var2;
+int var4 =
+    ((var1 + 100) * var2 + var1 + 100 + var2 + 100 // var2 + var1 ** var2)
+    + 700000 - 1000 * 200 // var2  * var3
+    + var1 // var3 ** var2;
+int var5 = (10 + 100) * 1 + 10 + 100 + 1 + var4;

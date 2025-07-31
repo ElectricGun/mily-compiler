@@ -45,6 +45,7 @@ public class CodeGeneration {
     }
 
     private static void generateIROperationHelper(OperationNode operationNode, IROperation irOperation, boolean debugMode) {
+        operationNode.printRecursive();
         if (operationNode.isBinary()) {
             boolean leftConstant = operationNode.getLeftSide().isConstant();
             boolean rightConstant = operationNode.getRightSide().isConstant();
@@ -66,10 +67,9 @@ public class CodeGeneration {
                     generateIROperationHelper(operationNode.getLeftSide(), irOperation, debugMode);
 
                 } else {
-                    binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftSide().nameToken.string, operationNode.getRightConstantString());
+                    binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftSide().nameToken.string, operationNode.getRightSide().nameToken.string);
                     generateIROperationHelper(operationNode.getLeftSide(), irOperation, debugMode);
                     generateIROperationHelper(operationNode.getRightSide(), irOperation, debugMode);
-
                 }
                 irOperation.lineList.add(binaryOp);
             }

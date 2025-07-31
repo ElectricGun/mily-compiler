@@ -84,10 +84,6 @@ public class Validation {
             EvaluatorNode member = evaluatorNode.getMember(i);
 
             // TODO not optimal implementation
-
-            // types are hardcoded because type checking is not done in this function;
-            // only declarations
-
             String alreadyDeclaredMessage = "Variable \"%s\" is already declared within scope";
             String undeclaredMessage = "Variable \"%s\" is undeclared";
 
@@ -106,14 +102,12 @@ public class Validation {
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(memberDeclaration.getType());
-
             } else if (member instanceof AssignmentNode memberAssignment) {
                 String assignedVar = memberAssignment.getVariableName();
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
                 } else if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
-
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
                     if (doAssignTypes)
@@ -134,10 +128,17 @@ public class Validation {
                 String assignedVar = functionDeclareMember.nameToken.string;
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
-
                 }
             }
-            validateDeclarationsHelper(evaluatorTree, member, new ArrayList<>(declaredVariablesNames), new ArrayList<>(variableTypes), doAssignTypes, debugMode);
+            List<String> newDeclares = new ArrayList<>(declaredVariablesNames);
+            List<String> newTypes = new ArrayList<>(variableTypes);
+
+            if (member instanceof DeclarationNode dec && dec.memberCount() > 0 && !(dec.getMember(0) instanceof FunctionDeclareNode)) {
+                newDeclares.removeLast();
+                newTypes.removeLast();
+            }
+
+            validateDeclarationsHelper(evaluatorTree, member, newDeclares, newTypes, doAssignTypes, debugMode);
         }
     }
 

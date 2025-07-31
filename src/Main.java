@@ -52,7 +52,7 @@ public class Main {
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
         validateFunctionCalls(evaluatorTree, debugMode);
-        solveBinaryExpressions(evaluatorTree, debugMode);
+//        solveBinaryExpressions(evaluatorTree, debugMode);
 
         // check for semantic errors
         if (checkThrowables(evaluatorTree, debugMode)) {
