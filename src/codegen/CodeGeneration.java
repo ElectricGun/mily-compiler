@@ -5,6 +5,7 @@ import src.codegen.lines.*;
 import src.parsing.*;
 
 import static src.codegen.Mlogs.*;
+import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 public class CodeGeneration {
@@ -53,14 +54,26 @@ public class CodeGeneration {
                     if (ifs.getElseNode() == null)
                         currentIfEndLabel = branchEndLabel;
 
-                    String conditionalVarName = "if_cond@" + ifs.hashCode();
-                    addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, depth, debugMode);
-
                     IRBlock startJumpBlock = new IRBlock();
-                    // TODO: unhardcode how this works
-                    Jump startJump = new Jump("jump@" + ifs.hashCode(),
-                            opAsMlog(KEY_OP_NOT_EQUAL) + " " + conditionalVarName + " 1",
-                            currentIfEndLabel, depth);
+                    String conditionalVarName = "if_cond@" + ifs.hashCode();
+                    IROperation conditionalOp = addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, depth, debugMode);
+                    Line lastOperation = conditionalOp.lineList.removeLast();
+
+                    Jump startJump;
+                    if (lastOperation instanceof Set set) {
+                        startJump = new Jump("jump@" + ifs.hashCode(),
+                                opAsMlog(KEY_OP_NOT_EQUAL) + " " + set.getValue() + " 1",
+                                currentIfEndLabel, depth);
+
+                    } else if (lastOperation instanceof BinaryOp bop) {
+                        System.out.println(opAsMlog(negateBooleanOperator(bop.getOp())));
+                        startJump = new Jump("jump@" + ifs.hashCode(),
+                                opAsMlog(negateBooleanOperator(bop.getOp())) + " " + bop.getLeft() + " " + bop.getRight(),
+                                currentIfEndLabel, depth);
+
+                    } else {
+                        throw new Exception("Jump conditional must be BinaryOp or Set");
+                    }
 
                     startJumpBlock.lineList.add(startJump);
                     irCode.irBlocks.add(startJumpBlock);
@@ -97,11 +110,13 @@ public class CodeGeneration {
         }
     }
 
-    private static void addOperationIRBlock(OperationNode op, IRCode irCode, String variableName, int depth, boolean debugMode) {
+    private static IROperation addOperationIRBlock(OperationNode op, IRCode irCode, String variableName, int depth, boolean debugMode) {
         IROperation opBlock = generateIROperation(op, depth, debugMode);
         irCode.irBlocks.add(opBlock);
         // change the name of the last op to the declared var name
         opBlock.lineList.getLast().setName(variableName);
+
+        return opBlock;
     }
 
     public static IROperation generateIROperation(OperationNode operationNode, int depth, boolean debugMode) {

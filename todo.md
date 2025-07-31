@@ -14,6 +14,7 @@
 
 # Useful
  - Inline raw mlog (can be used for defining mlog commands in libraries)
+ - pointers for memory variables
 
 # Semantic Checking
  - Check for unreachable code
@@ -56,8 +57,7 @@
  - Validation functions can be unified to reduce compile time
  - add an instance method equals() within Token instead of calling keyEquals()
  - operations with dynamic variables are not typed checked or parsed
- - scope validation could use a tree instead
- - jump conditionals in if statements are separated, increasing line number
+ - scope validation can be simplified
  - current variable naming in mlog may lead to issues 
  - rewrite Lexing
 

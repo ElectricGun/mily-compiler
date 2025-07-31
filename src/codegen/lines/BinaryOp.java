@@ -26,4 +26,16 @@ public class BinaryOp extends Line {
     public String toString() {
         return name + ": " + left + " " +  op  + " " + right;
     }
+
+    public String getOp() {
+        return op;
+    }
+
+    public String getLeft() {
+        return left;
+    }
+
+    public String getRight() {
+        return right;
+    }
 }

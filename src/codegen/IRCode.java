@@ -10,7 +10,8 @@ public class IRCode {
 
     public void printMlog() {
         for (IRBlock irBlock : irBlocks) {
-            System.out.println(irBlock.asMlog());
+            if (!irBlock.lineList.isEmpty())
+                System.out.println(irBlock.asMlog());
         }
     }
 }

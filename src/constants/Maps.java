@@ -18,7 +18,7 @@ import static src.constants.Keywords.*;
 
 public class Maps {
 
-    protected final static List<String> punctuationKeys = new ArrayList<>(Arrays.asList(
+    protected final static List<String> PUNCTUATION_KEYS = new ArrayList<>(Arrays.asList(
             KEY_BRACKET_OPEN,
             KEY_BRACKET_CLOSE,
             KEY_CURLY_OPEN,
@@ -33,7 +33,7 @@ public class Maps {
             KEY_COMMENT_INLINE
     ));
 
-    protected final static List<String> keywordKeys = new ArrayList<>(Arrays.asList(
+    protected final static List<String> KEYWORD_KEYS = new ArrayList<>(Arrays.asList(
             KEY_RETURN,
             KEY_CONDITIONAL_IF,
             KEY_CONDITIONAL_ELSE,
@@ -41,7 +41,7 @@ public class Maps {
             KEY_LOOPING_FOR
     ));
 
-    protected final static List<String> declaratorKeys = new ArrayList<>(Arrays.asList(
+    protected final static List<String> DECLARATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_DATA_DYNAMIC,
             KEY_DATA_DOUBLE,
             KEY_DATA_INT,
@@ -50,7 +50,7 @@ public class Maps {
             KEY_DATA_VOID
     ));
 
-    protected final static List<String> operatorKeys = new ArrayList<>(Arrays.asList(
+    protected final static List<String> OPERATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,
             KEY_OP_MUL,
             KEY_OP_ADD,
@@ -74,29 +74,40 @@ public class Maps {
             KEY_BOP_OR,
             KEY_OP_NEGATE
     ));
-    protected final static List<String> unaryOperatorKeys = new ArrayList<>(Arrays.asList(
+    protected final static List<String> UNARY_OPERATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_OP_ADD,
             KEY_OP_SUB
     ));
 
     static {
-        operatorKeys.addAll(unaryOperatorKeys);
+        OPERATOR_KEYS.addAll(UNARY_OPERATOR_KEYS);
     }
 
-    protected final static List<String> puncOperatorKeywords = new ArrayList<>();
+    protected final static List<String> PUNC_OPERATOR_KEYWORDS = new ArrayList<>();
     static {
-        puncOperatorKeywords.addAll(punctuationKeys);
-        puncOperatorKeywords.addAll(keywordKeys);
-        puncOperatorKeywords.addAll(operatorKeys);
-        puncOperatorKeywords.addAll(declaratorKeys);
+        PUNC_OPERATOR_KEYWORDS.addAll(PUNCTUATION_KEYS);
+        PUNC_OPERATOR_KEYWORDS.addAll(KEYWORD_KEYS);
+        PUNC_OPERATOR_KEYWORDS.addAll(OPERATOR_KEYS);
+        PUNC_OPERATOR_KEYWORDS.addAll(DECLARATOR_KEYS);
     }
 
-    protected final static List<String> booleanKeys = new ArrayList<>(Arrays.asList(
+    protected final static List<String> BOOLEAN_KEYS = new ArrayList<>(Arrays.asList(
             KEY_BOOLEAN_TRUE,
             KEY_BOOLEAN_FALSE
     ));
 
-    protected static final HashMap<String, Integer> PEMDAS = new HashMap<>();
+    // todo: should make this a 2 way graph for brevity
+    protected final static HashMap<String, String> OP_NEGATION_MAP = new HashMap<>();
+    static {
+        OP_NEGATION_MAP.put(KEY_OP_GREATER_THAN, KEY_OP_LESS_THAN_EQUALS);
+        OP_NEGATION_MAP.put(KEY_OP_GREATER_THAN_EQUALS, KEY_OP_LESS_THAN);
+        OP_NEGATION_MAP.put(KEY_OP_LESS_THAN, KEY_OP_GREATER_THAN_EQUALS);
+        OP_NEGATION_MAP.put(KEY_OP_LESS_THAN_EQUALS, KEY_OP_GREATER_THAN);
+        OP_NEGATION_MAP.put(KEY_OP_EQUALS, KEY_OP_NOT_EQUAL);
+        OP_NEGATION_MAP.put(KEY_OP_NOT_EQUAL, KEY_OP_EQUALS);
+    }
+
+    protected final static HashMap<String, Integer> PEMDAS = new HashMap<>();
     static {
         // TODO this system is not good, a separate ordering for unary operators can be nice, and negatives are too arbitrary.
         // negatives are reserved for special characters
@@ -162,7 +173,7 @@ public class Maps {
         operationMap.addOperation(operator, KEY_DATA_BOOLEAN,    KEY_DATA_BOOLEAN,    KEY_DATA_BOOLEAN, consumer);
     }
 
-    public static final OperationMap operationMap = new OperationMap();
+    public final static OperationMap operationMap = new OperationMap();
     static {
 
         // TODO looks quite horrible rn

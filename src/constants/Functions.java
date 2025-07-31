@@ -50,7 +50,7 @@ public class Functions {
     }
 
     public static boolean isPunctuation(String compare) {
-        for (String s : punctuationKeys) {
+        for (String s : PUNCTUATION_KEYS) {
             if (s.equals(compare)) return true;
         }
         return false;
@@ -65,7 +65,7 @@ public class Functions {
     }
 
     public static boolean isOperator(String c) {
-        for (String s : operatorKeys) {
+        for (String s : OPERATOR_KEYS) {
             if (c.equals(s)) return true;
         }
         return false;
@@ -80,7 +80,7 @@ public class Functions {
     }
 
     public static boolean isUnaryOperator(String c) {
-        for (String s : unaryOperatorKeys) {
+        for (String s : UNARY_OPERATOR_KEYS) {
             if (c.equals(s)) return true;
         }
         return false;
@@ -97,7 +97,7 @@ public class Functions {
     public static boolean isKeywordIncomplete(String c) {
         if (isWhiteSpace(c) || c.isEmpty())
             return false;
-        for (String op : puncOperatorKeywords) {
+        for (String op : PUNC_OPERATOR_KEYWORDS) {
             boolean partialEquals = op.contains(c) && !op.equals(c);
             if (partialEquals) return true;
         }
@@ -141,7 +141,7 @@ public class Functions {
     }
 
     public static boolean isKeyWord(String s) {
-        return keywordKeys.contains(s);
+        return KEYWORD_KEYS.contains(s);
     }
 
     public static boolean isKeyWord(Token t) {
@@ -153,7 +153,7 @@ public class Functions {
     }
 
     public static boolean isBoolean(String s) {
-        return booleanKeys.contains(s);
+        return BOOLEAN_KEYS.contains(s);
     }
 
     public static boolean isBoolean(Token t) {
@@ -165,7 +165,7 @@ public class Functions {
     }
 
     public static boolean isDeclarator(String s) {
-        return declaratorKeys.contains(s);
+        return DECLARATOR_KEYS.contains(s);
     }
 
     public static boolean isDeclarator(Token t) {
@@ -277,5 +277,12 @@ public class Functions {
             return KEY_DATA_BOOLEAN;
         }
         return KEY_DATA_UNKNOWN;
+    }
+
+    public static String negateBooleanOperator(String operator) {
+        if (!OP_NEGATION_MAP.containsKey(operator))
+            throw new IllegalArgumentException(String.format("Operator \"%s\" cannot be negated"));
+        else
+            return OP_NEGATION_MAP.get(operator);
     }
 }

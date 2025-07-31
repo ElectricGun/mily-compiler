@@ -131,6 +131,7 @@ while(10) {}                 /- MilySemanticError: Semantic error on line: <line
 
 **** COMMENT END ****/
 
+/*
 int var0 = 1;
 int var10 = 1020031201;
 if (var10 < var0) {
@@ -166,4 +167,11 @@ if (true) {
             test = 10;
         }
     }
+}
+*/
+int test = 10;
+int test2 = 10;
+
+if (test * 2 > test2 + 1) {
+    int test3 = 100 * test2 + test;
 }
