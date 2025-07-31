@@ -44,7 +44,9 @@ public class CodeGeneration {
                 addOperationIRBlock((OperationNode) member.getMember(0), irCode, as.getVariableName(), depth, debugMode);
 
             } else if (member instanceof IfStatementNode ifs) {
-                String branchEndLabel = ifs.nameToken + "end@" + ifs.hashCode();
+                // todo should put this outside in a function
+                String branchEndLabel = "branch_end@" + ifs.hashCode();
+
                 while (true) {
                     String currentIfEndLabel = ifs.nameToken + "@" + ifs.hashCode();
 

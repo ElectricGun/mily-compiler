@@ -40,9 +40,9 @@
  - for lexing and evaluating
  - i += x + y    is equivalent to   i = i + (x + y)
 
-# Optimisation
- - Var simplification
- - Loops optimisation
+# Loops
+ - break
+ - continue
     
 # Technical Stuff
  - use encapsulation for node members instead of having separate variables to prevent errors
