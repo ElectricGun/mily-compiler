@@ -151,15 +151,17 @@ if (true) {
 } else {
     int test = 3;
 }
-
 if (false) {
     int test = 4;
 } else {
     int test = 5;
 }
-
 if (true) {
-    if (false) {
+    if (true) {
         int test = 6;
+
+        if (test < 10) {
+            test = 10;
+        }
     }
 }

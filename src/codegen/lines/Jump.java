@@ -4,14 +4,14 @@ public class Jump extends Line{
 
     String to;
 
-    public Jump(String name, String string, String to) {
-        super(name, string);
+    public Jump(String name, String string, String to, int indent) {
+        super(name, string, indent);
 
         this.to = to;
     }
 
     @Override
     public String asMlog() {
-        return "jump " + to + " " + string;
+        return indent() + "jump " + to + " " + string;
     }
 }

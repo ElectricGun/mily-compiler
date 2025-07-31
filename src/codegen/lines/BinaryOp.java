@@ -8,8 +8,8 @@ public class BinaryOp extends Line {
     String left;
     String right;
 
-    public BinaryOp(String name, String op, String left, String right) {
-        super(name, "");
+    public BinaryOp(String name, String op, String left, String right, int indent) {
+        super(name, "", indent);
 
         this.left = left;
         this.right = right;
@@ -19,7 +19,7 @@ public class BinaryOp extends Line {
 
     @Override
     public String asMlog() {
-        return "op " + opAsMlog(op) + " " + name +  " " + left + " " + right;
+        return indent() + "op " + opAsMlog(op) + " " + name +  " " + left + " " + right;
     }
 
     @Override

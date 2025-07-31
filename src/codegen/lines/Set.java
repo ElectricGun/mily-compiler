@@ -2,8 +2,8 @@ package src.codegen.lines;
 
 public class Set extends Line {
 
-    public Set(String var, String value) {
-        super(var, value);
+    public Set(String var, String value, int indent) {
+        super(var, value, indent);
     }
 
     public String getVar() {
@@ -16,6 +16,6 @@ public class Set extends Line {
 
     @Override
     public String asMlog() {
-        return "set " + getVar() + " " + getValue();
+        return indent() +"set " + getVar() + " " + getValue();
     }
 }
