@@ -3,6 +3,7 @@ package src.codegen;
 import java.util.*;
 
 import static src.constants.Keywords.*;
+import static src.constants.Functions.*;
 
 public class Mlogs {
     protected static final HashMap<String, String> mlogOperationMap = new HashMap<>();
@@ -15,6 +16,13 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_POW, "pow");
         mlogOperationMap.put(KEY_OP_IDIV, "idiv");
         mlogOperationMap.put(KEY_OP_MOD, "mod");
+        mlogOperationMap.put(KEY_OP_EQUALS, "equal");
+        mlogOperationMap.put(KEY_OP_NOT_EQUAL, "notEqual");
+        mlogOperationMap.put(KEY_OP_LESS_THAN, "lessThan");
+        mlogOperationMap.put(KEY_OP_LESS_THAN_EQUALS, "lessThanEq");
+        mlogOperationMap.put(KEY_OP_GREATER_THAN, "greaterThan");
+        mlogOperationMap.put(KEY_OP_GREATER_THAN_EQUALS, "greaterThanEq");
+        mlogOperationMap.put(KEY_OP_STRICT_EQUALS, "strictEqual");
     }
 
     public static String opAsMlog(String op) throws IllegalArgumentException {
@@ -22,5 +30,21 @@ public class Mlogs {
             throw new IllegalArgumentException(String.format("Operation \"%s\" has no mlog equivalent", op));
 
         return mlogOperationMap.get(op);
+    }
+
+    public static String valueAsMlog(String value) {
+        if (isBoolean(value)) {
+            if (keyEquals(KEY_BOOLEAN_FALSE, value)) {
+                return "0";
+
+            } else if (keyEquals(KEY_BOOLEAN_TRUE, value)) {
+                return "1";
+
+            } else {
+                throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", value));
+            }
+        } else {
+            return value;
+        }
     }
 }

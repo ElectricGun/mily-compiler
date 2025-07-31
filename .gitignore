@@ -8,6 +8,9 @@
 # I dont want .idea on the remote repo
 .idea
 
+# Personal notes
+notes.txt
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml

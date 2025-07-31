@@ -9,4 +9,9 @@ public class Jump extends Line{
 
         this.to = to;
     }
+
+    @Override
+    public String asMlog() {
+        return "jump " + to + " " + string;
+    }
 }

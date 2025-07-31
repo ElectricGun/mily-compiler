@@ -4,6 +4,9 @@ import src.codegen.blocks.*;
 import src.codegen.lines.*;
 import src.parsing.*;
 
+import static src.codegen.Mlogs.*;
+import static src.constants.Keywords.*;
+
 public class CodeGeneration {
 
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
@@ -11,6 +14,8 @@ public class CodeGeneration {
 
         generateIRCodeHelper(evaluatorTree.mainBlock, irCode, debugMode);
 
+        // todo: end is sometimes redundant
+        irCode.irBlocks.add(new IREnd());
         return irCode;
     }
 
@@ -37,6 +42,55 @@ public class CodeGeneration {
                 if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed assignment node found on codegen stage");
                 addOperationIRBlock((OperationNode) member.getMember(0), irCode, as.getVariableName(), debugMode);
+
+            } else if (member instanceof IfStatementNode ifs) {
+                String branchEndLabel = ifs.nameToken + "end@" + ifs.hashCode();
+                while (true) {
+                    String currentIfEndLabel = ifs.nameToken + "@" + ifs.hashCode();
+
+                    if (ifs.getElseNode() == null)
+                        currentIfEndLabel = branchEndLabel;
+
+                    String conditionalVarName = "if_cond@" + ifs.hashCode();
+                    addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, debugMode);
+
+                    IRBlock startJumpBlock = new IRBlock();
+                    // TODO: unhardcode how this works
+                    Jump startJump = new Jump("jump@" + ifs.hashCode(),
+                            opAsMlog(KEY_OP_EQUALS) + " " + conditionalVarName + " 1",
+                            currentIfEndLabel);
+
+                    startJumpBlock.lineList.add(startJump);
+                    irCode.irBlocks.add(startJumpBlock);
+                    generateIRCodeHelper(ifs.getScope(), irCode, debugMode);
+
+                    if (ifs.getElseNode() != null) {
+                        IRBlock alwaysJumpBlock = new IRBlock();
+                        alwaysJumpBlock.lineList.add(new Jump("jump_end@" + ifs.hashCode(), "always", branchEndLabel));
+                        irCode.irBlocks.add(alwaysJumpBlock);
+                    }
+
+                    IRBlock ifEndLabelBlock = new IRBlock();
+                    ifEndLabelBlock.lineList.add(new Line("if_end@" + ifs.hashCode(), currentIfEndLabel + ":"));
+                    irCode.irBlocks.add(ifEndLabelBlock);
+
+                    if (ifs.getElseNode() instanceof ElseNode elseNode) {
+                        if (elseNode.getIfStatementNode() instanceof IfStatementNode nestedIf) {
+                            ifs = nestedIf;
+
+                        } else {
+                            generateIRCodeHelper(elseNode.getScope(), irCode, debugMode);
+
+                            IRBlock elseEndLabelBlock = new IRBlock();
+                            elseEndLabelBlock.lineList.add(new Line("else_end@" + ifs.hashCode(), branchEndLabel + ":"));
+                            irCode.irBlocks.add(elseEndLabelBlock);
+
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
             }
         }
     }
@@ -57,25 +111,24 @@ public class CodeGeneration {
     }
 
     private static void generateIROperationHelper(OperationNode operationNode, IROperation irOperation, boolean debugMode) {
-        operationNode.printRecursive();
         if (operationNode.isBinary()) {
             boolean leftConstant = operationNode.getLeftSide().isConstant();
             boolean rightConstant = operationNode.getRightSide().isConstant();
 
             // TODO messy
             if (leftConstant && rightConstant) {
-                BinaryOp binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftConstantString(), operationNode.getRightConstantString());
+                BinaryOp binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), valueAsMlog(operationNode.getLeftConstantString()), valueAsMlog(operationNode.getRightConstantString()));
                 irOperation.lineList.add(binaryOp);
 
             } else {
                 BinaryOp binaryOp;
 
                 if (!rightConstant && leftConstant) {
-                    binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftConstantString(), operationNode.getRightSide().nameToken.string);
+                    binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), valueAsMlog(operationNode.getLeftConstantString()), operationNode.getRightSide().nameToken.string);
                     generateIROperationHelper(operationNode.getRightSide(), irOperation, debugMode);
 
                 } else if (rightConstant) {
-                    binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftSide().nameToken.string, operationNode.getRightConstantString());
+                    binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftSide().nameToken.string, valueAsMlog(operationNode.getRightConstantString()));
                     generateIROperationHelper(operationNode.getLeftSide(), irOperation, debugMode);
 
                 } else {
@@ -87,7 +140,7 @@ public class CodeGeneration {
             }
         } else if (operationNode.isConstant()) {
             // TODO should use set instead maybe?
-            BinaryOp binaryOp = new BinaryOp(operationNode.nameToken.string, "+", operationNode.getConstantToken().string, "0");
+            BinaryOp binaryOp = new BinaryOp(operationNode.nameToken.string, "+", valueAsMlog(operationNode.getConstantToken().string), "0");
             irOperation.lineList.add(binaryOp);
         }
     }

@@ -1,6 +1,7 @@
 # Urgent TODO:
  - Doing this /* **/ throws unclosed comment error because of how the lexing works
  - Comparison operation lambda functions are empty
+ - convert true and false to 1 and 0
 
 # Problems:
  - Dynamic typing is current UNSUPPORTED. I need to figure out how to mix static AND dynamic typing
@@ -10,6 +11,7 @@
 
 # Operations
  - Declaring strings in operations
+ - Explicit casting should compile into functions essentially
 
 # Useful
  - Inline raw mlog (can be used for defining mlog commands in libraries)
@@ -56,6 +58,8 @@
  - add an instance method equals() within Token instead of calling keyEquals()
  - operations with dynamic variables are not typed checked or parsed
  - scope validation could use a tree instead
+ - jump conditionals in if statements are separated, increasing line number
+ - current variable naming in mlog may lead to issues 
 
 # Syntax Document
  - A syntax document for Milyscript

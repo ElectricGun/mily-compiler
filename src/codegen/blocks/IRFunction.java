@@ -1,4 +1,4 @@
 package src.codegen.blocks;
 
-public class IRFunction extends IRBlock{
+public class IRFunction extends IRBlock {
 }
