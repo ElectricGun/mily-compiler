@@ -1,6 +1,6 @@
 # Urgent TODO:
  - Comparison operation lambda functions are empty
- - convert true and false to 1 and 0
+ - Create a string counter for generated variables to prevent conflicts
 
 # Problems:
  - Dynamic typing is current UNSUPPORTED. I need to figure out how to mix static AND dynamic typing
