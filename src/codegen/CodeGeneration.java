@@ -57,7 +57,7 @@ public class CodeGeneration {
                 startLabelBlock.lineList.add(startLabelLine);
                 irCode.irBlocks.add(startLabelBlock);
 
-                generateIRCodeHelper(whileLoop.getScope(), irCode, hashSimplifier, depth, debugMode);
+                generateIRCodeHelper(whileLoop.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
                 // create loop jump
                 boolean invertCondition = false;
@@ -94,7 +94,7 @@ public class CodeGeneration {
                 irCode.irBlocks.add(startLabelBlock);
 
                 // code block
-                generateIRCodeHelper(forLoop.getScope(), irCode, hashSimplifier, depth, debugMode);
+                generateIRCodeHelper(forLoop.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
                 // updater
                 AssignmentNode updater = forLoop.getUpdater();
