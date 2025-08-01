@@ -46,6 +46,32 @@ public class CodeGeneration {
 
             } else if (member instanceof IfStatementNode ifs) {
                 generateBranchStatement(ifs, irCode, hashSimplifier, depth, debugMode);
+
+            } else if (member instanceof WhileLoopNode whileLoop) {
+
+                String whileHashCode = "" + hashSimplifier.simplifyHash(whileLoop.hashCode());
+                String startLabelString = "while_loop_start_" + whileHashCode;
+                IRBlock startLabelBlock = new IRBlock();
+                Line startLabelLine = new Line("while_loop_start", startLabelString + ":", depth);
+                startLabelBlock.lineList.add(startLabelLine);
+                irCode.irBlocks.add(startLabelBlock);
+
+                generateIRCodeHelper(whileLoop.getScope(), irCode, hashSimplifier, depth, debugMode);
+
+                boolean invertCondition = false;
+                Jump jump = createConditionalJump(
+                        whileLoop.getExpression(),
+                        whileHashCode,
+                        startLabelString,
+                        irCode,
+                        invertCondition,
+                        depth,
+                        debugMode
+                );
+
+                IRBlock jumpBlock = new IRBlock();
+                jumpBlock.lineList.add(jump);
+                irCode.irBlocks.add(jumpBlock);
             }
         }
     }
@@ -57,7 +83,7 @@ public class CodeGeneration {
         // todo change the true to an actual conditional
         while (true) {
             // loop repeats with a new ifs object
-            int currentifHashCode = hashSimplifier.simplifyHash(ifs.hashCode());
+            String currentifHashCode = "" + hashSimplifier.simplifyHash(ifs.hashCode());
             String currentIfEndLabel = ifs.nameToken + "_" + currentifHashCode;
 
             // if current if statement has no else block, just jump to the end
@@ -66,23 +92,16 @@ public class CodeGeneration {
 
             // create jump statement (doesn't look pretty)
             IRBlock startJumpBlock = new IRBlock();
-            String conditionalVarName = "if_cond_" + currentifHashCode;
-            IROperation conditionalOp = addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, depth, debugMode);
-            Line lastOperation = conditionalOp.lineList.removeLast();
-            Jump startJump;
-            if (lastOperation instanceof Set set) {
-                startJump = new Jump("jump_" + currentifHashCode,
-                        opAsMlog(KEY_OP_NOT_EQUAL) + " " + set.getValue() + " 1",
-                        currentIfEndLabel, depth);
 
-            } else if (lastOperation instanceof BinaryOp bop) {
-                startJump = new Jump("jump_" + currentifHashCode,
-                        opAsMlog(negateBooleanOperator(bop.getOp())) + " " + bop.getLeft() + " " + bop.getRight(),
-                        currentIfEndLabel, depth);
-
-            } else {
-                throw new Exception("Jump conditional must be BinaryOp or Set");
-            }
+            boolean invertCondition = true;
+            Jump startJump = createConditionalJump(
+                    ifs.getExpression(),
+                    currentifHashCode,
+                    currentIfEndLabel,
+                    irCode,
+                    invertCondition,
+                    depth,
+                    debugMode);
 
             startJumpBlock.lineList.add(startJump);
             irCode.irBlocks.add(startJumpBlock);
@@ -121,6 +140,30 @@ public class CodeGeneration {
                 break;
             }
         }
+    }
+
+    private static Jump createConditionalJump(OperationNode exp, String jumpId, String targetLabel, IRCode irCode, boolean invertCondition, int depth, boolean debugMode) throws Exception {
+        String conditionalVarName = "if_cond_" + jumpId;
+        IROperation conditionalOp = addOperationIRBlock(exp, irCode, conditionalVarName, depth, debugMode);
+        Line lastOperation = conditionalOp.lineList.removeLast();
+        Jump startJump;
+        if (lastOperation instanceof Set set) {
+            startJump = new Jump("jump_" + jumpId,
+                    (invertCondition ? opAsMlog(KEY_OP_NOT_EQUAL) : opAsMlog(KEY_OP_EQUALS)) +
+                            " " + set.getValue() + " 1",
+                    targetLabel, depth);
+
+        } else if (lastOperation instanceof BinaryOp bop) {
+            startJump = new Jump("jump_" + jumpId,
+                    (invertCondition ? opAsMlog(negateBooleanOperator(bop.getOp())) : opAsMlog(bop.getOp())) +
+                            " " + bop.getLeft() + " " + bop.getRight(),
+                    targetLabel, depth);
+
+        } else {
+            throw new Exception("Jump conditional must be BinaryOp or Set");
+        }
+
+        return startJump;
     }
 
     private static IROperation addOperationIRBlock(OperationNode op, IRCode irCode, String variableName, int depth, boolean debugMode) {
