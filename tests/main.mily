@@ -157,7 +157,7 @@ if (true) {
 } else {
     int test = 10;
 }
-/*
+
 if (false) {
     int test = 4;
 } else {
@@ -179,4 +179,3 @@ if (true) {
         int test3 = 100 * test2 + test;
     }
 }
-*/

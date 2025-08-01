@@ -45,67 +45,80 @@ public class CodeGeneration {
                 addOperationIRBlock((OperationNode) member.getMember(0), irCode, as.getVariableName(), depth, debugMode);
 
             } else if (member instanceof IfStatementNode ifs) {
-                // todo should put this outside in a function
-                String branchEndLabel = "branch_end_" + hashSimplifier.simplifyHash(ifs.hashCode());
+                generateBranchStatement(ifs, irCode, hashSimplifier, depth, debugMode);
+            }
+        }
+    }
 
-                while (true) {
-                    int currentifHashCode = hashSimplifier.simplifyHash(ifs.hashCode());
-                    String currentIfEndLabel = ifs.nameToken + "_" + currentifHashCode;
+    private static void generateBranchStatement(IfStatementNode ifs, IRCode irCode, HashCodeSimplifier hashSimplifier, int depth, boolean debugMode) throws Exception {
+        String branchEndLabel = "branch_end_" + hashSimplifier.simplifyHash(ifs.hashCode());
 
-                    if (ifs.getElseNode() == null)
-                        currentIfEndLabel = branchEndLabel;
+        // while loop to go through all the else blocks
+        // todo change the true to an actual conditional
+        while (true) {
+            // loop repeats with a new ifs object
+            int currentifHashCode = hashSimplifier.simplifyHash(ifs.hashCode());
+            String currentIfEndLabel = ifs.nameToken + "_" + currentifHashCode;
 
-                    IRBlock startJumpBlock = new IRBlock();
-                    String conditionalVarName = "if_cond_" + currentifHashCode;
-                    IROperation conditionalOp = addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, depth, debugMode);
-                    Line lastOperation = conditionalOp.lineList.removeLast();
+            // if current if statement has no else block, just jump to the end
+            if (ifs.getElseNode() == null)
+                currentIfEndLabel = branchEndLabel;
 
-                    Jump startJump;
-                    if (lastOperation instanceof Set set) {
-                        startJump = new Jump("jump_" + currentifHashCode,
-                                opAsMlog(KEY_OP_NOT_EQUAL) + " " + set.getValue() + " 1",
-                                currentIfEndLabel, depth);
+            // create jump statement (doesn't look pretty)
+            IRBlock startJumpBlock = new IRBlock();
+            String conditionalVarName = "if_cond_" + currentifHashCode;
+            IROperation conditionalOp = addOperationIRBlock(ifs.getExpression(), irCode, conditionalVarName, depth, debugMode);
+            Line lastOperation = conditionalOp.lineList.removeLast();
+            Jump startJump;
+            if (lastOperation instanceof Set set) {
+                startJump = new Jump("jump_" + currentifHashCode,
+                        opAsMlog(KEY_OP_NOT_EQUAL) + " " + set.getValue() + " 1",
+                        currentIfEndLabel, depth);
 
-                    } else if (lastOperation instanceof BinaryOp bop) {
-                        startJump = new Jump("jump_" + currentifHashCode,
-                                opAsMlog(negateBooleanOperator(bop.getOp())) + " " + bop.getLeft() + " " + bop.getRight(),
-                                currentIfEndLabel, depth);
+            } else if (lastOperation instanceof BinaryOp bop) {
+                startJump = new Jump("jump_" + currentifHashCode,
+                        opAsMlog(negateBooleanOperator(bop.getOp())) + " " + bop.getLeft() + " " + bop.getRight(),
+                        currentIfEndLabel, depth);
 
-                    } else {
-                        throw new Exception("Jump conditional must be BinaryOp or Set");
-                    }
+            } else {
+                throw new Exception("Jump conditional must be BinaryOp or Set");
+            }
 
-                    startJumpBlock.lineList.add(startJump);
-                    irCode.irBlocks.add(startJumpBlock);
-                    generateIRCodeHelper(ifs.getScope(), irCode, hashSimplifier,depth + 1, debugMode);
+            startJumpBlock.lineList.add(startJump);
+            irCode.irBlocks.add(startJumpBlock);
+            generateIRCodeHelper(ifs.getScope(), irCode, hashSimplifier,depth + 1, debugMode);
 
-                    if (ifs.getElseNode() != null) {
-                        IRBlock alwaysJumpBlock = new IRBlock();
-                        alwaysJumpBlock.lineList.add(new Jump("jump_end_" + currentifHashCode, "always", branchEndLabel, depth));
-                        irCode.irBlocks.add(alwaysJumpBlock);
-                    }
+            // if there is an else node, then there must be an always jump to the end
+            if (ifs.getElseNode() != null) {
+                IRBlock alwaysJumpBlock = new IRBlock();
+                alwaysJumpBlock.lineList.add(new Jump("jump_end_" + currentifHashCode, "always", branchEndLabel, depth));
+                irCode.irBlocks.add(alwaysJumpBlock);
+            }
 
-                    IRBlock ifEndLabelBlock = new IRBlock();
-                    ifEndLabelBlock.lineList.add(new Line("if_end_" + currentifHashCode, currentIfEndLabel + ":", depth));
-                    irCode.irBlocks.add(ifEndLabelBlock);
+            // end label for the current if statement
+            IRBlock ifEndLabelBlock = new IRBlock();
+            ifEndLabelBlock.lineList.add(new Line("if_end_" + currentifHashCode, currentIfEndLabel + ":", depth));
+            irCode.irBlocks.add(ifEndLabelBlock);
 
-                    if (ifs.getElseNode() instanceof ElseNode elseNode) {
-                        if (elseNode.getIfStatementNode() instanceof IfStatementNode nestedIf) {
-                            ifs = nestedIf;
+            // if there is an else node
+            if (ifs.getElseNode() instanceof ElseNode elseNode) {
+                // if it is an else if
+                if (elseNode.getIfStatementNode() instanceof IfStatementNode nestedIf) {
+                    ifs = nestedIf;
 
-                        } else {
-                            generateIRCodeHelper(elseNode.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
+                } else {
+                    // if it is just an else
+                    generateIRCodeHelper(elseNode.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
-                            IRBlock elseEndLabelBlock = new IRBlock();
-                            elseEndLabelBlock.lineList.add(new Line("else_end_" + currentifHashCode, branchEndLabel + ":", depth));
-                            irCode.irBlocks.add(elseEndLabelBlock);
+                    IRBlock elseEndLabelBlock = new IRBlock();
+                    elseEndLabelBlock.lineList.add(new Line("else_end_" + currentifHashCode, branchEndLabel + ":", depth));
+                    irCode.irBlocks.add(elseEndLabelBlock);
 
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
+                    break;
                 }
+            } else {
+                // if there is no else
+                break;
             }
         }
     }
