@@ -127,4 +127,25 @@ public class ForLoopNode extends EvaluatorNode {
     public String toString() {
         return "for loop";
     }
+
+    public ScopeNode getScope() {
+        return scope;
+    }
+
+    @Override
+    public EvaluatorNode getMember(int i) {
+        return super.getMember(i);
+    }
+
+    public AssignmentNode getUpdater() {
+        return updater;
+    }
+
+    public OperationNode getCondition() {
+        return condition;
+    }
+
+    public VariableNode getInitial() {
+        return initial;
+    }
 }

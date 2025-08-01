@@ -48,9 +48,10 @@ public class CodeGeneration {
                 generateBranchStatement(ifs, irCode, hashSimplifier, depth, debugMode);
 
             } else if (member instanceof WhileLoopNode whileLoop) {
-
+                // todo unify copy pastes
                 String whileHashCode = "" + hashSimplifier.simplifyHash(whileLoop.hashCode());
                 String startLabelString = "while_loop_start_" + whileHashCode;
+
                 IRBlock startLabelBlock = new IRBlock();
                 Line startLabelLine = new Line("while_loop_start", startLabelString + ":", depth);
                 startLabelBlock.lineList.add(startLabelLine);
@@ -58,10 +59,55 @@ public class CodeGeneration {
 
                 generateIRCodeHelper(whileLoop.getScope(), irCode, hashSimplifier, depth, debugMode);
 
+                // create loop jump
                 boolean invertCondition = false;
                 Jump jump = createConditionalJump(
                         whileLoop.getExpression(),
                         whileHashCode,
+                        startLabelString,
+                        irCode,
+                        invertCondition,
+                        depth,
+                        debugMode
+                );
+
+                IRBlock jumpBlock = new IRBlock();
+                jumpBlock.lineList.add(jump);
+                irCode.irBlocks.add(jumpBlock);
+
+            } else if (member instanceof ForLoopNode forLoop) {
+                // todo unify copy pastes
+                String forLoopHashCode = "" + hashSimplifier.simplifyHash(forLoop.hashCode());
+                String startLabelString = "for_loop_start_" + forLoopHashCode;
+
+                // initial
+                VariableNode initial = forLoop.getInitial();
+                if (initial == null || initial.memberCount() <= 0 || !(initial.getMember(0) instanceof OperationNode))
+                    throw new Exception("Malformed for loop updater found on codegen stage");
+
+                addOperationIRBlock((OperationNode) initial.getMember(0), irCode, initial.getVariableName(), depth, debugMode);
+
+                // loop start
+                IRBlock startLabelBlock = new IRBlock();
+                Line startLabelLine = new Line("for_loop_start", startLabelString + ":", depth);
+                startLabelBlock.lineList.add(startLabelLine);
+                irCode.irBlocks.add(startLabelBlock);
+
+                // code block
+                generateIRCodeHelper(forLoop.getScope(), irCode, hashSimplifier, depth, debugMode);
+
+                // updater
+                AssignmentNode updater = forLoop.getUpdater();
+                if (updater == null || updater.memberCount() <= 0 || !(updater.getMember(0) instanceof OperationNode))
+                    throw new Exception("Malformed for loop updater found on codegen stage");
+
+                addOperationIRBlock((OperationNode) updater.getMember(0), irCode, updater.getVariableName(), depth, debugMode);
+
+                // create loop jump
+                boolean invertCondition = false;
+                Jump jump = createConditionalJump(
+                        forLoop.getCondition(),
+                        forLoopHashCode,
                         startLabelString,
                         irCode,
                         invertCondition,

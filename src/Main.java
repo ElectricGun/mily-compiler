@@ -79,6 +79,9 @@ public class Main {
 
         evaluatorTree.printRecursive();
         System.out.println();
+        System.out.println("Compilation successful");
+        System.out.println("Output:");
+        System.out.println();
         irCode.printMlog();
 
         System.out.println();
