@@ -93,6 +93,8 @@ public class Lexing {
                     commentMode = false;
                 }
 
+                tokenString = "";
+
             } else if (isWhiteSpace(cs)) {
                 if (!previousIsWhitespace) {
                     tryAddToken(debugMode);
