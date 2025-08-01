@@ -281,7 +281,7 @@ public class Functions {
 
     public static String negateBooleanOperator(String operator) {
         if (!OP_NEGATION_MAP.containsKey(operator))
-            throw new IllegalArgumentException(String.format("Operator \"%s\" cannot be negated"));
+            throw new IllegalArgumentException(String.format("Operator \"%s\" cannot be negated", operator));
         else
             return OP_NEGATION_MAP.get(operator);
     }
