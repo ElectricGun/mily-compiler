@@ -4,8 +4,8 @@ public class Jump extends Line{
 
     String to;
 
-    public Jump(String name, String string, String to, int indent) {
-        super(name, string, indent);
+    public Jump(String condition, String to, int indent) {
+        super(condition, indent);
 
         this.to = to;
     }

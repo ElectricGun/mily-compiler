@@ -52,10 +52,11 @@ public class CodeGeneration {
                 String whileHashCode = "" + hashSimplifier.simplifyHash(whileLoop.hashCode());
                 String startLabelString = "while_loop_start_" + whileHashCode;
 
-                IRBlock startLabelBlock = new IRBlock();
-                Line startLabelLine = new Line("while_loop_start", startLabelString + ":", depth);
-                startLabelBlock.lineList.add(startLabelLine);
-                irCode.irBlocks.add(startLabelBlock);
+//                IRBlock startLabelBlock = new IRBlock();
+//                Line startLabelLine = new Line(startLabelString + ":", depth);
+//                startLabelBlock.lineList.add(startLabelLine);
+//                irCode.irBlocks.add(startLabelBlock);
+                irCode.addSingleLineBlock(new Line(startLabelString + ":", depth));
 
                 generateIRCodeHelper(whileLoop.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
@@ -71,9 +72,10 @@ public class CodeGeneration {
                         debugMode
                 );
 
-                IRBlock jumpBlock = new IRBlock();
-                jumpBlock.lineList.add(jump);
-                irCode.irBlocks.add(jumpBlock);
+//                IRBlock jumpBlock = new IRBlock();
+//                jumpBlock.lineList.add(jump);
+//                irCode.irBlocks.add(jumpBlock);
+                irCode.addSingleLineBlock(jump);
 
             } else if (member instanceof ForLoopNode forLoop) {
                 // todo unify copy pastes
@@ -88,10 +90,11 @@ public class CodeGeneration {
                 addOperationIRBlock((OperationNode) initial.getMember(0), irCode, initial.getVariableName(), depth, debugMode);
 
                 // loop start
-                IRBlock startLabelBlock = new IRBlock();
-                Line startLabelLine = new Line("for_loop_start", startLabelString + ":", depth);
-                startLabelBlock.lineList.add(startLabelLine);
-                irCode.irBlocks.add(startLabelBlock);
+//                IRBlock startLabelBlock = new IRBlock();
+//                Line startLabelLine = new Line(startLabelString + ":", depth);
+//                startLabelBlock.lineList.add(startLabelLine);
+//                irCode.irBlocks.add(startLabelBlock);
+                irCode.addSingleLineBlock(new Line(startLabelString + ":", depth));
 
                 // code block
                 generateIRCodeHelper(forLoop.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
@@ -115,9 +118,10 @@ public class CodeGeneration {
                         debugMode
                 );
 
-                IRBlock jumpBlock = new IRBlock();
-                jumpBlock.lineList.add(jump);
-                irCode.irBlocks.add(jumpBlock);
+//                IRBlock jumpBlock = new IRBlock();
+//                jumpBlock.lineList.add(jump);
+//                irCode.irBlocks.add(jumpBlock);
+                irCode.addSingleLineBlock(jump);
             }
         }
     }
@@ -155,15 +159,18 @@ public class CodeGeneration {
 
             // if there is an else node, then there must be an always jump to the end
             if (ifs.getElseNode() != null) {
-                IRBlock alwaysJumpBlock = new IRBlock();
-                alwaysJumpBlock.lineList.add(new Jump("jump_end_" + currentifHashCode, "always", branchEndLabel, depth));
-                irCode.irBlocks.add(alwaysJumpBlock);
+//                IRBlock alwaysJumpBlock = new IRBlock();
+//                alwaysJumpBlock.lineList.add(new Jump("always", branchEndLabel, depth));
+//                irCode.irBlocks.add(alwaysJumpBlock);
+                irCode.addSingleLineBlock(new Jump("always", branchEndLabel, depth));
             }
 
             // end label for the current if statement
-            IRBlock ifEndLabelBlock = new IRBlock();
-            ifEndLabelBlock.lineList.add(new Line("if_end_" + currentifHashCode, currentIfEndLabel + ":", depth));
-            irCode.irBlocks.add(ifEndLabelBlock);
+//            IRBlock ifEndLabelBlock = new IRBlock();
+//            ifEndLabelBlock.lineList.add(new Line(currentIfEndLabel + ":", depth));
+//            irCode.irBlocks.add(ifEndLabelBlock);
+            irCode.addSingleLineBlock(new Line(currentIfEndLabel + ":", depth));
+
 
             // if there is an else node
             if (ifs.getElseNode() instanceof ElseNode elseNode) {
@@ -175,9 +182,11 @@ public class CodeGeneration {
                     // if it is just an else
                     generateIRCodeHelper(elseNode.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
-                    IRBlock elseEndLabelBlock = new IRBlock();
-                    elseEndLabelBlock.lineList.add(new Line("else_end_" + currentifHashCode, branchEndLabel + ":", depth));
-                    irCode.irBlocks.add(elseEndLabelBlock);
+//                    IRBlock elseEndLabelBlock = new IRBlock();
+//                    elseEndLabelBlock.lineList.add(new Line(branchEndLabel + ":", depth));
+//                    irCode.irBlocks.add(elseEndLabelBlock);
+
+                    irCode.addSingleLineBlock(new Line(branchEndLabel + ":", depth));
 
                     break;
                 }
@@ -194,13 +203,13 @@ public class CodeGeneration {
         Line lastOperation = conditionalOp.lineList.removeLast();
         Jump startJump;
         if (lastOperation instanceof Set set) {
-            startJump = new Jump("jump_" + jumpId,
+            startJump = new Jump(
                     (invertCondition ? opAsMlog(KEY_OP_NOT_EQUAL) : opAsMlog(KEY_OP_EQUALS)) +
                             " " + set.getValue() + " 1",
                     targetLabel, depth);
 
         } else if (lastOperation instanceof BinaryOp bop) {
-            startJump = new Jump("jump_" + jumpId,
+            startJump = new Jump(
                     (invertCondition ? opAsMlog(negateBooleanOperator(bop.getOp())) : opAsMlog(bop.getOp())) +
                             " " + bop.getLeft() + " " + bop.getRight(),
                     targetLabel, depth);
@@ -216,7 +225,9 @@ public class CodeGeneration {
         IROperation opBlock = generateIROperation(op, depth, debugMode);
         irCode.irBlocks.add(opBlock);
         // change the name of the last op to the declared var name
-        opBlock.lineList.getLast().setName(variableName);
+        Line lastLine = opBlock.lineList.getLast();
+        if (lastLine instanceof VariableLine variableLine)
+            variableLine.setVarName(variableName);
 
         return opBlock;
     }

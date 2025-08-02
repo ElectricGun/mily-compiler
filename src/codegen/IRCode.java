@@ -1,6 +1,7 @@
 package src.codegen;
 
-import src.codegen.blocks.IRBlock;
+import src.codegen.blocks.*;
+import src.codegen.lines.*;
 
 import java.util.*;
 
@@ -13,5 +14,11 @@ public class IRCode {
             if (!irBlock.lineList.isEmpty())
                 System.out.println(irBlock.asMlog());
         }
+    }
+
+    public void addSingleLineBlock(Line line) {
+        IRBlock irBlock = new IRBlock();
+        irBlock.lineList.add(line);
+        irBlocks.add(irBlock);
     }
 }

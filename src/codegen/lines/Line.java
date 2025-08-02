@@ -2,12 +2,10 @@ package src.codegen.lines;
 
 public class Line {
 
-    String name;
     String string;
     int indent;
 
-    public Line (String name, String string, int indent) {
-        this.name = name;
+    public Line (String string, int indent) {
         this.string = string;
         this.indent = indent;
     }
@@ -16,13 +14,9 @@ public class Line {
         return indent() + string;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
-        return  name + ": " + string;
+        return  string;
     }
 
     protected String indent() {

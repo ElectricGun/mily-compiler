@@ -2,29 +2,28 @@ package src.codegen.lines;
 
 import static src.codegen.Mlogs.*;
 
-public class BinaryOp extends Line {
+public class BinaryOp extends VariableLine {
 
     String op;
     String left;
     String right;
 
-    public BinaryOp(String name, String op, String left, String right, int indent) {
-        super(name, "", indent);
+    public BinaryOp(String varName, String op, String left, String right, int indent) {
+        super(varName, "", indent);
 
         this.left = left;
         this.right = right;
-        this.name = name;
         this.op = op;
     }
 
     @Override
     public String asMlog() {
-        return indent() + "op " + opAsMlog(op) + " " + name +  " " + left + " " + right;
+        return indent() + "op " + opAsMlog(op) + " " + varName +  " " + left + " " + right;
     }
 
     @Override
     public String toString() {
-        return name + ": " + left + " " +  op  + " " + right;
+        return varName + ": " + left + " " +  op  + " " + right;
     }
 
     public String getOp() {

@@ -1,13 +1,13 @@
 package src.codegen.lines;
 
-public class Set extends Line {
+public class Set extends VariableLine {
 
     public Set(String var, String value, int indent) {
         super(var, value, indent);
     }
 
     public String getVar() {
-        return name;
+        return varName;
     }
 
     public String getValue() {
