@@ -16,7 +16,7 @@ public class CodeGeneration {
         generateIRCodeHelper(evaluatorTree.mainBlock, irCode, new HashCodeSimplifier(), 0, debugMode);
 
         // todo: end is sometimes redundant
-        irCode.irBlocks.add(new IREnd());
+        irCode.addSingleLineBlock(new End(0));
         return irCode;
     }
 
@@ -56,7 +56,7 @@ public class CodeGeneration {
 //                Line startLabelLine = new Line(startLabelString + ":", depth);
 //                startLabelBlock.lineList.add(startLabelLine);
 //                irCode.irBlocks.add(startLabelBlock);
-                irCode.addSingleLineBlock(new Line(startLabelString + ":", depth));
+                irCode.addSingleLineBlock(new Label(startLabelString, depth));
 
                 generateIRCodeHelper(whileLoop.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
 
@@ -94,7 +94,7 @@ public class CodeGeneration {
 //                Line startLabelLine = new Line(startLabelString + ":", depth);
 //                startLabelBlock.lineList.add(startLabelLine);
 //                irCode.irBlocks.add(startLabelBlock);
-                irCode.addSingleLineBlock(new Line(startLabelString + ":", depth));
+                irCode.addSingleLineBlock(new Label(startLabelString, depth));
 
                 // code block
                 generateIRCodeHelper(forLoop.getScope(), irCode, hashSimplifier, depth + 1, debugMode);
@@ -169,7 +169,7 @@ public class CodeGeneration {
 //            IRBlock ifEndLabelBlock = new IRBlock();
 //            ifEndLabelBlock.lineList.add(new Line(currentIfEndLabel + ":", depth));
 //            irCode.irBlocks.add(ifEndLabelBlock);
-            irCode.addSingleLineBlock(new Line(currentIfEndLabel + ":", depth));
+            irCode.addSingleLineBlock(new Label(currentIfEndLabel, depth));
 
 
             // if there is an else node
@@ -186,7 +186,7 @@ public class CodeGeneration {
 //                    elseEndLabelBlock.lineList.add(new Line(branchEndLabel + ":", depth));
 //                    irCode.irBlocks.add(elseEndLabelBlock);
 
-                    irCode.addSingleLineBlock(new Line(branchEndLabel + ":", depth));
+                    irCode.addSingleLineBlock(new Label(branchEndLabel, depth));
 
                     break;
                 }
