@@ -8,6 +8,7 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 - Branching (if statements)
 - Functions
 - Static variable typing
+- Strict typing with minimal implicit casting. `int x = 3 / 2` is not allowed, use intdiv instead `int x = 3 // 2`
 - Comments (`/* */` and `/-`)
 - Type casting: (int), (boolean), etc
 - Full operations, such as `(x + y) * 3 - 9 * -z ** 2`
@@ -20,7 +21,7 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 
 ## Other Features
 - Compile error stack tracing.
-- Compile-time expression optimisation, for example, `10 + 38 * (200 + 3 ** 3) // 3` gets simplified to `2885.0` on compile time.
+- Compile-time expression optimisation, for example, `10 + 38 * (200 + 3 ** 3) // 3` gets simplified to `2885` on compile time.
 - Compile-time semantic checking, including variable declaration, type checking and function declaration checking.
 
 ## Example Code
