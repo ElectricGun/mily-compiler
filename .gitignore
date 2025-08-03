@@ -10,6 +10,7 @@
 
 # Personal notes
 notes.txt
+.notes/
 
 # User-specific stuff
 .idea/**/workspace.xml
