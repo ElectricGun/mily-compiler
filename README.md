@@ -28,12 +28,11 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 ### Factorials
 ```
 int n = 5;
-/- calculate factorial of 5
-int curr = 1;
-for (int i = 2; i <= n; i = i + 1) {
+int curr = n;
+for (int i = 1; i < n; i = i + 1) {
     curr = curr * i;
 }
-int result = curr; /- should be 120
+int result = curr;
 ```
 
 ### Nested Loops
