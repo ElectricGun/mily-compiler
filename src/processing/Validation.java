@@ -88,7 +88,7 @@ public class Validation {
 
             // TODO not optimal implementation
             String alreadyDeclaredMessage = "Variable \"%s\" is already declared within scope";
-            String undeclaredMessage = "Variable \"%s\" is undeclared";
+            String undeclaredMessage = "Cannot find variable \"%s\" within scope";
 
             if (member instanceof FunctionArgNode functionArgNode) {
                 String declaredVar = functionArgNode.getVariableName();
