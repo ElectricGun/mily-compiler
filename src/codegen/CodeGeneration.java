@@ -307,7 +307,7 @@ public class CodeGeneration {
         return opBlock;
     }
 
-    public static IROperation generateIROperation(OperationNode operationNode,
+    private static IROperation generateIROperation(OperationNode operationNode,
                                                   IRCode irCode,
                                                   Map<String, IRFunction> functionMap,
                                                   HashCodeSimplifier hashCodeSimplifier,

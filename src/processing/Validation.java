@@ -2,7 +2,6 @@ package src.processing;
 
 import java.util.*;
 
-import src.constants.Ansi;
 import src.parsing.*;
 import src.tokens.FunctionCallToken;
 
@@ -76,10 +75,10 @@ public class Validation {
         List<String> declaredVariablesNames = new ArrayList<>();
         List<String> variableTypes = new ArrayList<>();
 
-        validateDeclarationsHelper(evaluatorTree, evaluatorTree.mainBlock, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
+        validateDeclarationsHelper(evaluatorTree.mainBlock, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
     }
 
-    private static void validateDeclarationsHelper(EvaluatorTree evaluatorTree,  EvaluatorNode evaluatorNode, List<String> declaredVariablesNames, List<String> variableTypes, boolean doAssignTypes, boolean debugMode) throws Exception {
+    private static void validateDeclarationsHelper(EvaluatorNode evaluatorNode, List<String> declaredVariablesNames, List<String> variableTypes, boolean doAssignTypes, boolean debugMode) throws Exception {
 
         if (debugMode)
                 System.out.println("Node: " + evaluatorNode + "\nVariables: " + declaredVariablesNames + "\nTypes: " + variableTypes);
@@ -106,6 +105,7 @@ public class Validation {
                 }
                 declaredVariablesNames.add(declaredVar);
                 variableTypes.add(memberDeclaration.getType());
+
             } else if (member instanceof AssignmentNode memberAssignment) {
                 String assignedVar = memberAssignment.getVariableName();
                 if (!declaredVariablesNames.contains(assignedVar)) {
@@ -125,8 +125,14 @@ public class Validation {
                 } else if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     String type = variableTypes.get(varIndex);
-                    if (doAssignTypes)
+                    if (doAssignTypes) {
                         memberOp.constantToken.setType(type);
+                    }
+
+                    if (memberOp.constantToken instanceof FunctionCallToken functionCallToken) {
+                        FunctionCallNode functionCallNode = functionCallToken.getNode();
+                        validateDeclarationsHelper(functionCallNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
+                    }
                 }
             } else if (member instanceof FunctionCallNode functionDeclareMember) {
                 String assignedVar = functionDeclareMember.nameToken.string;
@@ -141,8 +147,9 @@ public class Validation {
                 newDeclares.removeLast();
                 newTypes.removeLast();
             }
+            //
 
-            validateDeclarationsHelper(evaluatorTree, member, newDeclares, newTypes, doAssignTypes, debugMode);
+            validateDeclarationsHelper(member, newDeclares, newTypes, doAssignTypes, debugMode);
         }
     }
 

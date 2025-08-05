@@ -113,6 +113,6 @@ public class FunctionCallNode extends EvaluatorNode {
             arguments.append(i > 0 ? ", " : "").append(operationNode);
             i++;
         }
-        return "call " + nameToken.string + " | args: " + arguments;
+        return "call " + nameToken.string + " | args: (" + arguments + ")";
     }
 }

@@ -8,6 +8,6 @@ public class CommentLine extends Line {
 
     @Override
     public String asMlog() {
-        return "# " + string;
+        return indent() + "# " + string;
     }
 }
