@@ -15,8 +15,7 @@ public class CodeGeneration {
 
         generateIRCodeHelper(evaluatorTree.mainBlock, irCode, new HashCodeSimplifier(), 0, debugMode);
 
-        // todo: end is sometimes redundant
-        irCode.addSingleLineBlock(new End(0));
+        irCode.addSingleLineBlock(new Stop(0));
         return irCode;
     }
 
