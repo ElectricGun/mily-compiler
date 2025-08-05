@@ -2,11 +2,8 @@ package src.codegen;
 
 import src.codegen.blocks.*;
 import src.codegen.lines.*;
-import src.codegen.lines.SetLine;
 import src.parsing.*;
-import src.tokens.FunctionCallToken;
-import src.tokens.TypedToken;
-
+import src.tokens.*;
 import java.util.*;
 
 import static src.codegen.Mlogs.*;
@@ -135,7 +132,11 @@ public class CodeGeneration {
         }
     }
 
-    private static IRFunction generateFunctionCall(FunctionCallNode fnCall, IRCode irCode, Map<String, IRFunction> functionMap, HashCodeSimplifier hashCodeSimplifier, int depth, boolean debugMode) throws Exception {
+    private static IRFunction generateFunctionCall(FunctionCallNode fnCall,
+                                                   IRCode irCode, Map<String, IRFunction> functionMap,
+                                                   HashCodeSimplifier hashCodeSimplifier,
+                                                   int depth,
+                                                   boolean debugMode) throws Exception {
         // TODO make this an interface member
         String fnKey = fnCall.getName() + "_" + fnCall.getArgCount();
         if (!functionMap.containsKey(fnKey))
@@ -187,7 +188,11 @@ public class CodeGeneration {
         return irFunction;
     }
 
-    private static void generateBranchStatement(IfStatementNode ifs, IRCode irCode, Map<String, IRFunction> functionMap, IRFunction function, HashCodeSimplifier hashSimplifier, int depth, boolean debugMode) throws Exception {
+    private static void generateBranchStatement(IfStatementNode ifs,
+                                                IRCode irCode, Map<String, IRFunction> functionMap,
+                                                IRFunction function, HashCodeSimplifier hashSimplifier,
+                                                int depth,
+                                                boolean debugMode) throws Exception {
         String branchEndLabel = "branch_end_" + hashSimplifier.simplifyHash(ifs.hashCode());
 
         // while loop to go through all the else blocks
@@ -254,7 +259,14 @@ public class CodeGeneration {
         }
     }
 
-    private static Jump createConditionalJump(OperationNode exp, String jumpId, String targetLabel, IRCode irCode, Map<String, IRFunction> functionMap,  HashCodeSimplifier hashCodeSimplifier, boolean invertCondition, int depth, boolean debugMode) throws Exception {
+    private static Jump createConditionalJump(OperationNode exp,
+                                              String jumpId, String targetLabel,
+                                              IRCode irCode,
+                                              Map<String, IRFunction> functionMap,
+                                              HashCodeSimplifier hashCodeSimplifier,
+                                              boolean invertCondition,
+                                              int depth,
+                                              boolean debugMode) throws Exception {
         String conditionalVarName = "if_cond_" + jumpId;
         IROperation conditionalOp = addOperationIRBlock(exp, irCode, functionMap, conditionalVarName, hashCodeSimplifier, depth, debugMode);
         Line lastOperation = conditionalOp.lineList.removeLast();
@@ -278,7 +290,13 @@ public class CodeGeneration {
         return startJump;
     }
 
-    private static IROperation addOperationIRBlock(OperationNode op, IRCode irCode, Map<String, IRFunction> functionMap, String variableName, HashCodeSimplifier hashCodeSimplifier, int depth, boolean debugMode) throws Exception {
+    private static IROperation addOperationIRBlock(OperationNode op,
+                                                   IRCode irCode,
+                                                   Map<String, IRFunction> functionMap,
+                                                   String variableName,
+                                                   HashCodeSimplifier hashCodeSimplifier,
+                                                   int depth,
+                                                   boolean debugMode) throws Exception {
         IROperation opBlock = generateIROperation(op, irCode, functionMap, hashCodeSimplifier, depth, debugMode);
         irCode.irBlocks.add(opBlock);
         // change the name of the last op to the declared var name
@@ -289,7 +307,12 @@ public class CodeGeneration {
         return opBlock;
     }
 
-    public static IROperation generateIROperation(OperationNode operationNode, IRCode irCode,  Map<String, IRFunction> functionMap, HashCodeSimplifier hashCodeSimplifier, int depth, boolean debugMode) throws Exception {
+    public static IROperation generateIROperation(OperationNode operationNode,
+                                                  IRCode irCode,
+                                                  Map<String, IRFunction> functionMap,
+                                                  HashCodeSimplifier hashCodeSimplifier,
+                                                  int depth,
+                                                  boolean debugMode) throws Exception {
         IROperation irOperation = new IROperation();
 
         generateIROperationHelper(operationNode, irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);
@@ -297,7 +320,13 @@ public class CodeGeneration {
         return irOperation;
     }
 
-    private static void generateIROperationHelper(OperationNode operationNode, IRCode irCode, Map<String, IRFunction> functionMap, IROperation irOperation, HashCodeSimplifier hashCodeSimplifier, int depth, boolean debugMode) throws Exception {
+    private static void generateIROperationHelper(OperationNode operationNode,
+                                                  IRCode irCode,
+                                                  Map<String, IRFunction> functionMap,
+                                                  IROperation irOperation,
+                                                  HashCodeSimplifier hashCodeSimplifier,
+                                                  int depth,
+                                                  boolean debugMode) throws Exception {
         if (operationNode.isBinary()) {
             boolean leftConstant = operationNode.getLeftSide().isConstant();
             boolean rightConstant = operationNode.getRightSide().isConstant();
