@@ -35,6 +35,14 @@ public class FunctionDeclareNode extends EvaluatorNode {
         return nameToken.string;
     }
 
+    public int getArgCount() {
+        return argumentNames.size();
+    }
+
+    public String getArg(int i) {
+        return argumentNames.get(i);
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);

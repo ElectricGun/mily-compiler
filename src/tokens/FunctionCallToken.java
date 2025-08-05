@@ -1,18 +1,19 @@
 package src.tokens;
 
 import src.parsing.*;
+import static src.constants.Keywords.*;
 
 /**
  * A token used to store function calls within expressions
  * @author ElectricGun
  */
 
-public class FunctionCallToken extends Token {
+public class FunctionCallToken extends TypedToken {
 
     FunctionCallNode functionCallNode;
 
     public FunctionCallToken(String string, int line, FunctionCallNode functionCallNode) {
-        super(string, line);
+        super(string, line, KEY_DATA_UNKNOWN);
 
         this.functionCallNode = functionCallNode;
     }

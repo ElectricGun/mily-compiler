@@ -20,18 +20,26 @@ import static src.constants.Keywords.*;
 
 public class FunctionCallNode extends EvaluatorNode {
 
-    public List<OperationNode> arguments = new ArrayList<>();
+    protected List<OperationNode> arguments = new ArrayList<>();
 
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
 
+    public FunctionCallNode(Token token, int depth) {
+        super(token, depth);
+    }
+
+    public OperationNode getArg(int i) {
+        return arguments.get(i);
+    }
+
+    public int getArgCount() {
+        return arguments.size();
+    }
+
     // todo probably give this a name var
     public String getName() {
         return nameToken.string;
-    }
-
-    public FunctionCallNode(Token token, int depth) {
-        super(token, depth);
     }
 
     @Override

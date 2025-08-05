@@ -4,6 +4,7 @@ import java.util.*;
 
 import src.constants.Ansi;
 import src.parsing.*;
+import src.tokens.FunctionCallToken;
 
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
@@ -338,31 +339,51 @@ public class Validation {
 
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
-            if (member instanceof DeclarationNode declarationNode) {
+
+            if (member instanceof OperationNode operationNode) {
+                if (operationNode.constantToken instanceof FunctionCallToken functionCallToken) {
+                    String[] callTypes = getCallTypes(functionCallToken.getNode(), debugMode);
+
+                    if (!isFunctionCallValid(functionCallToken.getNode(), functionDeclares, callTypes, debugMode)) {
+                        member.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallToken.getNode().getName(), Arrays.toString(callTypes)), member.nameToken);
+                    }
+                }
+            } else if (member instanceof DeclarationNode declarationNode) {
                 if  (declarationNode.memberCount() > 0 &&
                         declarationNode.getMember(0) instanceof FunctionDeclareNode functionDeclareNode) {
                     functionDeclares.add(functionDeclareNode);
                 }
             } else if (member instanceof FunctionCallNode functionCallNode) {
-                boolean valid = false;
-                String[] callTypes = new String[functionCallNode.arguments.size()];
-                for (int a = 0; a < callTypes.length; a++) {
-                    callTypes[a] = validateTypesHelper(functionCallNode.arguments.get(a), debugMode);
-                }
+                String[] callTypes = getCallTypes(functionCallNode, debugMode);
 
-                for (FunctionDeclareNode fn : functionDeclares) {
-                    if (fn.isOverload(callTypes)) {
-                        valid = true;
-                    }
-                }
-
-                if (!valid) {
+                if (!isFunctionCallValid(functionCallNode, functionDeclares, callTypes, debugMode)) {
                     functionCallNode.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(callTypes)), functionCallNode.nameToken);
                 }
             }
 
             validateFunctionCallsHelper(member, new ArrayList<>(functionDeclares), debugMode);
         }
+    }
+
+    private static String[] getCallTypes(FunctionCallNode functionCallNode, boolean debugMode) {
+        String[] callTypes = new String[functionCallNode.getArgCount()];
+        for (int a = 0; a < callTypes.length; a++) {
+            callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), debugMode);
+        }
+
+        return callTypes;
+    }
+
+    private static boolean isFunctionCallValid(FunctionCallNode functionCallNode, List<FunctionDeclareNode> functionDeclares, String[] callTypes, boolean debugMode) {
+        boolean valid = false;
+
+        for (FunctionDeclareNode fn : functionDeclares) {
+            if (fn.isOverload(callTypes)) {
+                valid = true;
+            }
+        }
+
+        return valid;
     }
 
     public static void validateConditionals(EvaluatorTree evaluatorTree, boolean debugMode) {

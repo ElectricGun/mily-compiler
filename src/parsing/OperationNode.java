@@ -170,6 +170,9 @@ public class OperationNode extends EvaluatorNode {
 
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+
+//        debugMode = true;
+
         String indent = " ".repeat(depth);
 
         if (debugMode)
@@ -402,6 +405,9 @@ public class OperationNode extends EvaluatorNode {
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
+                        } else if (newConstantToken instanceof FunctionCallToken functionCallToken) {
+                            constantToken = functionCallToken;
+
                         } else {
                             constantToken = TypedToken.fromToken(newConstantToken, Functions.guessValueType(newConstantToken.string));
                         }
@@ -411,20 +417,25 @@ public class OperationNode extends EvaluatorNode {
                     // for unary operators
                     else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
 
-                        Token unaryOp = operationTokens.removeFirst();
+                        Token unaryOperator = operationTokens.removeFirst();
 
-                        if (unaryOp instanceof CastToken castToken) {
+                        if (unaryOperator instanceof CastToken castToken) {
                             type = KEY_OP_CAST_EXPLICIT;
-                            operator = castToken.getType();
+                            this.operator = castToken.getType();
 
                         } else {
                             type = KEY_OP_TYPE_OPERATION;
-                            operator =  unaryOp.string;
+                            this.operator =  unaryOperator.string;
                         }
                         Token newConstantToken = operationTokens.removeFirst();
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             setLeftSide(bracketToken.getOperationEvaluator());
+
+                        } else if (newConstantToken instanceof FunctionCallToken functionCallToken) {
+                            OperationNode op = new OperationNode(this.nameToken, depth + 1);
+                            op.constantToken = functionCallToken;
+                            setLeftSide(op);
 
                         } else {
                             OperationNode op = new OperationNode(this.nameToken, depth + 1);
@@ -435,10 +446,6 @@ public class OperationNode extends EvaluatorNode {
                     }
                     // if all the values are -1 or -4 or -2 then funny error
                     else {
-                        StringBuilder out = new StringBuilder();
-                        for (Token operationToken : operationTokens)
-                            out.append(" ").append(operationToken.string);
-
                         return throwSyntaxError("Invalid operation", token);
                     }
                 } else {
@@ -498,10 +505,10 @@ public class OperationNode extends EvaluatorNode {
     @Override
     public String toString() {
         //TODO fix this stupid thing
-        String out = "";
+        String out = "operation ";
 
         if (isReturnOperation) {
-            out = "return ";
+            out += "return ";
         }
 
         if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {

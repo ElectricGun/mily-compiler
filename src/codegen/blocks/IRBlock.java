@@ -8,6 +8,10 @@ public class IRBlock {
 
     public final List<Line> lineList = new ArrayList<>();
 
+    public void addLine(Line line) {
+        lineList.add(line);
+    }
+
     public String asMlog() {
         StringBuilder out = new StringBuilder();
 
