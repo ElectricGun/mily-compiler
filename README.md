@@ -49,6 +49,21 @@ for (int i = 0; i < 100; i = i + 1) {
 }
 ```
 
+### Nested Functions
+```
+/- Nested Function
+int test(int x, int y, int z) {
+    int test2(int x_) {
+        int test3(int x__) {
+            return x + x_ + x__;
+        }
+        return test3(x) + x_;
+    }
+    return test2(x + y + z);
+}
+int output = test(3, 3, 3) + test(1, 2, 3);
+```
+
 ### Count Even Numbers
 ```
 int n = 1000;
