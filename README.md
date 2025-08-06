@@ -1,4 +1,4 @@
-# Mily Mlog Compiler
+# Mily Compiler
 
 This program compiles the custom, C syntax programming language Mily to Mindustry Logic (mlog). 
 The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of a learning curve for anyone to use this language.
