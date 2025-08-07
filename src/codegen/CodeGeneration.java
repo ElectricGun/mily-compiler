@@ -150,7 +150,7 @@ public class CodeGeneration {
                 String[] lineContent = formatted.split(KEY_NEWLINE);
                 for (String s : lineContent) {
                     if (!s.isEmpty())
-                        irBlock.addLine(new Line(s, depth));
+                        irBlock.addLine(new Line(s.trim(), depth));
                 }
                 irCode.irBlocks.add(irBlock);
             }
