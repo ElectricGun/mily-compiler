@@ -39,7 +39,7 @@ public class RawTemplateNode extends EvaluatorNode implements Named {
             Token token = tokenList.removeFirst();
 
             if (debugMode)
-                System.out.printf(indent + "raw template %s: %s%n", this.nameToken, token);
+                System.out.printf(indent + "raw template %s: %s%n", name, token);
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -51,6 +51,12 @@ public class RawTemplateNode extends EvaluatorNode implements Named {
                 if (debugMode)
                     System.out.printf(indent + "parsing raw template arguments", this.nameToken, token);
                 isParsingArg = true;
+
+            } else if (!isParsingArg && keyEquals(KEY_DOLLAR, token)) {
+                MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
+                members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
+                scope = macroScope;
+                return this;
 
             } else if (isParsingArg) {
                 if (keyEquals(KEY_DOLLAR, token)) {
@@ -73,7 +79,7 @@ public class RawTemplateNode extends EvaluatorNode implements Named {
                     argBufferString += token.string;
 
                 } else {
-                    return throwSyntaxError("Unexpected token in template input arguments", nameToken);
+                    return throwSyntaxError("Unexpected token in template input arguments", token);
                 }
             }
         }

@@ -9,6 +9,7 @@ public class IRFunction extends IRBlock {
     protected String returnVar;
     protected String argPrefix;
     protected List<String> argNames = new ArrayList<>();
+    protected List<String> argTypes = new ArrayList<>();
 
     public IRFunction(String callLabel, String callbackVar, String argPrefix, String retunVar) {
         this.argPrefix = argPrefix;
@@ -37,8 +38,9 @@ public class IRFunction extends IRBlock {
         return argNames.get(i);
     }
 
-    public void addArg(String arg) {
+    public void addArg(String type, String arg) {
         argNames.add(arg);
+        argTypes.add(type);
     }
 
     public String getCallLabel() {

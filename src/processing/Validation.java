@@ -159,14 +159,18 @@ public class Validation {
      * @param evaluatorTree Abstract syntax tree
      */
     public static void validateTypes (EvaluatorTree evaluatorTree, boolean debugMode)  {
-        validateTypesHelper(evaluatorTree.mainBlock, debugMode);
+        validateTypesHelper(evaluatorTree.mainBlock, true, debugMode);
     }
 
     public static boolean canImplicitCast(String type, String type2) {
         return operationMap.isOperationValid(KEY_OP_CAST_IMPLICIT, type, type2);
     }
 
-    private static String validateTypesHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
+    public static String getOperationType(OperationNode operationNode, boolean debugMode) {
+        return validateTypesHelper(operationNode, false, debugMode);
+    }
+
+    private static String validateTypesHelper(EvaluatorNode evaluatorNode, boolean throwErrors, boolean debugMode) {
         String type = KEY_DATA_UNKNOWN;
 
         if (debugMode)
@@ -179,18 +183,19 @@ public class Validation {
                 String rightType = KEY_DATA_UNKNOWN;
 
                 if (operationNode.getLeftSide() != null) {
-                    leftType = validateTypesHelper(operationNode.getLeftSide(), debugMode);
+                    leftType = validateTypesHelper(operationNode.getLeftSide(), throwErrors, debugMode);
                 }
 
                 if (operationNode.getRightSide() != null) {
-                    rightType = validateTypesHelper(operationNode.getRightSide(), debugMode);
+                    rightType = validateTypesHelper(operationNode.getRightSide(), throwErrors, debugMode);
                 }
 
                 try {
                     type = operationMap.getCastTo(operationNode.getOperator(), leftType, rightType);
 
                 } catch (IllegalArgumentException e) {
-                    operationNode.throwSemanticError(e.getMessage(), operationNode.nameToken);
+                    if (throwErrors)
+                        operationNode.throwSemanticError(e.getMessage(), operationNode.nameToken);
                     if (debugMode)
                         System.out.println("ERROR " + type + "  " + evaluatorNode);
                     return type;
@@ -211,11 +216,12 @@ public class Validation {
         } else if (evaluatorNode instanceof AssignmentNode assignmentNode) {
             if (debugMode)
                 System.out.println("Assignment found");
-            String compare = validateTypesHelper(evaluatorNode.getMember(0), debugMode);
+            String compare = validateTypesHelper(evaluatorNode.getMember(0), false, debugMode);
 
 //            if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
             if (!assignmentNode.getType().equals(compare) && !canImplicitCast(compare, assignmentNode.getType())) {
-                assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
+                if (throwErrors)
+                    assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
                 if (debugMode)
                     System.out.println(type + "  " + evaluatorNode);
                 return type;
@@ -227,11 +233,12 @@ public class Validation {
             EvaluatorNode innerMember = evaluatorNode.getMember(0);
 
             if (innerMember instanceof OperationNode op) {
-                String compare = validateTypesHelper(innerMember, debugMode);
+                String compare = validateTypesHelper(innerMember, false, debugMode);
 
 //                if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
                 if (!declarationNode.getType().equals(compare) && !canImplicitCast(compare, declarationNode.getType())) {
-                    declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
+                    if (throwErrors)
+                        declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
                     if (debugMode)
                         System.out.println(type + "  " + evaluatorNode);
                     return type;
@@ -239,7 +246,7 @@ public class Validation {
             }
         } else {
             for (int i = 0; i < evaluatorNode.memberCount(); i++) {
-                validateTypesHelper(evaluatorNode.getMember(i), debugMode);
+                validateTypesHelper(evaluatorNode.getMember(i), false, debugMode);
             }
         }
 
@@ -287,7 +294,7 @@ public class Validation {
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
             if (member instanceof OperationNode op && op.isReturnOperation()) {
-                String opType = validateTypesHelper(op, debugMode);
+                String opType = validateTypesHelper(op, false, debugMode);
 
                 if (!returnType.equals(opType))
                     op.throwSemanticError("Invalid return type " + opType, op.nameToken);
@@ -377,7 +384,7 @@ public class Validation {
     private static String[] getCallTypes(FunctionCallNode functionCallNode, boolean debugMode) {
         String[] callTypes = new String[functionCallNode.getArgCount()];
         for (int a = 0; a < callTypes.length; a++) {
-            callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), debugMode);
+            callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), false, debugMode);
         }
 
         return callTypes;
@@ -402,7 +409,7 @@ public class Validation {
     private static void validateConditionalsHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
         if (evaluatorNode instanceof ConditionalNode conditionalNode) {
             OperationNode expression = conditionalNode.getExpression();
-            String type = validateTypesHelper(expression, debugMode);
+            String type = validateTypesHelper(expression, false, debugMode);
 
             if (!keyEquals(KEY_DATA_BOOLEAN, type)) {
                 evaluatorNode.throwSemanticError("Expression in conditional must result in a value of type boolean, is instead of type " + type, evaluatorNode.nameToken);

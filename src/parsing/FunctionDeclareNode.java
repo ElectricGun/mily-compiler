@@ -21,11 +21,8 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named {
     }
 
     List<String> argumentNames = new ArrayList<>();
+    List<String> argumentTypes = new ArrayList<>();
     ScopeNode scope;
-
-    private boolean isInitialized = false;
-    private boolean functionDeclared = false;
-    private boolean argumentWanted = false;
 
     public ScopeNode getScope() {
         return scope;
@@ -44,9 +41,17 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named {
         return argumentNames.get(i);
     }
 
+    public String getArgType(int i) {
+        return argumentTypes.get(i);
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
+
+        boolean isInitialized = false;
+        boolean functionDeclared = false;
+        boolean argumentWanted = false;
 
         if (debugMode)
             System.out.printf(indent + "Parsing Function %s:%n", this.nameToken);
@@ -86,6 +91,7 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named {
                 return throwSyntaxError("Unexpected operator on function declaration", token);
 
             } else if (isDeclaratorAmbiguous(token)) {
+                argumentTypes.add(token.string);
                 Token variableName = tokenList.removeFirst();
 
                 while (isWhiteSpace(variableName)) {

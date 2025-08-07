@@ -3,6 +3,7 @@ package src.codegen;
 import src.codegen.blocks.*;
 import src.codegen.lines.*;
 import src.parsing.*;
+import src.processing.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -152,6 +153,7 @@ public class CodeGeneration {
                     if (!s.isEmpty())
                         irBlock.addLine(new Line(s.trim(), depth));
                 }
+                irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
                 irCode.irBlocks.add(irBlock);
             }
         }
@@ -163,11 +165,20 @@ public class CodeGeneration {
                                                    int depth,
                                                    boolean debugMode) throws Exception {
         // TODO make this an interface member
-        String fnKey = fnCall.getName() + "_" + fnCall.getArgCount();
-        if (!functionMap.containsKey(fnKey))
-            throw new Exception(String.format("IRFunction of key \"%s\" does not exist", fnKey));
+        StringBuilder fnKey = new StringBuilder(fnCall.getName() + "_");
 
-        IRFunction calledFunction = functionMap.get(fnKey);
+        int argCount = fnCall.getArgCount();
+        for (int a = 0; a < argCount; a++) {
+            fnKey.append(Validation.getOperationType(fnCall.getArg(a), debugMode));
+            if  (a < argCount - 1) {
+                fnKey.append("_");
+            }
+        }
+
+        if (!functionMap.containsKey(fnKey.toString()))
+            throw new Exception(String.format("IRFunction of key \"%s\" does not exist", fnKey.toString()));
+
+        IRFunction calledFunction = functionMap.get(fnKey.toString());
 
         irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
         for (int a = 0; a < fnCall.getArgCount(); a++) {
@@ -188,7 +199,15 @@ public class CodeGeneration {
                                                       int depth,
                                                       boolean debugMode) throws Exception {
         // TODO make this an interface member
-        String fnKey = fn.getName() + "_" + fn.getArgCount();
+        StringBuilder fnKey = new StringBuilder(fn.getName() + "_");
+
+        int argCount = fn.getArgCount();
+        for (int a = 0; a < argCount; a++) {
+            fnKey.append(fn.getArgType(a));
+            if  (a < argCount - 1) {
+                fnKey.append("_");
+            }
+        }
 
         String startJumpLabel = fnKey + "_start";
         String endJumpLabel = fnKey + "_end";
@@ -198,9 +217,9 @@ public class CodeGeneration {
 
         IRFunction irFunction = new IRFunction(startJumpLabel, callbackVar, argPrefix, returnVar);
         for (int a = 0; a < fn.getArgCount(); a++) {
-            irFunction.addArg(fn.getArg(a));
+            irFunction.addArg(fn.getArgType(a), fn.getArg(a));
         }
-        functionMap.put(fnKey, irFunction);
+        functionMap.put(fnKey.toString(), irFunction);
 
         irCode.addSingleLineBlock(new CommentLine("function: " + fnKey, depth));
         irCode.addSingleLineBlock((new Jump("always", endJumpLabel, depth)));
