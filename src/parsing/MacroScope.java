@@ -58,10 +58,12 @@ public class MacroScope extends EvaluatorNode {
     public String toString() {
         StringBuilder out = new StringBuilder("$");
         for (String s : tokens) {
-            if (!s.equals("\n"))
+            if (!s.equals(KEY_NEWLINE)) {
                 out.append(s);
-            else
-                out.append("\n").append(indent(depth + 2));
+
+            } else {
+                out.append(KEY_NEWLINE).append(indent(depth + 2));
+            }
         }
         out.append("$");
         return out.toString();

@@ -98,12 +98,13 @@ public class Lexing {
             } else if(isWhiteSpace(cs)) {
 //                if (!previousIsWhitespace) {
                     tryAddToken(debugMode);
+                    tokenString = "" + c;
 //                }
 
-                if (cs.equals("\n"))
-                    tokenString = "\n";
-                else if (!tokenString.equals("\n"))
-                    tokenString = " ";
+//                if (cs.equals("\n"))
+//                    tokenString = "\n";
+//                if (!tokenString.equals("\n"))
+//                    tokenString = " ";
 
 
             } else if (

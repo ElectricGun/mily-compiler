@@ -202,7 +202,7 @@ int test(int x, int y, int z) {
     return test2(x + y + z);
 }
 int output = test(3, 3, 3) + test(1, 2, 3);
-print$"result: ";
+print$"result: \n";
 print$output;
 printflush$message1;
 
