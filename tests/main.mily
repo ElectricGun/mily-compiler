@@ -1,12 +1,21 @@
 /---------------------- FEATURE DEMO ---------------------
 
 /*
-Variables and functions declared below here are supposed to be
+Variables, functions and macros declared below here are supposed to be
 in the standard library (bulb.mily)
 but the library import feature (#include) has not been implemented yet (too eepy rn)
 */
 /- start placeholders
-/- void print() {}
+raw print:x $
+    print x
+$
+raw printflush:x $
+    printflush x
+$
+raw cout: x, y $
+    print x
+    printflush y
+$
 /- end placeholders
 /*
 /---------- Variable Declarations ----------
@@ -181,7 +190,7 @@ if (true) {
 }
 */
 
-/*
+
 /- Nested Function
 int test(int x, int y, int z) {
     int test2(int x_) {
@@ -193,23 +202,7 @@ int test(int x, int y, int z) {
     return test2(x + y + z);
 }
 int output = test(3, 3, 3) + test(1, 2, 3);
-/- output is 38
-*/
-
-boolean sus = 1 > 1 + 2;
-
-raw print:x $
-    print x
-$
-raw printflush:x $
-    printflush x
-$
-raw cout: x, y $
-    print x
-    printflush y
-$
-/*
-*/
-print$x;
-cout$x, y;
+print$"result: ";
+print$output;
 printflush$message1;
+
