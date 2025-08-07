@@ -1,6 +1,7 @@
 package src.parsing;
 
 import src.interfaces.*;
+import src.processing.Validation;
 import src.tokens.*;
 import java.util.*;
 
@@ -19,7 +20,7 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionCallNode extends EvaluatorNode implements Named {
+public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctionKey {
 
     protected List<OperationNode> arguments = new ArrayList<>();
 
@@ -115,5 +116,19 @@ public class FunctionCallNode extends EvaluatorNode implements Named {
             i++;
         }
         return "call " + nameToken.string + " | args: (" + arguments + ")";
+    }
+
+    @Override
+    public String getFnKey() {
+        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
+
+        int argCount = this.getArgCount();
+        for (int a = 0; a < argCount; a++) {
+            fnKey.append(Validation.getOperationType(this.getArg(a), false));
+            if  (a < argCount - 1) {
+                fnKey.append("_");
+            }
+        }
+        return fnKey.toString();
     }
 }

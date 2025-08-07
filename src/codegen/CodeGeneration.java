@@ -164,21 +164,11 @@ public class CodeGeneration {
                                                    HashCodeSimplifier hashCodeSimplifier,
                                                    int depth,
                                                    boolean debugMode) throws Exception {
-        // TODO make this an interface member
-        StringBuilder fnKey = new StringBuilder(fnCall.getName() + "_");
+        String fnKey = fnCall.getFnKey();
+        if (!functionMap.containsKey(fnKey))
+            throw new Exception(String.format("IRFunction of key \"%s\" does not exist", fnKey));
 
-        int argCount = fnCall.getArgCount();
-        for (int a = 0; a < argCount; a++) {
-            fnKey.append(Validation.getOperationType(fnCall.getArg(a), debugMode));
-            if  (a < argCount - 1) {
-                fnKey.append("_");
-            }
-        }
-
-        if (!functionMap.containsKey(fnKey.toString()))
-            throw new Exception(String.format("IRFunction of key \"%s\" does not exist", fnKey.toString()));
-
-        IRFunction calledFunction = functionMap.get(fnKey.toString());
+        IRFunction calledFunction = functionMap.get(fnKey);
 
         irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
         for (int a = 0; a < fnCall.getArgCount(); a++) {
@@ -198,17 +188,7 @@ public class CodeGeneration {
                                                       HashCodeSimplifier hashSimplifier,
                                                       int depth,
                                                       boolean debugMode) throws Exception {
-        // TODO make this an interface member
-        StringBuilder fnKey = new StringBuilder(fn.getName() + "_");
-
-        int argCount = fn.getArgCount();
-        for (int a = 0; a < argCount; a++) {
-            fnKey.append(fn.getArgType(a));
-            if  (a < argCount - 1) {
-                fnKey.append("_");
-            }
-        }
-
+        String fnKey = fn.getFnKey();
         String startJumpLabel = fnKey + "_start";
         String endJumpLabel = fnKey + "_end";
         String callbackVar = fnKey + "_callback";

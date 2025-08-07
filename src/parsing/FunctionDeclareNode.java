@@ -14,7 +14,7 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionDeclareNode extends EvaluatorNode implements Named {
+public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunctionKey {
 
     public FunctionDeclareNode(Token name, int depth) {
         super(name, depth);
@@ -137,5 +137,19 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named {
             }
         }
         return true;
+    }
+
+    @Override
+    public String getFnKey() {
+        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
+
+        int argCount = this.getArgCount();
+        for (int a = 0; a < argCount; a++) {
+            fnKey.append(this.getArgType(a));
+            if  (a < argCount - 1) {
+                fnKey.append("_");
+            }
+        }
+        return fnKey.toString();
     }
 }
