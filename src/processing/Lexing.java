@@ -96,9 +96,9 @@ public class Lexing {
                 tokenString = "";
 
             } else if(isWhiteSpace(cs)) {
-                if (!previousIsWhitespace) {
+//                if (!previousIsWhitespace) {
                     tryAddToken(debugMode);
-                }
+//                }
 
                 if (cs.equals("\n"))
                     tokenString = "\n";
