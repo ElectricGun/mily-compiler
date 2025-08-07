@@ -30,7 +30,10 @@ public class Maps {
             KEY_TAB,
             KEY_COMMENT_MULTILINE_START,
             KEY_COMMENT_MULTILINE_END,
-            KEY_COMMENT_INLINE
+            KEY_COMMENT_INLINE,
+            KEY_COLON,
+            KEY_DOLLAR,
+            KEY_HASH
     ));
 
     protected final static List<String> KEYWORD_KEYS = new ArrayList<>(Arrays.asList(
@@ -38,7 +41,8 @@ public class Maps {
             KEY_CONDITIONAL_IF,
             KEY_CONDITIONAL_ELSE,
             KEY_LOOPING_WHILE,
-            KEY_LOOPING_FOR
+            KEY_LOOPING_FOR,
+            KEY_RAW
 //            KEY_BREAK,
 //            KEY_CONTINUE,
 //            KEY_LOOPING_REPEAT,

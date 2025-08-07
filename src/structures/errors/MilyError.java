@@ -11,11 +11,6 @@ public class MilyError implements MilyThrowable {
     }
 
     @Override
-    public void setErrorMessage(String message) {
-        this.message = message;
-    }
-
-    @Override
     public String getErrorMessage() {
         return "MilyError: " + message;
     }

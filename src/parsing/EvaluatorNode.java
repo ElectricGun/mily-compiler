@@ -97,4 +97,12 @@ public class EvaluatorNode {
     public void printRecursive() {
         EvaluatorTree.printRecursive(this);
     }
+
+    public String indent() {
+        return indent(depth);
+    }
+
+    public String indent(int depth) {
+        return " ".repeat(depth);
+    }
 }

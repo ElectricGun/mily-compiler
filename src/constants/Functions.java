@@ -207,7 +207,8 @@ public class Functions {
     }
 
     public static boolean isReserved(String s) {
-        return isKeyWord(s);
+        // todo: may cause errors
+        return isKeyWord(s) && !isVariableName(s);
     }
 
     public static boolean isReserved(Token t) {

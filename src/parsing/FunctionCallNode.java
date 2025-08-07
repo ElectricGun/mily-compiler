@@ -1,5 +1,6 @@
 package src.parsing;
 
+import src.interfaces.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -18,7 +19,7 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionCallNode extends EvaluatorNode {
+public class FunctionCallNode extends EvaluatorNode implements Named {
 
     protected List<OperationNode> arguments = new ArrayList<>();
 

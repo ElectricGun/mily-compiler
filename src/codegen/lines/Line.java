@@ -1,6 +1,6 @@
 package src.codegen.lines;
 
-public abstract class Line {
+public class Line {
 
     String string;
     int indent;

@@ -95,11 +95,16 @@ public class Lexing {
 
                 tokenString = "";
 
-            } else if (isWhiteSpace(cs)) {
+            } else if(isWhiteSpace(cs)) {
                 if (!previousIsWhitespace) {
                     tryAddToken(debugMode);
                 }
-                tokenString = " ";
+
+                if (cs.equals("\n"))
+                    tokenString = "\n";
+                else if (!tokenString.equals("\n"))
+                    tokenString = " ";
+
 
             } else if (
                 // this else if block prevents

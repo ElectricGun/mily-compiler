@@ -20,6 +20,7 @@ public class Keywords {
         KEY_COLON = ":",
         KEY_AT = "@",
         KEY_HASH = "#",
+        KEY_DOLLAR = "$",
         KEY_SEMICOLON = ";",
         KEY_COMMA = ",",
         KEY_EMPTY = "",
@@ -44,6 +45,7 @@ public class Keywords {
         KEY_SECTION = "section",
         KEY_END_SECTION = "endsection",
         KEY_ENDIF = "endif",
+        KEY_RAW = "raw",
 
     // keywords: booleans
         KEY_BOOLEAN_FALSE = "false",

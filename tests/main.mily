@@ -197,3 +197,19 @@ int output = test(3, 3, 3) + test(1, 2, 3);
 */
 
 boolean sus = 1 > 1 + 2;
+
+raw print:x $
+    print x
+$
+raw printflush:x $
+    printflush x
+$
+raw cout: x, y $
+    print x
+    printflush y
+$
+/*
+*/
+print$x;
+cout$x, y;
+printflush$message1;

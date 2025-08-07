@@ -1,5 +1,6 @@
 package src.parsing;
 
+import src.interfaces.*;
 import src.tokens.*;
 import java.util.*;
 
@@ -13,7 +14,7 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionDeclareNode extends EvaluatorNode {
+public class FunctionDeclareNode extends EvaluatorNode implements Named {
 
     public FunctionDeclareNode(Token name, int depth) {
         super(name, depth);
