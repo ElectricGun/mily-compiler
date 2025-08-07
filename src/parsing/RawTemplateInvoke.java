@@ -34,17 +34,14 @@ public class RawTemplateInvoke extends EvaluatorNode implements Named {
             if (debugMode)
                 System.out.printf(indent + "raw template %s: %s%n", this.nameToken, token);
 
-            if (isWhiteSpace(token)) {
-                continue;
-
-            } else if (keyEquals(KEY_SEMICOLON, token)) {
+            if (keyEquals(KEY_SEMICOLON, token)) {
 
                 if (!argBufferString.isEmpty()) {
                     args = List.of(argBufferString.toString().split(KEY_COMMA));
                 }
                 return this;
 
-            } else if (isVariableName(token) || keyEquals(KEY_COMMA, token)) {
+            } else {
                 argBufferString.append(token.string);
             }
         }
