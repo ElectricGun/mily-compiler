@@ -7,6 +7,12 @@ import java.util.*;
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
 
+/**
+ * <h1> Class RawTemplateInvoke </h1>
+ * For invoking macros evaluated during code generation time
+ * @author ElectricGun
+ */
+
 public class RawTemplateInvoke extends EvaluatorNode implements Named {
 
     String name;

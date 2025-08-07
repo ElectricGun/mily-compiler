@@ -7,10 +7,16 @@ import java.util.*;
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
+/**
+ * <h1> Class RawTemplateNode </h1>
+ * For macros that are evaluated during code generation
+ * @author ElectricGun
+ */
+
 public class RawTemplateNode extends EvaluatorNode implements Named {
 
     protected String name;
-    protected RawTemplateScope scope;
+    protected MacroScope scope;
 
     protected List<String> argStrings = new ArrayList<>();
 
@@ -18,7 +24,7 @@ public class RawTemplateNode extends EvaluatorNode implements Named {
         super(nameToken, depth);
     }
 
-    public RawTemplateScope getScope() {
+    public MacroScope getScope() {
         return scope;
     }
 
@@ -58,9 +64,9 @@ public class RawTemplateNode extends EvaluatorNode implements Named {
                         }
                     }
 
-                    RawTemplateScope rawTemplateScope = new RawTemplateScope(token, argStrings, depth + 1);
-                    members.add(rawTemplateScope.evaluate(tokenList, evaluatorTree, debugMode));
-                    scope = rawTemplateScope;
+                    MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
+                    members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
+                    scope = macroScope;
                     return this;
 
                 } else if (isVariableName(token) || keyEquals(KEY_COMMA, token)) {

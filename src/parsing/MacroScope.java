@@ -6,13 +6,18 @@ import java.util.*;
 import static src.constants.Keywords.*;
 import static src.constants.Functions.*;
 
-public class RawTemplateScope extends EvaluatorNode{
+/**
+ * <h1> Class MacroScope </h1>
+ * The scope of a macro
+ * @author ElectricGun
+ */
+
+public class MacroScope extends EvaluatorNode {
 
     List<String> tokens = new ArrayList<>();
-    Map<String, List<String>> replacedTokens = new HashMap<>();
     List<String> args;
 
-    public RawTemplateScope(Token nameToken, List<String> args, int depth) {
+    public MacroScope(Token nameToken, List<String> args, int depth) {
         super(nameToken, depth);
 
         this.args = args;
@@ -30,19 +35,9 @@ public class RawTemplateScope extends EvaluatorNode{
 
             if (keyEquals(KEY_DOLLAR, token)) {
                 return this;
-
-            } else if (args.contains(str)) {
-                if (replacedTokens.containsKey(str)) {
-                    replacedTokens.get(str).add(str);
-
-                } else {
-                    List<String> arr = new ArrayList<>();
-                    replacedTokens.put(str, arr);
-                }
             }
             tokens.add(str);
         }
-
         return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
