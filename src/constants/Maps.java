@@ -39,10 +39,18 @@ public class Maps {
             KEY_CONDITIONAL_ELSE,
             KEY_LOOPING_WHILE,
             KEY_LOOPING_FOR
+//            KEY_BREAK,
+//            KEY_CONTINUE,
+//            KEY_LOOPING_REPEAT,
+//            KEY_SECTION,
+//            KEY_END_SECTION,
+//            KEY_ENDIF,
+//            KEY_MEM,
+//            KEY_LOCAL
     ));
 
     protected final static List<String> DECLARATOR_KEYS = new ArrayList<>(Arrays.asList(
-            KEY_DATA_DYNAMIC,
+//            KEY_DATA_DYNAMIC,
             KEY_DATA_DOUBLE,
             KEY_DATA_INT,
             KEY_DATA_STRING,
@@ -241,7 +249,7 @@ public class Maps {
         addNumericOperationToInt(KEY_OP_IDIV, intdivConsumer);
 
         // power
-        Consumer<OperationNode> powConsumer = o ->{
+        Consumer<OperationNode> powConsumer = o -> {
             if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
                 o.makeConstant((int) Math.pow(
                         o.getLeftConstantNumeric(),
@@ -249,7 +257,7 @@ public class Maps {
                 ));
 
             } else {
-                o.makeConstant( Math.pow(
+                o.makeConstant(Math.pow(
                         o.getLeftConstantNumeric(),
                         o.getRightConstantNumeric()
                 ));
@@ -274,15 +282,28 @@ public class Maps {
         operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
         operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
 
-        // TODO implement
         // comparisons
-        addGenericNumericComparison(KEY_OP_LESS_THAN, o -> {});
-        addGenericNumericComparison(KEY_OP_GREATER_THAN, o -> {});
-        addGenericNumericComparison(KEY_OP_LESS_THAN_EQUALS, o -> {});
-        addGenericNumericComparison(KEY_OP_GREATER_THAN_EQUALS, o -> {});
-        addGenericNumericComparison(KEY_OP_EQUALS, o -> {});
-        addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
-        addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o -> {});
+        addGenericNumericComparison(KEY_OP_LESS_THAN, o ->
+                o.makeConstant(o.getLeftConstantNumeric() < o.getRightConstantNumeric()));
+
+        addGenericNumericComparison(KEY_OP_GREATER_THAN, o ->
+                o.makeConstant(o.getLeftConstantNumeric() > o.getRightConstantNumeric()));
+
+        addGenericNumericComparison(KEY_OP_LESS_THAN_EQUALS, o ->
+                o.makeConstant(o.getLeftConstantNumeric() <= o.getRightConstantNumeric()));
+
+        addGenericNumericComparison(KEY_OP_GREATER_THAN_EQUALS, o ->
+                o.makeConstant(o.getLeftConstantNumeric() >= o.getRightConstantNumeric()));
+
+        addGenericNumericComparison(KEY_OP_EQUALS, o ->
+                o.makeConstant(Objects.equals(o.getLeftConstantNumeric(), o.getRightConstantNumeric())));
+
+        addGenericNumericComparison(KEY_OP_NOT_EQUAL, o ->
+                o.makeConstant(!Objects.equals(o.getLeftConstantNumeric(), o.getRightConstantNumeric())));
+
+        // TODO: this is the same as ==
+        addGenericNumericComparison(KEY_OP_STRICT_EQUALS, o ->
+                o.makeConstant(Objects.equals(o.getLeftConstantNumeric(), o.getRightConstantNumeric())));
 
         // boolean
         operationMap.addOperation(KEY_OP_AND, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, o -> {});

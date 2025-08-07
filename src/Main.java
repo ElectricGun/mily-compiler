@@ -54,7 +54,7 @@ public class Main {
         convertUnariesToBinary(evaluatorTree, debugMode);
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-        // this step is not needed
+        // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateFunctionDeclares(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);

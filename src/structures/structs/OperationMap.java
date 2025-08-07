@@ -100,10 +100,9 @@ public class OperationMap {
         String leftType = operationNode.getLeftTokenType();
         String rightType = operationNode.getRightTokenType();
 
-        // TODO. this complete skips parsing if one of the datatypes is dynamic
-        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
-            return;
-        }
+//        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
+//            return;
+//        }
 
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
         String castTo = operationCastMap.get(operationKeyCheck);
@@ -124,10 +123,9 @@ public class OperationMap {
     public String getCastTo(String operator, String leftType, String rightType) throws IllegalArgumentException {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
 
-        // TODO. should probably change how dynamic typing works
-        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
-            return KEY_DATA_DYNAMIC;
-        }
+//        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
+//            return KEY_DATA_DYNAMIC;
+//        }
 
         if (operationCastMap.containsKey(operationKeyCheck)) {
             return operationCastMap.get(operationKeyCheck);

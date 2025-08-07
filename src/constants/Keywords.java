@@ -15,6 +15,11 @@ public class Keywords {
         KEY_BRACKET_CLOSE = ")",
         KEY_CURLY_OPEN = "{",
         KEY_CURLY_CLOSE = "}",
+        KEY_SQUARE_OPEN = "[",
+        KEY_SQUARE_CLOSE = "]",
+        KEY_COLON = ":",
+        KEY_AT = "@",
+        KEY_HASH = "#",
         KEY_SEMICOLON = ";",
         KEY_COMMA = ",",
         KEY_EMPTY = "",
@@ -31,18 +36,30 @@ public class Keywords {
         KEY_RETURN = "return",
         KEY_CONDITIONAL_IF = "if",
         KEY_CONDITIONAL_ELSE = "else",
+        KEY_BREAK = "break",
+        KEY_CONTINUE = "continue",
         KEY_LOOPING_WHILE = "while",
         KEY_LOOPING_FOR = "for",
+        KEY_LOOPING_REPEAT = "repeat",
+        KEY_SECTION = "section",
+        KEY_END_SECTION = "endsection",
+        KEY_ENDIF = "endif",
+
+    // keywords: booleans
         KEY_BOOLEAN_FALSE = "false",
         KEY_BOOLEAN_TRUE = "true",
 
     // keywords: datatypes
-        KEY_DATA_DYNAMIC = "let",
+//        KEY_DATA_DYNAMIC = "let",
         KEY_DATA_INT = "int",
         KEY_DATA_DOUBLE = "double",
         KEY_DATA_STRING = "string",
         KEY_DATA_BOOLEAN = "boolean",
         KEY_DATA_VOID = "void",
+
+    // keywords: variable data
+        KEY_MEM = "mem",
+        KEY_LOCAL = "local",
 
     // keywords: other datatypes (not in maps)
         KEY_DATA_UNKNOWN = "unknown_type",
@@ -72,12 +89,14 @@ public class Keywords {
         KEY_OP_LESS_THAN_EQUALS = "<=",
         KEY_OP_GREATER_THAN = ">",
         KEY_OP_GREATER_THAN_EQUALS = ">=",
+        KEY_OP_NEGATE = "!",
+
+    // operators: bitwise
         KEY_BOP_SHIFT_LEFT = "<<",
         KEY_BOP_SHIFT_RIGHT = ">>",
         KEY_BOP_B_AND = "&",
         KEY_BOP_XOR = "^",
         KEY_BOP_OR = "|",
-        KEY_OP_NEGATE = "!",
 
     // operator: operation types
         KEY_OP_TYPE_CONSTANT = "key_constant",

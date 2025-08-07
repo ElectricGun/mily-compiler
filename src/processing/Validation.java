@@ -213,7 +213,8 @@ public class Validation {
                 System.out.println("Assignment found");
             String compare = validateTypesHelper(evaluatorNode.getMember(0), debugMode);
 
-            if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
+//            if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
+            if (!assignmentNode.getType().equals(compare) && !canImplicitCast(compare, assignmentNode.getType())) {
                 assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
                 if (debugMode)
                     System.out.println(type + "  " + evaluatorNode);
@@ -228,7 +229,8 @@ public class Validation {
             if (innerMember instanceof OperationNode op) {
                 String compare = validateTypesHelper(innerMember, debugMode);
 
-                if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
+//                if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
+                if (!declarationNode.getType().equals(compare) && !canImplicitCast(compare, declarationNode.getType())) {
                     declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
                     if (debugMode)
                         System.out.println(type + "  " + evaluatorNode);

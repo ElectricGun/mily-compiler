@@ -1,9 +1,7 @@
 # Urgent TODO:
- - Comparison operation lambda functions are empty
  - Create a string counter for generated variables to prevent conflicts
 
 # Problems:
- - Dynamic typing is current UNSUPPORTED. I need to figure out how to mix static AND dynamic typing
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
  - "let test = 1; let test2 = test + 1 + false;" is valid
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation

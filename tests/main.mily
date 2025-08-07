@@ -181,6 +181,7 @@ if (true) {
 }
 */
 
+/*
 /- Nested Function
 int test(int x, int y, int z) {
     int test2(int x_) {
@@ -193,3 +194,6 @@ int test(int x, int y, int z) {
 }
 int output = test(3, 3, 3) + test(1, 2, 3);
 /- output is 38
+*/
+
+boolean sus = 1 > 1 + 2;

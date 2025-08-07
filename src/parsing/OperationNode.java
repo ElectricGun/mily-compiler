@@ -291,7 +291,6 @@ public class OperationNode extends EvaluatorNode {
                     for (int i = 0; i < operationTokens.size(); i++) {
                         orders.add(0);
                     }
-
                     // if largest value is -1 then it's a constant or something is very wrong
                     int largestOrderIndex = -1;
                     int largestOrder = -1;
@@ -455,7 +454,6 @@ public class OperationNode extends EvaluatorNode {
             else {
                 operationTokens.add(token);
             }
-
             previousToken = token;
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
@@ -480,6 +478,10 @@ public class OperationNode extends EvaluatorNode {
 
     public void makeConstant(Double newNumeric) {
         makeConstant(String.valueOf(newNumeric));
+    }
+
+    public void makeConstant(boolean bool) {
+        makeConstant(bool ? "true" : "false");
     }
 
     public void makeConstant(int newInt) {
