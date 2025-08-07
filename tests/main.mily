@@ -16,6 +16,15 @@ raw cout: x, y $
     print x
     printflush y
 $
+raw wait:x $
+    wait x
+$
+raw end $
+    end
+$
+raw stop $
+    stop
+$
 /- end placeholders
 /*
 /---------- Variable Declarations ----------
@@ -205,4 +214,3 @@ int output = test(3, 3, 3) + test(1, 2, 3);
 print$"result: \n";
 print$output;
 printflush$message1;
-
