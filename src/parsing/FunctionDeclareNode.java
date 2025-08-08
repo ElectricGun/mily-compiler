@@ -2,6 +2,7 @@ package src.parsing;
 
 import src.interfaces.*;
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -11,6 +12,7 @@ import static src.constants.Keywords.*;
  * <h1> Class FunctionDeclareNode </h1>
  * Function Declarations
  * Parses function declarations; not to be confused with the {@link FunctionCallNode}
+ *
  * @author ElectricGun
  */
 
@@ -94,8 +96,8 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
                 continue;
 
             } else if (isPunctuation(token) && !isWhiteSpace(token)) {
-                 if (argumentWanted) {
-                     return throwSyntaxError("Expecting an argument on function declaration", token);
+                if (argumentWanted) {
+                    return throwSyntaxError("Expecting an argument on function declaration", token);
 
                 } else if (keyEquals(KEY_BRACKET_CLOSE, token)) {
                     functionDeclared = true;
@@ -104,15 +106,15 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
                     argumentWanted = true;
 
                 } else if (functionDeclared && keyEquals(KEY_CURLY_OPEN, token)) {
-                     if (debugMode)
-                         System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.nameToken, String.join(", ", argumentNames));
+                    if (debugMode)
+                        System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.nameToken, String.join(", ", argumentNames));
 
-                     scope = new ScopeNode(this.nameToken, depth + 1, true, this);
-                     members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
-                     return this;
+                    scope = new ScopeNode(this.nameToken, depth + 1, true, this);
+                    members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
+                    return this;
 
                 } else {
-                     return throwSyntaxError("Unexpected punctuation on function declaration", token);
+                    return throwSyntaxError("Unexpected punctuation on function declaration", token);
 
                 }
             } else if (isOperator(token)) {
@@ -154,14 +156,14 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
         return String.format("declare function : %s | args: %s", nameToken, String.join(", ", argumentNames));
     }
 
-    public boolean isOverload(String name, String ... types) {
+    public boolean isOverload(String name, String... types) {
         if (!this.getName().equals(name)) {
             return false;
         }
         if (types.length != argumentNames.size()) {
             return false;
         }
-        for (int i = 0 ; i < types.length; i++) {
+        for (int i = 0; i < types.length; i++) {
             DeclarationNode argDeclare = (DeclarationNode) this.getMember(i);
             if (!types[i].equals(argDeclare.getType())) {
                 return false;
@@ -177,7 +179,7 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
         int argCount = this.getArgCount();
         for (int a = 0; a < argCount; a++) {
             fnKey.append(this.getArgType(a));
-            if  (a < argCount - 1) {
+            if (a < argCount - 1) {
                 fnKey.append("_");
             }
         }

@@ -1,6 +1,6 @@
 package src.structures.errors;
 
-public class MilySyntaxError extends MilyError  {
+public class MilySyntaxError extends MilyError {
 
     public MilySyntaxError(String message) {
         super(message);

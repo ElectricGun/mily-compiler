@@ -1,6 +1,6 @@
 package src.codegen.lines;
 
-public class Jump extends Line{
+public class Jump extends Line {
 
     String to;
 

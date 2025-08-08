@@ -12,6 +12,7 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class Functions </h1>
  * Basic utilities
+ *
  * @author ElectricGun
  */
 
@@ -125,7 +126,7 @@ public class Functions {
     }
 
     public static boolean isWhiteSpace(String c) {
-        return  KEY_SPACE.equals(c) ||
+        return KEY_SPACE.equals(c) ||
                 KEY_TAB.equals(c) ||
                 KEY_NEWLINE.equals(c) ||
                 KEY_EMPTY.equals(c);
@@ -224,7 +225,7 @@ public class Functions {
             Double.parseDouble(s);
 
             return true;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -245,7 +246,7 @@ public class Functions {
             Integer.parseInt(s);
 
             return true;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }

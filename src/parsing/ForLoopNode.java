@@ -11,6 +11,7 @@ import static src.constants.Keywords.*;
  * <h1> Class ForLoopNode </h1>
  * For Loops
  * Parsing AST node for for loops.
+ *
  * @author ElectricGun
  */
 
@@ -118,7 +119,7 @@ public class ForLoopNode extends EvaluatorNode {
             } else {
                 return throwSyntaxError("Unexpected token in for loop", token);
             }
-        previousToken = token;
+            previousToken = token;
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
     }

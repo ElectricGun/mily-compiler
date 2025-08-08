@@ -20,6 +20,7 @@ import static src.constants.Keywords.*;
  *      <li> {@link WhileLoopNode}</li>
  *      <li> {@link ForLoopNode}</li>
  * </ul>
+ *
  * @author ElectricGun
  */
 
@@ -69,7 +70,7 @@ public class ScopeNode extends EvaluatorNode {
                 if (!keyEquals(KEY_SEMICOLON, token)) {
 
                     return throwSyntaxError("Missing semicolon", token);
-                    }
+                }
                 expectingSemicolon = false;
 
             } else if (isDeclaratorAmbiguous(previousToken)) {
@@ -118,28 +119,28 @@ public class ScopeNode extends EvaluatorNode {
             } else if (keyEquals(KEY_CONDITIONAL_IF, token)) {
                 if (debugMode)
                     System.out.printf(indent + "Creating if statement loop %n");
-                IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(token, depth+1);
+                IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(token, depth + 1);
                 members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (keyEquals(KEY_LOOPING_WHILE, token)) {
                 if (debugMode)
                     System.out.printf(indent + "Creating while loop %n");
-                WhileLoopNode whileLoopEvaluatorNode = new WhileLoopNode(token, depth+1);
+                WhileLoopNode whileLoopEvaluatorNode = new WhileLoopNode(token, depth + 1);
                 members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (keyEquals(KEY_LOOPING_FOR, token)) {
                 if (debugMode)
                     System.out.printf(indent + "Creating for loop %n");
-                ForLoopNode forLoopNode = new ForLoopNode(token, depth+1);
+                ForLoopNode forLoopNode = new ForLoopNode(token, depth + 1);
                 members.add(forLoopNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (keyEquals(KEY_RAW, token)) {
                 if (debugMode)
                     System.out.printf(indent + "Creating for raw template %n");
-                RawTemplateNode rawTemplateNode = new RawTemplateNode(token, depth+1);
+                RawTemplateNode rawTemplateNode = new RawTemplateNode(token, depth + 1);
                 members.add(rawTemplateNode.evaluate(tokenList, evaluatorTree, debugMode));
 
-            }  else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
+            } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
                 // FUNCTION RETURN
                 OperationNode returnOp = new OperationNode(new Token(this.nameToken + "_return", token.line), depth + 1, true);
                 members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
@@ -161,6 +162,6 @@ public class ScopeNode extends EvaluatorNode {
 
     @Override
     public String toString() {
-        return ( "scope : " + nameToken + "     #" + hashCode());
+        return ("scope : " + nameToken + "     #" + hashCode());
     }
 }

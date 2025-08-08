@@ -6,6 +6,7 @@ import src.tokens.*;
 /**
  * <h1> Class VariableNode </h1>
  * Template for Declaration and Assignment
+ *
  * @author ElectricGun
  */
 
@@ -25,13 +26,13 @@ public abstract class VariableNode extends EvaluatorNode implements Typed {
     }
 
     @Override
-    public void setType(String type) {
-        this.type = type;
+    public String getType() {
+        return type;
     }
 
     @Override
-    public String getType() {
-        return type;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean isDeclared() {

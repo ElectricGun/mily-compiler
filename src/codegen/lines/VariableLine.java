@@ -10,11 +10,11 @@ public class VariableLine extends Line {
         this.varName = varName;
     }
 
-    public void setVarName(String varName) {
-        this.varName = varName;
-    }
-
     public String getVarName() {
         return varName;
+    }
+
+    public void setVarName(String varName) {
+        this.varName = varName;
     }
 }

@@ -2,6 +2,7 @@ package src.preprocessing;
 
 import src.constants.*;
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -12,8 +13,9 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class Lexing </h1>
  * Utility for converting text into a list of tokens.
- * @see Keywords
+ *
  * @author ElectricGun
+ * @see Keywords
  */
 
 public class Lexing {
@@ -52,8 +54,7 @@ public class Lexing {
             } else if (keyEquals(KEY_COMMENT_MULTILINE_START, tokenString)) {
                 commentStartLine = currentLine;
                 commentMode = true;
-            }
-            else {
+            } else {
                 if (debugMode)
                     System.out.println("Line " + currentLine + " added: " + tokenString);
                 tokens.add(new Token(tokenString, currentLine));
@@ -75,7 +76,7 @@ public class Lexing {
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
             if (debugMode) {
-                System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s    comment_mode: %s  inline: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString),  commentMode, commentModeInline);
+                System.out.printf("line: %s   token: \"%s\"   is_partial_operator: %s    comment_mode: %s  inline: %s%n", currentLine, tokenString, isKeywordIncomplete(tokenString), commentMode, commentModeInline);
             }
 
             if (keyEquals(KEY_NEWLINE, cs)) {
@@ -95,10 +96,10 @@ public class Lexing {
 
                 tokenString = "";
 
-            } else if(isWhiteSpace(cs)) {
+            } else if (isWhiteSpace(cs)) {
 //                if (!previousIsWhitespace) {
-                    tryAddToken(debugMode);
-                    tokenString = "" + c;
+                tryAddToken(debugMode);
+                tokenString = "" + c;
 //                }
 
 //                if (cs.equals("\n"))
@@ -111,11 +112,11 @@ public class Lexing {
                 // this else if block prevents
                 // malformed compound operators from forming
                     isKeywordIncomplete(tokenString) &&
-                    (isOperator(tokenString) || isPunctuation(tokenString)) &&
-                    !isKeywordIncomplete(tokenString + c) &&
-                    !isOperator(tokenString + c) &&
-                    !isPunctuation(tokenString + c)
-                    ) {
+                            (isOperator(tokenString) || isPunctuation(tokenString)) &&
+                            !isKeywordIncomplete(tokenString + c) &&
+                            !isOperator(tokenString + c) &&
+                            !isPunctuation(tokenString + c)
+            ) {
                 tryAddToken(debugMode);
                 tokenString = "" + c;
 

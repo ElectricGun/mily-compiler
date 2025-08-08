@@ -1,6 +1,7 @@
 package src.parsing;
 
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -10,6 +11,7 @@ import static src.constants.Keywords.*;
  * <h1> Class WhileLoopNode </h1>
  * While Loops
  * Parses while loops
+ *
  * @author ElectricGun
  */
 

@@ -35,7 +35,7 @@ public class Main {
             tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode);
         } catch (Exception e) {
             // todo: unhardcode this message
-            System.out.println(ANSI_RED + "MilyLexingError: " + e.getMessage() +  ANSI_RESET);
+            System.out.println(ANSI_RED + "MilyLexingError: " + e.getMessage() + ANSI_RESET);
             return;
         }
         long lexingDuration = (System.nanoTime() - startCompileTime);
@@ -90,18 +90,18 @@ public class Main {
 
         System.out.println();
         System.out.printf(
-            "Lexing time: %sms%n" +
-            "AST building time: %sms%n" +
-            "Optimisation time: %sms%n" +
-            "Code generation time: %sms%n" +
-            "Total compile time: %sms%n" +
-            "Total run time: %sms%n",
-            lexingDuration / 1000000,
-            astBuildDuration / 1000000,
-            optimizationDuration / 1000000,
-            codeGenerationDuration / 1000000,
-            compileDuration / 1000000,
-            totalDuration / 1000000
+                "Lexing time: %sms%n" +
+                        "AST building time: %sms%n" +
+                        "Optimisation time: %sms%n" +
+                        "Code generation time: %sms%n" +
+                        "Total compile time: %sms%n" +
+                        "Total run time: %sms%n",
+                lexingDuration / 1000000,
+                astBuildDuration / 1000000,
+                optimizationDuration / 1000000,
+                codeGenerationDuration / 1000000,
+                compileDuration / 1000000,
+                totalDuration / 1000000
         );
     }
 }

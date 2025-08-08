@@ -2,6 +2,7 @@ package src.tokens;
 
 /**
  * Basic token, contains a string and line number.
+ *
  * @author ElectricGun
  */
 

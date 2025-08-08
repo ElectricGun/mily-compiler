@@ -3,8 +3,8 @@ package src.codegen;
 import src.codegen.blocks.*;
 import src.codegen.lines.*;
 import src.parsing.*;
-import src.processing.*;
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.codegen.Mlogs.*;
@@ -151,7 +151,7 @@ public class CodeGeneration {
                 if (rawTemplateNode == null) {
                     throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
                 }
-                String formatted =  rawTemplateNode.getScope().asFormatted(rawTemplateInvoke.getArgs());
+                String formatted = rawTemplateNode.getScope().asFormatted(rawTemplateInvoke.getArgs());
 
                 String[] lineContent = formatted.split(KEY_NEWLINE);
                 for (String s : lineContent) {
@@ -254,7 +254,7 @@ public class CodeGeneration {
 
             startJumpBlock.addLine(startJump);
             irCode.irBlocks.add(startJumpBlock);
-            generateIRScopeRecursive(ifs.getScope(), irCode, functionMap, templateNodeMap, function, hashSimplifier,depth + 1, debugMode);
+            generateIRScopeRecursive(ifs.getScope(), irCode, functionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
 
             // if there is an else node, then there must be an always jump to the end
             if (ifs.getElseNode() != null) {
@@ -339,11 +339,11 @@ public class CodeGeneration {
     }
 
     private static IROperation generateIROperation(OperationNode operationNode,
-                                                  IRCode irCode,
-                                                  Map<String, IRFunction> functionMap,
-                                                  HashCodeSimplifier hashCodeSimplifier,
-                                                  int depth,
-                                                  boolean debugMode) throws Exception {
+                                                   IRCode irCode,
+                                                   Map<String, IRFunction> functionMap,
+                                                   HashCodeSimplifier hashCodeSimplifier,
+                                                   int depth,
+                                                   boolean debugMode) throws Exception {
         IROperation irOperation = new IROperation();
 
         generateIROperationHelper(operationNode, irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);

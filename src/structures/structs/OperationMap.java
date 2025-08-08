@@ -6,41 +6,17 @@ import src.tokens.*;
 import java.util.*;
 import java.util.function.*;
 
-import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
  * <h1> Class OperationMap </h1>
  * Used for checking the validity of as well as calculating the results of
  * values within operations
+ *
  * @author ElectricGun
  */
 
 public class OperationMap {
-
-    static class OperationKey {
-        String operator;
-        String leftType;
-        String rightType;
-
-        public OperationKey(String operator, String leftType, String rightType) {
-            this.operator = operator;
-            this.leftType = leftType;
-            this.rightType = rightType;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-            OperationKey that = (OperationKey) o;
-            return Objects.equals(operator, that.operator) && Objects.equals(leftType, that.leftType) && Objects.equals(rightType, that.rightType);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(operator, leftType, rightType);
-        }
-    }
 
     Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
     Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
@@ -90,7 +66,7 @@ public class OperationMap {
 
     public void addOperation(String operator, String leftType, String rightType, String castsTo, Consumer<OperationNode> operationConsumer) {
         OperationKey newOperationKey = new OperationKey(operator, leftType, rightType);
-        
+
         operationParseMap.put(newOperationKey, operationConsumer);
         operationCastMap.put(newOperationKey, castsTo);
     }
@@ -134,9 +110,33 @@ public class OperationMap {
         }
     }
 
-    public boolean isOperationValid(String operator, String leftType, String rightType)  {
+    public boolean isOperationValid(String operator, String leftType, String rightType) {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
 
         return operationCastMap.containsKey(operationKeyCheck);
+    }
+
+    static class OperationKey {
+        String operator;
+        String leftType;
+        String rightType;
+
+        public OperationKey(String operator, String leftType, String rightType) {
+            this.operator = operator;
+            this.leftType = leftType;
+            this.rightType = rightType;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            OperationKey that = (OperationKey) o;
+            return Objects.equals(operator, that.operator) && Objects.equals(leftType, that.leftType) && Objects.equals(rightType, that.rightType);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(operator, leftType, rightType);
+        }
     }
 }

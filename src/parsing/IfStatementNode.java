@@ -1,19 +1,20 @@
 package src.parsing;
 
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
 import static src.constants.Keywords.*;
 
 /**
- *
  * <h1> Class IfStatementNode </h1>
  * If Statements
  * Routes:
  * <ul>
  *     <li> {@link ScopeNode} </li>
  * </ul>
+ *
  * @author ElectricGun
  */
 
@@ -43,7 +44,7 @@ public class IfStatementNode extends ConditionalNode {
                 continue;
 
             } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
-                    parseOperation(tokenList, evaluatorTree, depth, debugMode);
+                parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {
                 if (keyEquals(KEY_CURLY_OPEN, token)) {

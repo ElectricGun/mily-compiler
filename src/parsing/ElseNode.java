@@ -1,6 +1,7 @@
 package src.parsing;
 
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -14,6 +15,7 @@ import static src.constants.Keywords.*;
  *     <li> {@link ScopeNode} </li>
  *     <li> {@link IfStatementNode} </li>
  * </ul>
+ *
  * @author ElectricGun
  */
 

@@ -2,13 +2,15 @@ package src.structures.structs;
 
 import src.interfaces.*;
 import src.processing.*;
+
 import java.util.*;
 
 /**
  * <h1> Class Variable </h1>
  * Contains name and type, used in validation
- * @see Validation
+ *
  * @author ElectricGun
+ * @see Validation
  */
 
 public class Variable implements Typed {

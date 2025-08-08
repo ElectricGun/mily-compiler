@@ -16,6 +16,6 @@ public class SetLine extends VariableLine {
 
     @Override
     public String asMlog() {
-        return indent() +"set " + getVar() + " " + getValue();
+        return indent() + "set " + getVar() + " " + getValue();
     }
 }

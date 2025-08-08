@@ -1,6 +1,6 @@
 package src.structures.errors;
 
-public class MilySemanticError extends MilyError  {
+public class MilySemanticError extends MilyError {
 
     public MilySemanticError(String message) {
         super(message);

@@ -1,6 +1,7 @@
 package src.parsing;
 
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Keywords.*;
@@ -9,6 +10,7 @@ import static src.constants.Functions.*;
 /**
  * <h1> Class MacroScope </h1>
  * The scope of a macro
+ *
  * @author ElectricGun
  */
 

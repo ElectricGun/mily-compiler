@@ -3,6 +3,7 @@ package src.parsing;
 import src.interfaces.*;
 import src.processing.Validation;
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -17,6 +18,7 @@ import static src.constants.Keywords.*;
  *     <li> Token ")" on first iteration             -> return this </li>
  *     <li> Token ")" when not expecting a parameter -> return this </li>
  * </ul>
+ *
  * @author ElectricGun
  */
 
@@ -74,17 +76,17 @@ public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctio
                     Token currToken = tokenList.removeFirst();
 
                     if (keyEquals(KEY_BRACKET_OPEN, currToken)) {
-                        bracketCount ++;
+                        bracketCount++;
 
                     } else if (keyEquals(KEY_BRACKET_CLOSE, currToken)) {
                         if (bracketCount > 0) {
-                            bracketCount --;
+                            bracketCount--;
                         } else {
                             // return the final token
                             tokenList.addFirst(currToken);
                             break;
                         }
-                     } else if (keyEquals(KEY_COMMA, currToken)) {
+                    } else if (keyEquals(KEY_COMMA, currToken)) {
                         // return the final token
                         tokenList.addFirst(currToken);
                         break;
@@ -126,7 +128,7 @@ public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctio
         int argCount = this.getArgCount();
         for (int a = 0; a < argCount; a++) {
             fnKey.append(Validation.getOperationType(this.getArg(a), false));
-            if  (a < argCount - 1) {
+            if (a < argCount - 1) {
                 fnKey.append("_");
             }
         }

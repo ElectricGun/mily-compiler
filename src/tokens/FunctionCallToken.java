@@ -1,10 +1,12 @@
 package src.tokens;
 
 import src.parsing.*;
+
 import static src.constants.Keywords.*;
 
 /**
  * A token used to store function calls within expressions
+ *
  * @author ElectricGun
  */
 

@@ -4,6 +4,7 @@ import static src.constants.Keywords.*;
 
 /**
  * A token used for voids within expressions
+ *
  * @author ElectricGun
  */
 

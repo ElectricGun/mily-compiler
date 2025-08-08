@@ -2,6 +2,7 @@ package src.parsing;
 
 import src.interfaces.*;
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -10,6 +11,7 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class RawTemplateNode </h1>
  * For macros that are evaluated during code generation
+ *
  * @author ElectricGun
  */
 

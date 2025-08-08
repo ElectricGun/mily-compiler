@@ -3,6 +3,7 @@ package src.structures.structs;
 /**
  * <h1> Class CodeFile </h1>
  * Simple data structure to store a code string and its file name.
+ *
  * @author ElectricGun
  */
 

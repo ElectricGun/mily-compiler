@@ -1,6 +1,7 @@
 package src.parsing;
 
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Functions.*;
@@ -9,7 +10,8 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class DeclarationNode </h1>
  * Variable and Function Declaration
- *  @author ElectricGun
+ *
+ * @author ElectricGun
  */
 
 public class DeclarationNode extends VariableNode {
@@ -58,7 +60,7 @@ public class DeclarationNode extends VariableNode {
                     System.out.println(variableName);
                 // check for equal sign
                 if (keyEquals(KEY_OP_ASSIGN, token) && isDeclared()) {
-                    OperationNode operationNode = new OperationNode(new Token("op_"+ this.nameToken, this.nameToken.line), depth + 1);
+                    OperationNode operationNode = new OperationNode(new Token("op_" + this.nameToken, this.nameToken.line), depth + 1);
                     members.add(operationNode.evaluate(tokenList, evaluatorTree, debugMode));
                     return this;
 

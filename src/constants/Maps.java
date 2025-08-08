@@ -12,12 +12,14 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class Maps </h1>
  * Lists and maps of keywords
+ *
  * @author ElectricGun
  * @see Keywords
  */
 
 public class Maps {
 
+    public final static OperationMap operationMap = new OperationMap();
     protected final static List<String> PUNCTUATION_KEYS = new ArrayList<>(Arrays.asList(
             KEY_BRACKET_OPEN,
             KEY_BRACKET_CLOSE,
@@ -35,7 +37,6 @@ public class Maps {
             KEY_DOLLAR,
             KEY_HASH
     ));
-
     protected final static List<String> KEYWORD_KEYS = new ArrayList<>(Arrays.asList(
             KEY_RETURN,
             KEY_CONDITIONAL_IF,
@@ -53,7 +54,6 @@ public class Maps {
 //            KEY_MEM,
 //            KEY_LOCAL
     ));
-
     protected final static List<String> DECLARATOR_KEYS = new ArrayList<>(Arrays.asList(
 //            KEY_DATA_DYNAMIC,
             KEY_DATA_DOUBLE,
@@ -62,7 +62,6 @@ public class Maps {
             KEY_DATA_BOOLEAN,
             KEY_DATA_VOID
     ));
-
     protected final static List<String> OPERATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,
             KEY_OP_MUL,
@@ -91,12 +90,19 @@ public class Maps {
             KEY_OP_ADD,
             KEY_OP_SUB
     ));
+    protected final static List<String> PUNC_OPERATOR_KEYWORDS = new ArrayList<>();
+    protected final static List<String> BOOLEAN_KEYS = new ArrayList<>(Arrays.asList(
+            KEY_BOOLEAN_TRUE,
+            KEY_BOOLEAN_FALSE
+    ));
+    // todo: should make this a 2 way graph for brevity
+    protected final static HashMap<String, String> OP_NEGATION_MAP = new HashMap<>();
+    protected final static HashMap<String, Integer> PEMDAS = new HashMap<>();
 
     static {
         OPERATOR_KEYS.addAll(UNARY_OPERATOR_KEYS);
     }
 
-    protected final static List<String> PUNC_OPERATOR_KEYWORDS = new ArrayList<>();
     static {
         PUNC_OPERATOR_KEYWORDS.addAll(PUNCTUATION_KEYS);
         PUNC_OPERATOR_KEYWORDS.addAll(KEYWORD_KEYS);
@@ -104,13 +110,6 @@ public class Maps {
         PUNC_OPERATOR_KEYWORDS.addAll(DECLARATOR_KEYS);
     }
 
-    protected final static List<String> BOOLEAN_KEYS = new ArrayList<>(Arrays.asList(
-            KEY_BOOLEAN_TRUE,
-            KEY_BOOLEAN_FALSE
-    ));
-
-    // todo: should make this a 2 way graph for brevity
-    protected final static HashMap<String, String> OP_NEGATION_MAP = new HashMap<>();
     static {
         OP_NEGATION_MAP.put(KEY_OP_GREATER_THAN, KEY_OP_LESS_THAN_EQUALS);
         OP_NEGATION_MAP.put(KEY_OP_GREATER_THAN_EQUALS, KEY_OP_LESS_THAN);
@@ -120,7 +119,8 @@ public class Maps {
         OP_NEGATION_MAP.put(KEY_OP_NOT_EQUAL, KEY_OP_EQUALS);
     }
 
-    protected final static HashMap<String, Integer> PEMDAS = new HashMap<>();
+    // todo: i should put these somewhere else and clean it up a bit
+
     static {
         // TODO this system is not good, a separate ordering for unary operators can be nice, and negatives are too arbitrary.
         // negatives are reserved for special characters
@@ -152,41 +152,6 @@ public class Maps {
         PEMDAS.put(KEY_OP_OR, 10);
     }
 
-    // todo: i should put these somewhere else and clean it up a bit
-
-    static void addGenericNumericOperation(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT,    consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
-    }
-
-    static void addGenericNumericComparison(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_BOOLEAN, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_BOOLEAN, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
-    }
-
-    static void addNumericOperationToInt(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
-    }
-
-    static void addNumericOperationToDouble(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_INT,    KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT,    KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT,    KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
-    }
-
-    static void addBooleanOperator(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_BOOLEAN,    KEY_DATA_BOOLEAN,    KEY_DATA_BOOLEAN, consumer);
-    }
-
-    public final static OperationMap operationMap = new OperationMap();
     static {
 
         // TODO looks quite horrible rn
@@ -311,7 +276,8 @@ public class Maps {
                 o.makeConstant(Objects.equals(o.getLeftConstantNumeric(), o.getRightConstantNumeric())));
 
         // boolean
-        operationMap.addOperation(KEY_OP_AND, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, o -> {});
+        operationMap.addOperation(KEY_OP_AND, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, o -> {
+        });
 
         // -------- Unary Operators --------
 
@@ -322,5 +288,37 @@ public class Maps {
 
         operationMap.addUnaryOperationConverter(KEY_OP_ADD, baseUnaryConsumer);
         operationMap.addUnaryOperationConverter(KEY_OP_SUB, baseUnaryConsumer);
+    }
+
+    static void addGenericNumericOperation(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+    }
+
+    static void addGenericNumericComparison(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
+    }
+
+    static void addNumericOperationToInt(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
+    }
+
+    static void addNumericOperationToDouble(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+    }
+
+    static void addBooleanOperator(String operator, Consumer<OperationNode> consumer) {
+        operationMap.addOperation(operator, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, consumer);
     }
 }

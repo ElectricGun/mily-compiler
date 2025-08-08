@@ -1,6 +1,7 @@
 package src.parsing;
 
 import src.tokens.*;
+
 import java.util.*;
 
 import static src.constants.Keywords.*;
@@ -8,9 +9,10 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class AssignmentNode </h1>
  * Used for both operation and function assignments.
+ *
+ * @author ElectricGun
  * @see src.parsing.OperationNode
  * @see src.parsing.FunctionDeclareNode
- * @author ElectricGun
  */
 
 public class AssignmentNode extends VariableNode {

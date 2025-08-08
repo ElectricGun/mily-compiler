@@ -9,6 +9,7 @@ import static src.constants.Maps.*;
 /**
  * <h1> Class Pruning </h1>
  * Static functions for pruning and simplifying the {@link EvaluatorTree}
+ *
  * @author ElectricGun
  */
 
@@ -34,7 +35,7 @@ public class Pruning {
             }
         }
 
-        for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             removeEmptyOperationsHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
@@ -86,7 +87,7 @@ public class Pruning {
                 }
             }
         }
-        for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             pruneNestedUnariesHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
@@ -114,7 +115,7 @@ public class Pruning {
             }
         }
 
-        for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             convertUnariesToBinaryHelper(evaluatorNode.getMember(i), evaluatorNode, debugMode);
         }
     }
@@ -160,7 +161,7 @@ public class Pruning {
                 simplifyBinaryExpressionsHelper(evaluatorNode.getMember(0), evaluatorNode, parseCasts, debugMode);
             }
         } else {
-            for (int i = 0; i< evaluatorNode.memberCount(); i++) {
+            for (int i = 0; i < evaluatorNode.memberCount(); i++) {
                 simplifyBinaryExpressionsHelper(evaluatorNode.getMember(i), evaluatorNode, parseCasts, debugMode);
             }
         }

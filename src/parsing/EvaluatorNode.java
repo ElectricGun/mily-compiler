@@ -9,17 +9,17 @@ import src.tokens.*;
 /**
  * <h1> Class EvaluatorNode </h1>
  * Base AST Node
+ *
  * @author ElectricGun
  */
 
 public class EvaluatorNode {
 
-    protected List<MilyThrowable> throwables = new ArrayList<>();
-
     public int depth;
     public Token nameToken;
     // for storing general information
     public Map<String, String> flags = new HashMap<>();
+    protected List<MilyThrowable> throwables = new ArrayList<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
 
     public EvaluatorNode(Token nameToken, int depth) {

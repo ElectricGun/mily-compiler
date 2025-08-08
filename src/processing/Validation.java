@@ -13,13 +13,14 @@ import static src.constants.Ansi.*;
 /**
  * <h1> Class Validation </h1>
  * Contains utilities for semantic validation, such as type and scope checking.
+ *
  * @author ElectricGun
  */
 
 public class Validation {
 
     public static boolean checkThrowables(EvaluatorTree evaluatorTree, boolean debugMode) {
-        boolean[] errored = new boolean[] {false};
+        boolean[] errored = new boolean[]{false};
 
         Stack<EvaluatorNode> traceStack = new Stack<>();
         checkThrowablesHelper(evaluatorTree.mainBlock, traceStack, errored, debugMode);
@@ -56,7 +57,7 @@ public class Validation {
             System.out.print(ANSI_RESET);
         }
 
-        for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             Stack<EvaluatorNode> newStack = new Stack<>();
             newStack.addAll(traceStack);
 
@@ -67,6 +68,7 @@ public class Validation {
     /**
      * Validates variable declarations and assigns types to variable references. <br>
      * VARIABLE REFERENCE TYPES ARE ASSIGNED HERE
+     *
      * @param evaluatorTree Abstract syntax tree
      * @throws Exception When declaring a variable that is already declared
      * @throws Exception When referencing a variable that does not exist
@@ -81,7 +83,7 @@ public class Validation {
     private static void validateDeclarationsHelper(EvaluatorNode evaluatorNode, List<String> declaredVariablesNames, List<String> variableTypes, boolean doAssignTypes, boolean debugMode) throws Exception {
 
         if (debugMode)
-                System.out.println("Node: " + evaluatorNode + "\nVariables: " + declaredVariablesNames + "\nTypes: " + variableTypes);
+            System.out.println("Node: " + evaluatorNode + "\nVariables: " + declaredVariablesNames + "\nTypes: " + variableTypes);
 
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
@@ -161,9 +163,10 @@ public class Validation {
     /**
      * Validates type consistency <br>
      * Requires all operations within the AST to be binary
+     *
      * @param evaluatorTree Abstract syntax tree
      */
-    public static void validateTypes (EvaluatorTree evaluatorTree, boolean debugMode)  {
+    public static void validateTypes(EvaluatorTree evaluatorTree, boolean debugMode) {
         validateTypesHelper(evaluatorTree.mainBlock, true, debugMode);
     }
 
@@ -179,7 +182,7 @@ public class Validation {
         String type = KEY_DATA_UNKNOWN;
 
         if (debugMode)
-            System.out.println("Depth: " + evaluatorNode.depth  + " Node: " + evaluatorNode );
+            System.out.println("Depth: " + evaluatorNode.depth + " Node: " + evaluatorNode);
 
         // validate binary operations
         if (evaluatorNode instanceof OperationNode operationNode) {
@@ -267,8 +270,10 @@ public class Validation {
     }
 
     // TODO: why are there so many methods doing just one thing. Fix this later
+
     /**
      * Checks if a function's return type is consistent with its returns
+     *
      * @see FunctionDeclareNode
      */
     public static void validateFunctionDeclares(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
@@ -286,7 +291,7 @@ public class Validation {
             functionDeclares.add(func);
         }
 
-        for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             validateFunctionDeclaresHelper(evaluatorNode.getMember(i), functionDeclares, debugMode);
         }
     }
@@ -305,7 +310,7 @@ public class Validation {
 
     private static boolean validateReturns(EvaluatorNode evaluatorNode, String returnType, boolean debugMode) throws Exception {
         // get the returns on the first layer
-        for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
             if (member instanceof OperationNode op && op.isReturnOperation()) {
                 String opType = validateTypesHelper(op, false, debugMode);
@@ -382,7 +387,7 @@ public class Validation {
                     }
                 }
             } else if (member instanceof FunctionDeclareNode functionDeclareNode) {
-                    functionDeclares.add(functionDeclareNode);
+                functionDeclares.add(functionDeclareNode);
 
             } else if (member instanceof FunctionCallNode functionCallNode) {
                 if (!validateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {

@@ -228,9 +228,10 @@ int test(int x) {
 int tests = test(test(10 + test(10)));
 */
 
-int f(int x) {
-    return x + 1;
+int n = 5;
+int curr = n;
+for (int i = 1; i < n; i = i + 1) {
+    curr = curr * i;
 }
-
-int out = f(f(1) + 1);
-cout$out, message1;
+int result = curr;
+cout$result,message1;

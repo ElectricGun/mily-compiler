@@ -8,15 +8,15 @@ import src.tokens.*;
  * <h1> Class EvaluatorTree </h1>
  * Parsing Abstract Syntax Tree <br>
  * The container for the parsing AST
+ *
  * @author ElectricGun
  */
 
 public class EvaluatorTree {
 
+    protected final boolean debugMode;
     public String name = "";
     public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", 1), 0);
-
-    protected final boolean debugMode;
 
     public EvaluatorTree(boolean debugMode) {
         this.debugMode = debugMode;
@@ -25,15 +25,6 @@ public class EvaluatorTree {
     public EvaluatorTree(String name, boolean debugMode) {
         this.name = name;
         this.debugMode = debugMode;
-    }
-
-    public EvaluatorNode begin(List<Token> tokenList) {
-        mainBlock.evaluate(tokenList, this, debugMode);
-        return mainBlock;
-    }
-
-    public void printRecursive() {
-        printRecursive(mainBlock);
     }
 
     public static void printRecursive(EvaluatorNode node) {
@@ -51,6 +42,15 @@ public class EvaluatorTree {
         for (EvaluatorNode member : node.members) {
             printRecursiveHelper(member, depth);
         }
+    }
+
+    public EvaluatorNode begin(List<Token> tokenList) {
+        mainBlock.evaluate(tokenList, this, debugMode);
+        return mainBlock;
+    }
+
+    public void printRecursive() {
+        printRecursive(mainBlock);
     }
 }
 

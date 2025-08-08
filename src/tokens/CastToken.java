@@ -2,6 +2,7 @@ package src.tokens;
 
 /**
  * A token used to indicate casting in an expression
+ *
  * @author ElectricGun
  */
 

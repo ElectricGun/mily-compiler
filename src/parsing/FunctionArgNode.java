@@ -1,13 +1,15 @@
 package src.parsing;
 
 import src.tokens.*;
+
 /**
  * <h1> Class FunctionArgNode </h1>
  * Function Args
  * Variable declaration node for function arguments,
  * functionally the same
- * @see src.parsing.DeclarationNode
+ *
  * @author ElectricGun
+ * @see src.parsing.DeclarationNode
  */
 
 public class FunctionArgNode extends DeclarationNode {

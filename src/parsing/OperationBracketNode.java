@@ -1,6 +1,7 @@
 package src.parsing;
 
 import java.util.*;
+
 import src.tokens.*;
 
 import static src.constants.Functions.*;
@@ -10,6 +11,7 @@ import static src.constants.Keywords.*;
  * <h1> Class OperationBracketNode </h1>
  * Operation Brackets
  * Helper node for parsing parenthesis within operations, such as (x + y) * z
+ *
  * @author ElectricGun
  */
 
@@ -43,11 +45,11 @@ public class OperationBracketNode extends EvaluatorNode {
                 System.out.printf(indent + "brackets : %s : %s%n", this.nameToken, token);
 
             if (token.length() == 1 && keyEquals(KEY_BRACKET_OPEN, token)) {
-                bracketCounter ++;
+                bracketCounter++;
 
             } else if (token.length() == 1 && keyEquals(KEY_BRACKET_CLOSE, token)) {
                 // replace closing bracket with a constant indicator
-                bracketCounter --;
+                bracketCounter--;
             }
             if (bracketCounter < 0) {
                 OperationNode operationNode = new OperationNode(new Token(this.nameToken.string, this.nameToken.line), depth + 1);

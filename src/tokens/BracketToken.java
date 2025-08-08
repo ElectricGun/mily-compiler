@@ -6,6 +6,7 @@ import static src.constants.Keywords.*;
 
 /**
  * A token used to store parentheses within expressions
+ *
  * @author ElectricGun
  */
 

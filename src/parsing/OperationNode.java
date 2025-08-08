@@ -1,6 +1,7 @@
 package src.parsing;
 
 import java.util.*;
+
 import src.constants.*;
 import src.tokens.*;
 
@@ -18,13 +19,11 @@ import static src.constants.Maps.*;
  *     <li> {@link FunctionCallNode}</li>
  *     <li> {@link OperationBracketNode}</li>
  * </ul>
+ *
  * @author ElectricGun
  */
 
 public class OperationNode extends EvaluatorNode {
-
-    String type = KEY_OP_TYPE_CONSTANT;
-    String operator = "";
 
     public TypedToken constantToken = null;
     public List<OperationBracketNode> bracketOperations = new ArrayList<>();
@@ -32,7 +31,8 @@ public class OperationNode extends EvaluatorNode {
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
     protected boolean isReturnOperation;
-
+    String type = KEY_OP_TYPE_CONSTANT;
+    String operator = "";
     private OperationNode leftSide = null;
     private OperationNode rightSide = null;
 
@@ -75,8 +75,28 @@ public class OperationNode extends EvaluatorNode {
         return this.leftSide;
     }
 
+    public void setLeftSide(OperationNode leftSide) {
+        if (members.contains(this.leftSide)) {
+            members.set(members.indexOf(this.leftSide), leftSide);
+
+        } else {
+            members.addFirst(leftSide);
+        }
+        this.leftSide = leftSide;
+    }
+
     public OperationNode getRightSide() {
         return this.rightSide;
+    }
+
+    public void setRightSide(OperationNode rightSide) {
+        if (members.contains(this.rightSide)) {
+            members.set(members.indexOf(this.rightSide), rightSide);
+
+        } else {
+            members.addLast(rightSide);
+        }
+        this.rightSide = rightSide;
     }
 
     @Override
@@ -89,26 +109,6 @@ public class OperationNode extends EvaluatorNode {
         } else if (rightSide == replaced) {
             rightSide = (OperationNode) replacement;
         }
-    }
-
-    public void setLeftSide(OperationNode leftSide) {
-        if (members.contains(this.leftSide)) {
-            members.set(members.indexOf(this.leftSide), leftSide);
-
-        } else {
-            members.addFirst(leftSide);
-        }
-        this.leftSide = leftSide;
-    }
-
-    public void setRightSide(OperationNode rightSide) {
-        if (members.contains(this.rightSide)) {
-            members.set(members.indexOf(this.rightSide), rightSide);
-
-        } else {
-            members.addLast(rightSide);
-        }
-        this.rightSide = rightSide;
     }
 
     private String getSideConstantTokenString(OperationNode side) {
@@ -130,7 +130,7 @@ public class OperationNode extends EvaluatorNode {
 
     public Double getLeftConstantNumeric() {
         return getLeftConstantString() != null ?
-            Double.parseDouble(getLeftConstantString()) : null;
+                Double.parseDouble(getLeftConstantString()) : null;
     }
 
     public Double getRightConstantNumeric() {
@@ -424,7 +424,7 @@ public class OperationNode extends EvaluatorNode {
 
                         } else {
                             type = KEY_OP_TYPE_OPERATION;
-                            this.operator =  unaryOperator.string;
+                            this.operator = unaryOperator.string;
                         }
                         Token newConstantToken = operationTokens.removeFirst();
 
@@ -450,8 +450,7 @@ public class OperationNode extends EvaluatorNode {
                 } else {
                     return throwSyntaxError("Unexpected token in operation", token);
                 }
-            }
-            else {
+            } else {
                 operationTokens.add(token);
             }
             previousToken = token;

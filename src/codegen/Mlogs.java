@@ -7,6 +7,7 @@ import static src.constants.Functions.*;
 
 public class Mlogs {
     protected static final HashMap<String, String> mlogOperationMap = new HashMap<>();
+
     static {
         // TODO add more ops
         mlogOperationMap.put(KEY_OP_ADD, "add");
@@ -25,6 +26,7 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_STRICT_EQUALS, "strictEqual");
         mlogOperationMap.put(KEY_OP_AND, "and");
     }
+
     public static String opAsMlog(String op) throws IllegalArgumentException {
         if (op.equals(KEY_OP_CAST_EXPLICIT))
             // make this a mily error

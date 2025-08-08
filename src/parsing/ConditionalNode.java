@@ -10,6 +10,7 @@ import static src.constants.Keywords.*;
 /**
  * <h1> Class ConditionalNode </h1>
  * Template for If and While Statements
+ *
  * @author ElectricGun
  */
 
