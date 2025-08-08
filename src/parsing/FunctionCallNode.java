@@ -23,7 +23,7 @@ import static src.constants.Keywords.*;
 public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctionKey, Typed {
 
     protected List<OperationNode> arguments = new ArrayList<>();
-    protected String type;
+    protected String type = KEY_DATA_UNKNOWN;
 
     private boolean expectingArgument = true;
     private boolean isInitialized = false;

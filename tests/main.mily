@@ -4,6 +4,7 @@
 
 #include$std/bulb.mily;
 
+/*
 /---------- Variable Declarations ----------
 int num = 20;
 int x = 6;
@@ -216,3 +217,20 @@ print$"result: \n";
 print$output;
 printflush$message1;
 */
+/*
+int sus = as_int(100.23);
+cout$sus,message1;
+
+int test(int x) {
+    return x + 10;
+}
+
+int tests = test(test(10 + test(10)));
+*/
+
+int f(int x) {
+    return x + 1;
+}
+
+int out = f(f(1) + 1);
+cout$out, message1;

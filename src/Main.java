@@ -59,6 +59,7 @@ public class Main {
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
         validateFunctionDeclares(evaluatorTree, debugMode);
         validateFunctionsCalls(evaluatorTree, doAssignTypes, debugMode);
+        evaluatorTree.printRecursive();
         // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
