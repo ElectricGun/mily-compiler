@@ -213,6 +213,8 @@ public class Validation {
 //            }
             else if (operationNode.isConstant()) {
                 type = operationNode.constantToken.getType();
+
+                type = type == null ? KEY_DATA_UNKNOWN : type;
             }
 
             // TODO remove redundancies
