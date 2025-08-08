@@ -15,13 +15,13 @@ import src.tokens.*;
 
 public class EvaluatorNode {
 
+    private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
     public int depth;
     public Token nameToken;
     // for storing general information
     public Map<String, String> flags = new HashMap<>();
     protected List<MilyThrowable> throwables = new ArrayList<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
-    private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
 
     public EvaluatorNode(Token nameToken, int depth) {
         this.nameToken = nameToken;
