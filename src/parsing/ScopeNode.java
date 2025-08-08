@@ -142,7 +142,7 @@ public class ScopeNode extends EvaluatorNode {
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
                 // FUNCTION RETURN
-                OperationNode returnOp = new OperationNode(new Token(this.nameToken + "_return", token.line), depth + 1, true);
+                OperationNode returnOp = new OperationNode(new Token(this.nameToken + "_return", token.source, token.line), depth + 1, true);
                 members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
             }
             previousToken = token;

@@ -43,7 +43,7 @@ public class DeclarationNode extends VariableNode {
                     if (debugMode)
                         System.out.printf(indent + "Creating new function \"%s\"%n", this.nameToken);
 
-                    return new FunctionDeclareNode(this.getType(), new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
+                    return new FunctionDeclareNode(this.getType(), new Token(variableName, nameToken.source, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
 
                 } else {
                     return throwSyntaxError("Unexpected punctuation on variable declaration", token);
@@ -56,7 +56,7 @@ public class DeclarationNode extends VariableNode {
                     System.out.println(variableName);
                 // check for equal sign
                 if (keyEquals(KEY_OP_ASSIGN, token) && isDeclared()) {
-                    OperationNode operationNode = new OperationNode(new Token("op_" + this.nameToken, this.nameToken.line), depth + 1);
+                    OperationNode operationNode = new OperationNode(new Token("op_" + this.nameToken, this.nameToken.source, this.nameToken.line), depth + 1);
                     members.add(operationNode.evaluate(tokenList, evaluatorTree, debugMode));
                     return this;
 

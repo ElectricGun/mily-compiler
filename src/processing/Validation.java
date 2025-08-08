@@ -39,9 +39,9 @@ public class Validation {
 
             boolean isMultipleErrors = evaluatorNode.throwablesCount() > 1;
 
-            System.out.print(ANSI_RED);
+            System.out.print(ANSI_ERROR);
             if (isMultipleErrors) {
-                System.out.println(String.format("Multiple errors on line %s, token: \"%s\":", evaluatorNode.nameToken.line, evaluatorNode.nameToken));
+                System.out.println(String.format("Multiple errors on file \"%s\" line %s, token: \"%s\":", evaluatorNode.nameToken.source, evaluatorNode.nameToken.line, evaluatorNode.nameToken));
             }
             for (int i = 0; i < evaluatorNode.throwablesCount(); i++) {
                 System.out.println((isMultipleErrors ? "\t" : "") + evaluatorNode.getThrowable(i).getErrorMessage());
@@ -50,9 +50,10 @@ public class Validation {
             Stack<EvaluatorNode> newStack = new Stack<>();
             newStack.addAll(traceStack);
 
-            while (!newStack.isEmpty()) {
+            // > 1 to avoid unnecessarily printing the __MAIN__ node
+            while (newStack.size() > 1) {
                 EvaluatorNode trace = newStack.pop();
-                System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, line %s%n", trace, trace.nameToken.line);
+                System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, file: \"%s\", line: %s%n", trace.nameToken, trace.nameToken.source, trace.nameToken.line);
             }
             System.out.print(ANSI_RESET);
         }

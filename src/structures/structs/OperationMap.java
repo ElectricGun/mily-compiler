@@ -51,7 +51,7 @@ public class OperationMap {
             }
         } else {
             newOp.setOperator(KEY_OP_CAST_EXPLICIT);
-            factorConstant.constantToken = new TypedToken("1", operationNode.nameToken.line, operationNode.getOperator());
+            factorConstant.constantToken = new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line);
         }
 
         newOp.setLeftSide(memberChild);

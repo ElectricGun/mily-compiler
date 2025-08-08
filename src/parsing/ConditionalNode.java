@@ -67,7 +67,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
                         return;
                     }
 
-                    operationTokens.add(new Token(";", nameToken.line));
+                    operationTokens.add(new Token(";", nameToken.source, nameToken.line));
                     OperationNode operationNode = new OperationNode(this.nameToken, depth + 1);
                     members.add(operationNode.evaluate(operationTokens, evaluatorTree, debugMode));
                     this.expression = operationNode;

@@ -10,7 +10,7 @@ import static src.constants.Keywords.*;
 
 public class VoidToken extends TypedToken {
 
-    public VoidToken(String string, int line) {
-        super(string, line, KEY_DATA_VOID);
+    public VoidToken(String string, String source, int line) {
+        super(string, source, KEY_DATA_VOID, line);
     }
 }

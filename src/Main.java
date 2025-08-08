@@ -1,5 +1,6 @@
 package src;
 
+import java.io.File;
 import java.util.*;
 
 import src.codegen.*;
@@ -31,11 +32,11 @@ public class Main {
         // tokenise
         List<Token> tokenList;
         try {
-            tokenList = tokenize(code.getCode(), debugMode);
+            tokenList = tokenize(code.getCode(), new File(code.getDirectory(), code.getFilename()).getPath(), debugMode);
             tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode);
         } catch (Exception e) {
             // todo: unhardcode this message
-            System.out.println(ANSI_RED + "MilyLexingError: " + e.getMessage() + ANSI_RESET);
+            System.out.println(ANSI_ERROR + "MilyLexingError: " + e.getMessage() + ANSI_RESET);
             return;
         }
         long lexingDuration = (System.nanoTime() - startCompileTime);
@@ -59,7 +60,7 @@ public class Main {
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
         validateFunctionDeclares(evaluatorTree, debugMode);
         validateFunctionsCalls(evaluatorTree, doAssignTypes, debugMode);
-        evaluatorTree.printRecursive();
+//        evaluatorTree.printRecursive();
         // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
@@ -81,7 +82,7 @@ public class Main {
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
-        evaluatorTree.printRecursive();
+//        evaluatorTree.printRecursive();
         System.out.println();
         System.out.println("Compilation successful");
         System.out.println("Output:");

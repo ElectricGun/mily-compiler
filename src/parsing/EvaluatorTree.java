@@ -16,7 +16,7 @@ public class EvaluatorTree {
 
     protected final boolean debugMode;
     public String name = "";
-    public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", 1), 0);
+    public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", "__MAIN__", 1), 0);
 
     public EvaluatorTree(boolean debugMode) {
         this.debugMode = debugMode;

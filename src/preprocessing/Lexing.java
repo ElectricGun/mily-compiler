@@ -33,7 +33,9 @@ public class Lexing {
     private static int commentStartLine;
     private static String commentBuffer;
 
-    private static void init(String input) {
+    private static String _source;
+
+    private static void init(String input, String source) {
         tokens = new ArrayList<>();
         tokenString = "";
         isInitialized = false;
@@ -44,6 +46,7 @@ public class Lexing {
         commentModeInline = false;
         commentStartLine = 0;
         commentBuffer = "";
+        _source = source;
     }
 
     private static void tryAddToken(boolean debugMode) {
@@ -57,7 +60,7 @@ public class Lexing {
             } else {
                 if (debugMode)
                     System.out.println("Line " + currentLine + " added: " + tokenString);
-                tokens.add(new Token(tokenString, currentLine));
+                tokens.add(new Token(tokenString, _source, currentLine));
             }
         } else if (keyEquals(KEY_COMMENT_MULTILINE_END, tokenString)) {
             commentModeInline = false;
@@ -65,8 +68,8 @@ public class Lexing {
         }
     }
 
-    public static List<Token> tokenize(String input, boolean debugMode) throws Exception {
-        init(input);
+    public static List<Token> tokenize(String input, String source, boolean debugMode) throws Exception {
+        init(input, source);
 
         for (int index = 0; index < charArray.length; index++) {
             char c = charArray[index];

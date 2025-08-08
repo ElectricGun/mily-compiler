@@ -94,7 +94,7 @@ public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctio
                     operationTokens.add(currToken);
                 }
                 expectingArgument = false;
-                operationTokens.add(new Token(KEY_SEMICOLON, operationTokens.getLast().line));
+                operationTokens.add(new Token(KEY_SEMICOLON, operationTokens.getLast().source, operationTokens.getLast().line));
 
                 OperationNode newOp = new OperationNode(token, depth + 1);
                 newOp.evaluate(operationTokens, evaluatorTree, debugMode);

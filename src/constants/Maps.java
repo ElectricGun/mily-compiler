@@ -283,7 +283,12 @@ public class Maps {
 
         Consumer<UnaryToBinaryStruct> baseUnaryConsumer = b -> {
             b.getNewOp().setOperator(KEY_OP_MUL);
-            b.getFactor().constantToken = new TypedToken(b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1", b.getOldOp().nameToken.line, KEY_DATA_INT);
+            b.getFactor().constantToken = new TypedToken(
+                    b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1",
+                    b.getOldOp().nameToken.source,
+                    KEY_DATA_INT,
+                    b.getOldOp().nameToken.line
+            );
         };
 
         operationMap.addUnaryOperationConverter(KEY_OP_ADD, baseUnaryConsumer);

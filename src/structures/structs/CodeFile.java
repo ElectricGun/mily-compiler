@@ -11,8 +11,10 @@ public class CodeFile {
 
     String code;
     String filename;
+    String directory;
 
-    public CodeFile(String filename, String code) {
+    public CodeFile(String directory, String filename, String code) {
+        this.directory = directory;
         this.code = code;
         this.filename = filename;
     }
@@ -23,6 +25,10 @@ public class CodeFile {
 
     public String getFilename() {
         return filename;
+    }
+
+    public String getDirectory() {
+        return directory;
     }
 
     @Override

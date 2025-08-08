@@ -98,7 +98,7 @@ public class ForLoopNode extends EvaluatorNode {
                         Token opToken = operationTokens.removeFirst();
 
                         if (keyEquals(KEY_OP_ASSIGN, opToken)) {
-                            operationTokens.add(new Token(KEY_SEMICOLON, token.line));
+                            operationTokens.add(new Token(KEY_SEMICOLON, nameToken.source, token.line));
                             updater = new AssignmentNode(variableName, depth + 1);
                             members.add(updater.evaluate(operationTokens, evaluatorTree, debugMode));
                             break;

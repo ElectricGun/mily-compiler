@@ -10,8 +10,8 @@ public class CastToken extends Token {
 
     String type;
 
-    public CastToken(String string, String type, int line) {
-        super(string, line);
+    public CastToken(String string, String source, String type, int line) {
+        super(string, source, line);
 
         this.type = type;
     }

@@ -211,7 +211,7 @@ public class OperationNode extends EvaluatorNode {
                         FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
                         FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree, debugMode);
 
-                        FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.nameToken.string, token.line, evaluated);
+                        FunctionCallToken functionCallToken = new FunctionCallToken(evaluated.nameToken.string, token.source, token.line, evaluated);
                         operationTokens.add(functionCallToken);
 
                     } else {
@@ -270,7 +270,7 @@ public class OperationNode extends EvaluatorNode {
                         } else {
                             if (debugMode)
                                 System.out.println(indent + "cast found (" + datatypeToken.string + ")");
-                            CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.line);
+                            CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.source, token.line);
                             operationTokens.add(castToken);
 
                             // add this back because it was only removed as a means of checking
@@ -311,7 +311,7 @@ public class OperationNode extends EvaluatorNode {
 
                         // start bracket
                         if (currentOrder == -4) {
-                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.nameToken, this.nameToken.line), depth + 1, i);
+                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.nameToken, this.nameToken.source, this.nameToken.line), depth + 1, i);
                             bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, orders, evaluatorTree, debugMode));
                         }
 
@@ -354,7 +354,7 @@ public class OperationNode extends EvaluatorNode {
                     }
 
                     if (operationTokens.isEmpty()) {
-                        constantToken = new VoidToken("void", token.line);
+                        constantToken = new VoidToken("void", token.source, token.line);
                         return this;
                     }
 
@@ -379,16 +379,17 @@ public class OperationNode extends EvaluatorNode {
                         List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
                         List<Token> right = new ArrayList<>(operationTokens.subList(largestOrderIndex + 1, operationTokens.size()));
 
-                        left.add(new Token(";", operationTokens.getLast().line));
-                        right.add(new Token(";", operationTokens.getLast().line));
+                        Token lastToken = operationTokens.getLast();
+                        left.add(new Token(";", lastToken.source, lastToken.line));
+                        right.add(new Token(";", lastToken.source, lastToken.line));
 
                         if (left.size() > 1) {
-                            OperationNode op = new OperationNode(new Token("l_" + this.nameToken, this.nameToken.line), depth + 1);
+                            OperationNode op = new OperationNode(new Token("l_" + this.nameToken, this.nameToken.source, this.nameToken.line), depth + 1);
                             setLeftSide((OperationNode) op.evaluate(left, evaluatorTree, debugMode));
                         }
 
                         if (right.size() > 1) {
-                            OperationNode op = new OperationNode(new Token("r_" + this.nameToken, this.nameToken.line), depth + 1);
+                            OperationNode op = new OperationNode(new Token("r_" + this.nameToken, this.nameToken.source, this.nameToken.line), depth + 1);
                             setRightSide((OperationNode) op.evaluate(right, evaluatorTree, debugMode));
 
                         } else {
@@ -468,7 +469,7 @@ public class OperationNode extends EvaluatorNode {
 
     public void makeConstant(String newString) {
         String newTokenType = Functions.guessValueType(newString);
-        this.constantToken = new TypedToken(newString, this.nameToken.line, newTokenType);
+        this.constantToken = new TypedToken(newString, this.nameToken.source, newTokenType, this.nameToken.line);
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);
         setRightSide(null);

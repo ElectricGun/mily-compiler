@@ -32,7 +32,7 @@ public class Functions {
         }
         sc.close();
 
-        return new CodeFile(filename, code.toString());
+        return new CodeFile(directory, filename, code.toString());
     }
 
     public static boolean keyEquals(String key, String compare) {

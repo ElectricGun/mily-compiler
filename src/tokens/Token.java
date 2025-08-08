@@ -9,11 +9,13 @@ package src.tokens;
 public class Token {
 
     public String string;
+    public String source;
     public int line;
 
-    public Token(String string, int line) {
+    public Token(String string, String source, int line) {
         this.string = string;
         this.line = line;
+        this.source = source;
     }
 
     public int length() {

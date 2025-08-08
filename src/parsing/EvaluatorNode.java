@@ -21,6 +21,7 @@ public class EvaluatorNode {
     public Map<String, String> flags = new HashMap<>();
     protected List<MilyThrowable> throwables = new ArrayList<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
+    private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
 
     public EvaluatorNode(Token nameToken, int depth) {
         this.nameToken = nameToken;
@@ -66,22 +67,23 @@ public class EvaluatorNode {
         }
     }
 
+    // TODO: use polymorphism instead
     public EvaluatorNode throwSyntaxError(String message, Token token) {
-        String errorMessage = String.format("Syntax error on line: %s, token: \"%s\": ", token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token) + message;
         this.throwables.add(new MilySyntaxError(errorMessage));
 
         return this;
     }
 
     public EvaluatorNode throwSemanticError(String message, Token token) {
-        String errorMessage = String.format("Semantic error on line: %s, token: \"%s\": ", token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Semantic error", token.source, token.line, token) + message;
         this.throwables.add(new MilySemanticError(errorMessage));
 
         return this;
     }
 
     public EvaluatorNode throwTypeError(String message, Token token) {
-        String errorMessage = String.format("Type error on line: %s, token: \"%s\": ", token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Type error", token.source, token.line, token) + message;
         this.throwables.add(new MilyTypeError(errorMessage));
 
         return this;

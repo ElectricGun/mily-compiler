@@ -12,14 +12,14 @@ public class TypedToken extends Token implements Typed {
 
     String type;
 
-    public TypedToken(String string, int line, String type) {
-        super(string, line);
+    public TypedToken(String string, String source, String type, int line) {
+        super(string, source, line);
 
         this.type = type;
     }
 
     public static TypedToken fromToken(Token token, String type) {
-        return new TypedToken(token.string, token.line, type);
+        return new TypedToken(token.string, token.source, type, token.line);
     }
 
     @Override
