@@ -93,6 +93,6 @@ public class RawTemplateNode extends EvaluatorNode implements Named {
 
     @Override
     public String toString() {
-        return "template: " + argStrings;
+        return "template: " + getName() + argStrings;
     }
 }
