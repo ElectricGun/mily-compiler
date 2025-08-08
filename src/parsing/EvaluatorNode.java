@@ -57,16 +57,8 @@ public class EvaluatorNode {
 
     public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         try {
-            EvaluatorNode newEvaluator = evaluator(tokenList, evaluatorTree, debugMode);
+            return evaluator(tokenList, evaluatorTree, debugMode);
 
-            // TODO: maybe for future optimisation
-//            for (int i = 0; i < newEvaluator.memberCount(); i++) {
-//                if (newEvaluator.getMember(i).errored) {
-//                    this.errored = true;
-//                }
-//            }
-
-            return newEvaluator;
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
