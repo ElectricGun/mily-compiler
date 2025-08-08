@@ -1,0 +1,41 @@
+/-------- Standard library file --------
+
+raw print:x $
+    print x
+$
+
+raw printflush:x $
+    printflush x
+$
+
+raw cout: x, y $
+    print x
+    printflush y
+$
+
+raw wait:x $
+    wait x
+$
+
+raw end $
+    end
+$
+
+raw stop $
+    stop
+$
+
+raw as_int:x $
+    op floor out x
+    jump to_int_label greaterThanEq out 0
+        op add out out 1
+    to_int_label:
+$
+
+int as_int(double x) {
+    int out = x // 1;
+    if (out < 0) {
+        out = out + 1;
+    }
+    return out;
+}

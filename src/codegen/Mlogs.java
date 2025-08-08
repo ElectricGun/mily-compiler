@@ -26,6 +26,10 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_AND, "and");
     }
     public static String opAsMlog(String op) throws IllegalArgumentException {
+        if (op.equals(KEY_OP_CAST_EXPLICIT))
+            // make this a mily error
+            throw new IllegalArgumentException("Primitive explicit casting may only be done on constant values in compile time");
+
         if (!mlogOperationMap.containsKey(op))
             throw new IllegalArgumentException(String.format("Operation \"%s\" has no mlog equivalent", op));
 

@@ -1,5 +1,6 @@
 # Urgent TODO:
  - Raw template and template invocation validation
+ - Allow for function calls in raw templates
  - Create a string counter for generated variables to prevent conflicts
 
 # Problems:
@@ -13,6 +14,7 @@
  - 
 # Useful
  - Inline raw mlog (can be used for defining mlog commands in libraries)
+ - Type hinting system for raw mlog blocks if they return something
  - pointers for memory variables
  - pre-ast macros
 
