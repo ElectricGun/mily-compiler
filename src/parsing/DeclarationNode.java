@@ -89,6 +89,6 @@ public class DeclarationNode extends VariableNode {
 
     @Override
     public String toString() {
-        return "declare %s %s :=".formatted(type, variableName);
+        return String.format("declare %s %s :=", type, variableName);
     }
 }
