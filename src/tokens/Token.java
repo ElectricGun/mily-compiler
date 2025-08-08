@@ -23,4 +23,12 @@ public class Token {
     public String toString() {
         return string;
     }
+
+    public boolean equalsKey(String key) {
+        return string.equals(key);
+    }
+
+    public boolean equalsKey(Token key) {
+        return string.equals(key.string);
+    }
 }

@@ -3,6 +3,7 @@ package src;
 import java.util.*;
 
 import src.codegen.*;
+import src.preprocessing.Preprocess;
 import src.structures.structs.*;
 import src.tokens.*;
 import src.parsing.*;
@@ -10,7 +11,7 @@ import src.parsing.*;
 import static src.codegen.CodeGeneration.*;
 import static src.constants.Ansi.*;
 import static src.constants.Functions.*;
-import static src.processing.Lexing.*;
+import static src.preprocessing.Lexing.*;
 import static src.processing.Pruning.*;
 import static src.processing.Validation.*;
 
@@ -22,7 +23,8 @@ public class Main {
         long startTime = System.nanoTime();
 
         // read code
-        CodeFile code = readFile("tests/main.mily");
+        String cwd = "tests/";
+        CodeFile code = readFile(cwd, "main.mily");
 
         long startCompileTime = System.nanoTime();
 
@@ -30,6 +32,7 @@ public class Main {
         List<Token> tokenList;
         try {
             tokenList = tokenize(code.getCode(), debugMode);
+            tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode);
         } catch (Exception e) {
             // todo: unhardcode this message
             System.out.println(ANSI_RED + "MilyLexingError: " + e.getMessage() +  ANSI_RESET);

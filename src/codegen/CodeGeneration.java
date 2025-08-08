@@ -146,7 +146,12 @@ public class CodeGeneration {
 
             } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
                 IRBlock irBlock = new IRBlock();
-                String formatted = templateNodeMap.get(rawTemplateInvoke.getName()).getScope().asFormatted(rawTemplateInvoke.getArgs());
+                RawTemplateNode rawTemplateNode = templateNodeMap.get(rawTemplateInvoke.getName());
+
+                if (rawTemplateNode == null) {
+                    throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
+                }
+                String formatted =  rawTemplateNode.getScope().asFormatted(rawTemplateInvoke.getArgs());
 
                 String[] lineContent = formatted.split(KEY_NEWLINE);
                 for (String s : lineContent) {

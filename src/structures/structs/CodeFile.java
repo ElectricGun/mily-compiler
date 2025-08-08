@@ -23,4 +23,9 @@ public class CodeFile {
     public String getFilename() {
         return filename;
     }
+
+    @Override
+    public String toString() {
+        return "CodeFile: filename \"\"\"\n" + code + "\"\"\"";
+    }
 }

@@ -1,4 +1,4 @@
-package src.processing;
+package src.preprocessing;
 
 import src.constants.*;
 import src.tokens.*;

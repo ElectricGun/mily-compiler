@@ -1,34 +1,10 @@
 /---------------------- FEATURE DEMO ---------------------
 
-/*
-Variables, functions and macros declared below here are supposed to be
-in the standard library (bulb.mily)
-but the library import feature (#include) has not been implemented yet (too eepy rn)
-*/
-/- start placeholders
-raw print:x $
-    print x
-$
-raw printflush:x $
-    printflush x
-$
-raw cout: x, y $
-    print x
-    printflush y
-$
-raw wait:x $
-    wait x
-$
-raw end $
-    end
-$
-raw stop $
-    stop
-$
-/- end placeholders
+#include$lib/bulb.mily;
+
 /*
 /---------- Variable Declarations ----------
-let num = 20;
+int num = 20;
 int x = 6;
 double y = 43.4;
 
@@ -38,8 +14,8 @@ x = 10;
 y = 40;
 
 /---------- Explicit Casting (Primitive) ----------
-int test2 = (int) 5.3;
-int test = (int) (30 / 4);
+/- int test2 = (int) 5.3;
+/- int test = (int) (30 / 4);
 
 /---------- Inline Statements ----------
 num = 30; x = 10; y = 40;
@@ -50,18 +26,20 @@ int f(int f_x) {
 }
 
 int f2(int f_x, int f_y) {
-    return (int) (f_x + f_y);
+    return (f_x + f_y);
 }
 
 /---------- For Loops ----------
 for (int i = 0; i < 100; i = i + 1) {
-    print(i);
+    print$i;
+    printflush$message1;
 }
 
 /---------- While Loops ----------
 int while_var = 0;
 while (true) {
-    print(while_var);
+    print$while_var;
+    printflush$message1;
     while_var = while_var + 1;
 }
 
@@ -86,10 +64,10 @@ else {
 boolean complex_function(int h, int j) {
     return (1 - ((h + j) * 4) + 1) == 1 + j && (h + j > 10);
 }
-let complex = (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)) - 10)) + 289;
+double complex = (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)) - 10)) + 289;
 /- simplifies to 242.73333333333335 double on compilation
 
-let complex_cast_int = (int) (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)) - 10)) + 289;
+/- int complex_cast_int = (int) (-(((60 + (1 + -3 + 2 + -5 - 3) // -6 / -30 * (92 + 20) - -100 ** -2 / 3)) - 10)) + 289;
 /- simplifies to 243 int on compilation
 
 /-------------------- Semantic Errors (uncomment them to see)  --------------------
@@ -218,6 +196,7 @@ while (true) {
 }
 */
 
+/*
 int test2(int x) {
     return x;
 }
@@ -231,3 +210,9 @@ boolean test2(boolean x, int y) {
 int among = test2(10);
 boolean among1 = test2(10, 10);
 boolean among2 = test2(false, 10);
+
+print$"result: \n";
+print$output;
+printflush$message1;
+*/
+

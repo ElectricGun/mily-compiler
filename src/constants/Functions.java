@@ -17,8 +17,8 @@ import static src.constants.Keywords.*;
 
 public class Functions {
 
-    public static CodeFile readFile(String relpath) throws FileNotFoundException {
-        File file = new File(relpath);
+    public static CodeFile readFile(String directory, String fileName) throws FileNotFoundException {
+        File file = new File(directory, fileName);
         String filename = file.getName();
 
         System.out.println(file.getAbsoluteFile());

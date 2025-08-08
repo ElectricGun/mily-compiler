@@ -42,7 +42,8 @@ public class Maps {
             KEY_CONDITIONAL_ELSE,
             KEY_LOOPING_WHILE,
             KEY_LOOPING_FOR,
-            KEY_RAW
+            KEY_RAW,
+            KEY_INCLUDE
 //            KEY_BREAK,
 //            KEY_CONTINUE,
 //            KEY_LOOPING_REPEAT,

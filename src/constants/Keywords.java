@@ -45,7 +45,10 @@ public class Keywords {
         KEY_SECTION = "section",
         KEY_END_SECTION = "endsection",
         KEY_ENDIF = "endif",
+
+    // keywords: macro
         KEY_RAW = "raw",
+        KEY_INCLUDE = "include",
 
     // keywords: booleans
         KEY_BOOLEAN_FALSE = "false",
