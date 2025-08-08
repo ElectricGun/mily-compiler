@@ -175,11 +175,11 @@ public class CodeGeneration {
 
         IRFunction calledFunction = functionMap.get(fnKey);
 
-        irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
         for (int a = 0; a < fnCall.getArgCount(); a++) {
             addOperationIRBlock(fnCall.getArg(a), irCode, functionMap, calledFunction.getArg(a), hashCodeSimplifier, depth, debugMode);
         }
 
+        irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
         irCode.addSingleLineBlock(new BinaryOp(calledFunction.getCallbackVar(), KEY_OP_ADD, "@counter", "1", depth));
         irCode.addSingleLineBlock(new Jump("always", calledFunction.getCallLabel(), depth));
 
