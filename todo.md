@@ -1,7 +1,9 @@
 # Urgent TODO:
+ - Function arg names may cause conflicts
  - Raw template and template invocation validation
  - Allow for function calls in raw templates
  - Create a string counter for generated variables to prevent conflicts
+ - library circular dependencies
 
 # Problems:
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
