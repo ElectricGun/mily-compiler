@@ -45,10 +45,6 @@ public class DeclarationNode extends VariableNode {
 
                     return new FunctionDeclareNode(this.getType(), new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
 
-//                    EvaluatorNode node = new FunctionDeclareNode(new Token(variableName, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
-//                    members.add(node);
-//                    return this;
-
                 } else {
                     return throwSyntaxError("Unexpected punctuation on variable declaration", token);
                 }
