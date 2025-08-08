@@ -28,7 +28,9 @@ public class Pruning {
 
             // truncate self if empty
             if (operationNode.isEmptyConstant() && parent != null) {
-                parent.replaceMember(operationNode, operationNode.getLeftSide());
+                OperationNode replacer = operationNode.getLeftSide();
+                replacer.setReturnOperation(operationNode.isReturnOperation());
+                parent.replaceMember(operationNode, replacer);
             }
         }
 

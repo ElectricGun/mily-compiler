@@ -216,3 +216,6 @@ print$output;
 printflush$message1;
 */
 
+int f2(int f_x, int f_y) {
+    return (f_x + f_y);
+}
