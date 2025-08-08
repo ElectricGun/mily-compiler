@@ -373,7 +373,7 @@ public class Validation {
                 if (operationNode.constantToken instanceof FunctionCallToken functionCallToken) {
                     FunctionCallNode functionCallNode = functionCallToken.getNode();
 
-                    if (!ValidateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {
+                    if (!validateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {
                         member.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(getCallTypes(functionCallNode, debugMode))), functionCallNode.nameToken);
                     }
                     for (int a = 0; a < functionCallNode.getArgCount(); a++) {
@@ -385,7 +385,7 @@ public class Validation {
                     functionDeclares.add(functionDeclareNode);
 
             } else if (member instanceof FunctionCallNode functionCallNode) {
-                if (!ValidateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {
+                if (!validateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {
                     functionCallNode.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(getCallTypes(functionCallNode, debugMode))), functionCallNode.nameToken);
                 }
             }
@@ -402,21 +402,21 @@ public class Validation {
         return callTypes;
     }
 
-    private static boolean ValidateAssignFunction(FunctionCallNode functionCallNode, List<FunctionDeclareNode> functionDeclares, boolean doAssignTypes, boolean debugMode) {
+    private static boolean validateAssignFunction(FunctionCallNode functionCallNode, List<FunctionDeclareNode> functionDeclares, boolean doAssignTypes, boolean debugMode) {
         boolean valid = false;
         // recursively set the types of function calls for nested calls
         for (int a = 0; a < functionCallNode.getArgCount(); a++) {
             OperationNode arg = functionCallNode.getArg(a);
             if (arg.constantToken instanceof FunctionCallToken fn) {
-                ValidateAssignFunction(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
+                validateAssignFunction(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
             }
 
             if (arg.getLeftSide() instanceof OperationNode op && op.constantToken instanceof FunctionCallToken fn) {
-                ValidateAssignFunction(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
+                validateAssignFunction(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
             }
 
             if (arg.getRightSide() instanceof OperationNode op && op.constantToken instanceof FunctionCallToken fn) {
-                ValidateAssignFunction(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
+                validateAssignFunction(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
             }
         }
         String[] callTypes = getCallTypes(functionCallNode, debugMode);
