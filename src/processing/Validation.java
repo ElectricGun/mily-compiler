@@ -199,7 +199,7 @@ public class Validation {
 
                 } catch (IllegalArgumentException e) {
                     if (throwErrors)
-                        operationNode.throwSemanticError(e.getMessage(), operationNode.nameToken);
+                        operationNode.throwTypeError(e.getMessage(), operationNode.nameToken);
                     if (debugMode)
                         System.out.println("ERROR " + type + "  " + evaluatorNode);
                     return type;
@@ -225,7 +225,7 @@ public class Validation {
 
             if (!assignmentNode.getType().equals(compare) && !canImplicitCast(compare, assignmentNode.getType())) {
                 if (throwErrors)
-                    assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
+                    assignmentNode.throwTypeError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
                 if (debugMode)
                     System.out.println(type + "  " + evaluatorNode);
                 return type;
@@ -244,7 +244,7 @@ public class Validation {
 
                 if (!declarationNode.getType().equals(compare) && !canImplicitCast(compare, declarationNode.getType())) {
                     if (throwErrors)
-                        declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
+                        declarationNode.throwTypeError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
                     if (debugMode)
                         System.out.println(type + "  " + evaluatorNode);
                     return type;
@@ -311,7 +311,7 @@ public class Validation {
                 String opType = validateTypesHelper(op, false, debugMode);
 
                 if (!returnType.equals(opType))
-                    op.throwSemanticError("Invalid return type " + opType, op.nameToken);
+                    op.throwTypeError("Invalid return type " + opType, op.nameToken);
 
                 if (debugMode)
                     System.out.println("Return found on " + evaluatorNode);

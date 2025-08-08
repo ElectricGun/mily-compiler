@@ -88,6 +88,13 @@ public class EvaluatorNode {
         return this;
     }
 
+    public EvaluatorNode throwTypeError(String message, Token token) {
+        String errorMessage = String.format("Type error on line: %s, token: \"%s\": ", token.line, token) + message;
+        this.throwables.add(new MilyTypeError(errorMessage));
+
+        return this;
+    }
+
     public EvaluatorNode throwThrowable(MilyThrowable throwable) {
         this.throwables.add(throwable);
 
