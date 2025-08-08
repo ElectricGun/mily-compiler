@@ -20,9 +20,10 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctionKey {
+public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctionKey, Typed {
 
     protected List<OperationNode> arguments = new ArrayList<>();
+    protected String type;
 
     private boolean expectingArgument = true;
     private boolean isInitialized = false;
@@ -130,5 +131,15 @@ public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctio
             }
         }
         return fnKey.toString();
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(String type) {
+        this.type = type;
     }
 }

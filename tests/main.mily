@@ -199,18 +199,35 @@ if (true) {
 }
 */
 
-
+/*
 /- Nested Function
-int test(int x, int y, int z) {
-    int test2(int x_) {
-        int test3(int x__) {
-            return x + x_ + x__;
+while (true) {
+    int test(int x, int y, int z) {
+        int test2(int x_) {
+            int test3(int x__) {
+                return x + x_ + x__;
+            }
+            return test3(x) + x_;
         }
-        return test3(x) + x_;
+        return test2(x + y + z);
     }
-    return test2(x + y + z);
+    int output = test(3, 3, 3) + test(1, 2, 3);
+    print$"result: \n";
+    print$output;
+    printflush$message1;
 }
-int output = test(3, 3, 3) + test(1, 2, 3);
-print$"result: \n";
-print$output;
-printflush$message1;
+*/
+
+int test2(int x) {
+    return x;
+}
+boolean test2(int x, int y) {
+    return false;
+}
+boolean test2(boolean x, int y) {
+    return false;
+}
+
+int among = test2(10);
+boolean among1 = test2(10, 10);
+boolean among2 = test2(false, 10);

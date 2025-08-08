@@ -14,15 +14,43 @@ import static src.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunctionKey {
-
-    public FunctionDeclareNode(Token name, int depth) {
-        super(name, depth);
-    }
+public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunctionKey, Typed {
 
     List<String> argumentNames = new ArrayList<>();
     List<String> argumentTypes = new ArrayList<>();
     ScopeNode scope;
+
+    String returnType;
+
+    public FunctionDeclareNode(String returnType, Token name, int depth) {
+        super(name, depth);
+
+        this.returnType = returnType;
+    }
+
+    public List<String> getArgumentNames() {
+        return new ArrayList<>(argumentNames);
+    }
+
+    public List<String> getArgumentTypes() {
+        return new ArrayList<>(argumentTypes);
+    }
+
+    public String[] getArgumentNamesArr() {
+        String[] out = new String[argumentNames.size()];
+        for (int i = 0; i < out.length; i++) {
+            out[i] = argumentNames.get(i);
+        }
+        return out;
+    }
+
+    public String[] getArgumentTypesArr() {
+        String[] out = new String[argumentTypes.size()];
+        for (int i = 0; i < out.length; i++) {
+            out[i] = argumentTypes.get(i);
+        }
+        return out;
+    }
 
     public ScopeNode getScope() {
         return scope;
@@ -126,7 +154,10 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
         return String.format("declare function : %s | args: %s", nameToken, String.join(", ", argumentNames));
     }
 
-    public boolean isOverload(String ... types) {
+    public boolean isOverload(String name, String ... types) {
+        if (!this.getName().equals(name)) {
+            return false;
+        }
         if (types.length != argumentNames.size()) {
             return false;
         }
@@ -151,5 +182,15 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
             }
         }
         return fnKey.toString();
+    }
+
+    @Override
+    public String getType() {
+        return returnType;
+    }
+
+    @Override
+    public void setType(String type) {
+        returnType = type;
     }
 }

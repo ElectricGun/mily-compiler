@@ -119,7 +119,12 @@ public class Validation {
                 }
             } else if (member instanceof OperationNode memberOp && isVariableName(memberOp.constantToken)) {
                 String assignedVar = memberOp.constantToken.string;
-                if (!declaredVariablesNames.contains(assignedVar)) {
+                // THE SAME #1
+                if (memberOp.constantToken instanceof FunctionCallToken functionCallToken) {
+                    FunctionCallNode functionCallNode = functionCallToken.getNode();
+                    validateDeclarationsHelper(functionCallNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
+
+                } else if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
                 } else if (memberOp.constantToken.getType().equals(KEY_DATA_UNKNOWN)) {
@@ -128,27 +133,27 @@ public class Validation {
                     if (doAssignTypes) {
                         memberOp.constantToken.setType(type);
                     }
-
+                    // THE SAME #2
                     if (memberOp.constantToken instanceof FunctionCallToken functionCallToken) {
                         FunctionCallNode functionCallNode = functionCallToken.getNode();
                         validateDeclarationsHelper(functionCallNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
                     }
                 }
-            } else if (member instanceof FunctionCallNode functionDeclareMember) {
-                String assignedVar = functionDeclareMember.nameToken.string;
-                if (!declaredVariablesNames.contains(assignedVar)) {
-                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
-                }
             }
+            // moved to validateFunctionsCalls
+//            else if (member instanceof FunctionCallNode functionDeclareMember) {
+//                String assignedVar = functionDeclareMember.nameToken.string;
+//                if (!declaredVariablesNames.contains(assignedVar)) {
+//                    member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
+//                }
+//            }
             List<String> newDeclares = new ArrayList<>(declaredVariablesNames);
             List<String> newTypes = new ArrayList<>(variableTypes);
 
-            if (member instanceof DeclarationNode dec && dec.memberCount() > 0 && !(dec.getMember(0) instanceof FunctionDeclareNode)) {
+            if (member instanceof DeclarationNode dec && dec.memberCount() > 0) {
                 newDeclares.removeLast();
                 newTypes.removeLast();
             }
-            //
-
             validateDeclarationsHelper(member, newDeclares, newTypes, doAssignTypes, debugMode);
         }
     }
@@ -185,7 +190,6 @@ public class Validation {
                 if (operationNode.getLeftSide() != null) {
                     leftType = validateTypesHelper(operationNode.getLeftSide(), throwErrors, debugMode);
                 }
-
                 if (operationNode.getRightSide() != null) {
                     rightType = validateTypesHelper(operationNode.getRightSide(), throwErrors, debugMode);
                 }
@@ -208,7 +212,6 @@ public class Validation {
 //
 //            }
             else if (operationNode.isConstant()) {
-
                 type = operationNode.constantToken.getType();
             }
 
@@ -218,7 +221,6 @@ public class Validation {
                 System.out.println("Assignment found");
             String compare = validateTypesHelper(evaluatorNode.getMember(0), false, debugMode);
 
-//            if (!assignmentNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(assignmentNode.getType()) && !canImplicitCast(compare, assignmentNode.getType())) {
             if (!assignmentNode.getType().equals(compare) && !canImplicitCast(compare, assignmentNode.getType())) {
                 if (throwErrors)
                     assignmentNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, assignmentNode.getType()), evaluatorNode.nameToken);
@@ -228,14 +230,16 @@ public class Validation {
             }
 
         } else if (evaluatorNode instanceof DeclarationNode declarationNode) {
+
+            if (declarationNode.memberCount() == 0) {
+                System.out.println("Null declaration found");
+            }
             if (debugMode)
                 System.out.println("Declaration found");
-            EvaluatorNode innerMember = evaluatorNode.getMember(0);
 
-            if (innerMember instanceof OperationNode op) {
-                String compare = validateTypesHelper(innerMember, false, debugMode);
+            if (evaluatorNode.getMember(0) instanceof OperationNode innerMember) {
+                String compare = validateTypesHelper(innerMember, throwErrors, debugMode);
 
-//                if (!declarationNode.getType().equals(compare) && !KEY_DATA_DYNAMIC.equals(declarationNode.getType()) && !canImplicitCast(compare, declarationNode.getType())) {
                 if (!declarationNode.getType().equals(compare) && !canImplicitCast(compare, declarationNode.getType())) {
                     if (throwErrors)
                         declarationNode.throwSemanticError(String.format("Cannot cast \"%s\" into \"%s\"", compare, declarationNode.getType()), evaluatorNode.nameToken);
@@ -244,9 +248,13 @@ public class Validation {
                     return type;
                 }
             }
+        } else if (evaluatorNode instanceof FunctionDeclareNode declareNode) {
+            for (int i = 0; i < declareNode.getScope().memberCount(); i++) {
+                validateTypesHelper(declareNode.getScope().getMember(i), throwErrors, debugMode);
+            }
         } else {
             for (int i = 0; i < evaluatorNode.memberCount(); i++) {
-                validateTypesHelper(evaluatorNode.getMember(i), false, debugMode);
+                validateTypesHelper(evaluatorNode.getMember(i), throwErrors, debugMode);
             }
         }
 
@@ -262,23 +270,27 @@ public class Validation {
      * @see FunctionDeclareNode
      */
     public static void validateFunctionDeclares(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
-        validateFunctionDeclaresHelper(evaluatorTree.mainBlock, debugMode);
+        validateFunctionDeclaresHelper(evaluatorTree.mainBlock, new ArrayList<>(), debugMode);
     }
 
-    private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, boolean debugMode) throws Exception {
-        if (evaluatorNode instanceof DeclarationNode declarer) {
-            if (declarer.memberCount() > 0 && declarer.getMember(0) instanceof FunctionDeclareNode func) {
-                validateFunctionBlockReturnType(func, declarer, debugMode);
+    private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean debugMode) throws Exception {
+        if (evaluatorNode instanceof FunctionDeclareNode func) {
+            for (FunctionDeclareNode f : functionDeclares) {
+                if (func.isOverload(f.getName(), f.getArgumentTypesArr())) {
+                    func.throwSemanticError(String.format("Redeclaration of function %s with argument types %s", func.getName(), func.getArgumentTypes()), func.nameToken);
+                }
             }
+            validateFunctionBlockReturnType(func, debugMode);
+            functionDeclares.add(func);
         }
 
         for (int i = 0; i < evaluatorNode.memberCount(); i ++) {
-            validateFunctionDeclaresHelper(evaluatorNode.getMember(i), debugMode);
+            validateFunctionDeclaresHelper(evaluatorNode.getMember(i), functionDeclares, debugMode);
         }
     }
 
-    private static void validateFunctionBlockReturnType(FunctionDeclareNode func, VariableNode declarer, boolean debugMode) throws Exception {
-        String returnType = declarer.getType();
+    private static void validateFunctionBlockReturnType(FunctionDeclareNode func, boolean debugMode) throws Exception {
+        String returnType = func.getType();
         EvaluatorNode scope = func.getScope();
 
         boolean isReturningSomething = validateReturns(scope, returnType, debugMode);
@@ -346,13 +358,11 @@ public class Validation {
         returnPaths.add(validateReturns(ifBlock, returnType, debugMode));
     }
 
-    public static void validateFunctionCalls(EvaluatorTree evaluatorTree, boolean debugMode) {
-        validateFunctionCallsHelper(evaluatorTree.mainBlock, new ArrayList<>(), debugMode);
+    public static void validateFunctionsCalls(EvaluatorTree evaluatorTree, boolean doAssignTypes, boolean debugMode) {
+        validateFunctionsCallsHelper(evaluatorTree.mainBlock, new ArrayList<>(), doAssignTypes, debugMode);
     }
 
-    private static void validateFunctionCallsHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean debugMode) {
-//        System.out.println(evaluatorNode.token.line + "\t" + functionDeclares);
-
+    private static void validateFunctionsCallsHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean doAssignTypes, boolean debugMode) {
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
 
@@ -360,42 +370,43 @@ public class Validation {
                 if (operationNode.constantToken instanceof FunctionCallToken functionCallToken) {
                     String[] callTypes = getCallTypes(functionCallToken.getNode(), debugMode);
 
-                    if (!isFunctionCallValid(functionCallToken.getNode(), functionDeclares, callTypes, debugMode)) {
+                    if (!isFunctionCallValid(functionCallToken.getNode(), functionDeclares, callTypes, doAssignTypes, debugMode)) {
                         member.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallToken.getNode().getName(), Arrays.toString(callTypes)), member.nameToken);
                     }
                 }
-            } else if (member instanceof DeclarationNode declarationNode) {
-                if  (declarationNode.memberCount() > 0 &&
-                        declarationNode.getMember(0) instanceof FunctionDeclareNode functionDeclareNode) {
+            } else if (member instanceof FunctionDeclareNode functionDeclareNode) {
                     functionDeclares.add(functionDeclareNode);
-                }
+
             } else if (member instanceof FunctionCallNode functionCallNode) {
                 String[] callTypes = getCallTypes(functionCallNode, debugMode);
 
-                if (!isFunctionCallValid(functionCallNode, functionDeclares, callTypes, debugMode)) {
+                if (!isFunctionCallValid(functionCallNode, functionDeclares, callTypes, doAssignTypes, debugMode)) {
                     functionCallNode.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(callTypes)), functionCallNode.nameToken);
                 }
             }
-
-            validateFunctionCallsHelper(member, new ArrayList<>(functionDeclares), debugMode);
+            validateFunctionsCallsHelper(member, new ArrayList<>(functionDeclares), doAssignTypes, debugMode);
         }
     }
 
     private static String[] getCallTypes(FunctionCallNode functionCallNode, boolean debugMode) {
         String[] callTypes = new String[functionCallNode.getArgCount()];
         for (int a = 0; a < callTypes.length; a++) {
+//            functionCallNode.getArg(a).printRecursive();
+//            System.out.println(getOperationType(functionCallNode.getArg(a), debugMode));
             callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), false, debugMode);
         }
 
         return callTypes;
     }
 
-    private static boolean isFunctionCallValid(FunctionCallNode functionCallNode, List<FunctionDeclareNode> functionDeclares, String[] callTypes, boolean debugMode) {
+    private static boolean isFunctionCallValid(FunctionCallNode functionCallNode, List<FunctionDeclareNode> functionDeclares, String[] callTypes, boolean doAssignTypes, boolean debugMode) {
         boolean valid = false;
 
         for (FunctionDeclareNode fn : functionDeclares) {
-            if (fn.isOverload(callTypes)) {
+            if (fn.isOverload(functionCallNode.getName(), callTypes)) {
                 valid = true;
+                if (doAssignTypes)
+                    functionCallNode.setType(fn.getType());
             }
         }
 

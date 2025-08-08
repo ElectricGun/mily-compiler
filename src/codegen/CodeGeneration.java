@@ -54,11 +54,11 @@ public class CodeGeneration {
                 addOperationIRBlock(operationNode, irCode, irFunctionMap, function.getReturnVar(), hashSimplifier, depth, debugMode);
                 irCode.addSingleLineBlock(new SetLine("@counter", function.getCallbackVar(), depth));
 
-            } else if (member instanceof DeclarationNode declarationNode) {
-                if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof FunctionDeclareNode fn) {
-                    generateFunctionDeclare(fn, irCode, irFunctionMap, templateNodeMap, hashSimplifier, depth, debugMode);
+            } else if (member instanceof FunctionDeclareNode fn) {
+                generateFunctionDeclare(fn, irCode, irFunctionMap, templateNodeMap, hashSimplifier, depth, debugMode);
 
-                } else if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
+            } else if (member instanceof DeclarationNode declarationNode) {
+                if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
                     addOperationIRBlock(op, irCode, irFunctionMap, declarationNode.getVariableName(), hashSimplifier, depth, debugMode);
 
                 } else if (declarationNode.memberCount() == 0) {

@@ -41,8 +41,8 @@ public class Main {
         long startAstBuildDuration = System.nanoTime();
         EvaluatorTree evaluatorTree = new EvaluatorTree(code.getFilename(), debugMode);
         evaluatorTree.begin(tokenList);
-        long astBuildDuration = (System.nanoTime() - startAstBuildDuration);
 
+        long astBuildDuration = (System.nanoTime() - startAstBuildDuration);
         long optimizationTime = System.nanoTime();
 
         // check for syntax errors
@@ -54,12 +54,12 @@ public class Main {
         convertUnariesToBinary(evaluatorTree, debugMode);
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
+        validateFunctionDeclares(evaluatorTree, debugMode);
+        validateFunctionsCalls(evaluatorTree, doAssignTypes, debugMode);
         // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
-        validateFunctionDeclares(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
-        validateFunctionCalls(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree, debugMode);
 
         // check for semantic errors

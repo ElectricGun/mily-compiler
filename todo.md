@@ -1,6 +1,5 @@
 # Urgent TODO:
  - Raw template and template invocation validation
- - Function overloads
  - Create a string counter for generated variables to prevent conflicts
 
 # Problems:

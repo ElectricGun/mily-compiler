@@ -23,7 +23,17 @@ public class FunctionCallToken extends TypedToken {
     }
 
     @Override
+    public String getType() {
+        return functionCallNode.getType();
+    }
+
+    @Override
+    public void setType(String type) {
+        functionCallNode.setType(type);
+    }
+
+    @Override
     public String toString() {
-        return functionCallNode.toString();
+        return functionCallNode.toString() + ": " + functionCallNode.getType();
     }
 }
