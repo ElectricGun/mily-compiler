@@ -2,7 +2,7 @@
 
 #include$lib/bulb.mily;
 
-/*
+
 /---------- Variable Declarations ----------
 int num = 20;
 int x = 6;
@@ -215,7 +215,3 @@ print$"result: \n";
 print$output;
 printflush$message1;
 */
-
-int f2(int f_x, int f_y) {
-    return (f_x + f_y);
-}

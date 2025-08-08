@@ -23,6 +23,7 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_GREATER_THAN, "greaterThan");
         mlogOperationMap.put(KEY_OP_GREATER_THAN_EQUALS, "greaterThanEq");
         mlogOperationMap.put(KEY_OP_STRICT_EQUALS, "strictEqual");
+        mlogOperationMap.put(KEY_OP_AND, "and");
     }
     public static String opAsMlog(String op) throws IllegalArgumentException {
         if (!mlogOperationMap.containsKey(op))
