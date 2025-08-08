@@ -21,7 +21,7 @@ public class Functions {
         File file = new File(directory, fileName);
         String filename = file.getName();
 
-        System.out.println(file.getAbsoluteFile());
+//        System.out.println(file.getAbsoluteFile());
 
         StringBuilder code = new StringBuilder();
 
