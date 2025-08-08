@@ -4,6 +4,7 @@ import mily.codegen.blocks.*;
 import mily.codegen.lines.*;
 import mily.parsing.*;
 import mily.tokens.*;
+import mily.utils.HashCodeSimplifier;
 
 import java.util.*;
 
