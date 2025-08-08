@@ -73,6 +73,7 @@ public class OperationBracketNode extends EvaluatorNode {
     public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree, boolean debugMode) {
         try {
             return evaluator(tokenList, orders, evaluatorTree, debugMode);
+
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

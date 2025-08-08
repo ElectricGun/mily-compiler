@@ -8,6 +8,7 @@ import mily.preprocessing.*;
 import mily.structures.structs.*;
 import mily.tokens.*;
 import mily.parsing.*;
+import mily.utils.*;
 
 import static mily.codegen.CodeGeneration.*;
 import static mily.constants.Ansi.*;
@@ -19,13 +20,24 @@ import static mily.processing.Validation.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        final boolean debugMode = false;
-
         long startTime = System.nanoTime();
 
+        ArgParser argParser = new ArgParser("-");
+        argParser.addFlag("--debug", ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag("--print-ast", ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag("--benchmark", ArgParser.ArgTypes.BOOLEAN);
+        argParser.processFlags(args);
+
+        final boolean debugMode = argParser.getBoolean("--debug");
+        final boolean printAst = argParser.getBoolean("--print-ast");
+        final boolean printBenchmark = argParser.getBoolean("--benchmark");
+        File toRead = new File(argParser.getPositionalArgument());
+
         // read code
-        String cwd = "tests/";
-        CodeFile code = readFile(cwd, "main.mily");
+        String fileName = toRead.getName();
+        String cwd = toRead.getParent();
+
+        CodeFile code = readFile(cwd, fileName);
 
         long startCompileTime = System.nanoTime();
 
@@ -54,7 +66,7 @@ public class Main {
             System.out.println("Failed to compile!");
             return;
         }
-        evaluatorTree.printRecursive();
+//        evaluatorTree.printRecursive();
         removeEmptyOperations(evaluatorTree, debugMode);
         convertUnariesToBinary(evaluatorTree, debugMode);
         boolean doAssignTypes = true;
@@ -82,27 +94,31 @@ public class Main {
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
-//        evaluatorTree.printRecursive();
-        System.out.println();
+        if (printAst) {
+            evaluatorTree.printRecursive();
+            System.out.println();
+        }
         System.out.println("Compilation successful");
         System.out.println("Output:");
         System.out.println();
         irCode.printMlog();
 
-        System.out.println();
-        System.out.printf(
-                "Lexing time: %sms%n" +
-                        "AST building time: %sms%n" +
-                        "Optimisation time: %sms%n" +
-                        "Code generation time: %sms%n" +
-                        "Total compile time: %sms%n" +
-                        "Total run time: %sms%n",
-                lexingDuration / 1000000,
-                astBuildDuration / 1000000,
-                optimizationDuration / 1000000,
-                codeGenerationDuration / 1000000,
-                compileDuration / 1000000,
-                totalDuration / 1000000
-        );
+        if (printBenchmark) {
+            System.out.println();
+            System.out.printf(
+                    "Lexing time: %sms%n" +
+                            "AST building time: %sms%n" +
+                            "Optimisation time: %sms%n" +
+                            "Code generation time: %sms%n" +
+                            "Total compile time: %sms%n" +
+                            "Total run time: %sms%n",
+                    lexingDuration / 1000000,
+                    astBuildDuration / 1000000,
+                    optimizationDuration / 1000000,
+                    codeGenerationDuration / 1000000,
+                    compileDuration / 1000000,
+                    totalDuration / 1000000
+            );
+        }
     }
 }

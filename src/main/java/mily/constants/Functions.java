@@ -21,9 +21,6 @@ public class Functions {
     public static CodeFile readFile(String directory, String fileName) throws FileNotFoundException {
         File file = new File(directory, fileName);
         String filename = file.getName();
-
-//        System.out.println(file.getAbsoluteFile());
-
         StringBuilder code = new StringBuilder();
 
         Scanner sc = new Scanner(file);

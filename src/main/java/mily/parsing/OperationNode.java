@@ -172,9 +172,6 @@ public class OperationNode extends EvaluatorNode {
 
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
-
-//        debugMode = true;
-
         String indent = " ".repeat(depth);
 
         if (debugMode)
@@ -430,8 +427,6 @@ public class OperationNode extends EvaluatorNode {
                         if (unaryOperator instanceof CastToken castToken) {
                             type = KEY_OP_CAST_EXPLICIT;
                             this.operator = castToken.getType();
-
-                            System.out.println("SUS");
 
                         } else {
                             type = KEY_OP_TYPE_OPERATION;

@@ -264,7 +264,6 @@ public class CodeGeneration {
             // end label for the current if statement
             irCode.addSingleLineBlock(new Label(currentIfEndLabel, depth));
 
-
             // if there is an else node
 //            if (ifs.getElseNode() instanceof ElseNode elseNode) {
             if (ifs.getElseNode() != null) {
