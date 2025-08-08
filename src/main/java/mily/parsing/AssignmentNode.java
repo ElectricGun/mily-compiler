@@ -1,0 +1,48 @@
+package mily.parsing;
+
+import mily.tokens.*;
+
+import java.util.*;
+
+import static mily.constants.Keywords.*;
+
+/**
+ * <h1> Class AssignmentNode </h1>
+ * Used for both operation and function assignments.
+ *
+ * @author ElectricGun
+ * @see mily.parsing.OperationNode
+ * @see mily.parsing.FunctionDeclareNode
+ */
+
+public class AssignmentNode extends VariableNode {
+
+    OperationNode expression = null;
+
+    public AssignmentNode(Token token, int depth) {
+        super(KEY_DATA_UNKNOWN, token, depth);
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+        String indent = " ".repeat(depth);
+
+        if (debugMode)
+            System.out.printf(indent + "Parsing Variable Declaration %s:%n", nameToken);
+
+        if (!tokenList.isEmpty()) {
+            expression = (OperationNode) new OperationNode(this.nameToken, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
+            members.add(expression);
+            variableName = this.nameToken.string;
+            return this;
+        }
+
+
+        return throwSyntaxError("Unexpected end of file", nameToken);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("assign %s = %s", type, variableName);
+    }
+}
