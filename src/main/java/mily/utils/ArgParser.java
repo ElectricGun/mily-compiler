@@ -4,13 +4,6 @@ import java.util.*;
 
 public class ArgParser {
 
-    public enum ArgTypes {
-        DOUBLE,
-        STRING,
-        INTEGER,
-        BOOLEAN
-    }
-
     protected String flagPrefix;
     protected String positionalArgument;
     protected List<String> flags = new ArrayList<>();
@@ -19,7 +12,6 @@ public class ArgParser {
     protected Map<String, String> flagValuesString = new HashMap<>();
     protected Map<String, Double> flagValuesDouble = new HashMap<>();
     protected Map<String, Integer> flagValuesInt = new HashMap<>();
-
     public ArgParser(String flagPrefix) {
         this.flagPrefix = flagPrefix;
     }
@@ -99,5 +91,12 @@ public class ArgParser {
                 throw new IllegalArgumentException("You have made some illegal arguments");
             }
         }
+    }
+
+    public enum ArgTypes {
+        DOUBLE,
+        STRING,
+        INTEGER,
+        BOOLEAN
     }
 }
