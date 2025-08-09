@@ -37,9 +37,8 @@ public class RawTemplateInvoke extends CallerNode implements Named {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             if (debugMode)
-                System.out.printf(indent + "raw template %s: %s%n", this.nameToken, token);
+                System.out.printf(indent + "raw template invoke %s: %s%n", this.nameToken, token);
 
             if (token.equalsKey(KEY_BRACKET_OPEN)) {
                 evaluateArgs(tokenList, evaluatorTree, debugMode);
@@ -52,67 +51,7 @@ public class RawTemplateInvoke extends CallerNode implements Named {
                 return throwSyntaxError("Unexpected token on raw template invoke \"" + token.string + "\"", token);
             }
         }
-
         return throwSyntaxError("Unexpected end of file", nameToken);
-    }
-
-    protected void evaluateArgs(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
-        String indent = " ".repeat(depth);
-
-        int bracketCount = 0;
-        int argCount = 0;
-        boolean expectingArgument = false;
-        List<Token> opTokens = new ArrayList<>();
-
-        while (!tokenList.isEmpty()) {
-            Token token = tokenList.remove(0);
-
-            Token argName = new Token("arg_" + getName() + "_" + argCount, token.source, token.line);
-
-            if (debugMode)
-                System.out.println(indent + "arg: " + token);
-
-            if (token.isWhiteSpace()) {
-                continue;
-            }
-
-            if (bracketCount == 0 && !expectingArgument && token.equalsKey(KEY_BRACKET_CLOSE)) {
-                if (!opTokens.isEmpty()) {
-                    opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
-                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
-                    members.add(operationNode);
-                    arguments.add((OperationNode) operationNode);
-                }
-
-                return;
-            } else if (!expectingArgument && token.equalsKey(KEY_COMMA) && bracketCount == 0) {
-                expectingArgument = true;
-
-            } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0) {
-                if (opTokens.isEmpty()) {
-                    this.throwSyntaxError("Empty argument found", token);
-
-                } else {
-                    opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
-                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
-                    members.add(operationNode);
-                    arguments.add((OperationNode) operationNode);
-                    argCount++;
-                }
-            } else {
-                if (token.equalsKey(KEY_BRACKET_OPEN)) {
-                    bracketCount++;
-
-                } else if (token.equalsKey(KEY_BRACKET_CLOSE) && bracketCount > 0) {
-                    bracketCount--;
-
-                } else if (token.equalsKey(KEY_BRACKET_CLOSE) && bracketCount == 0) {
-                    this.throwSyntaxError("Unexpected close bracket", token);
-                }
-
-                opTokens.add(token);
-            }
-        }
     }
 
     @Override

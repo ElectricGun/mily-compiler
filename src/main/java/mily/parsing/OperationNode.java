@@ -176,9 +176,10 @@ public class OperationNode extends EvaluatorNode {
 
         Token previousToken = null;
 
+        System.out.println(nameToken + " " + tokenList);
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
+
             if (debugMode)
                 System.out.printf(indent + "operation : %s : %s%n", this.nameToken, token);
 
@@ -287,6 +288,9 @@ public class OperationNode extends EvaluatorNode {
                     for (int i = 0; i < operationTokens.size(); i++) {
                         orders.add(0);
                     }
+
+//                    System.out.println(operationTokens);
+
                     // if largest value is -1 then it's a constant or something is very wrong
                     int largestOrderIndex = -1;
                     int largestOrder = -1;
@@ -304,9 +308,6 @@ public class OperationNode extends EvaluatorNode {
                         }
 
                         int currentOrder = operationOrder(currentOperationToken);
-
-//                        System.out.println(orders);
-//                        System.out.println(operationTokens);
 
                         // start bracket
                         if (currentOrder == -4) {
@@ -378,7 +379,6 @@ public class OperationNode extends EvaluatorNode {
                         List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
                         List<Token> right = new ArrayList<>(operationTokens.subList(largestOrderIndex + 1, operationTokens.size()));
 
-//                        Token lastToken = operationTokens.getLast();
                         Token lastToken = operationTokens.get(operationTokens.size() - 1);
                         left.add(new Token(";", lastToken.source, lastToken.line));
                         right.add(new Token(";", lastToken.source, lastToken.line));
@@ -400,7 +400,6 @@ public class OperationNode extends EvaluatorNode {
                     // if it only has a -1 or -4
                     // for constant values
                     else if (orders.size() == 1 && orderIsConstant(orders.get(0))) {
-//                        Token newConstantToken = operationTokens.removeFirst();
                         Token newConstantToken = operationTokens.remove(0);
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
@@ -418,7 +417,6 @@ public class OperationNode extends EvaluatorNode {
                     // for unary operators
                     else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
 
-//                        Token unaryOperator = operationTokens.removeFirst();
                         Token unaryOperator = operationTokens.remove(0);
 
                         if (unaryOperator instanceof CastToken castToken) {
@@ -429,7 +427,6 @@ public class OperationNode extends EvaluatorNode {
                             type = KEY_OP_TYPE_OPERATION;
                             this.operator = unaryOperator.string;
                         }
-//                        Token newConstantToken = operationTokens.removeFirst();
                         Token newConstantToken = operationTokens.remove(0);
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
@@ -457,8 +454,10 @@ public class OperationNode extends EvaluatorNode {
             } else {
                 operationTokens.add(token);
             }
+
             previousToken = token;
         }
+        System.out.println(nameToken);
         return throwSyntaxError("Unexpected end of file", nameToken);
     }
 

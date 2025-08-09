@@ -1,10 +1,7 @@
 # Urgent TODO:
- - unify arg reading logic for callers
- - OperationBracketNode's evaluate and evaluator don't override its superclass'
+ - parse strings in operations
  - Function arg names may cause conflicts
- - Allow for function calls in raw templates
  - Create a string counter for generated variables to prevent conflicts
- - prune unused functions
 
 # Problems:
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
@@ -29,6 +26,7 @@
 # AST Pruning
  - Numeric expression solving with variables
  - Loop simplifying
+ - Prune unused functions
 
 # Datatypes
  - Constants (final keyword)
