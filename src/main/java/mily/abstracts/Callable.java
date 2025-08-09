@@ -9,4 +9,8 @@ public interface Callable extends Named, Typed, HasFunctionKey {
     List<String> getArgumentNames();
 
     boolean isOverload(Caller caller, String name, String... types);
+
+    boolean isOverload(Callable callable, String name, String... types);
+
+    boolean isOverload(String name, String... types);
 }

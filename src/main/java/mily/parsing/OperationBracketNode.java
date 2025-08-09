@@ -19,13 +19,16 @@ public class OperationBracketNode extends EvaluatorNode {
 
     public int operatorIndex;
     protected List<Token> operationTokens = new ArrayList<>();
+    protected List<Integer> orders;
 
-    public OperationBracketNode(Token token, int depth, int operatorIndex) {
+    public OperationBracketNode(Token token, List<Integer> orders, int depth, int operatorIndex) {
         super(token, depth);
         this.operatorIndex = operatorIndex;
+        this.orders = orders;
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
 
         String indent = " ".repeat(depth);
 
@@ -67,18 +70,5 @@ public class OperationBracketNode extends EvaluatorNode {
             operationTokens.add(token);
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
-    }
-
-    // todo why did i write this???
-    public EvaluatorNode evaluate(List<Token> tokenList, List<Integer> orders, EvaluatorTree evaluatorTree, boolean debugMode) {
-        try {
-            return evaluator(tokenList, orders, evaluatorTree, debugMode);
-
-        } catch (Exception e) {
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
-            System.exit(0);
-            return null;
-        }
     }
 }

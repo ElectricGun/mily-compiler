@@ -56,10 +56,14 @@ public class FunctionCallNode extends CallerNode implements Named {
                 expectingArgument = true;
 
             } else if (expectingArgument) {
+                // TODO: maybe use RawTemplateInvoke's evaluateArgs
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
                 int bracketCount = 0;
+
+                if (token.equalsKey(KEY_BRACKET_OPEN))
+                    bracketCount ++;
 
                 while (true) {
                     Token currToken = tokenList.remove(0);
@@ -73,15 +77,17 @@ public class FunctionCallNode extends CallerNode implements Named {
                         } else {
                             // return the final token
                             tokenList.add(0, currToken);
+//                            operationTokens.add(currToken);
                             break;
                         }
-                    } else if (keyEquals(KEY_COMMA, currToken)) {
+                    } else if (keyEquals(KEY_COMMA, currToken) && bracketCount == 0) {
                         // return the final token
                         tokenList.add(0, currToken);
                         break;
                     }
                     operationTokens.add(currToken);
                 }
+
                 expectingArgument = false;
                 operationTokens.add(new Token(KEY_SEMICOLON, operationTokens.get(operationTokens.size() - 1).source, operationTokens.get(operationTokens.size() - 1).line));
 

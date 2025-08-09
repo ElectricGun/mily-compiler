@@ -75,6 +75,7 @@ public class Main {
         validateFunctionDeclares(evaluatorTree, debugMode);
         // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
+        //        evaluatorTree.printRecursive();
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree);
@@ -91,7 +92,6 @@ public class Main {
         IRCode irCode = null;
         try {
             irCode = generateIRCode(evaluatorTree, debugMode);
-            throw new Exception();
 
         } catch (Exception e) {
             //noinspection CallToPrintStackTrace

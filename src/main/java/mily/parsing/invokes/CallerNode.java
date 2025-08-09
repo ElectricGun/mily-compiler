@@ -24,6 +24,11 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
     }
 
     @Override
+    public void setArg(int i, OperationNode operationNode) {
+        arguments.set(i, operationNode);
+    }
+
+    @Override
     public int getArgCount() {
         return arguments.size();
     }

@@ -85,10 +85,10 @@ public class RawTemplateInvoke extends CallerNode implements Named {
                 }
 
                 return;
-            } else if (!expectingArgument && token.equalsKey(KEY_COMMA)) {
+            } else if (!expectingArgument && token.equalsKey(KEY_COMMA) && bracketCount == 0) {
                 expectingArgument = true;
 
-            } else if (token.equalsKey(KEY_COMMA)) {
+            } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0) {
                 if (opTokens.isEmpty()) {
                     this.throwSyntaxError("Empty argument found", token);
 

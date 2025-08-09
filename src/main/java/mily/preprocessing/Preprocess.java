@@ -16,7 +16,7 @@ public class Preprocess {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
+
             if (token.equalsKey(KEY_HASH)) {
 //                Token macroKeyword = tokenList.removeFirst();
                 Token macroKeyword = tokenList.remove(0);

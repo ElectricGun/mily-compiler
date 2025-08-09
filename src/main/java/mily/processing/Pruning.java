@@ -1,6 +1,10 @@
 package mily.processing;
 
+import mily.abstracts.Caller;
 import mily.parsing.*;
+import mily.parsing.invokes.CallerNode;
+import mily.parsing.invokes.FunctionCallNode;
+import mily.tokens.FunctionCallToken;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Maps.*;
@@ -32,10 +36,33 @@ public class Pruning {
                 replacer.setReturnOperation(operationNode.isReturnOperation());
                 parent.replaceMember(operationNode, replacer);
             }
+
+            // truncate from function arguments within operators
+            if (operationNode.getConstantToken() instanceof FunctionCallToken callerToken) {
+                FunctionCallNode caller = callerToken.getNode();
+                truncateFunctionArgs(caller);
+            }
+        }
+        // truncate from operatorless function arguments
+        if (evaluatorNode instanceof Caller caller) {
+            truncateFunctionArgs(caller);
         }
 
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             removeEmptyOperationsHelper(evaluatorNode.getMember(i), evaluatorNode);
+        }
+    }
+
+    private static void truncateFunctionArgs(Caller caller) {
+        for (int a = 0; a < caller.getArgCount(); a++) {
+            OperationNode arg = caller.getArg(a);
+
+            while (arg.isEmptyConstant() && arg.memberCount() > 0) {
+                OperationNode childArg = (OperationNode) arg.getMember(0);
+                caller.setArg(a, childArg);
+
+                arg = childArg;
+            }
         }
     }
 

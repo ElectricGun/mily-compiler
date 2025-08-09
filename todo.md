@@ -1,4 +1,5 @@
 # Urgent TODO:
+ - unify arg reading logic for callers
  - OperationBracketNode's evaluate and evaluator don't override its superclass'
  - Function arg names may cause conflicts
  - Allow for function calls in raw templates

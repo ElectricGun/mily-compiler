@@ -6,6 +6,8 @@ import mily.constants.*;
 import mily.parsing.invokes.FunctionCallNode;
 import mily.tokens.*;
 
+import javax.annotation.processing.SupportedSourceVersion;
+
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
 import static mily.constants.Maps.*;
@@ -200,7 +202,6 @@ public class OperationNode extends EvaluatorNode {
                         if (debugMode)
                             System.out.printf(indent + "Parsing function call : prev %s : %s%n", previousToken, token);
                         // remove last token because it will be replaced by a single FunctionCallToken
-//                        operationTokens.removeLast();
                         operationTokens.remove(operationTokens.size() - 1);
 
                         FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
@@ -225,7 +226,6 @@ public class OperationNode extends EvaluatorNode {
                         Token castConstantToken = null;
 
                         while (!datatypeFound || !closeBracketFound || !constantFound) {
-//                            Token currToken = tokenList.removeFirst();
                             Token currToken = tokenList.remove(0);
                             castTokens.add(currToken);
 
@@ -234,7 +234,6 @@ public class OperationNode extends EvaluatorNode {
 
                             if (isWhiteSpace(currToken)) {
                                 continue;
-
                             }
 
                             if (!datatypeFound && isDeclaratorAmbiguous(currToken)) {
@@ -271,8 +270,6 @@ public class OperationNode extends EvaluatorNode {
                             CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.source, token.line);
                             operationTokens.add(castToken);
 
-                            // add this back because it was only removed as a means of checking
-//                            tokenList.addFirst(castConstantToken);
                             tokenList.add(0, castConstantToken);
                         }
                     }
@@ -308,10 +305,13 @@ public class OperationNode extends EvaluatorNode {
 
                         int currentOrder = operationOrder(currentOperationToken);
 
+//                        System.out.println(orders);
+//                        System.out.println(operationTokens);
+
                         // start bracket
                         if (currentOrder == -4) {
-                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.nameToken, this.nameToken.source, this.nameToken.line), depth + 1, i);
-                            bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, orders, evaluatorTree, debugMode));
+                            OperationBracketNode bracketOperation = new OperationBracketNode(new Token("b_" + this.nameToken, this.nameToken.source, this.nameToken.line), orders, depth + 1, i);
+                            bracketOperations.add((OperationBracketNode) bracketOperation.evaluate(operationTokens, evaluatorTree, debugMode));
                         }
 
                         // because parentheses are constants

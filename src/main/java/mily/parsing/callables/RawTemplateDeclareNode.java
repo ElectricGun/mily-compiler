@@ -2,6 +2,7 @@ package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.parsing.invokes.FunctionCallNode;
 import mily.parsing.invokes.RawTemplateInvoke;
 import mily.tokens.*;
 
@@ -52,6 +53,20 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             return false;
         }
 
+        return isOverload(name, types);
+    }
+
+    @Override
+    public boolean isOverload(Callable callable, String name, String... types) {
+        if (!(callable instanceof RawTemplateDeclareNode)) {
+            return false;
+        }
+
+        return isOverload(name, types);
+    }
+
+    @Override
+    public boolean isOverload(String name, String... types) {
         if (!this.getName().equals(name)) {
             return false;
         }
@@ -59,7 +74,7 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             return false;
         }
         for (int i = 0; i < types.length; i++) {
-            if (!types[i].equals(getArgumentTypes().get(i))) {
+            if (!types[i].equals(argTypes.get(i))) {
                 return false;
             }
         }

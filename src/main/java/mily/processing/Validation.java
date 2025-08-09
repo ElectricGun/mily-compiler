@@ -9,6 +9,8 @@ import mily.parsing.callables.*;
 import mily.parsing.invokes.FunctionCallNode;
 import mily.tokens.*;
 
+import javax.annotation.processing.SupportedSourceVersion;
+
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
 import static mily.constants.Maps.*;
@@ -204,14 +206,10 @@ public class Validation {
                     return type;
                 }
 
-            }
-//            else if (operationNode.isUnary()) {
-//
-//                type = validateTypesHelper(operationNode.getMember(0), evaluatorNode, debugMode);
-//
-//            }
-            else if (operationNode.isConstant()) {
+            } else if (operationNode.isConstant()) {
                 type = operationNode.getConstantToken().getType();
+
+//                System.out.println(operationNode.getConstantToken());
 
                 type = type == null ? KEY_DATA_UNKNOWN : type;
             }
@@ -265,8 +263,6 @@ public class Validation {
         return type;
     }
 
-    // TODO: why are there so many methods doing just one thing. Fix this later
-
     /**
      * Checks if a function's return type is consistent with its returns
      *
@@ -279,7 +275,7 @@ public class Validation {
     private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean debugMode) throws Exception {
         if (evaluatorNode instanceof FunctionDeclareNode func) {
             for (FunctionDeclareNode f : functionDeclares) {
-                if (func.isOverload((Caller) f, f.getName(), f.getArgumentTypesArr())) {
+                if (func.isOverload(f, f.getName(), f.getArgumentTypesArr())) {
                     func.throwSemanticError(String.format("Redeclaration of function %s with argument types %s", func.getName(), func.getArgumentTypes()), func.nameToken);
                 }
             }
@@ -402,8 +398,35 @@ public class Validation {
         for (int a = 0; a < callTypes.length; a++) {
             callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), false, debugMode);
         }
+//        System.out.println(Arrays.toString(callTypes));
 
         return callTypes;
+    }
+
+    private static void validateCallerOperation(OperationNode operationNode, List<Callable> functionDeclares, boolean doAssignTypes, boolean debugMode) {
+        if (operationNode.getConstantToken() instanceof FunctionCallToken fn) {
+            validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
+        }
+
+//        if (operationNode.getLeftSide() != null && operationNode.getLeftSide().getConstantToken() instanceof FunctionCallToken fn) {
+//            validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
+//        }
+//
+//        if (operationNode.getRightSide() != null && operationNode.getRightSide().getConstantToken() instanceof FunctionCallToken fn) {
+//            validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
+//        }
+
+        if (operationNode.getLeftSide() != null) {
+            validateCallerOperation(operationNode.getLeftSide(), functionDeclares, doAssignTypes, debugMode);
+        }
+
+        if (operationNode.getRightSide() != null) {
+            validateCallerOperation(operationNode.getRightSide(), functionDeclares, doAssignTypes, debugMode);
+        }
+
+        if (operationNode.isUnary() && operationNode.getMember(0) instanceof OperationNode op) {
+            validateCallerOperation(op, functionDeclares, doAssignTypes, debugMode);
+        }
     }
 
     private static boolean validateCaller(Caller caller, List<Callable> functionDeclares, boolean doAssignTypes, boolean debugMode) {
@@ -411,19 +434,8 @@ public class Validation {
         // recursively set the types of function calls for nested calls
         for (int a = 0; a < caller.getArgCount(); a++) {
             OperationNode arg = caller.getArg(a);
-            if (arg.getConstantToken() instanceof FunctionCallToken fn) {
-                validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
-            }
 
-//            if (arg.getLeftSide() instanceof OperationNode op && op.constantToken instanceof FunctionCallToken fn) {
-            if (arg.getLeftSide() != null && arg.getLeftSide().getConstantToken() instanceof FunctionCallToken fn) {
-                validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
-            }
-
-//            if (arg.getRightSide() instanceof OperationNode op && op.constantToken instanceof FunctionCallToken fn) {
-            if (arg.getRightSide() != null && arg.getRightSide().getConstantToken() instanceof FunctionCallToken fn) {
-                validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
-            }
+            validateCallerOperation(arg, functionDeclares, doAssignTypes, debugMode);
         }
         String[] callTypes = getCallTypes(caller, debugMode);
 

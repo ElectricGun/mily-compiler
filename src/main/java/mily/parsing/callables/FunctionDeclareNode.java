@@ -163,11 +163,26 @@ public class FunctionDeclareNode extends EvaluatorNode implements Callable {
         return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), String.join(", ", argumentTypes));
     }
 
+    @Override
     public boolean isOverload(Caller caller, String name, String... types) {
         if (!(caller instanceof FunctionCallNode)) {
             return false;
         }
 
+        return isOverload(name, types);
+    }
+
+    @Override
+    public boolean isOverload(Callable callable, String name, String... types) {
+        if (!(callable instanceof FunctionDeclareNode)) {
+            return false;
+        }
+
+        return isOverload(name, types);
+    }
+
+    @Override
+    public boolean isOverload(String name, String... types) {
         if (!this.getName().equals(name)) {
             return false;
         }
