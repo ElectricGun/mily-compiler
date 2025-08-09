@@ -10,7 +10,6 @@
  - Cannot declare a string var, such as string x = "1", it regards "1" as a variable name;
  - library circular dependencies
 
-
 # Operations
  - Compile explicit casting
  - 
@@ -30,6 +29,7 @@
 
 # Datatypes
  - Constants (final keyword)
+ - Ambiguous datatype for raw macros such as: int | double | string
 
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
@@ -39,6 +39,7 @@
 # Loops
  - break
  - continue
+ - do while
     
 # Technical Stuff
  - Support for non hardcoded evaluators
