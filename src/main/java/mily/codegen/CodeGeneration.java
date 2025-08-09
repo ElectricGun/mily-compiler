@@ -82,17 +82,17 @@ public class CodeGeneration {
                 // todo unify copy pastes
                 String whileHashCode = "" + hashSimplifier.simplifyHash(whileLoop.hashCode());
                 String startLabelString = "while_loop_start_" + whileHashCode;
+                String endLabelString = "while_loop_end_" + whileHashCode;
 
+                // loop start label
                 irCode.addSingleLineBlock(new Label(startLabelString, depth));
 
-                generateIRScopeRecursive(whileLoop.getScope(), irCode, irFunctionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
-
-                // create loop jump
-                boolean invertCondition = false;
+                // create exit jump
+                boolean invertCondition = true;
                 Jump jump = createConditionalJump(
                         whileLoop.getExpression(),
                         whileHashCode,
-                        startLabelString,
+                        endLabelString,
                         irCode,
                         irFunctionMap,
                         hashSimplifier,
@@ -102,10 +102,20 @@ public class CodeGeneration {
                 );
                 irCode.addSingleLineBlock(jump);
 
+                // code block
+                generateIRScopeRecursive(whileLoop.getScope(), irCode, irFunctionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
+
+                // always jump
+                irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));
+
+                // loop end label
+                irCode.addSingleLineBlock(new Label(endLabelString, depth));
+
             } else if (member instanceof ForLoopNode forLoop) {
                 // todo unify copy pastes
                 String forLoopHashCode = "" + hashSimplifier.simplifyHash(forLoop.hashCode());
                 String startLabelString = "for_loop_start_" + forLoopHashCode;
+                String endLabelString = "for_loop_end_" + forLoopHashCode;
 
                 // initial
                 VariableNode initial = forLoop.getInitial();
@@ -114,8 +124,23 @@ public class CodeGeneration {
 
                 addOperationIRBlock((OperationNode) initial.getMember(0), irCode, irFunctionMap, initial.getVariableName(), hashSimplifier, depth, debugMode);
 
-                // loop start
+                // loop start label
                 irCode.addSingleLineBlock(new Label(startLabelString, depth));
+
+                // create exit jump
+                boolean invertCondition = true;
+                Jump jump = createConditionalJump(
+                        forLoop.getCondition(),
+                        forLoopHashCode,
+                        endLabelString,
+                        irCode,
+                        irFunctionMap,
+                        hashSimplifier,
+                        invertCondition,
+                        depth,
+                        debugMode
+                );
+                irCode.addSingleLineBlock(jump);
 
                 // code block
                 generateIRScopeRecursive(forLoop.getScope(), irCode, irFunctionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
@@ -127,20 +152,11 @@ public class CodeGeneration {
 
                 addOperationIRBlock((OperationNode) updater.getMember(0), irCode, irFunctionMap, updater.getVariableName(), hashSimplifier, depth, debugMode);
 
-                // create loop jump
-                boolean invertCondition = false;
-                Jump jump = createConditionalJump(
-                        forLoop.getCondition(),
-                        forLoopHashCode,
-                        startLabelString,
-                        irCode,
-                        irFunctionMap,
-                        hashSimplifier,
-                        invertCondition,
-                        depth,
-                        debugMode
-                );
-                irCode.addSingleLineBlock(jump);
+                // always jump
+                irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));
+
+                // loop end label
+                irCode.addSingleLineBlock(new Label(endLabelString, depth));
 
             } else if (member instanceof RawTemplateNode rawTemplateNode) {
                 templateNodeMap.put(rawTemplateNode.getName(), rawTemplateNode);
