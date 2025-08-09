@@ -16,12 +16,9 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class RawTemplateInvoke extends EvaluatorNode implements Caller {
+public class RawTemplateInvoke extends CallerNode implements Named {
 
     String name;
-    protected String type = KEY_DATA_UNKNOWN;
-
-    List<OperationNode> args = new ArrayList<>();
 
     public RawTemplateInvoke(String name, Token nameToken, int depth) {
         super(nameToken, depth);
@@ -29,14 +26,13 @@ public class RawTemplateInvoke extends EvaluatorNode implements Caller {
     }
 
     public List<OperationNode> getArgs() {
-        return new ArrayList<>(args);
+        return new ArrayList<>(arguments);
     }
 
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        StringBuilder argBufferString = new StringBuilder();
         boolean done = false;
 
         while (!tokenList.isEmpty()) {
@@ -55,16 +51,6 @@ public class RawTemplateInvoke extends EvaluatorNode implements Caller {
             } else {
                 return throwSyntaxError("Unexpected token on raw template invoke \"" + token.string + "\"", token);
             }
-//            if (keyEquals(KEY_SEMICOLON, token)) {
-//
-//                if (!argBufferString.isEmpty()) {
-//                    args = List.of(argBufferString.toString().split(KEY_COMMA));
-//                }
-//                return this;
-//
-//            } else {
-//                argBufferString.append(token.string);
-//            }
         }
 
         return throwSyntaxError("Unexpected end of file", nameToken);
@@ -94,8 +80,7 @@ public class RawTemplateInvoke extends EvaluatorNode implements Caller {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
                     EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
                     members.add(operationNode);
-                    args.add((OperationNode) operationNode);
-                    argCount ++;
+                    arguments.add((OperationNode) operationNode);
                 }
 
                 return this;
@@ -110,7 +95,7 @@ public class RawTemplateInvoke extends EvaluatorNode implements Caller {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
                     EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
                     members.add(operationNode);
-                    args.add((OperationNode) operationNode);
+                    arguments.add((OperationNode) operationNode);
                     argCount++;
                 }
             } else {
@@ -127,7 +112,6 @@ public class RawTemplateInvoke extends EvaluatorNode implements Caller {
                 opTokens.add(token);
             }
         }
-
         return this;
     }
 
@@ -138,40 +122,20 @@ public class RawTemplateInvoke extends EvaluatorNode implements Caller {
 
     @Override
     public String toString() {
-        return "invoke template: " + name + args;
+        return "invoke template: " + name + arguments;
     }
 
     @Override
     public String getFnKey() {
         StringBuilder fnKey = new StringBuilder(this.getName() + "_");
 
-        int argCount = this.args.size();
+        int argCount = getArgCount();
         for (int a = 0; a < argCount; a++) {
-            fnKey.append(Validation.getOperationType(this.args.get(a), false));
+            fnKey.append(Validation.getOperationType(getArg(a), false));
             if (a < argCount - 1) {
                 fnKey.append("_");
             }
         }
         return fnKey.toString();
-    }
-
-    @Override
-    public String getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Override
-    public OperationNode getArg(int i) {
-        return args.get(i);
-    }
-
-    @Override
-    public int getArgCount() {
-        return args.size();
     }
 }

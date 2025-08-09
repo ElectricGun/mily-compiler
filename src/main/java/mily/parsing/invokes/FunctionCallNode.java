@@ -23,13 +23,7 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionCallNode extends EvaluatorNode implements Caller {
-
-    protected List<OperationNode> arguments = new ArrayList<>();
-    protected String type = KEY_DATA_UNKNOWN;
-
-    private boolean expectingArgument = true;
-    private boolean isInitialized = false;
+public class FunctionCallNode extends CallerNode implements Named {
 
     public FunctionCallNode(Token token, int depth) {
         super(token, depth);
@@ -37,10 +31,6 @@ public class FunctionCallNode extends EvaluatorNode implements Caller {
 
     public OperationNode getArg(int i) {
         return arguments.get(i);
-    }
-
-    public int getArgCount() {
-        return arguments.size();
     }
 
     // todo probably give this a name var
@@ -51,6 +41,9 @@ public class FunctionCallNode extends EvaluatorNode implements Caller {
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
+
+        boolean expectingArgument = true;
+        boolean isInitialized = false;
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
@@ -138,15 +131,5 @@ public class FunctionCallNode extends EvaluatorNode implements Caller {
             }
         }
         return fnKey.toString();
-    }
-
-    @Override
-    public String getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(String type) {
-        this.type = type;
     }
 }

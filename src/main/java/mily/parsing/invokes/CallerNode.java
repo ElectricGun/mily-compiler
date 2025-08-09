@@ -1,12 +1,18 @@
 package mily.parsing.invokes;
 
 import mily.abstracts.*;
-import mily.parsing.EvaluatorNode;
-import mily.parsing.OperationNode;
-import mily.tokens.Token;
+import mily.parsing.*;
+import mily.tokens.*;
+
+import java.util.*;
+
+import static mily.constants.Keywords.KEY_DATA_UNKNOWN;
 
 // TOOD implement this
 public abstract class CallerNode extends EvaluatorNode implements Caller {
+
+    protected List<OperationNode> arguments = new ArrayList<>();
+    protected String type = KEY_DATA_UNKNOWN;
 
     public CallerNode(Token nameToken, int depth) {
         super(nameToken, depth);
@@ -14,31 +20,21 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
 
     @Override
     public OperationNode getArg(int i) {
-        return null;
+        return arguments.get(i);
     }
 
     @Override
     public int getArgCount() {
-        return 0;
-    }
-
-    @Override
-    public String getFnKey() {
-        return "";
-    }
-
-    @Override
-    public String getName() {
-        return "";
+        return arguments.size();
     }
 
     @Override
     public String getType() {
-        return "";
+        return type;
     }
 
     @Override
     public void setType(String type) {
-
+        this.type = type;
     }
 }
