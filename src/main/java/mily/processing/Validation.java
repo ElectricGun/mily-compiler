@@ -382,7 +382,7 @@ public class Validation {
                     FunctionCallNode functionCallNode = functionCallToken.getNode();
 
                     if (!validateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {
-                        member.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(getCallTypes(functionCallNode, debugMode))), functionCallNode.nameToken);
+                        member.throwSemanticError(String.format("No overload for function \"%s\" with arguments of types %s", functionCallNode.getName(), Arrays.toString(getCallTypes(functionCallNode, debugMode))), functionCallNode.nameToken);
                     }
                     for (int a = 0; a < functionCallNode.getArgCount(); a++) {
                         OperationNode arg = functionCallNode.getArg(a);
@@ -394,7 +394,7 @@ public class Validation {
 
             } else if (member instanceof FunctionCallNode functionCallNode) {
                 if (!validateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {
-                    functionCallNode.throwSemanticError(String.format("No overload for function %s with arguments of types %s", functionCallNode.getName(), Arrays.toString(getCallTypes(functionCallNode, debugMode))), functionCallNode.nameToken);
+                    functionCallNode.throwSemanticError(String.format("No overload for function \"%s\" with arguments of types %s", functionCallNode.getName(), Arrays.toString(getCallTypes(functionCallNode, debugMode))), functionCallNode.nameToken);
                 }
             }
             validateFunctionsCallsHelper(member, new ArrayList<>(functionDeclares), doAssignTypes, debugMode);
