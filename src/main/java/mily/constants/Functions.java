@@ -16,6 +16,7 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
+@SuppressWarnings("unused")
 public class Functions {
 
     public static CodeFile readFile(String directory, String fileName) throws FileNotFoundException {

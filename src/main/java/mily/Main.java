@@ -62,12 +62,12 @@ public class Main {
         long optimizationTime = System.nanoTime();
 
         // check for syntax errors
-        if (checkThrowables(evaluatorTree, debugMode)) {
+        if (checkThrowables(evaluatorTree)) {
             System.out.println("Failed to compile!");
             return;
         }
 //        evaluatorTree.printRecursive();
-        removeEmptyOperations(evaluatorTree, debugMode);
+        removeEmptyOperations(evaluatorTree);
         convertUnariesToBinary(evaluatorTree, debugMode);
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
@@ -77,10 +77,10 @@ public class Main {
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
-        solveBinaryExpressions(evaluatorTree, debugMode);
+        solveBinaryExpressions(evaluatorTree);
 
         // check for semantic errors
-        if (checkThrowables(evaluatorTree, debugMode)) {
+        if (checkThrowables(evaluatorTree)) {
             System.out.println("Failed to compile!");
             return;
         }

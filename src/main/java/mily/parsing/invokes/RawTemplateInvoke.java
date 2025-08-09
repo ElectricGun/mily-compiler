@@ -56,7 +56,7 @@ public class RawTemplateInvoke extends CallerNode implements Named {
         return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
-    protected EvaluatorNode evaluateArgs(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
+    protected void evaluateArgs(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         String indent = " ".repeat(depth);
 
         int bracketCount = 0;
@@ -74,8 +74,9 @@ public class RawTemplateInvoke extends CallerNode implements Named {
 
             if (token.isWhiteSpace()) {
                 continue;
+            }
 
-            } else if (bracketCount == 0 && !expectingArgument && token.equalsKey(KEY_BRACKET_CLOSE)) {
+            if (bracketCount == 0 && !expectingArgument && token.equalsKey(KEY_BRACKET_CLOSE)) {
                 if (!opTokens.isEmpty()) {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
                     EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
@@ -83,7 +84,7 @@ public class RawTemplateInvoke extends CallerNode implements Named {
                     arguments.add((OperationNode) operationNode);
                 }
 
-                return this;
+                return;
             } else if (!expectingArgument && token.equalsKey(KEY_COMMA)) {
                 expectingArgument = true;
 
@@ -112,7 +113,6 @@ public class RawTemplateInvoke extends CallerNode implements Named {
                 opTokens.add(token);
             }
         }
-        return this;
     }
 
     @Override

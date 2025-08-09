@@ -174,8 +174,8 @@ public class CodeGeneration {
                 List<OperationNode> argOps = rawTemplateInvoke.getArgs();
 
                 List<String> argNames = new ArrayList<>();
-                for (int a = 0; a < argOps.size(); a++) {
-                    IROperation opBlock = generateIROperation(argOps.get(a), irCode, irFunctionMap, hashSimplifier, depth, debugMode);
+                for (OperationNode argOp : argOps) {
+                    IROperation opBlock = generateIROperation(argOp, irCode, irFunctionMap, hashSimplifier, depth, debugMode);
                     irCode.irBlocks.add(opBlock);
 
                     Line lastLine = opBlock.lineList.get(opBlock.lineList.size() - 1);
@@ -228,13 +228,13 @@ public class CodeGeneration {
         return calledFunction;
     }
 
-    private static IRFunction generateFunctionDeclare(FunctionDeclareNode fn,
-                                                      IRCode irCode,
-                                                      Map<String, IRFunction> functionMap,
-                                                      Map<String, RawTemplateDeclareNode> templateNodeMap,
-                                                      HashCodeSimplifier hashSimplifier,
-                                                      int depth,
-                                                      boolean debugMode) throws Exception {
+    private static void generateFunctionDeclare(FunctionDeclareNode fn,
+                                                IRCode irCode,
+                                                Map<String, IRFunction> functionMap,
+                                                Map<String, RawTemplateDeclareNode> templateNodeMap,
+                                                HashCodeSimplifier hashSimplifier,
+                                                int depth,
+                                                boolean debugMode) throws Exception {
         String fnKey = fn.getFnKey();
         String startJumpLabel = fnKey + "_start";
         String endJumpLabel = fnKey + "_end";
@@ -256,8 +256,7 @@ public class CodeGeneration {
 
         irCode.addSingleLineBlock((new Label(endJumpLabel, depth)));
 
-
-        return irFunction;
+//        return irFunction;
     }
 
     private static void generateBranchStatement(IfStatementNode ifs,
@@ -410,11 +409,11 @@ public class CodeGeneration {
             String rightVar = "";
 
             if (leftConstant) {
-                leftVar = processConstantToken(operationNode.getLeftSide().constantToken, irCode, functionMap, hashCodeSimplifier, depth, debugMode);
+                leftVar = processConstantToken(operationNode.getLeftSide().getConstantToken(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
             }
 
             if (rightConstant) {
-                rightVar = processConstantToken(operationNode.getRightSide().constantToken, irCode, functionMap, hashCodeSimplifier, depth, debugMode);
+                rightVar = processConstantToken(operationNode.getRightSide().getConstantToken(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
             }
 
             // TODO messy
@@ -441,7 +440,7 @@ public class CodeGeneration {
                 irOperation.addLine(binaryOp);
             }
         } else if (operationNode.isConstant()) {
-            String constantVar = processConstantToken(operationNode.constantToken, irCode, functionMap, hashCodeSimplifier, depth, debugMode);
+            String constantVar = processConstantToken(operationNode.getConstantToken(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
             irOperation.addLine(new SetLine(operationNode.nameToken.string, constantVar, depth));
         }
     }

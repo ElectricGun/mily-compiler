@@ -29,10 +29,6 @@ public class FunctionCallNode extends CallerNode implements Named {
         super(token, depth);
     }
 
-    public OperationNode getArg(int i) {
-        return arguments.get(i);
-    }
-
     // todo probably give this a name var
     public String getName() {
         return nameToken.string;
@@ -47,7 +43,6 @@ public class FunctionCallNode extends CallerNode implements Named {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             if (debugMode)
                 System.out.printf(indent + "function call %s: %s:%n", this.nameToken, token);
 
@@ -67,7 +62,6 @@ public class FunctionCallNode extends CallerNode implements Named {
                 int bracketCount = 0;
 
                 while (true) {
-//                    Token currToken = tokenList.removeFirst();
                     Token currToken = tokenList.remove(0);
 
                     if (keyEquals(KEY_BRACKET_OPEN, currToken)) {
@@ -78,20 +72,17 @@ public class FunctionCallNode extends CallerNode implements Named {
                             bracketCount--;
                         } else {
                             // return the final token
-//                            tokenList.addFirst(currToken);
                             tokenList.add(0, currToken);
                             break;
                         }
                     } else if (keyEquals(KEY_COMMA, currToken)) {
                         // return the final token
-//                            tokenList.addFirst(currToken);
                         tokenList.add(0, currToken);
                         break;
                     }
                     operationTokens.add(currToken);
                 }
                 expectingArgument = false;
-//                operationTokens.add(new Token(KEY_SEMICOLON, operationTokens.getLast().source, operationTokens.getLast().line));
                 operationTokens.add(new Token(KEY_SEMICOLON, operationTokens.get(operationTokens.size() - 1).source, operationTokens.get(operationTokens.size() - 1).line));
 
                 OperationNode newOp = new OperationNode(token, depth + 1);
@@ -99,7 +90,7 @@ public class FunctionCallNode extends CallerNode implements Named {
                 members.add(newOp);
                 arguments.add(newOp);
 
-            } else if (isInitialized) {
+            } else {
                 return throwSyntaxError("Unexpected token in function call", token);
             }
             isInitialized = true;

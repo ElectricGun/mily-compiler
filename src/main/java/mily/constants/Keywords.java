@@ -7,6 +7,7 @@ package mily.constants;
  * @author ElectricGun
  */
 
+@SuppressWarnings("unused")
 public class Keywords {
 
     public final static String

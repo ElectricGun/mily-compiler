@@ -51,7 +51,7 @@ public class OperationMap {
             }
         } else {
             newOp.setOperator(KEY_OP_CAST_EXPLICIT);
-            factorConstant.constantToken = new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line);
+            factorConstant.setConstantToken(new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line));
         }
 
         newOp.setLeftSide(memberChild);
@@ -90,7 +90,7 @@ public class OperationMap {
         operationParseMap.get(operationKeyCheck).accept(operationNode);
 
         try {
-            operationNode.constantToken.setType(castTo);
+            operationNode.getConstantToken().setType(castTo);
         } catch (NullPointerException e) {
             throw new NoSuchMethodError(String.format("Unable to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
         }

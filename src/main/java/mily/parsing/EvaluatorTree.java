@@ -39,11 +39,13 @@ public class EvaluatorTree {
         System.out.println(prefix + node);
         depth++;
 
+        assert node != null;
         for (EvaluatorNode member : node.members) {
             printRecursiveHelper(member, depth);
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode begin(List<Token> tokenList) {
         mainBlock.evaluate(tokenList, this, debugMode);
         return mainBlock;

@@ -31,7 +31,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
         return scope;
     }
 
-    public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth, boolean debugMode) throws Exception {
+    public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth, boolean debugMode) {
         String indent = " ".repeat(depth);
         List<Token> operationTokens = new ArrayList<>();
         int bracketCount = 1;
@@ -39,7 +39,6 @@ public abstract class ConditionalNode extends EvaluatorNode {
         // keep iterating until the full expression is obtained
         // before passing its tokens into an OperationEvaluatorNode
         while (true) {
-//            Token expressionToken = tokenList.removeFirst();
             Token expressionToken = tokenList.remove(0);
 
             if (debugMode)
@@ -61,7 +60,6 @@ public abstract class ConditionalNode extends EvaluatorNode {
 
                 } else {
                     // remove the last bracket )
-//                    operationTokens.removeLast();
                     operationTokens.remove(operationTokens.size() - 1);
 
                     if (operationTokens.isEmpty()) {

@@ -30,7 +30,6 @@ public class DeclarationNode extends VariableNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             if (debugMode)
                 System.out.printf(indent + "declaration :  %s : %s%n", this.nameToken, token);
 
@@ -38,8 +37,9 @@ public class DeclarationNode extends VariableNode {
             if (isPunctuation(token)) {
                 if (isWhiteSpace(token)) {
                     continue;
+                }
 
-                } else if (keyEquals(KEY_BRACKET_OPEN, token) && isDeclared()) {
+                if (keyEquals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     // FUNCTION DECLARATION
                     if (debugMode)
                         System.out.printf(indent + "Creating new function \"%s\"%n", this.nameToken);
@@ -63,7 +63,6 @@ public class DeclarationNode extends VariableNode {
 
                 } else {
                     return throwSyntaxError("Missing '=' sign", token);
-
                 }
             }
             // evaluate strings
@@ -75,17 +74,14 @@ public class DeclarationNode extends VariableNode {
 
                 } else {
                     return throwSyntaxError("Unexpected token on variable declaration", token);
-
                 }
             }
             // evaluate the rest
             else {
                 return throwSyntaxError("Unexpected token on variable declaration", token);
-
             }
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
-
     }
 
     @Override

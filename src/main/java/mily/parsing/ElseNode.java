@@ -45,14 +45,16 @@ public class ElseNode extends EvaluatorNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
+
             if (debugMode)
                 System.out.printf(indent + "else\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (keyEquals(KEY_CURLY_OPEN, token)) {
+            }
+
+            if (keyEquals(KEY_CURLY_OPEN, token)) {
                 block = new ScopeNode(this.nameToken, depth + 1, true);
                 members.add(block.evaluate(tokenList, evaluatorTree, debugMode));
                 return this;

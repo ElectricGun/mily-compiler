@@ -1,6 +1,8 @@
 package mily.constants;
 
+@SuppressWarnings("unused")
 public class Ansi {
+
     public static final String
             ANSI_ERROR = "\033[1;31m",
             ANSI_WARN = "\033[1;33m",

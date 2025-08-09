@@ -17,6 +17,7 @@ import static mily.constants.Keywords.*;
  * @see Keywords
  */
 
+@SuppressWarnings("unused")
 public class Maps {
 
     public final static OperationMap operationMap = new OperationMap();
@@ -236,12 +237,11 @@ public class Maps {
         addGenericNumericOperation(KEY_OP_POW, powConsumer);
 
         // ---- Casts
-        Consumer<OperationNode> castToInt = o -> {
-            o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        };
-        Consumer<OperationNode> castToDouble = o -> {
-            o.makeConstant(Double.parseDouble(((OperationNode) o.getMember(0)).constantToken.string));
-        };
+        Consumer<OperationNode> castToInt = o ->
+                o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).getConstantToken().string));
+
+        Consumer<OperationNode> castToDouble = o ->
+                o.makeConstant(Double.parseDouble(((OperationNode) o.getMember(0)).getConstantToken().string));
 
         // implicit casts
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
@@ -283,12 +283,12 @@ public class Maps {
 
         Consumer<UnaryToBinaryStruct> baseUnaryConsumer = b -> {
             b.getNewOp().setOperator(KEY_OP_MUL);
-            b.getFactor().constantToken = new TypedToken(
+            b.getFactor().setConstantToken(new TypedToken(
                     b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1",
                     b.getOldOp().nameToken.source,
                     KEY_DATA_INT,
                     b.getOldOp().nameToken.line
-            );
+            ));
         };
 
         operationMap.addUnaryOperationConverter(KEY_OP_ADD, baseUnaryConsumer);

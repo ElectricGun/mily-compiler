@@ -26,7 +26,7 @@ import static mily.constants.Maps.*;
 
 public class OperationNode extends EvaluatorNode {
 
-    public TypedToken constantToken = null;
+    protected TypedToken constantToken = null;
     public List<OperationBracketNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
@@ -44,7 +44,7 @@ public class OperationNode extends EvaluatorNode {
     public OperationNode(Token token, int depth, boolean isReturnOperation) {
         super(token, depth);
 
-        this.isReturnOperation = true;
+        this.isReturnOperation = isReturnOperation;
     }
 
     public boolean isReturnOperation() {
@@ -141,16 +141,6 @@ public class OperationNode extends EvaluatorNode {
                 Double.parseDouble(getRightConstantString()) : null;
     }
 
-    public int getLeftConstantInteger() {
-        return getLeftConstantString() != null ?
-                (int) Double.parseDouble(getLeftConstantString()) : null;
-    }
-
-    public int getRightConstantInteger() {
-        return getRightConstantString() != null ?
-                (int) Double.parseDouble(getRightConstantString()) : null;
-    }
-
     public String guessLeftType() {
         return Functions.guessValueType(getLeftConstantString());
     }
@@ -169,6 +159,10 @@ public class OperationNode extends EvaluatorNode {
 
     public TypedToken getConstantToken() {
         return constantToken;
+    }
+
+    public void setConstantToken(TypedToken constantToken) {
+        this.constantToken = constantToken;
     }
 
     @Override
@@ -241,7 +235,9 @@ public class OperationNode extends EvaluatorNode {
                             if (isWhiteSpace(currToken)) {
                                 continue;
 
-                            } else if (!datatypeFound && isDeclaratorAmbiguous(currToken)) {
+                            }
+
+                            if (!datatypeFound && isDeclaratorAmbiguous(currToken)) {
                                 datatypeToken = currToken;
                                 datatypeFound = true;
 

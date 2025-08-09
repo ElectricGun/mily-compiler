@@ -39,11 +39,13 @@ public class IfStatementNode extends ConditionalNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
+
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
+            }
+
+            if (keyEquals(KEY_BRACKET_OPEN, token)) {
                 parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {
@@ -63,7 +65,6 @@ public class IfStatementNode extends ConditionalNode {
 
                 } else {
                     // undo the token consumption
-//                    tokenList.addFirst(token);
                     tokenList.add(0, token);
                 }
                 return this;

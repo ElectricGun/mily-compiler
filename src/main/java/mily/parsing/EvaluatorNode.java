@@ -19,7 +19,7 @@ public class EvaluatorNode {
     public int depth;
     public Token nameToken;
     // for storing general information
-    public Map<String, String> flags = new HashMap<>();
+//    public Map<String, String> flags = new HashMap<>();
     protected List<MilyThrowable> throwables = new ArrayList<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
 
@@ -56,6 +56,7 @@ public class EvaluatorNode {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         try {
             return evaluator(tokenList, evaluatorTree, debugMode);
@@ -75,6 +76,7 @@ public class EvaluatorNode {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode throwSemanticError(String message, Token token) {
         String errorMessage = String.format(errorTemplate, "Semantic error", token.source, token.line, token) + message;
         this.throwables.add(new MilySemanticError(errorMessage));
@@ -82,6 +84,7 @@ public class EvaluatorNode {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode throwTypeError(String message, Token token) {
         String errorMessage = String.format(errorTemplate, "Type error", token.source, token.line, token) + message;
         this.throwables.add(new MilyTypeError(errorMessage));
@@ -89,12 +92,14 @@ public class EvaluatorNode {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public EvaluatorNode throwThrowable(MilyThrowable throwable) {
         this.throwables.add(throwable);
 
         return this;
     }
 
+    @SuppressWarnings("unused")
     public void printRecursive() {
         EvaluatorTree.printRecursive(this);
     }

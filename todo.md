@@ -1,6 +1,6 @@
 # Urgent TODO:
+ - OperationBracketNode's evaluate and evaluator don't override its superclass'
  - Function arg names may cause conflicts
- - Raw template and template invocation validation
  - Allow for function calls in raw templates
  - Create a string counter for generated variables to prevent conflicts
  - prune unused functions
