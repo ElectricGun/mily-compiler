@@ -91,15 +91,11 @@ public class Main {
         IRCode irCode = null;
         try {
             irCode = generateIRCode(evaluatorTree, debugMode);
+            throw new Exception();
 
         } catch (Exception e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
-
-        } finally {
-            if (printAst) {
-                evaluatorTree.printRecursive();
-                System.out.println();
-            }
         }
         long codeGenerationDuration = (System.nanoTime() - codeGenerationTime);
 
@@ -107,10 +103,15 @@ public class Main {
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
-
+        if (printAst) {
+            evaluatorTree.printRecursive();
+            System.out.println();
+        }
         System.out.println("Compilation successful");
         System.out.println("Output:");
         System.out.println();
+
+        assert irCode != null;
         irCode.printMlog();
 
         if (printBenchmark) {

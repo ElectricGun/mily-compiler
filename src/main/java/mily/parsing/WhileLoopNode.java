@@ -38,7 +38,9 @@ public class WhileLoopNode extends ConditionalNode {
             if (isWhiteSpace(token)) {
                 continue;
 
-            } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
+            }
+
+            if (keyEquals(KEY_BRACKET_OPEN, token)) {
                 parseOperation(tokenList, evaluatorTree, depth, debugMode);
 
             } else if (expression != null && scope == null) {

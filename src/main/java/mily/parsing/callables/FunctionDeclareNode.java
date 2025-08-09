@@ -42,6 +42,7 @@ public class FunctionDeclareNode extends EvaluatorNode implements Callable {
         return new ArrayList<>(argumentTypes);
     }
 
+    @SuppressWarnings("unused")
     public String[] getArgumentNamesArr() {
         String[] out = new String[argumentNames.size()];
         for (int i = 0; i < out.length; i++) {

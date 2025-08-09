@@ -75,6 +75,7 @@ public class OperationBracketNode extends EvaluatorNode {
             return evaluator(tokenList, orders, evaluatorTree, debugMode);
 
         } catch (Exception e) {
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
             System.exit(0);
             return null;

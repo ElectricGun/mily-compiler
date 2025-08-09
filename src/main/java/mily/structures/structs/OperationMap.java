@@ -60,9 +60,9 @@ public class OperationMap {
         return newOp;
     }
 
-    public void generateBinaryFromUnary(OperationNode operationNode, int memberIndex) {
-        generateBinaryFromUnaryAtMember(operationNode, 0);
-    }
+//    public void generateBinaryFromUnary(OperationNode operationNode, int memberIndex) {
+//        generateBinaryFromUnaryAtMember(operationNode, 0);
+//    }
 
     public void addOperation(String operator, String leftType, String rightType, String castsTo, Consumer<OperationNode> operationConsumer) {
         OperationKey newOperationKey = new OperationKey(operator, leftType, rightType);

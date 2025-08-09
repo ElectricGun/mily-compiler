@@ -33,6 +33,7 @@ public class Token {
         return string.equals(key);
     }
 
+    @SuppressWarnings("unused")
     public boolean equalsKey(Token key) {
         return string.equals(key.string);
     }

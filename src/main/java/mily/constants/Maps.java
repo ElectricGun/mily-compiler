@@ -309,6 +309,7 @@ public class Maps {
         operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
     }
 
+    @SuppressWarnings("SameParameterValue")
     static void addNumericOperationToInt(String operator, Consumer<OperationNode> consumer) {
         operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, consumer);
         operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
@@ -316,6 +317,7 @@ public class Maps {
         operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
     }
 
+    @SuppressWarnings("SameParameterValue")
     static void addNumericOperationToDouble(String operator, Consumer<OperationNode> consumer) {
         operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
         operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);

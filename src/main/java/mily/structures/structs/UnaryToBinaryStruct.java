@@ -23,6 +23,7 @@ public class UnaryToBinaryStruct {
         return newOp;
     }
 
+    @SuppressWarnings("unused")
     public OperationNode getChild() {
         return child;
     }
