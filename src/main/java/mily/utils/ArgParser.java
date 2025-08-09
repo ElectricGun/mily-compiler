@@ -12,6 +12,7 @@ public class ArgParser {
     protected Map<String, String> flagValuesString = new HashMap<>();
     protected Map<String, Double> flagValuesDouble = new HashMap<>();
     protected Map<String, Integer> flagValuesInt = new HashMap<>();
+
     public ArgParser(String flagPrefix) {
         this.flagPrefix = flagPrefix;
     }

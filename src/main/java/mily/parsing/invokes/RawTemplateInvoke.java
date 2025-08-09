@@ -84,7 +84,7 @@ public class RawTemplateInvoke extends CallerNode implements Named {
                 }
 
                 return this;
-            } else if (!expectingArgument && token.equalsKey(KEY_COMMA)){
+            } else if (!expectingArgument && token.equalsKey(KEY_COMMA)) {
                 expectingArgument = true;
 
             } else if (token.equalsKey(KEY_COMMA)) {
@@ -100,10 +100,10 @@ public class RawTemplateInvoke extends CallerNode implements Named {
                 }
             } else {
                 if (token.equalsKey(KEY_BRACKET_OPEN)) {
-                    bracketCount ++;
+                    bracketCount++;
 
                 } else if (token.equalsKey(KEY_BRACKET_CLOSE) && bracketCount > 0) {
-                    bracketCount --;
+                    bracketCount--;
 
                 } else if (token.equalsKey(KEY_BRACKET_CLOSE) && bracketCount == 0) {
                     this.throwSyntaxError("Unexpected close bracket", token);
