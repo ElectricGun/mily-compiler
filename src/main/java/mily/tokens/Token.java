@@ -1,5 +1,7 @@
 package mily.tokens;
 
+import mily.constants.Functions;
+
 /**
  * Basic token, contains a string and line number.
  *
@@ -33,5 +35,9 @@ public class Token {
 
     public boolean equalsKey(Token key) {
         return string.equals(key.string);
+    }
+
+    public boolean isWhiteSpace() {
+        return Functions.isWhiteSpace(this);
     }
 }

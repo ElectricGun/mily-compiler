@@ -1,7 +1,8 @@
-package mily.parsing.callable;
+package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.parsing.invokes.FunctionCallNode;
 import mily.tokens.*;
 
 import java.util.*;
@@ -161,7 +162,11 @@ public class FunctionDeclareNode extends EvaluatorNode implements Callable {
         return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), String.join(", ", argumentTypes));
     }
 
-    public boolean isOverload(String name, String... types) {
+    public boolean isOverload(Caller caller, String name, String... types) {
+        if (!(caller instanceof FunctionCallNode)) {
+            return false;
+        }
+
         if (!this.getName().equals(name)) {
             return false;
         }
@@ -169,8 +174,7 @@ public class FunctionDeclareNode extends EvaluatorNode implements Callable {
             return false;
         }
         for (int i = 0; i < types.length; i++) {
-            DeclarationNode argDeclare = (DeclarationNode) this.getMember(i);
-            if (!types[i].equals(argDeclare.getType())) {
+            if (!types[i].equals(argumentTypes.get(i))) {
                 return false;
             }
         }

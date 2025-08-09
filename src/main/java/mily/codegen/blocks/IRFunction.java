@@ -1,6 +1,6 @@
 package mily.codegen.blocks;
 
-import mily.parsing.callable.*;
+import mily.parsing.callables.*;
 
 import java.util.*;
 

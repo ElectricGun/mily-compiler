@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.parsing.callable.FunctionDeclareNode;
+import mily.parsing.callables.*;
 import mily.tokens.*;
 
 import java.util.*;

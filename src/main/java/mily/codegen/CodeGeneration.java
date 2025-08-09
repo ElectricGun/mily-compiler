@@ -3,7 +3,9 @@ package mily.codegen;
 import mily.codegen.blocks.*;
 import mily.codegen.lines.*;
 import mily.parsing.*;
-import mily.parsing.callable.*;
+import mily.parsing.callables.*;
+import mily.parsing.invokes.FunctionCallNode;
+import mily.parsing.invokes.RawTemplateInvoke;
 import mily.tokens.*;
 import mily.utils.HashCodeSimplifier;
 
@@ -169,7 +171,29 @@ public class CodeGeneration {
                 if (rawTemplateDeclareNode == null) {
                     throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
                 }
-                String formatted = rawTemplateDeclareNode.getScope().asFormatted(rawTemplateInvoke.getArgs());
+                List<OperationNode> argOps = rawTemplateInvoke.getArgs();
+
+                List<String> argNames = new ArrayList<>();
+                for (int a = 0; a < argOps.size(); a++) {
+                    IROperation opBlock = generateIROperation(argOps.get(a), irCode, irFunctionMap, hashSimplifier, depth, debugMode);
+                    irCode.irBlocks.add(opBlock);
+
+                    Line lastLine = opBlock.lineList.get(opBlock.lineList.size() - 1);
+
+                    if (lastLine instanceof BinaryOp binaryOp) {
+                        argNames.add(binaryOp.getVarName());
+
+                    } else if (lastLine instanceof SetLine setLine) {
+                        // remove because we dont need this
+                        opBlock.lineList.remove(opBlock.lineList.size() - 1);
+                        argNames.add(setLine.getValue());
+
+                    } else {
+                        throw new Exception("Expected a BinaryOp or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
+                    }
+                }
+
+                String formatted = rawTemplateDeclareNode.getScope().asFormatted(argNames);
 
                 String[] lineContent = formatted.split(KEY_NEWLINE);
                 for (String s : lineContent) {

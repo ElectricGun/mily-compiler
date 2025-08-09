@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.parsing.callable.*;
+import mily.parsing.callables.*;
 import mily.tokens.*;
 
 import java.util.*;

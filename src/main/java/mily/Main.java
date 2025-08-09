@@ -71,7 +71,7 @@ public class Main {
         convertUnariesToBinary(evaluatorTree, debugMode);
         boolean doAssignTypes = true;
         validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-        validateFunctionsCalls(evaluatorTree, doAssignTypes, debugMode);
+        validateCallers(evaluatorTree, doAssignTypes, debugMode);
         validateFunctionDeclares(evaluatorTree, debugMode);
         // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
@@ -87,17 +87,27 @@ public class Main {
         long optimizationDuration = (System.nanoTime() - optimizationTime);
 
         long codeGenerationTime = System.nanoTime();
-        IRCode irCode = generateIRCode(evaluatorTree, debugMode);
+
+        IRCode irCode = null;
+        try {
+            irCode = generateIRCode(evaluatorTree, debugMode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            if (printAst) {
+                evaluatorTree.printRecursive();
+                System.out.println();
+            }
+        }
         long codeGenerationDuration = (System.nanoTime() - codeGenerationTime);
 
         long endTime = System.nanoTime();
         long compileDuration = (endTime - startCompileTime);
         long totalDuration = (endTime - startTime);
 
-        if (printAst) {
-            evaluatorTree.printRecursive();
-            System.out.println();
-        }
+
         System.out.println("Compilation successful");
         System.out.println("Output:");
         System.out.println();

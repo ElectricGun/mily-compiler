@@ -1,6 +1,6 @@
 package mily.tokens;
 
-import mily.parsing.*;
+import mily.parsing.invokes.FunctionCallNode;
 
 import static mily.constants.Keywords.*;
 

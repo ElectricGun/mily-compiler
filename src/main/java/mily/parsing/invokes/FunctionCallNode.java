@@ -1,7 +1,8 @@
-package mily.parsing;
+package mily.parsing.invokes;
 
 import mily.abstracts.*;
-import mily.processing.Validation;
+import mily.parsing.*;
+import mily.processing.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -22,7 +23,7 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionCallNode extends EvaluatorNode implements Named, HasFunctionKey, Typed {
+public class FunctionCallNode extends EvaluatorNode implements Caller {
 
     protected List<OperationNode> arguments = new ArrayList<>();
     protected String type = KEY_DATA_UNKNOWN;

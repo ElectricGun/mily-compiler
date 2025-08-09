@@ -16,7 +16,7 @@ public class Line {
 
     @Override
     public String toString() {
-        return string;
+        return asMlog().trim();
     }
 
     protected String indent() {

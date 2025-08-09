@@ -21,11 +21,6 @@ public class BinaryOp extends VariableLine {
         return indent() + "op " + opAsMlog(op) + " " + varName + " " + left + " " + right;
     }
 
-    @Override
-    public String toString() {
-        return varName + ": " + left + " " + op + " " + right;
-    }
-
     public String getOp() {
         return op;
     }

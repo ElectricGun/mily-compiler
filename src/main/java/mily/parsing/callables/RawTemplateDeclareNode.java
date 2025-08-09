@@ -1,7 +1,8 @@
-package mily.parsing.callable;
+package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.parsing.invokes.RawTemplateInvoke;
 import mily.tokens.*;
 
 import java.util.*;
@@ -46,7 +47,11 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
     }
 
     @Override
-    public boolean isOverload(String name, String... types) {
+    public boolean isOverload(Caller caller, String name, String... types) {
+        if (!(caller instanceof RawTemplateInvoke)) {
+            return false;
+        }
+
         if (!this.getName().equals(name)) {
             return false;
         }
@@ -54,8 +59,7 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             return false;
         }
         for (int i = 0; i < types.length; i++) {
-            DeclarationNode argDeclare = (DeclarationNode) this.getMember(i);
-            if (!types[i].equals(argDeclare.getType())) {
+            if (!types[i].equals(getArgumentTypes().get(i))) {
                 return false;
             }
         }
@@ -101,7 +105,6 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
 
                     for (String arg : argStringsRaw) {
                         String[] stringArgType = arg.trim().split(" ");
-                        System.out.println(Arrays.toString(stringArgType));
 
                         if (isWhiteSpace(arg)) {
                             return throwSyntaxError("Empty token in template input arguments", nameToken);
