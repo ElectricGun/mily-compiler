@@ -2,7 +2,7 @@ package mily.parsing;
 
 import java.util.*;
 
-import mily.interfaces.*;
+import mily.abstracts.*;
 import mily.structures.errors.*;
 import mily.tokens.*;
 

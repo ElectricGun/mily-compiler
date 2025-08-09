@@ -1,6 +1,6 @@
 package mily.structures.errors;
 
-import mily.interfaces.*;
+import mily.abstracts.*;
 
 public class MilyError implements MilyThrowable {
 

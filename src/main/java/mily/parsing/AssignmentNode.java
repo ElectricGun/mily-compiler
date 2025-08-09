@@ -1,5 +1,6 @@
 package mily.parsing;
 
+import mily.parsing.callable.FunctionDeclareNode;
 import mily.tokens.*;
 
 import java.util.*;
@@ -12,7 +13,7 @@ import static mily.constants.Keywords.*;
  *
  * @author ElectricGun
  * @see mily.parsing.OperationNode
- * @see mily.parsing.FunctionDeclareNode
+ * @see FunctionDeclareNode
  */
 
 public class AssignmentNode extends VariableNode {

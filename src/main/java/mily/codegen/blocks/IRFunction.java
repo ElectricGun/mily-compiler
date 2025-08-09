@@ -1,8 +1,12 @@
 package mily.codegen.blocks;
 
+import mily.parsing.callable.*;
+
 import java.util.*;
 
 public class IRFunction extends IRBlock {
+
+    protected FunctionDeclareNode sourceFunctionNode;
 
     protected String callLabel;
     protected String callbackVar;
@@ -11,7 +15,8 @@ public class IRFunction extends IRBlock {
     protected List<String> argNames = new ArrayList<>();
     protected List<String> argTypes = new ArrayList<>();
 
-    public IRFunction(String callLabel, String callbackVar, String argPrefix, String retunVar) {
+    public IRFunction(FunctionDeclareNode sourceFunctionNode, String callLabel, String callbackVar, String argPrefix, String retunVar) {
+        this.sourceFunctionNode = sourceFunctionNode;
         this.argPrefix = argPrefix;
         this.callLabel = callLabel;
         this.callbackVar = callbackVar;

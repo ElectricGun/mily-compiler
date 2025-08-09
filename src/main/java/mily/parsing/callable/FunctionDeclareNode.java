@@ -1,6 +1,7 @@
-package mily.parsing;
+package mily.parsing.callable;
 
-import mily.interfaces.*;
+import mily.abstracts.*;
+import mily.parsing.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -16,7 +17,7 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunctionKey, Typed {
+public class FunctionDeclareNode extends EvaluatorNode implements Callable {
 
     List<String> argumentNames = new ArrayList<>();
     List<String> argumentTypes = new ArrayList<>();
@@ -30,10 +31,12 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
         this.returnType = returnType;
     }
 
+    @Override
     public List<String> getArgumentNames() {
         return new ArrayList<>(argumentNames);
     }
 
+    @Override
     public List<String> getArgumentTypes() {
         return new ArrayList<>(argumentTypes);
     }
@@ -137,7 +140,7 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
                     argumentWanted = false;
 
                     FunctionArgNode functionArgNode = new FunctionArgNode(token.string, variableName, depth + 1);
-                    functionArgNode.variableName = variableName.string;
+                    functionArgNode.setVariableName(variableName.string);
                     members.add(functionArgNode);
 
                     if (debugMode)
@@ -155,14 +158,14 @@ public class FunctionDeclareNode extends EvaluatorNode implements Named, HasFunc
 
     @Override
     public String toString() {
-        return String.format("declare function : %s | args: %s", nameToken, String.join(", ", argumentNames));
+        return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), String.join(", ", argumentTypes));
     }
 
     public boolean isOverload(String name, String... types) {
         if (!this.getName().equals(name)) {
             return false;
         }
-        if (types.length != argumentNames.size()) {
+        if (types.length != getArgumentNames().size()) {
             return false;
         }
         for (int i = 0; i < types.length; i++) {

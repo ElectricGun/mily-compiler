@@ -1,4 +1,4 @@
-package mily.interfaces;
+package mily.abstracts;
 
 public interface Named {
     String getName();

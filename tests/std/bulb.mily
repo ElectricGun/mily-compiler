@@ -1,31 +1,31 @@
 /-------- Standard library file --------
 
-raw print:x $
+raw void print:int x $
     print x
 $
 
-raw printflush:x $
+raw void printflush:int x $
     printflush x
 $
 
-raw cout: x, y $
+raw void print_to: int x, int y $
     print x
     printflush y
 $
 
-raw wait:x $
+raw void wait:int x $
     wait x
 $
 
-raw end $
+raw void end $
     end
 $
 
-raw stop $
+raw void stop $
     stop
 $
 
-raw as_int:x $
+raw int as_int:int x $
     op floor out x
     jump to_int_label greaterThanEq out 0
         op add out out 1

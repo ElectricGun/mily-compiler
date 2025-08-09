@@ -2,8 +2,10 @@ package mily.processing;
 
 import java.util.*;
 
+import mily.abstracts.Callable;
 import mily.parsing.*;
-import mily.tokens.FunctionCallToken;
+import mily.parsing.callable.*;
+import mily.tokens.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -391,6 +393,7 @@ public class Validation {
                 }
             } else if (member instanceof FunctionDeclareNode functionDeclareNode) {
                 functionDeclares.add(functionDeclareNode);
+                System.out.println(functionDeclares);
 
             } else if (member instanceof FunctionCallNode functionCallNode) {
                 if (!validateAssignFunction(functionCallNode, functionDeclares, doAssignTypes, debugMode)) {

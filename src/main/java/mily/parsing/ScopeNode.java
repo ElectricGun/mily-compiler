@@ -2,6 +2,7 @@ package mily.parsing;
 
 import java.util.*;
 
+import mily.parsing.callable.*;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -137,8 +138,8 @@ public class ScopeNode extends EvaluatorNode {
             } else if (keyEquals(KEY_RAW, token)) {
                 if (debugMode)
                     System.out.printf(indent + "Creating for raw template %n");
-                RawTemplateNode rawTemplateNode = new RawTemplateNode(token, depth + 1);
-                members.add(rawTemplateNode.evaluate(tokenList, evaluatorTree, debugMode));
+                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(KEY_DATA_VOID, token, depth + 1);
+                members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
                 // FUNCTION RETURN

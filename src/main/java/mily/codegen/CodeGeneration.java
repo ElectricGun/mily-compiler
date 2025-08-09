@@ -3,6 +3,7 @@ package mily.codegen;
 import mily.codegen.blocks.*;
 import mily.codegen.lines.*;
 import mily.parsing.*;
+import mily.parsing.callable.*;
 import mily.tokens.*;
 import mily.utils.HashCodeSimplifier;
 
@@ -18,7 +19,7 @@ public class CodeGeneration {
         IRCode irCode = new IRCode();
 
         Map<String, IRFunction> irFunctionMap = new HashMap<>();
-        Map<String, RawTemplateNode> templateNodeMap = new HashMap<>();
+        Map<String, RawTemplateDeclareNode> templateNodeMap = new HashMap<>();
         generateIRScopeRecursive(
                 evaluatorTree.mainBlock,
                 irCode,
@@ -36,7 +37,7 @@ public class CodeGeneration {
     private static void generateIRScopeRecursive(ScopeNode scopeNode,
                                                  IRCode irCode,
                                                  Map<String, IRFunction> irFunctionMap,
-                                                 Map<String, RawTemplateNode> templateNodeMap,
+                                                 Map<String, RawTemplateDeclareNode> templateNodeMap,
                                                  // if the block is a function block, then this is not null
                                                  IRFunction function,
                                                  HashCodeSimplifier hashSimplifier,
@@ -158,17 +159,17 @@ public class CodeGeneration {
                 // loop end label
                 irCode.addSingleLineBlock(new Label(endLabelString, depth));
 
-            } else if (member instanceof RawTemplateNode rawTemplateNode) {
-                templateNodeMap.put(rawTemplateNode.getName(), rawTemplateNode);
+            } else if (member instanceof RawTemplateDeclareNode rawTemplateDeclareNode) {
+                templateNodeMap.put(rawTemplateDeclareNode.getName(), rawTemplateDeclareNode);
 
             } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
                 IRBlock irBlock = new IRBlock();
-                RawTemplateNode rawTemplateNode = templateNodeMap.get(rawTemplateInvoke.getName());
+                RawTemplateDeclareNode rawTemplateDeclareNode = templateNodeMap.get(rawTemplateInvoke.getName());
 
-                if (rawTemplateNode == null) {
+                if (rawTemplateDeclareNode == null) {
                     throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
                 }
-                String formatted = rawTemplateNode.getScope().asFormatted(rawTemplateInvoke.getArgs());
+                String formatted = rawTemplateDeclareNode.getScope().asFormatted(rawTemplateInvoke.getArgs());
 
                 String[] lineContent = formatted.split(KEY_NEWLINE);
                 for (String s : lineContent) {
@@ -206,7 +207,7 @@ public class CodeGeneration {
     private static IRFunction generateFunctionDeclare(FunctionDeclareNode fn,
                                                       IRCode irCode,
                                                       Map<String, IRFunction> functionMap,
-                                                      Map<String, RawTemplateNode> templateNodeMap,
+                                                      Map<String, RawTemplateDeclareNode> templateNodeMap,
                                                       HashCodeSimplifier hashSimplifier,
                                                       int depth,
                                                       boolean debugMode) throws Exception {
@@ -217,7 +218,7 @@ public class CodeGeneration {
         String argPrefix = fnKey + "_arg_";
         String returnVar = fnKey + "_returns";
 
-        IRFunction irFunction = new IRFunction(startJumpLabel, callbackVar, argPrefix, returnVar);
+        IRFunction irFunction = new IRFunction(fn, startJumpLabel, callbackVar, argPrefix, returnVar);
         for (int a = 0; a < fn.getArgCount(); a++) {
             irFunction.addArg(fn.getArgType(a), fn.getArg(a));
         }
@@ -237,7 +238,7 @@ public class CodeGeneration {
 
     private static void generateBranchStatement(IfStatementNode ifs,
                                                 IRCode irCode, Map<String, IRFunction> functionMap,
-                                                Map<String, RawTemplateNode> templateNodeMap,
+                                                Map<String, RawTemplateDeclareNode> templateNodeMap,
                                                 IRFunction function, HashCodeSimplifier hashSimplifier,
                                                 int depth,
                                                 boolean debugMode) throws Exception {

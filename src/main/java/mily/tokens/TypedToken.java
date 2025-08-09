@@ -1,6 +1,6 @@
 package mily.tokens;
 
-import mily.interfaces.*;
+import mily.abstracts.*;
 
 /**
  * A token with a datatype

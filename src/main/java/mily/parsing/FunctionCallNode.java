@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.interfaces.*;
+import mily.abstracts.*;
 import mily.processing.Validation;
 import mily.tokens.*;
 

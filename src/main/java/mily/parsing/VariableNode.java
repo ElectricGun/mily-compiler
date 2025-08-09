@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.interfaces.*;
+import mily.abstracts.*;
 import mily.tokens.*;
 
 /**
@@ -23,6 +23,10 @@ public abstract class VariableNode extends EvaluatorNode implements Typed {
 
     public String getVariableName() {
         return variableName;
+    }
+
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
     }
 
     @Override

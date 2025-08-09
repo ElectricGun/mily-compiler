@@ -1,4 +1,4 @@
-package mily.interfaces;
+package mily.abstracts;
 
 /**
  * <h1> Interface Typed </h1>
