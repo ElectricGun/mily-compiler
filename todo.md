@@ -1,9 +1,7 @@
 # Urgent TODO:
+ - parse strings in operations
  - Function arg names may cause conflicts
- - Raw template and template invocation validation
- - Allow for function calls in raw templates
  - Create a string counter for generated variables to prevent conflicts
- - prune unused functions
 
 # Problems:
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
@@ -11,7 +9,6 @@
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation
  - Cannot declare a string var, such as string x = "1", it regards "1" as a variable name;
  - library circular dependencies
-
 
 # Operations
  - Compile explicit casting
@@ -28,9 +25,11 @@
 # AST Pruning
  - Numeric expression solving with variables
  - Loop simplifying
+ - Prune unused functions
 
 # Datatypes
  - Constants (final keyword)
+ - Ambiguous datatype for raw macros such as: int | double | string
 
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
@@ -40,6 +39,7 @@
 # Loops
  - break
  - continue
+ - do while
     
 # Technical Stuff
  - Support for non hardcoded evaluators

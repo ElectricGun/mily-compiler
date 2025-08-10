@@ -1,0 +1,25 @@
+package mily.codegen.lines;
+
+public class Line {
+
+    String string;
+    int indent;
+
+    public Line(String string, int indent) {
+        this.string = string;
+        this.indent = indent;
+    }
+
+    public String asMlog() {
+        return indent() + string;
+    }
+
+    @Override
+    public String toString() {
+        return asMlog().trim();
+    }
+
+    protected String indent() {
+        return "  ".repeat(indent);
+    }
+}
