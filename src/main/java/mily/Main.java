@@ -32,7 +32,15 @@ public class Main {
         final boolean debugMode = argParser.getBoolean("--debug");
         final boolean printAst = argParser.getBoolean("--print-ast");
         final boolean printBenchmark = argParser.getBoolean("--benchmark");
-        File toRead = new File(argParser.getPositionalArgument());
+
+        File toRead = null;
+        try {
+            toRead = new File(argParser.getPositionalArgument());
+
+        } catch (NullPointerException e) {
+            System.out.println("Input file unspecified");
+            System.exit(1);
+        }
 
         // read code
         String fileName = toRead.getName();
@@ -67,6 +75,7 @@ public class Main {
             System.out.println("Failed to compile!");
             return;
         }
+        evaluatorTree.printRecursive();
 //        evaluatorTree.printRecursive();
         removeEmptyOperations(evaluatorTree);
         convertUnariesToBinary(evaluatorTree, debugMode);

@@ -29,29 +29,54 @@ public class RawTemplateInvoke extends CallerNode implements Named {
         return new ArrayList<>(arguments);
     }
 
+//    @Override
+//    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+//        String indent = " ".repeat(depth);
+//
+//        boolean done = false;
+//
+//        while (!tokenList.isEmpty()) {
+//            Token token = tokenList.remove(0);
+//            if (debugMode)
+//                System.out.printf(indent + "raw template invoke %s: %s%n", this.nameToken, token);
+//
+//            if (token.equalsKey(KEY_BRACKET_OPEN)) {
+//                evaluateArgs(tokenList, evaluatorTree, debugMode);
+//                done = true;
+//
+//            } else if (done && token.equalsKey(KEY_SEMICOLON)) {
+//                return this;
+//
+//            } else {
+//                return throwSyntaxError("Unexpected token on raw template invoke \"" + token.string + "\"", token);
+//            }
+//        }
+//        return throwSyntaxError("Unexpected end of file", nameToken);
+//    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        boolean done = false;
-
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
+
             if (debugMode)
                 System.out.printf(indent + "raw template invoke %s: %s%n", this.nameToken, token);
 
-            if (token.equalsKey(KEY_BRACKET_OPEN)) {
-                evaluateArgs(tokenList, evaluatorTree, debugMode);
-                done = true;
+            if (!token.isWhiteSpace()) {
 
-            } else if (done && token.equalsKey(KEY_SEMICOLON)) {
-                return this;
+                if (token.equalsKey(KEY_BRACKET_OPEN)) {
+                    evaluateArgs(tokenList, evaluatorTree, debugMode);
+                    return this;
 
-            } else {
-                return throwSyntaxError("Unexpected token on raw template invoke \"" + token.string + "\"", token);
+                } else {
+                    return throwSyntaxError("Unexpected token on raw invoke", token);
+                }
             }
         }
-        return throwSyntaxError("Unexpected end of file", nameToken);
+        System.out.println(arguments);
+        return this;
     }
 
     @Override

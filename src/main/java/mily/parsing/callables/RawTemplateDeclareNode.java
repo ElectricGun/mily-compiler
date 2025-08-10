@@ -2,8 +2,7 @@ package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.FunctionCallNode;
-import mily.parsing.invokes.RawTemplateInvoke;
+import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -85,12 +84,11 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
         String indent = " ".repeat(depth);
 
-        String argBufferString = "";
+        StringBuilder argBufferString = new StringBuilder();
         boolean isParsingArg = false;
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             if (debugMode)
                 System.out.printf(indent + "raw template %s: %s%n", name, token);
 
@@ -101,48 +99,48 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             if (name == null && !isParsingArg && isVariableName(token)) {
                 name = token.string;
 
-            } else if (returnType != null && name != null && keyEquals(KEY_COLON, token) && !isParsingArg) {
+            } else if (returnType != null && name != null && keyEquals(KEY_BRACKET_OPEN, token) && !isParsingArg) {
                 if (debugMode)
                     System.out.printf(indent + "parsing raw template arguments", this.nameToken, token);
                 isParsingArg = true;
 
+            } else if (isParsingArg && token.equalsKey(KEY_BRACKET_CLOSE)) {
+                isParsingArg = false;
+
+            } else if (isParsingArg && (isWhiteSpace(token) || isDeclaratorAmbiguous(token) || isVariableName(token) || keyEquals(KEY_COMMA, token))) {
+                argBufferString.append(token.string);
+
+            } else if (!isParsingArg && keyEquals(KEY_DOLLAR, token) && argBufferString.isEmpty()) {
+                MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
+                members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
+                scope = macroScope;
+                return this;
+
             } else if (!isParsingArg && keyEquals(KEY_DOLLAR, token)) {
+                argBufferString = new StringBuilder(argBufferString.toString().trim());
+                List<String> argStringsRaw = List.of(argBufferString.toString().split(KEY_COMMA));
+
+                for (String arg : argStringsRaw) {
+                    String[] stringArgType = arg.trim().split(" ");
+
+                    if (isWhiteSpace(arg)) {
+                        return throwSyntaxError("Empty token in template input arguments", nameToken);
+
+                    } else if (stringArgType.length != 2) {
+                        return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
+                    }
+
+                    argTypes.add(stringArgType[0]);
+                    argStrings.add(stringArgType[1]);
+                }
+
                 MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
                 scope = macroScope;
                 return this;
 
             } else if (isParsingArg) {
-                if (keyEquals(KEY_DOLLAR, token)) {
-
-                    argBufferString = argBufferString.trim();
-                    List<String> argStringsRaw = List.of(argBufferString.split(KEY_COMMA));
-
-                    for (String arg : argStringsRaw) {
-                        String[] stringArgType = arg.trim().split(" ");
-
-                        if (isWhiteSpace(arg)) {
-                            return throwSyntaxError("Empty token in template input arguments", nameToken);
-
-                        } else if (stringArgType.length != 2) {
-                            return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
-                        }
-
-                        argTypes.add(stringArgType[0]);
-                        argStrings.add(stringArgType[1]);
-                    }
-
-                    MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
-                    members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
-                    scope = macroScope;
-                    return this;
-
-                } else if (isWhiteSpace(token) || isDeclaratorAmbiguous(token) || isVariableName(token) || keyEquals(KEY_COMMA, token)) {
-                    argBufferString += token.string;
-
-                } else {
-                    return throwSyntaxError("Unexpected token in template input arguments", token);
-                }
+                return throwSyntaxError("Unexpected token in template input arguments", token);
             }
         }
         return throwSyntaxError("Unexpected end of file", nameToken);

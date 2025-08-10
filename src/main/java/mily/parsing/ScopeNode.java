@@ -97,6 +97,7 @@ public class ScopeNode extends EvaluatorNode {
                     // TEMPLATE INVOKE
                     RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
                     members.add(templateInvoke.evaluate(tokenList, evaluatorTree, debugMode));
+                    expectingSemicolon = true;
 
                 } else {
                     return throwSyntaxError("Invalid token", token);

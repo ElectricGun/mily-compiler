@@ -61,24 +61,20 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
             Token argName = new Token("arg_" + getName() + "_" + argCount, token.source, token.line);
 
             if (debugMode)
-                System.out.println(indent + "arg: " + token);
+                System.out.println(indent + "arg: " + token + " expectingArg: " + expectingArgument);
 
             if (token.isWhiteSpace()) {
                 continue;
             }
 
-            if (bracketCount == 0 && !expectingArgument && token.equalsKey(KEY_BRACKET_CLOSE)) {
+            if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE)) {
                 if (!opTokens.isEmpty()) {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
                     EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
                     members.add(operationNode);
                     arguments.add((OperationNode) operationNode);
                 }
-
                 return;
-            } else if (!expectingArgument && token.equalsKey(KEY_COMMA) && bracketCount == 0) {
-                expectingArgument = true;
-
             } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0) {
                 if (opTokens.isEmpty()) {
                     this.throwSyntaxError("Empty argument found", token);
@@ -90,6 +86,7 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
                     arguments.add((OperationNode) operationNode);
                     argCount++;
                 }
+                expectingArgument = true;
             } else {
                 if (token.equalsKey(KEY_BRACKET_OPEN)) {
                     bracketCount++;
@@ -97,10 +94,10 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
                 } else if (token.equalsKey(KEY_BRACKET_CLOSE) && bracketCount > 0) {
                     bracketCount--;
 
-                } else if (token.equalsKey(KEY_BRACKET_CLOSE) && bracketCount == 0) {
-                    this.throwSyntaxError("Unexpected close bracket", token);
                 }
-
+//                else if () {
+//                    this.throwSyntaxError("Unexpected close bracket", token);
+//                }
                 opTokens.add(token);
             }
         }

@@ -1,12 +1,11 @@
-raw void test:int x$
+raw void printwrite(int x) $
     print x
-    printflush message1
 $
 
-int test(int x) {
-    return x + 1;
-}
+raw void printflush(string target) $
+    printflush target
+$
 
-for (int i = 0; i < 1000; i = i + 2) {
-    test$(test(i));
+int test(int x, int y) {
+    return x + 1;
 }
