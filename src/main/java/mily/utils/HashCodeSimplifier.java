@@ -15,7 +15,6 @@ public class HashCodeSimplifier {
                 return 0;
 
             } else {
-//                int val = values.getLast() + 1;
                 int val = values.get(values.size() - 1) + 1;
 
                 keys.add(hashCode);
