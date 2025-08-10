@@ -19,6 +19,20 @@ import static mily.constants.Keywords.*;
 @SuppressWarnings("unused")
 public class Functions {
 
+    public static void writeFile(String directory, String fileName, String content) throws IOException {
+        File outputFile = new File(directory, fileName);
+
+        if (!outputFile.exists()) {
+            if (!outputFile.createNewFile()) {
+                throw new IOException("Failed to write to output file \"" + fileName + "\"");
+            }
+        }
+
+        FileWriter fileWriter = new FileWriter(outputFile);
+        fileWriter.write(content);
+        fileWriter.close();
+    }
+
     public static CodeFile readFile(String directory, String fileName) throws FileNotFoundException {
         File file = new File(directory, fileName);
         String filename = file.getName();

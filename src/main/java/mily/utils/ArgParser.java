@@ -17,18 +17,37 @@ public class ArgParser {
         this.flagPrefix = flagPrefix;
     }
 
+    public boolean hasStringFlag(String flag) {
+        return flagValuesString.containsKey(flag);
+    }
+
+    public boolean hasIntFlag(String flag) {
+        return flagValuesInt.containsKey(flag);
+    }
+
+    public boolean hasDoubleFlag(String flag) {
+        return flagValuesDouble.containsKey(flag);
+    }
+
+    public boolean hasBooleanFlag(String flag) {
+        return flagValuesBoolean.containsKey(flag);
+    }
+
     public boolean getBoolean(String flag) {
         return flagValuesBoolean.get(flag);
     }
 
+    @SuppressWarnings("unused")
     public String getString(String flag) {
         return flagValuesString.get(flag);
     }
 
+    @SuppressWarnings("unused")
     public int getInteger(String flag) {
         return flagValuesInt.get(flag);
     }
 
+    @SuppressWarnings("unused")
     public double getDouble(String flag) {
         return flagValuesDouble.get(flag);
     }
@@ -89,7 +108,7 @@ public class ArgParser {
                 }
 
             } else {
-                throw new IllegalArgumentException("You have made some illegal arguments");
+                throw new IllegalArgumentException("You have made some illegal arguments!");
             }
         }
     }
