@@ -9,11 +9,25 @@ public class IRCode {
 
     public List<IRBlock> irBlocks = new ArrayList<>();
 
-    public void printMlog() {
-        for (IRBlock irBlock : irBlocks) {
-            if (!irBlock.lineList.isEmpty())
-                System.out.println(irBlock.asMlog());
+    public String generateMlog() {
+        StringBuilder out = new StringBuilder();
+
+        for (int i = 0; i < irBlocks.size(); i++) {
+            IRBlock irBlock = irBlocks.get(i);
+
+            if (!irBlock.lineList.isEmpty()) {
+                out.append(irBlock.asMlog());
+
+                if (i < irBlocks.size() - 1) {
+                    out.append("\n");
+                }
+            }
         }
+        return out.toString();
+    }
+
+    public void printMlog() {
+        System.out.println(generateMlog());
     }
 
     public void addSingleLineBlock(Line line) {

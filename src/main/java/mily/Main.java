@@ -26,6 +26,7 @@ public class Main {
         argParser.addFlag("--debug", ArgParser.ArgTypes.BOOLEAN);
         argParser.addFlag("--print-ast", ArgParser.ArgTypes.BOOLEAN);
         argParser.addFlag("--benchmark", ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag("-o", ArgParser.ArgTypes.STRING);
         argParser.processFlags(args);
 
         final boolean debugMode = argParser.getBoolean("--debug");
@@ -108,11 +109,39 @@ public class Main {
             System.out.println();
         }
         System.out.println("Compilation successful");
-        System.out.println("Output:");
-        System.out.println();
 
         assert irCode != null;
-        irCode.printMlog();
+
+        if (argParser.hasStringFlag("-o")) {
+
+            Scanner scanner = new Scanner(System.in);
+            File outputPath = new File(argParser.getString("-o"), code.getFilename());
+
+            if (outputPath.exists()) {
+                System.out.printf("File \"%s\" already exists%n", outputPath.getAbsolutePath());
+                System.out.println("Overwrite? (y/N)");
+                while (true) {
+                    String userInput = scanner.nextLine();
+                    if (userInput.equalsIgnoreCase("y")) {
+                        break;
+
+                    } else if (userInput.equalsIgnoreCase("n") || userInput.isEmpty()) {
+                        System.out.println("Cancelling");
+                        return;
+
+                    }
+                }
+            }
+            scanner.close();
+            writeFile(outputPath.getParent(), outputPath.getName(), irCode.generateMlog());
+
+            System.out.println("Successfully written to " + outputPath.getAbsolutePath());
+
+        } else {
+            System.out.println();
+            System.out.println("Output:");
+            irCode.printMlog();
+        }
 
         if (printBenchmark) {
             System.out.println();

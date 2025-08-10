@@ -17,6 +17,22 @@ public class ArgParser {
         this.flagPrefix = flagPrefix;
     }
 
+    public boolean hasStringFlag(String flag) {
+        return flagValuesString.containsKey(flag);
+    }
+
+    public boolean hasIntFlag(String flag) {
+        return flagValuesInt.containsKey(flag);
+    }
+
+    public boolean hasDoubleFlag(String flag) {
+        return flagValuesDouble.containsKey(flag);
+    }
+
+    public boolean hasBooleanFlag(String flag) {
+        return flagValuesBoolean.containsKey(flag);
+    }
+
     public boolean getBoolean(String flag) {
         return flagValuesBoolean.get(flag);
     }
