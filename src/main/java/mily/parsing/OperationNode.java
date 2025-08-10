@@ -1,12 +1,8 @@
 package mily.parsing;
 
 import java.util.*;
-
-import mily.constants.*;
 import mily.parsing.invokes.FunctionCallNode;
 import mily.tokens.*;
-
-import javax.annotation.processing.SupportedSourceVersion;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -125,6 +121,26 @@ public class OperationNode extends EvaluatorNode {
         }
     }
 
+    // its private here because it is too dangerous to be used outside of this class
+    private static String guessValueType(String s) {
+        if (s == null)
+            return null;
+
+        if (isInteger(s)) {
+            return KEY_DATA_INT;
+
+        } else if (isNumeric(s)) {
+            return KEY_DATA_DOUBLE;
+
+        } else if (s.startsWith("\"") && s.endsWith("\"")) {
+            return KEY_DATA_STRING;
+
+        } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
+            return KEY_DATA_BOOLEAN;
+        }
+        return KEY_DATA_UNKNOWN;
+    }
+
     public String getLeftConstantString() {
         return getSideConstantTokenString(getLeftSide());
     }
@@ -141,14 +157,6 @@ public class OperationNode extends EvaluatorNode {
     public Double getRightConstantNumeric() {
         return getRightConstantString() != null ?
                 Double.parseDouble(getRightConstantString()) : null;
-    }
-
-    public String guessLeftType() {
-        return Functions.guessValueType(getLeftConstantString());
-    }
-
-    public String guessRightType() {
-        return Functions.guessValueType(getRightConstantString());
     }
 
     public String getLeftTokenType() {
@@ -406,7 +414,7 @@ public class OperationNode extends EvaluatorNode {
                             constantToken = functionCallToken;
 
                         } else {
-                            constantToken = TypedToken.fromToken(newConstantToken, Functions.guessValueType(newConstantToken.string));
+                            constantToken = TypedToken.fromToken(newConstantToken, guessValueType(newConstantToken.string));
                         }
                         return this;
                     }
@@ -436,7 +444,7 @@ public class OperationNode extends EvaluatorNode {
 
                         } else {
                             OperationNode op = new OperationNode(this.nameToken, depth + 1);
-                            op.constantToken = TypedToken.fromToken(newConstantToken, Functions.guessValueType(newConstantToken.string));
+                            op.constantToken = TypedToken.fromToken(newConstantToken, guessValueType(newConstantToken.string));
                             setLeftSide(op);
                         }
                         return this;
@@ -466,8 +474,8 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public void makeConstant(String newString) {
-        String newTokenType = Functions.guessValueType(newString);
-        this.constantToken = new TypedToken(newString, this.nameToken.source, newTokenType, this.nameToken.line);
+        String newTokenType = guessValueType(newString);
+        setConstantToken(new TypedToken(newString, this.nameToken.source, newTokenType, this.nameToken.line));
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);
         setRightSide(null);

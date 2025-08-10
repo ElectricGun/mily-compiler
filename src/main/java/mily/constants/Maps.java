@@ -162,7 +162,7 @@ public class Maps {
 
         // addition
         Consumer<OperationNode> addConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() + o.getRightConstantNumeric()));
             } else {
                 o.makeConstant(o.getLeftConstantNumeric() + o.getRightConstantNumeric());
@@ -172,7 +172,7 @@ public class Maps {
 
         // subtraction
         Consumer<OperationNode> subConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() - o.getRightConstantNumeric()));
 
             } else {
@@ -183,7 +183,7 @@ public class Maps {
 
         // multiplication
         Consumer<OperationNode> mulConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() * o.getRightConstantNumeric()));
 
             } else {
@@ -200,7 +200,7 @@ public class Maps {
 
         // modulo
         Consumer<OperationNode> modConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() % o.getRightConstantNumeric()));
 
             } else {
@@ -221,7 +221,7 @@ public class Maps {
 
         // power
         Consumer<OperationNode> powConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.guessLeftType()) && KEY_DATA_INT.equals(o.guessRightType()))) {
+            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) Math.pow(
                         o.getLeftConstantNumeric(),
                         o.getRightConstantNumeric()

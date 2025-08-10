@@ -274,25 +274,6 @@ public class Functions {
         return isInteger(String.valueOf(c));
     }
 
-    public static String guessValueType(String s) {
-        if (s == null)
-            return null;
-
-        if (isInteger(s)) {
-            return KEY_DATA_INT;
-
-        } else if (isNumeric(s)) {
-            return KEY_DATA_DOUBLE;
-
-        } else if (s.startsWith("\"") && s.endsWith("\"")) {
-            return KEY_DATA_STRING;
-
-        } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
-            return KEY_DATA_BOOLEAN;
-        }
-        return KEY_DATA_UNKNOWN;
-    }
-
     public static String negateBooleanOperator(String operator) {
         if (!OP_NEGATION_MAP.containsKey(operator))
             throw new IllegalArgumentException(String.format("Operator \"%s\" cannot be negated", operator));

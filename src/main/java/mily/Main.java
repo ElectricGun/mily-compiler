@@ -75,7 +75,6 @@ public class Main {
             System.out.println("Failed to compile!");
             return;
         }
-        evaluatorTree.printRecursive();
 //        evaluatorTree.printRecursive();
         removeEmptyOperations(evaluatorTree);
         convertUnariesToBinary(evaluatorTree, debugMode);
@@ -85,7 +84,6 @@ public class Main {
         validateFunctionDeclares(evaluatorTree, debugMode);
         // this step is not needed yet
         //pruneNestedUnaries(evaluatorTree, debugMode);
-        //        evaluatorTree.printRecursive();
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree);
