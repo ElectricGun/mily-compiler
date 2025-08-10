@@ -176,7 +176,6 @@ public class OperationNode extends EvaluatorNode {
 
         Token previousToken = null;
 
-        System.out.println(nameToken + " " + tokenList);
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
 
@@ -288,8 +287,6 @@ public class OperationNode extends EvaluatorNode {
                     for (int i = 0; i < operationTokens.size(); i++) {
                         orders.add(0);
                     }
-
-//                    System.out.println(operationTokens);
 
                     // if largest value is -1 then it's a constant or something is very wrong
                     int largestOrderIndex = -1;
@@ -457,7 +454,6 @@ public class OperationNode extends EvaluatorNode {
 
             previousToken = token;
         }
-        System.out.println(nameToken);
         return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
