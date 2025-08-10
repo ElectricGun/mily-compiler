@@ -21,14 +21,17 @@ public class ArgParser {
         return flagValuesBoolean.get(flag);
     }
 
+    @SuppressWarnings("unused")
     public String getString(String flag) {
         return flagValuesString.get(flag);
     }
 
+    @SuppressWarnings("unused")
     public int getInteger(String flag) {
         return flagValuesInt.get(flag);
     }
 
+    @SuppressWarnings("unused")
     public double getDouble(String flag) {
         return flagValuesDouble.get(flag);
     }
@@ -89,7 +92,7 @@ public class ArgParser {
                 }
 
             } else {
-                throw new IllegalArgumentException("You have made some illegal arguments");
+                throw new IllegalArgumentException("You have made some illegal arguments!");
             }
         }
     }
