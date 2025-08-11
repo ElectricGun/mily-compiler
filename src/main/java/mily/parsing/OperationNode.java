@@ -434,10 +434,10 @@ public class OperationNode extends EvaluatorNode {
                             return throwSyntaxError("Unexpected token in operation", token);
                         }
                         return this;
-                    }
-                    // if it only has a -1 or -4
-                    // for constant values
-                    else if (orders.size() == 1 && orderIsConstant(orders.get(0))) {
+
+                        // if it only has a -1 or -4
+                        // for constant values
+                    } else if (orders.size() == 1 && orderIsConstant(orders.get(0))) {
                         Token newConstantToken = operationTokens.remove(0);
 
                         if (newConstantToken instanceof BracketToken bracketToken) {
@@ -450,13 +450,18 @@ public class OperationNode extends EvaluatorNode {
                             constantToken = typedToken;
 
                         } else {
-                            constantToken = TypedToken.fromToken(newConstantToken, guessValueType(newConstantToken.string));
+                            String guessedValueType = guessValueType(newConstantToken.string);
+                            constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
+
+                            if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
+                                constantToken.setVariableRef(true);
+                            }
                         }
                         return this;
-                    }
-                    // if it has -1 or -4 on the right and a -2 operator on the left
-                    // for unary operators
-                    else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
+
+                        // if it has -1 or -4 on the right and a -2 operator on the left
+                        // for unary operators
+                    } else if (orders.size() == 2 && orderIsConstant(orders.get(1)) && orders.get(0) == -2) {
 
                         Token unaryOperator = operationTokens.remove(0);
 
@@ -470,18 +475,28 @@ public class OperationNode extends EvaluatorNode {
                         }
                         Token newConstantToken = operationTokens.remove(0);
 
+                        OperationNode op = new OperationNode(this.nameToken, depth + 1);
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
                         } else if (newConstantToken instanceof FunctionCallToken functionCallToken) {
-                            OperationNode op = new OperationNode(this.nameToken, depth + 1);
+//                            OperationNode op = new OperationNode(this.nameToken, depth + 1);
                             op.constantToken = functionCallToken;
                             setLeftSide(op);
 
-                        } else {
-                            OperationNode op = new OperationNode(this.nameToken, depth + 1);
-                            op.constantToken = TypedToken.fromToken(newConstantToken, guessValueType(newConstantToken.string));
+                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(KEY_DATA_UNKNOWN)) {
+                            op.constantToken = typedToken;
                             setLeftSide(op);
+
+                        } else {
+//                            OperationNode op = new OperationNode(this.nameToken, depth + 1);
+                            String guessedValueType = guessValueType(newConstantToken.string);
+                            op.constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
+                            setLeftSide(op);
+
+                            if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
+                                op.constantToken.setVariableRef(true);
+                            }
                         }
                         return this;
                     }

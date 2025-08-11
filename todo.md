@@ -1,9 +1,13 @@
 # Urgent TODO:
- - 
+ - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
  - append "user_" to user specified variables to avoid conflicts with generated ones
  - Remove explicit casting entirely, its making OperationNode confusing, just use functions or something
+
+# Flags
+ - --help flag
+ - shorthand flags such as -h, -p, -v, etc
 
 # Problems:
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue

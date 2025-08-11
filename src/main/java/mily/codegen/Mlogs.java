@@ -51,7 +51,7 @@ public class Mlogs {
             } else {
                 throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", typedToken));
             }
-        } else if (typedToken.getType().equals(KEY_DATA_STRING)) {
+        } else if (typedToken.getType().equals(KEY_DATA_STRING) && !typedToken.isVariableRef()) {
             return "\"" + typedToken.string + "\"";
 
         } else {
