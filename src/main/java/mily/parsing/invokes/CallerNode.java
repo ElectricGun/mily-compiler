@@ -95,9 +95,6 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
                     bracketCount--;
 
                 }
-//                else if () {
-//                    this.throwSyntaxError("Unexpected close bracket", token);
-//                }
                 opTokens.add(token);
             }
         }
