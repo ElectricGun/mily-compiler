@@ -110,13 +110,13 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             } else if (isParsingArg && (isWhiteSpace(token) || isDeclaratorAmbiguous(token) || isVariableName(token) || keyEquals(KEY_COMMA, token))) {
                 argBufferString.append(token.string);
 
-            } else if (!isParsingArg && keyEquals(KEY_DOLLAR, token) && argBufferString.isEmpty()) {
+            } else if (!isParsingArg && keyEquals(KEY_MACRO_LITERAL, token) && argBufferString.isEmpty()) {
                 MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
                 scope = macroScope;
                 return this;
 
-            } else if (!isParsingArg && keyEquals(KEY_DOLLAR, token)) {
+            } else if (!isParsingArg && keyEquals(KEY_MACRO_LITERAL, token)) {
                 argBufferString = new StringBuilder(argBufferString.toString().trim());
                 List<String> argStringsRaw = List.of(argBufferString.toString().split(KEY_COMMA));
 

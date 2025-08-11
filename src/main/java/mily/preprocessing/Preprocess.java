@@ -32,7 +32,7 @@ public class Preprocess {
 //                        macroStart = tokenList.removeFirst();
                         macroStart = tokenList.remove(0);
 
-                    if (macroStart.equalsKey(KEY_DOLLAR)) {
+                    if (macroStart.equalsKey(KEY_MACRO_LITERAL)) {
                         StringBuilder buffer = new StringBuilder();
 
                         Token currMacroToken;

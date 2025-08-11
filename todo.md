@@ -1,5 +1,6 @@
 # Urgent TODO:
  - parse strings in operations
+ - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
  - Create a string counter for generated variables to prevent conflicts
 
@@ -11,8 +12,8 @@
  - library circular dependencies
 
 # Operations
- - Compile explicit casting
- - 
+ - Remove explicit casting, use functions instead 
+
 # Useful
  - Inline raw mlog (can be used for defining mlog commands in libraries)
  - Type hinting system for raw mlog blocks if they return something

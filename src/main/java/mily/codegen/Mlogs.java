@@ -1,5 +1,7 @@
 package mily.codegen;
 
+import mily.tokens.TypedToken;
+
 import java.util.*;
 
 import static mily.constants.Keywords.*;
@@ -38,19 +40,22 @@ public class Mlogs {
         return mlogOperationMap.get(op);
     }
 
-    public static String valueAsMlog(String value) {
-        if (isBoolean(value)) {
-            if (keyEquals(KEY_BOOLEAN_FALSE, value)) {
+    public static String tokenAsMlog(TypedToken typedToken) {
+        if (typedToken.getType().equals(KEY_DATA_BOOLEAN)) {
+            if (keyEquals(KEY_BOOLEAN_FALSE, typedToken)) {
                 return "0";
 
-            } else if (keyEquals(KEY_BOOLEAN_TRUE, value)) {
+            } else if (keyEquals(KEY_BOOLEAN_TRUE, typedToken)) {
                 return "1";
 
             } else {
-                throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", value));
+                throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", typedToken));
             }
+        } else if (typedToken.getType().equals(KEY_DATA_STRING)) {
+            return "\"" + typedToken.string + "\"";
+
         } else {
-            return value;
+            return typedToken.string;
         }
     }
 }

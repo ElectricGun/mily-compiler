@@ -459,7 +459,7 @@ public class CodeGeneration {
             return argOutput;
 
         } else {
-            return valueAsMlog(token.string);
+            return tokenAsMlog(token);
         }
     }
 }

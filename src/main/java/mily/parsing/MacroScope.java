@@ -36,7 +36,7 @@ public class MacroScope extends EvaluatorNode {
             if (debugMode)
                 System.out.printf(indent() + "macro scope %s: %s%n", this.nameToken, token);
 
-            if (keyEquals(KEY_DOLLAR, token)) {
+            if (keyEquals(KEY_MACRO_LITERAL, token)) {
                 return this;
             }
             tokens.add(str);

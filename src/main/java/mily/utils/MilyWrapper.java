@@ -32,7 +32,6 @@ public class MilyWrapper {
         this.isQuiet = isQuiet;
     }
 
-
     public CompilerOutput compile(CodeFile code, String cwd) throws Exception {
         long compileStartTime = System.nanoTime();
 
@@ -57,6 +56,12 @@ public class MilyWrapper {
         // end ast building -- start optimisation
         long optimizationStartTime = System.nanoTime();
         long astBuildDuration = (optimizationStartTime - startAstBuildDuration);
+
+        if (debugMode) {
+            System.out.println("PRE VALIDATION AST (unassigned reference types)");
+            evaluatorTree.printRecursive();
+            System.out.println();
+        }
 
         // check for syntax errors
         if (checkThrowables(evaluatorTree)) {

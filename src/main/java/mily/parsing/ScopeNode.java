@@ -93,7 +93,7 @@ public class ScopeNode extends EvaluatorNode {
                     EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
                     members.add(node);
 
-                } else if (isVariableName(previousToken) && keyEquals(KEY_DOLLAR, token)) {
+                } else if (isVariableName(previousToken) && keyEquals(KEY_MACRO_LITERAL, token)) {
                     // TEMPLATE INVOKE
                     RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
                     members.add(templateInvoke.evaluate(tokenList, evaluatorTree, debugMode));

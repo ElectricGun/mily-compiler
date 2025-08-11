@@ -197,15 +197,30 @@ public class OperationNode extends EvaluatorNode {
                     continue;
                 }
 
-                // function calls should be evaluated here because they don't change the order of operations
-                // and can be regarded as constants
-                // store them as class FunctionCallToken
+                if (token.equalsKey(KEY_SPEECH_MARK)) {
+                    // Process STRINGS
+                    StringBuilder stringTokenBuffer = new StringBuilder();
+                    Token prevStringToken = null;
+                    while (true) {
+                        if (tokenList.isEmpty()) {
+                            return throwSyntaxError("Unclosed string in operation from line " + token.line, token);
+                        }
+                        Token stringToken = tokenList.remove(0);
 
-                // TODO IMPLEMENT CASTS
-                // casts also should be regarded as unary operators
-                // store them as class CastToken
+                        if (!stringToken.equalsKey(KEY_SPEECH_MARK) || (prevStringToken != null && prevStringToken.equalsKey(KEY_ESCAPE))) {
+                            stringTokenBuffer.append(stringToken.string);
+                        } else {
+                            break;
+                        }
+                        prevStringToken = stringToken;
+                    }
 
-                if (keyEquals(KEY_BRACKET_OPEN, token)) {
+                    operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, KEY_DATA_STRING, token.line));
+
+                } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
+                    // function calls should be evaluated here because they don't change the order of operations
+                    // and can be regarded as constants
+                    // store them as class FunctionCallToken
                     if (isVariableName(previousToken)) {
 
                         if (debugMode)
@@ -413,6 +428,9 @@ public class OperationNode extends EvaluatorNode {
 
                         } else if (newConstantToken instanceof FunctionCallToken functionCallToken) {
                             constantToken = functionCallToken;
+
+                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(KEY_DATA_UNKNOWN)) {
+                            constantToken = typedToken;
 
                         } else {
                             constantToken = TypedToken.fromToken(newConstantToken, guessValueType(newConstantToken.string));
