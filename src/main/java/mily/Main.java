@@ -4,128 +4,94 @@ import java.io.File;
 import java.util.*;
 
 import mily.codegen.*;
-import mily.preprocessing.*;
 import mily.structures.structs.*;
-import mily.tokens.*;
-import mily.parsing.*;
 import mily.utils.*;
 
-import static mily.codegen.CodeGeneration.*;
-import static mily.constants.Ansi.*;
 import static mily.constants.Functions.*;
-import static mily.preprocessing.Lexing.*;
-import static mily.processing.Pruning.*;
-import static mily.processing.Validation.*;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        long startTime = System.nanoTime();
+    private final static String
+        FLAG_PREFIX = "-",
+        FLAG_DEBUG = "--debug",
+        FLAG_QUIET = "--quiet",
+        FLAG_PRINT_AST = "--print-ast",
+        FLAG_PRINT_OUTPUT = "--print-output",
+        FLAG_BENCHMARK = "--benchmark",
+        FLAG_OUTPUT = "--output",
+        FLAG_NO_CONFIRMATION = "--no-confirm"
+    ;
 
-        ArgParser argParser = new ArgParser("-");
-        argParser.addFlag("--debug", ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag("--print-ast", ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag("--benchmark", ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag("-o", ArgParser.ArgTypes.STRING);
+    public static void main(String[] args) throws Exception {
+        ArgParser argParser = new ArgParser(FLAG_PREFIX);
+        argParser.addFlag(FLAG_DEBUG, ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag(FLAG_QUIET, ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag(FLAG_BENCHMARK, ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag(FLAG_OUTPUT, ArgParser.ArgTypes.STRING);
+        argParser.addFlag(FLAG_PRINT_AST, ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag(FLAG_PRINT_OUTPUT, ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag(FLAG_NO_CONFIRMATION, ArgParser.ArgTypes.BOOLEAN);
         argParser.processFlags(args);
 
-        final boolean debugMode = argParser.getBoolean("--debug");
-        final boolean printAst = argParser.getBoolean("--print-ast");
-        final boolean printBenchmark = argParser.getBoolean("--benchmark");
+        final boolean debugMode = argParser.getBoolean(FLAG_DEBUG);
+        final boolean isQuiet = argParser.getBoolean(FLAG_QUIET);
+        final boolean printBenchmark = argParser.getBoolean(FLAG_BENCHMARK);
+        final boolean printAst = argParser.getBoolean(FLAG_PRINT_AST);
+        final boolean printOutput = argParser.getBoolean(FLAG_PRINT_OUTPUT);
+        final boolean noConfirmation = argParser.getBoolean(FLAG_NO_CONFIRMATION);
 
-        File toRead = null;
+        File toRead;
         try {
             toRead = new File(argParser.getPositionalArgument());
 
         } catch (NullPointerException e) {
             System.out.println("Input file unspecified");
             System.exit(1);
+            return;
         }
 
         // read code
         String fileName = toRead.getName();
         String cwd = toRead.getParent();
-
         CodeFile code = readFile(cwd, fileName);
-
-        long startCompileTime = System.nanoTime();
-
-        // tokenise
-        List<Token> tokenList;
+        MilyWrapper wrapper = new MilyWrapper(debugMode, isQuiet);
+        CompilerOutput output;
         try {
-            tokenList = tokenize(code.getCode(), new File(code.getDirectory(), code.getFilename()).getPath(), debugMode);
-            tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode);
-        } catch (Exception e) {
-            // todo: unhardcode this message
-            System.out.println(ANSI_ERROR + "MilyLexingError: " + e.getMessage() + ANSI_RESET);
-            return;
-        }
-        long lexingDuration = (System.nanoTime() - startCompileTime);
+            output = wrapper.compile(code, cwd);
 
-        // build ast
-        long startAstBuildDuration = System.nanoTime();
-        EvaluatorTree evaluatorTree = new EvaluatorTree(code.getFilename(), debugMode);
-        evaluatorTree.begin(tokenList);
+        } catch (RuntimeException e) {
+            System.out.println("Failed to compile");
 
-        long astBuildDuration = (System.nanoTime() - startAstBuildDuration);
-        long optimizationTime = System.nanoTime();
-
-        // check for syntax errors
-        if (checkThrowables(evaluatorTree)) {
-            System.out.println("Failed to compile!");
-            return;
-        }
-//        evaluatorTree.printRecursive();
-        removeEmptyOperations(evaluatorTree);
-        convertUnariesToBinary(evaluatorTree, debugMode);
-        boolean doAssignTypes = true;
-        validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-        validateCallers(evaluatorTree, doAssignTypes, debugMode);
-        validateFunctionDeclares(evaluatorTree, debugMode);
-        // this step is not needed yet
-        //pruneNestedUnaries(evaluatorTree, debugMode);
-        validateTypes(evaluatorTree, debugMode);
-        validateConditionals(evaluatorTree, debugMode);
-        solveBinaryExpressions(evaluatorTree);
-
-        // check for semantic errors
-        if (checkThrowables(evaluatorTree)) {
-            System.out.println("Failed to compile!");
-            return;
-        }
-        long optimizationDuration = (System.nanoTime() - optimizationTime);
-
-        long codeGenerationTime = System.nanoTime();
-
-        IRCode irCode = null;
-        try {
-            irCode = generateIRCode(evaluatorTree, debugMode);
-
-        } catch (Exception e) {
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
+            System.exit(1);
+            return;
         }
-        long codeGenerationDuration = (System.nanoTime() - codeGenerationTime);
-
-        long endTime = System.nanoTime();
-        long compileDuration = (endTime - startCompileTime);
-        long totalDuration = (endTime - startTime);
 
         if (printAst) {
-            evaluatorTree.printRecursive();
-            System.out.println();
+            output.getAST().printRecursive();
         }
-        System.out.println("Compilation successful");
+        IRCode irCode = output.getOutputCode();
 
-        assert irCode != null;
-
-        if (argParser.hasStringFlag("-o")) {
-
+        if (argParser.hasStringFlag(FLAG_OUTPUT)) {
             Scanner scanner = new Scanner(System.in);
-            File outputPath = new File(argParser.getString("-o"), code.getFilename());
 
-            if (outputPath.exists()) {
-                System.out.printf("File \"%s\" already exists%n", outputPath.getAbsolutePath());
+            String outputFileNameWithoutExt;
+            String outputFileName = code.getFilename();
+
+            if (outputFileName.indexOf(".") > 0) {
+                outputFileNameWithoutExt = outputFileName.substring(0, outputFileName.lastIndexOf("."));
+
+            } else {
+                outputFileNameWithoutExt = outputFileName;
+            }
+
+            String finalOutputPath = outputFileNameWithoutExt + ".mlog";
+            File fullOutputPath = new File(argParser.getString(FLAG_OUTPUT), finalOutputPath);
+
+            // for user overwrite confirmation
+            if (fullOutputPath.exists() && !noConfirmation) {
+                System.out.printf("File \"%s\" already exists%n", fullOutputPath.getAbsolutePath());
                 System.out.println("Overwrite? (y/N)");
                 while (true) {
                     String userInput = scanner.nextLine();
@@ -134,37 +100,39 @@ public class Main {
 
                     } else if (userInput.equalsIgnoreCase("n") || userInput.isEmpty()) {
                         System.out.println("Cancelling");
+                        System.exit(2);
                         return;
-
                     }
                 }
             }
             scanner.close();
-            writeFile(outputPath.getParent(), outputPath.getName(), irCode.generateMlog());
+            writeFile(fullOutputPath.getParent(), fullOutputPath.getName(), irCode.generateMlog());
 
-            System.out.println("Successfully written to " + outputPath.getAbsolutePath());
-
-        } else {
-            System.out.println();
-            System.out.println("Output:");
+            if (!isQuiet) {
+                System.out.println("Successfully written to " + fullOutputPath.getAbsolutePath());
+            }
+        } else if (printOutput) {
+            if (!isQuiet) {
+                System.out.println("# Output:");
+            }
             irCode.printMlog();
         }
 
         if (printBenchmark) {
-            System.out.println();
+            if (printOutput || printAst) {
+                System.out.println();
+            }
             System.out.printf(
                     "Lexing time: %sms%n" +
                             "AST building time: %sms%n" +
                             "Optimisation time: %sms%n" +
                             "Code generation time: %sms%n" +
-                            "Total compile time: %sms%n" +
-                            "Total run time: %sms%n",
-                    lexingDuration / 1000000,
-                    astBuildDuration / 1000000,
-                    optimizationDuration / 1000000,
-                    codeGenerationDuration / 1000000,
-                    compileDuration / 1000000,
-                    totalDuration / 1000000
+                            "Total compile time: %sms%n",
+                    output.getLexingDuration() / 1000000,
+                    output.getAstBuildDuration() / 1000000,
+                    output.getOptimizationDuration() / 1000000,
+                    output.getCodeGenerationDuration() / 1000000,
+                    output.getCompileDuration() / 1000000
             );
         }
     }
