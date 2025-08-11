@@ -19,13 +19,21 @@ public class EvaluatorNode {
     public int depth;
     public Token nameToken;
     // for storing general information
-//    public Map<String, String> flags = new HashMap<>();
+    protected Map<String, String> flags = new HashMap<>();
     protected List<MilyThrowable> throwables = new ArrayList<>();
     protected List<EvaluatorNode> members = new ArrayList<>();
 
     public EvaluatorNode(Token nameToken, int depth) {
         this.nameToken = nameToken;
         this.depth = depth;
+    }
+
+    public void putFlag(String flag, String value) {
+        flags.put(flag, value);
+    }
+
+    public String getFlagValue(String flag) {
+        return flags.get(flag);
     }
 
     public boolean isErrored() {
