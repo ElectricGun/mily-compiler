@@ -194,9 +194,6 @@ public class OperationNode extends EvaluatorNode {
             if (debugMode)
                 System.out.printf(indent + "operation : %s : %s%n", this.nameToken, token);
 
-            System.out.println(token + " " + previousIsSymbolIdentifier + isVariableOrDeclarator(token));
-
-
             if (!previousIsSymbolIdentifier && token.equalsKey(KEY_SYMBOL_IDENTIFIER)) {
                 previousIsSymbolIdentifier = true;
 
