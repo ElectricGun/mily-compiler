@@ -19,7 +19,7 @@ public class Keywords {
         KEY_SQUARE_CLOSE = "]",
         KEY_COLON = ":",
         KEY_SPEECH_MARK = "\"",
-        KEY_AT = "@",
+        KEY_SYMBOL_IDENTIFIER = "@",
         KEY_HASH = "#",
         KEY_MACRO_LITERAL = "$",
         KEY_SEMICOLON = ";",
@@ -63,7 +63,7 @@ public class Keywords {
         KEY_DATA_STRING = "string",
         KEY_DATA_BOOLEAN = "boolean",
         KEY_DATA_VOID = "void",
-        KEY_DATA_MACRO = "macro",
+        KEY_DATA_SYMBOL = "symbol",
 
         // keywords: variable data
         KEY_MEM = "mem",

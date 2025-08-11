@@ -107,7 +107,7 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             } else if (isParsingArg && token.equalsKey(KEY_BRACKET_CLOSE)) {
                 isParsingArg = false;
 
-            } else if (isParsingArg && (isWhiteSpace(token) || isDeclaratorAmbiguous(token) || isVariableName(token) || keyEquals(KEY_COMMA, token))) {
+            } else if (isParsingArg && (isWhiteSpace(token) || isVariableOrDeclarator(token) || isVariableName(token) || keyEquals(KEY_COMMA, token))) {
                 argBufferString.append(token.string);
 
             } else if (!isParsingArg && keyEquals(KEY_MACRO_LITERAL, token) && argBufferString.isEmpty()) {

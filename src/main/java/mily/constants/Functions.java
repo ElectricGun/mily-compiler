@@ -189,19 +189,19 @@ public class Functions {
         return isDeclarator(String.valueOf(c));
     }
 
-    public static boolean isDeclaratorAmbiguous(String s) {
+    public static boolean isVariableOrDeclarator(String s) {
         return isDeclarator(s) || isVariableName(s);
     }
 
-    public static boolean isDeclaratorAmbiguous(Token t) {
+    public static boolean isVariableOrDeclarator(Token t) {
         if (t == null)
             return false;
 
-        return isDeclaratorAmbiguous(t.string);
+        return isVariableOrDeclarator(t.string);
     }
 
-    public static boolean isDeclaratorAmbiguous(char c) {
-        return isDeclaratorAmbiguous(String.valueOf(c));
+    public static boolean isVariableOrDeclarator(char c) {
+        return isVariableOrDeclarator(String.valueOf(c));
     }
 
     public static boolean isVariableName(String s) {

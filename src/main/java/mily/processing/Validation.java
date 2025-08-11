@@ -126,7 +126,7 @@ public class Validation {
                 }
             } else if (member instanceof OperationNode memberOp &&
                     memberOp.getConstantToken() != null &&
-                    !memberOp.getConstantToken().getType().equals(KEY_DATA_STRING) &&
+                    memberOp.getConstantToken().getType().equals(KEY_DATA_UNKNOWN) &&
                     isVariableName(memberOp.getConstantToken())) {
 
                 String assignedVar = memberOp.getConstantToken().string;

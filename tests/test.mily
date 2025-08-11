@@ -6,17 +6,17 @@ raw void print(string x) $
     print x
 $
 
-raw void printflush(string target) $
+raw void printflush(symbol target) $
     printflush target
 $
 
 int test(int x, int y) {
+
     return x + 1;
 }
 
-
 string testa = "among\"us\"";
 
-print(testa);
+print$(testa);
 
-printflush$("message1");
+printflush$(@message1);

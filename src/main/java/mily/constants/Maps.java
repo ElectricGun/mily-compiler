@@ -22,6 +22,7 @@ public class Maps {
 
     public final static OperationMap operationMap = new OperationMap();
     protected final static List<String> PUNCTUATION_KEYS = new ArrayList<>(Arrays.asList(
+            KEY_SYMBOL_IDENTIFIER,
             KEY_ESCAPE,
             KEY_SPEECH_MARK,
             KEY_BRACKET_OPEN,

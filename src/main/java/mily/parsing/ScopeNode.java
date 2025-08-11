@@ -76,7 +76,7 @@ public class ScopeNode extends EvaluatorNode {
                 }
                 expectingSemicolon = false;
 
-            } else if (isDeclaratorAmbiguous(previousToken)) {
+            } else if (isVariableOrDeclarator(previousToken)) {
                 if (isVariableName(previousToken) && keyEquals(KEY_BRACKET_OPEN, token)) {
                     // FUNCTION CALL
                     FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
@@ -157,7 +157,7 @@ public class ScopeNode extends EvaluatorNode {
             return throwSyntaxError("Scoped is undeclared", nameToken);
         }
 
-        if (isDeclaratorAmbiguous(previousToken)) {
+        if (isVariableOrDeclarator(previousToken)) {
             return throwSyntaxError("Unexpected end of file", nameToken);
         }
 

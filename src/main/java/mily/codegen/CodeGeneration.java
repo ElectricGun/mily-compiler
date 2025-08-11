@@ -36,6 +36,7 @@ public class CodeGeneration {
         return irCode;
     }
 
+    // TODO instead of using a billion references, create a config object
     private static void generateIRScopeRecursive(ScopeNode scopeNode,
                                                  IRCode irCode,
                                                  Map<String, IRFunction> irFunctionMap,

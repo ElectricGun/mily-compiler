@@ -6,6 +6,7 @@ import mily.parsing.invokes.FunctionCallNode;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
+import static mily.constants.Functions.isVariableOrDeclarator;
 import static mily.constants.Keywords.*;
 import static mily.constants.Maps.*;
 
@@ -185,19 +186,38 @@ public class OperationNode extends EvaluatorNode {
 
         Token previousToken = null;
 
+        boolean previousIsSymbolIdentifier = false;
+
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
 
             if (debugMode)
                 System.out.printf(indent + "operation : %s : %s%n", this.nameToken, token);
 
-            // evaluate punctuations
-            if (token.length() == 1 && isPunctuation(token)) {
+            System.out.println(token + " " + previousIsSymbolIdentifier + isVariableOrDeclarator(token));
+
+
+            if (!previousIsSymbolIdentifier && token.equalsKey(KEY_SYMBOL_IDENTIFIER)) {
+                previousIsSymbolIdentifier = true;
+
+            } else if (previousIsSymbolIdentifier) {
+                // Process raw text (symbols)
+
+                if (isVariableOrDeclarator(token)) {
+                    operationTokens.add(new TypedToken(token.string, token.source, KEY_DATA_SYMBOL, token.line));
+                    previousIsSymbolIdentifier = false;
+
+                } else {
+                    return this.throwSyntaxError("Invalid token on @ symbol", token);
+                }
+            } else if (token.length() == 1 && isPunctuation(token)) {
+                // evaluate punctuations
+
                 if (isWhiteSpace(token)) {
                     continue;
                 }
 
-                if (token.equalsKey(KEY_SPEECH_MARK)) {
+                 if (token.equalsKey(KEY_SPEECH_MARK)) {
                     // Process STRINGS
                     StringBuilder stringTokenBuffer = new StringBuilder();
                     Token prevStringToken = null;
@@ -260,7 +280,7 @@ public class OperationNode extends EvaluatorNode {
                                 continue;
                             }
 
-                            if (!datatypeFound && isDeclaratorAmbiguous(currToken)) {
+                            if (!datatypeFound && isVariableOrDeclarator(currToken)) {
                                 datatypeToken = currToken;
                                 datatypeFound = true;
 
@@ -272,7 +292,7 @@ public class OperationNode extends EvaluatorNode {
                                 if (debugMode)
                                     System.out.println(indent + "close bracket found");
 
-                            } else if (!constantFound && (isDeclaratorAmbiguous(currToken) || isNumeric(currToken) || keyEquals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
+                            } else if (!constantFound && (isVariableOrDeclarator(currToken) || isNumeric(currToken) || keyEquals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
                                 constantFound = true;
                                 castConstantToken = currToken;
                                 if (debugMode)

@@ -125,7 +125,7 @@ public class FunctionDeclareNode extends EvaluatorNode implements Callable {
             } else if (isOperator(token)) {
                 return throwSyntaxError("Unexpected operator on function declaration", token);
 
-            } else if (isDeclaratorAmbiguous(token)) {
+            } else if (isVariableOrDeclarator(token)) {
                 argumentTypes.add(token.string);
 //                Token variableName = tokenList.removeFirst();
                 Token variableName = tokenList.remove(0);

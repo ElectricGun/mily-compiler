@@ -55,7 +55,7 @@ public class ForLoopNode extends EvaluatorNode {
                         initial = new AssignmentNode(previousToken, depth + 1);
                         members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
 
-                    } else if (isDeclaratorAmbiguous(previousToken)) {
+                    } else if (isVariableOrDeclarator(previousToken)) {
                         if (isVariableName(token)) {
                             // VARIABLE DECLARATION
                             initial = new DeclarationNode(previousToken.string, token, depth + 1);
@@ -63,7 +63,7 @@ public class ForLoopNode extends EvaluatorNode {
                         } else {
                             return throwSyntaxError("Unexpected token in for loop initial variable declaration", token);
                         }
-                    } else if (!isDeclaratorAmbiguous(token)) {
+                    } else if (!isVariableOrDeclarator(token)) {
                         return throwSyntaxError("Unexpected token in for loop initial", token);
                     }
                     if (debugMode)
