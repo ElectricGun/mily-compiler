@@ -75,7 +75,6 @@ public class Lexing {
             char c = charArray[index];
 
             String cs = String.valueOf(c);
-//            boolean previousIsWhitespace = isInitialized && (isWhiteSpace(previousChar));
             boolean previousIsPunctuation = isInitialized && (isPunctuation(previousChar) || isOperator("" + previousChar));
 
             if (debugMode) {
@@ -100,16 +99,8 @@ public class Lexing {
                 tokenString = "";
 
             } else if (isWhiteSpace(cs)) {
-//                if (!previousIsWhitespace) {
                 tryAddToken(debugMode);
                 tokenString = "" + c;
-//                }
-
-//                if (cs.equals("\n"))
-//                    tokenString = "\n";
-//                if (!tokenString.equals("\n"))
-//                    tokenString = " ";
-
 
             } else if (
                 // this else if block prevents
