@@ -12,15 +12,14 @@ import static mily.constants.Functions.*;
 public class Main {
 
     private final static String
-        FLAG_PREFIX = "-",
-        FLAG_DEBUG = "--debug",
-        FLAG_QUIET = "--quiet",
-        FLAG_PRINT_AST = "--print-ast",
-        FLAG_PRINT_OUTPUT = "--print-output",
-        FLAG_BENCHMARK = "--benchmark",
-        FLAG_OUTPUT = "--output",
-        FLAG_NO_CONFIRMATION = "--no-confirm"
-    ;
+            FLAG_PREFIX = "-",
+            FLAG_DEBUG = "--debug",
+            FLAG_QUIET = "--quiet",
+            FLAG_PRINT_AST = "--print-ast",
+            FLAG_PRINT_OUTPUT = "--print-output",
+            FLAG_BENCHMARK = "--benchmark",
+            FLAG_OUTPUT = "--output",
+            FLAG_NO_CONFIRMATION = "--no-confirm";
 
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(FLAG_PREFIX);

@@ -1,6 +1,7 @@
 package mily.parsing;
 
 import java.util.*;
+
 import mily.parsing.invokes.FunctionCallNode;
 import mily.tokens.*;
 
@@ -24,11 +25,11 @@ import static mily.constants.Maps.*;
 
 public class OperationNode extends EvaluatorNode {
 
-    protected TypedToken constantToken = null;
     public List<OperationBracketNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
     public List<Token> operationTokens = new ArrayList<>();
+    protected TypedToken constantToken = null;
     protected boolean isReturnOperation;
     String type = KEY_OP_TYPE_CONSTANT;
     String operator = "";
@@ -43,6 +44,26 @@ public class OperationNode extends EvaluatorNode {
         super(token, depth);
 
         this.isReturnOperation = isReturnOperation;
+    }
+
+    // its private here because it is too dangerous to be used outside of this class
+    private static String guessValueType(String s) {
+        if (s == null)
+            return null;
+
+        if (isInteger(s)) {
+            return KEY_DATA_INT;
+
+        } else if (isNumeric(s)) {
+            return KEY_DATA_DOUBLE;
+
+        } else if (s.startsWith("\"") && s.endsWith("\"")) {
+            return KEY_DATA_STRING;
+
+        } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
+            return KEY_DATA_BOOLEAN;
+        }
+        return KEY_DATA_UNKNOWN;
     }
 
     public boolean isReturnOperation() {
@@ -119,26 +140,6 @@ public class OperationNode extends EvaluatorNode {
         } else {
             return null;
         }
-    }
-
-    // its private here because it is too dangerous to be used outside of this class
-    private static String guessValueType(String s) {
-        if (s == null)
-            return null;
-
-        if (isInteger(s)) {
-            return KEY_DATA_INT;
-
-        } else if (isNumeric(s)) {
-            return KEY_DATA_DOUBLE;
-
-        } else if (s.startsWith("\"") && s.endsWith("\"")) {
-            return KEY_DATA_STRING;
-
-        } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
-            return KEY_DATA_BOOLEAN;
-        }
-        return KEY_DATA_UNKNOWN;
     }
 
     public String getLeftConstantString() {
