@@ -45,7 +45,7 @@ public class Main {
 
         } catch (NullPointerException e) {
             System.out.println("Input file unspecified");
-            System.exit(1);
+            System.exit(2);
             return;
         }
 
@@ -59,10 +59,7 @@ public class Main {
             output = wrapper.compile(code, cwd);
 
         } catch (RuntimeException e) {
-            System.out.println("Failed to compile");
-
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             System.exit(1);
             return;
         }
