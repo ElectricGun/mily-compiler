@@ -1,8 +1,9 @@
 # Urgent TODO:
- - parse strings in operations
+ - 
  - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
- - Create a string counter for generated variables to prevent conflicts
+ - append "user_" to user specified variables to avoid conflicts with generated ones
+ - Remove explicit casting entirely, its making OperationNode confusing, just use functions or something
 
 # Problems:
  - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
@@ -10,9 +11,6 @@
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation
  - Cannot declare a string var, such as string x = "1", it regards "1" as a variable name;
  - library circular dependencies
-
-# Operations
- - Remove explicit casting, use functions instead 
 
 # Useful
  - Inline raw mlog (can be used for defining mlog commands in libraries)
