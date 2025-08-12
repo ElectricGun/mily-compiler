@@ -1,7 +1,7 @@
 /-------- Standard library file --------
 
 raw void print(any x) $
-    print x any
+    print x
 $
 
 raw void printflush(symbol target) $
@@ -30,7 +30,7 @@ raw int as_int(double x) $
         op add out out 1
     to_int_label:
 $
-
+/*
 int as_int(double x) {
     int out = x // 1;
     if (out < 0) {
@@ -38,3 +38,4 @@ int as_int(double x) {
     }
     return out;
 }
+*/
