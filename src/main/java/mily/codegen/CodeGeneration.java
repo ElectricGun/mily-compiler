@@ -153,44 +153,48 @@ public class CodeGeneration {
                 irCodeConfig.templateNodeMap.put(rawTemplateDeclareNode.getName(), rawTemplateDeclareNode);
 
             } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
-                IRBlock irBlock = new IRBlock();
-                RawTemplateDeclareNode rawTemplateDeclareNode = irCodeConfig.templateNodeMap.get(rawTemplateInvoke.getName());
-
-                if (rawTemplateDeclareNode == null) {
-                    throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
-                }
-                List<OperationNode> argOps = rawTemplateInvoke.getArgs();
-
-                List<String> argNames = new ArrayList<>();
-                for (OperationNode argOp : argOps) {
-                    IROperation opBlock = generateIROperation(irCodeConfig, argOp, depth);
-                    irCodeConfig.irCode.irBlocks.add(opBlock);
-
-                    Line lastLine = opBlock.lineList.get(opBlock.lineList.size() - 1);
-
-                    if (lastLine instanceof BinaryOp binaryOp) {
-                        argNames.add(binaryOp.getVarName());
-
-                    } else if (lastLine instanceof SetLine setLine) {
-                        // remove because we don't need this
-                        opBlock.lineList.remove(opBlock.lineList.size() - 1);
-                        argNames.add(setLine.getValue());
-
-                    } else {
-                        throw new Exception("Expected a BinaryOp or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
-                    }
-                }
-                String formatted = rawTemplateDeclareNode.getScope().asFormatted(argNames);
-
-                String[] lineContent = formatted.split(KEY_NEWLINE);
-                for (String s : lineContent) {
-                    if (!s.isEmpty())
-                        irBlock.addLine(new Line(s.trim(), depth));
-                }
-                irCodeConfig.irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
-                irCodeConfig.irCode.irBlocks.add(irBlock);
+                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, depth);
             }
         }
+    }
+
+    private static void generateRawTemplateInvoke(IRCodeConfig irCodeConfig, RawTemplateInvoke rawTemplateInvoke, int depth) throws Exception {
+        IRBlock irBlock = new IRBlock();
+        RawTemplateDeclareNode rawTemplateDeclareNode = irCodeConfig.templateNodeMap.get(rawTemplateInvoke.getName());
+
+        if (rawTemplateDeclareNode == null) {
+            throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
+        }
+        List<OperationNode> argOps = rawTemplateInvoke.getArgs();
+
+        List<String> argNames = new ArrayList<>();
+        for (OperationNode argOp : argOps) {
+            IROperation opBlock = generateIROperation(irCodeConfig, argOp, depth);
+            irCodeConfig.irCode.irBlocks.add(opBlock);
+
+            Line lastLine = opBlock.lineList.get(opBlock.lineList.size() - 1);
+
+            if (lastLine instanceof BinaryOp binaryOp) {
+                argNames.add(binaryOp.getVarName());
+
+            } else if (lastLine instanceof SetLine setLine) {
+                // remove because we don't need this
+                opBlock.lineList.remove(opBlock.lineList.size() - 1);
+                argNames.add(setLine.getValue());
+
+            } else {
+                throw new Exception("Expected a BinaryOp or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
+            }
+        }
+        String formatted = rawTemplateDeclareNode.getScope().asFormatted(argNames);
+
+        String[] lineContent = formatted.split(KEY_NEWLINE);
+        for (String s : lineContent) {
+            if (!s.isEmpty())
+                irBlock.addLine(new Line(s.trim(), depth));
+        }
+        irCodeConfig.irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
+        irCodeConfig.irCode.irBlocks.add(irBlock);
     }
 
     private static IRFunction generateFunctionCall(IRCodeConfig irCodeConfig, FunctionCallNode fnCall, int depth) throws Exception {
