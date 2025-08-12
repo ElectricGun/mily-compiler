@@ -1,17 +1,6 @@
-raw void print(int x) $
-    print x
-$
-
-raw void print(string x) $
-    print x
-$
-
-raw void printflush(symbol target) $
-    printflush target
-$
+#include std/bulb.mily;
 
 int test(int x, int y) {
-
     return x + 1;
 }
 

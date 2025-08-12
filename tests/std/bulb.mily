@@ -24,7 +24,7 @@ raw void stop $
     stop
 $
 
-raw int as_int(int x) $
+raw int as_int(double x) $
     op floor out x
     jump to_int_label greaterThanEq out 0
         op add out out 1

@@ -2,7 +2,7 @@
 
 /---------- Standard Library ----------
 
-#include$std/bulb.mily;
+#include std/bulb.mily;
 
 /---------- Variable Declarations ----------
 int num = 20;
