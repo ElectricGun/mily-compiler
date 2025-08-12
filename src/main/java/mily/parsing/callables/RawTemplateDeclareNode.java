@@ -17,14 +17,10 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
+public class RawTemplateDeclareNode extends CallableNode {
 
-    protected String returnType;
     protected String name;
     protected MacroScope scope;
-
-    protected List<String> argStrings = new ArrayList<>();
-    protected List<String> argTypes = new ArrayList<>();
 
     public RawTemplateDeclareNode(String returnType, Token nameToken, int depth) {
         super(nameToken, depth);
@@ -34,16 +30,6 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
 
     public MacroScope getScope() {
         return scope;
-    }
-
-    @Override
-    public List<String> getArgumentNames() {
-        return new ArrayList<>(argStrings);
-    }
-
-    @Override
-    public List<String> getArgumentTypes() {
-        return new ArrayList<>(argTypes);
     }
 
     @Override
@@ -73,7 +59,7 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             return false;
         }
         for (int i = 0; i < types.length; i++) {
-            if (!types[i].equals(argTypes.get(i))) {
+            if (!types[i].equals(argumentTypes.get(i)) && !argumentTypes.get(i).equals(KEY_DATA_ANY)) {
                 return false;
             }
         }
@@ -111,7 +97,7 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
                 argBufferString.append(token.string);
 
             } else if (!isParsingArg && keyEquals(KEY_MACRO_LITERAL, token) && argBufferString.isEmpty()) {
-                MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
+                MacroScope macroScope = new MacroScope(token, argumentNames, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
                 scope = macroScope;
                 return this;
@@ -130,11 +116,11 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
                         return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
                     }
 
-                    argTypes.add(stringArgType[0]);
-                    argStrings.add(stringArgType[1]);
+                    argumentTypes.add(stringArgType[0]);
+                    argumentNames.add(stringArgType[1]);
                 }
 
-                MacroScope macroScope = new MacroScope(token, argStrings, depth + 1);
+                MacroScope macroScope = new MacroScope(token, argumentNames, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
                 scope = macroScope;
                 return this;
@@ -153,7 +139,7 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
 
     @Override
     public String toString() {
-        return "template: " + getName() + argStrings + " arg_types: " + argTypes;
+        return "template: " + getName() + argumentNames + " arg_types: " + argumentTypes;
     }
 
     @Override
@@ -168,16 +154,5 @@ public class RawTemplateDeclareNode extends EvaluatorNode implements Callable {
             }
         }
         return fnKey.toString();
-    }
-
-
-    @Override
-    public String getType() {
-        return returnType;
-    }
-
-    @Override
-    public void setType(String type) {
-        this.returnType = type;
     }
 }

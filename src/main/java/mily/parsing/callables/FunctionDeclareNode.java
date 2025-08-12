@@ -2,7 +2,7 @@ package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.FunctionCallNode;
+import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -18,13 +18,9 @@ import static mily.constants.Keywords.*;
  * @author ElectricGun
  */
 
-public class FunctionDeclareNode extends EvaluatorNode implements Callable {
+public class FunctionDeclareNode extends CallableNode {
 
-    List<String> argumentNames = new ArrayList<>();
-    List<String> argumentTypes = new ArrayList<>();
     ScopeNode scope;
-
-    String returnType;
 
     public FunctionDeclareNode(String returnType, Token name, int depth) {
         super(name, depth);
@@ -32,52 +28,8 @@ public class FunctionDeclareNode extends EvaluatorNode implements Callable {
         this.returnType = returnType;
     }
 
-    @Override
-    public List<String> getArgumentNames() {
-        return new ArrayList<>(argumentNames);
-    }
-
-    @Override
-    public List<String> getArgumentTypes() {
-        return new ArrayList<>(argumentTypes);
-    }
-
-    @SuppressWarnings("unused")
-    public String[] getArgumentNamesArr() {
-        String[] out = new String[argumentNames.size()];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = argumentNames.get(i);
-        }
-        return out;
-    }
-
-    public String[] getArgumentTypesArr() {
-        String[] out = new String[argumentTypes.size()];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = argumentTypes.get(i);
-        }
-        return out;
-    }
-
     public ScopeNode getScope() {
         return scope;
-    }
-
-    // todo probably give this a name var
-    public String getName() {
-        return nameToken.string;
-    }
-
-    public int getArgCount() {
-        return argumentNames.size();
-    }
-
-    public String getArg(int i) {
-        return argumentNames.get(i);
-    }
-
-    public String getArgType(int i) {
-        return argumentTypes.get(i);
     }
 
     @Override

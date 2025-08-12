@@ -67,17 +67,25 @@ public class MilyWrapper {
         if (checkThrowables(evaluatorTree)) {
             throw new RuntimeException("Failed to compile: syntax error!");
         }
-        boolean doAssignTypes = true;
-        removeEmptyOperations(evaluatorTree);
-        convertUnariesToBinary(evaluatorTree, debugMode);
-        validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
-        validateCallers(evaluatorTree, doAssignTypes, debugMode);
-        validateFunctionDeclares(evaluatorTree, debugMode);
-        // this step is not needed yet
-        //pruneNestedUnaries(evaluatorTree, debugMode);
-        validateTypes(evaluatorTree, debugMode);
-        validateConditionals(evaluatorTree, debugMode);
-        solveBinaryExpressions(evaluatorTree);
+        try {
+            boolean doAssignTypes = true;
+            removeEmptyOperations(evaluatorTree);
+            convertUnariesToBinary(evaluatorTree, debugMode);
+            validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
+            validateCallers(evaluatorTree, doAssignTypes, debugMode);
+            validateFunctionDeclares(evaluatorTree, debugMode);
+            // this step is not needed yet
+            //pruneNestedUnaries(evaluatorTree, debugMode);
+            validateTypes(evaluatorTree, debugMode);
+            validateConditionals(evaluatorTree, debugMode);
+            invalidateDynamicDatatype(evaluatorTree, debugMode);
+            solveBinaryExpressions(evaluatorTree);
+
+        } catch (Exception e) {
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+            System.exit(1);
+        }
 
         // check for semantic errors
         if (checkThrowables(evaluatorTree)) {

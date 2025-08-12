@@ -32,7 +32,7 @@
 
 # Datatypes
  - Constants (final keyword)
- - Ambiguous datatype for raw macros such as: int | double | string
+ - Ambiguous datatypes intended for templates, such as: int | double, int | double | string, int | boolean, etc.
 
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
@@ -63,8 +63,7 @@
 
 # Future Features (low priority)
  - Arrays and structs
- - Libraries
  - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
- - Aliasing and Macros:
-  - should be processed during the AST building stage
-  - #define keyword
+ - Macros (before AST stage)
+ - Templates (after AST stage)
+ - actual template/macro parsing into AST

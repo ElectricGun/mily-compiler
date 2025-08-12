@@ -57,13 +57,14 @@ public class Keywords {
         KEY_BOOLEAN_TRUE = "true",
 
         // keywords: datatypes
-        // KEY_DATA_DYNAMIC = "let",
         KEY_DATA_INT = "int",
         KEY_DATA_DOUBLE = "double",
         KEY_DATA_STRING = "string",
         KEY_DATA_BOOLEAN = "boolean",
         KEY_DATA_VOID = "void",
         KEY_DATA_SYMBOL = "symbol",
+        // for template arguments only
+        KEY_DATA_ANY = "any",
 
         // keywords: variable data
         KEY_MEM = "mem",

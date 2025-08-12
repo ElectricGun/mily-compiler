@@ -2,14 +2,11 @@ package mily.processing;
 
 import java.util.*;
 
-import mily.abstracts.Callable;
-import mily.abstracts.Caller;
+import mily.abstracts.*;
 import mily.parsing.*;
 import mily.parsing.callables.*;
-import mily.parsing.invokes.FunctionCallNode;
+import mily.parsing.invokes.*;
 import mily.tokens.*;
-
-import javax.annotation.processing.SupportedSourceVersion;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -276,15 +273,18 @@ public class Validation {
         validateFunctionDeclaresHelper(evaluatorTree.mainBlock, new ArrayList<>(), debugMode);
     }
 
-    private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, List<FunctionDeclareNode> functionDeclares, boolean debugMode) throws Exception {
-        if (evaluatorNode instanceof FunctionDeclareNode func) {
-            for (FunctionDeclareNode f : functionDeclares) {
-                if (func.isOverload(f, f.getName(), f.getArgumentTypesArr())) {
-                    func.throwSemanticError(String.format("Redeclaration of function %s with argument types %s", func.getName(), func.getArgumentTypes()), func.nameToken);
+    private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, List<CallableNode> functionDeclares, boolean debugMode) throws Exception {
+        if (evaluatorNode instanceof CallableNode callable) {
+            for (CallableNode f : functionDeclares) {
+                if (callable.isOverload(f, f.getName(), f.getArgumentTypesArr())) {
+                    callable.throwSemanticError(String.format("Redeclaration of function %s with argument types %s and types %s", callable.getName(), callable.getArgumentTypes(), f.getArgumentTypes()), callable.nameToken);
                 }
             }
-            validateFunctionBlockReturnType(func, debugMode);
-            functionDeclares.add(func);
+            if (callable instanceof FunctionDeclareNode functionDeclareNode) {
+                validateFunctionBlockReturnType(functionDeclareNode, debugMode);
+            }
+
+            functionDeclares.add(callable);
         }
 
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
@@ -469,6 +469,34 @@ public class Validation {
 
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             validateConditionalsHelper(evaluatorNode.getMember(i), debugMode);
+        }
+    }
+
+    public static void invalidateDynamicDatatype(EvaluatorTree evaluatorTree, boolean debugMode) {
+        invalidateDynamicDatatypeHelper(evaluatorTree.mainBlock, debugMode);
+    }
+
+    private static void invalidateDynamicDatatypeHelper(EvaluatorNode evaluatorNode, boolean debugMode) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
+            EvaluatorNode member = evaluatorNode.getMember(i);
+
+            if (member instanceof DeclarationNode declarationNode && declarationNode.getType().equals(KEY_DATA_ANY)) {
+                declarationNode.throwSemanticError(String.format("Cannot use datatype \"%s\" in variable declarations", KEY_DATA_ANY), declarationNode.nameToken);
+
+            } else if (member instanceof CallableNode callableNode) {
+                if (callableNode instanceof FunctionDeclareNode functionDeclareNode) {
+                    if (functionDeclareNode.getArgumentTypes().contains(KEY_DATA_ANY)) {
+                        functionDeclareNode.throwSemanticError(String.format("Cannot use datatype type \"%s\" in function arguments", KEY_DATA_ANY), functionDeclareNode.nameToken);
+                    }
+                    invalidateDynamicDatatypeHelper(functionDeclareNode.getScope(), debugMode);
+                }
+                if (callableNode.getType().equals(KEY_DATA_ANY)) {
+                    callableNode.throwSemanticError(String.format("Callable cannot return datatype \"%s\"", KEY_DATA_ANY), callableNode.nameToken);
+                }
+
+            } else {
+                invalidateDynamicDatatypeHelper(member, debugMode);
+            }
         }
     }
 }
