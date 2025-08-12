@@ -6,6 +6,7 @@ import mily.parsing.*;
 import mily.parsing.callables.*;
 import mily.parsing.invokes.FunctionCallNode;
 import mily.parsing.invokes.RawTemplateInvoke;
+import mily.structures.structs.IRCodeConfig;
 import mily.tokens.*;
 import mily.utils.HashCodeSimplifier;
 
@@ -18,53 +19,45 @@ import static mily.constants.Keywords.*;
 public class CodeGeneration {
 
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
-        IRCode irCode = new IRCode();
+        IRCodeConfig irCodeConfig = new IRCodeConfig();
 
-        Map<String, IRFunction> irFunctionMap = new HashMap<>();
-        Map<String, RawTemplateDeclareNode> templateNodeMap = new HashMap<>();
+        irCodeConfig.irCode = new IRCode();
+        irCodeConfig.irFunctionMap = new HashMap<>();
+        irCodeConfig.templateNodeMap = new HashMap<>();
+        irCodeConfig.hashCodeSimplifier = new HashCodeSimplifier();
+        irCodeConfig.debugMode = debugMode;
+
         generateIRScopeRecursive(
+                irCodeConfig,
                 evaluatorTree.mainBlock,
-                irCode,
-                irFunctionMap,
-                templateNodeMap,
                 null,
-                new HashCodeSimplifier(),
-                0,
-                debugMode);
+                0
+        );
 
-        irCode.addSingleLineBlock(new Stop(0));
-        return irCode;
+        irCodeConfig.irCode.addSingleLineBlock(new Stop(0));
+        return irCodeConfig.irCode;
     }
 
-    // TODO instead of using a billion references, create a config object
-    private static void generateIRScopeRecursive(ScopeNode scopeNode,
-                                                 IRCode irCode,
-                                                 Map<String, IRFunction> irFunctionMap,
-                                                 Map<String, RawTemplateDeclareNode> templateNodeMap,
-                                                 // if the block is a function block, then this is not null
-                                                 IRFunction function,
-                                                 HashCodeSimplifier hashSimplifier,
-                                                 int depth,
-                                                 boolean debugMode) throws Exception {
+    private static void generateIRScopeRecursive(IRCodeConfig irCodeConfig, ScopeNode scopeNode, /*for function scopes*/IRFunction function, int depth) throws Exception {
         for (int i = 0; i < scopeNode.memberCount(); i++) {
             EvaluatorNode member = scopeNode.getMember(i);
 
             if (member instanceof FunctionCallNode fnCall) {
-                generateFunctionCall(fnCall, irCode, irFunctionMap, hashSimplifier, depth, debugMode);
+                generateFunctionCall(irCodeConfig, fnCall, depth);
 
             } else if (member instanceof OperationNode operationNode && operationNode.isReturnOperation()) {
                 if (function == null)
                     throw new Exception("Return operation found outside a function at line " + operationNode.nameToken.line);
 
-                addOperationIRBlock(operationNode, irCode, irFunctionMap, function.getReturnVar(), hashSimplifier, depth, debugMode);
-                irCode.addSingleLineBlock(new SetLine("@counter", function.getCallbackVar(), depth));
+                addOperationIRBlock(irCodeConfig, operationNode, function.getReturnVar(), depth);
+                irCodeConfig.irCode.addSingleLineBlock(new SetLine("@counter", function.getCallbackVar(), depth));
 
             } else if (member instanceof FunctionDeclareNode fn) {
-                generateFunctionDeclare(fn, irCode, irFunctionMap, templateNodeMap, hashSimplifier, depth, debugMode);
+                generateFunctionDeclare(fn, irCodeConfig, depth);
 
             } else if (member instanceof DeclarationNode declarationNode) {
                 if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
-                    addOperationIRBlock(op, irCode, irFunctionMap, declarationNode.getVariableName(), hashSimplifier, depth, debugMode);
+                    addOperationIRBlock(irCodeConfig, op, declarationNode.getVariableName(), depth);
 
                 } else if (declarationNode.memberCount() == 0) {
 
@@ -77,47 +70,44 @@ public class CodeGeneration {
                 // otherwise throw an error
                 if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed assignment node found on codegen stage");
-                addOperationIRBlock((OperationNode) member.getMember(0), irCode, irFunctionMap, as.getVariableName(), hashSimplifier, depth, debugMode);
+                addOperationIRBlock(irCodeConfig, (OperationNode) member.getMember(0), as.getVariableName(), depth);
 
             } else if (member instanceof IfStatementNode ifs) {
-                generateBranchStatement(ifs, irCode, irFunctionMap, templateNodeMap, function, hashSimplifier, depth, debugMode);
+                generateBranchStatement(ifs, irCodeConfig, function, depth);
 
             } else if (member instanceof WhileLoopNode whileLoop) {
                 // todo unify copy pastes
-                String whileHashCode = "" + hashSimplifier.simplifyHash(whileLoop.hashCode());
+                String whileHashCode = "" + irCodeConfig.hashCodeSimplifier.simplifyHash(whileLoop.hashCode());
                 String startLabelString = "while_loop_start_" + whileHashCode;
                 String endLabelString = "while_loop_end_" + whileHashCode;
 
                 // loop start label
-                irCode.addSingleLineBlock(new Label(startLabelString, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Label(startLabelString, depth));
 
                 // create exit jump
                 boolean invertCondition = true;
                 Jump jump = createConditionalJump(
+                        irCodeConfig,
                         whileLoop.getExpression(),
                         whileHashCode,
                         endLabelString,
-                        irCode,
-                        irFunctionMap,
-                        hashSimplifier,
                         invertCondition,
-                        depth,
-                        debugMode
+                        depth
                 );
-                irCode.addSingleLineBlock(jump);
+                irCodeConfig.irCode.addSingleLineBlock(jump);
 
                 // code block
-                generateIRScopeRecursive(whileLoop.getScope(), irCode, irFunctionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
+                generateIRScopeRecursive(irCodeConfig, whileLoop.getScope(), function, depth + 1);
 
                 // always jump
-                irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));
 
                 // loop end label
-                irCode.addSingleLineBlock(new Label(endLabelString, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Label(endLabelString, depth));
 
             } else if (member instanceof ForLoopNode forLoop) {
                 // todo unify copy pastes
-                String forLoopHashCode = "" + hashSimplifier.simplifyHash(forLoop.hashCode());
+                String forLoopHashCode = "" + irCodeConfig.hashCodeSimplifier.simplifyHash(forLoop.hashCode());
                 String startLabelString = "for_loop_start_" + forLoopHashCode;
                 String endLabelString = "for_loop_end_" + forLoopHashCode;
 
@@ -126,48 +116,45 @@ public class CodeGeneration {
                 if (initial == null || initial.memberCount() <= 0 || !(initial.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed for loop updater found on codegen stage");
 
-                addOperationIRBlock((OperationNode) initial.getMember(0), irCode, irFunctionMap, initial.getVariableName(), hashSimplifier, depth, debugMode);
+                addOperationIRBlock(irCodeConfig, (OperationNode) initial.getMember(0), initial.getVariableName(), depth);
 
                 // loop start label
-                irCode.addSingleLineBlock(new Label(startLabelString, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Label(startLabelString, depth));
 
                 // create exit jump
                 boolean invertCondition = true;
                 Jump jump = createConditionalJump(
+                        irCodeConfig,
                         forLoop.getCondition(),
                         forLoopHashCode,
                         endLabelString,
-                        irCode,
-                        irFunctionMap,
-                        hashSimplifier,
                         invertCondition,
-                        depth,
-                        debugMode
+                        depth
                 );
-                irCode.addSingleLineBlock(jump);
+                irCodeConfig.irCode.addSingleLineBlock(jump);
 
                 // code block
-                generateIRScopeRecursive(forLoop.getScope(), irCode, irFunctionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
+                generateIRScopeRecursive(irCodeConfig, forLoop.getScope(), function, depth + 1);
 
                 // updater
                 AssignmentNode updater = forLoop.getUpdater();
                 if (updater == null || updater.memberCount() <= 0 || !(updater.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed for loop updater found on codegen stage");
 
-                addOperationIRBlock((OperationNode) updater.getMember(0), irCode, irFunctionMap, updater.getVariableName(), hashSimplifier, depth, debugMode);
+                addOperationIRBlock(irCodeConfig, (OperationNode) updater.getMember(0), updater.getVariableName(), depth);
 
                 // always jump
-                irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));
 
                 // loop end label
-                irCode.addSingleLineBlock(new Label(endLabelString, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Label(endLabelString, depth));
 
             } else if (member instanceof RawTemplateDeclareNode rawTemplateDeclareNode) {
-                templateNodeMap.put(rawTemplateDeclareNode.getName(), rawTemplateDeclareNode);
+                irCodeConfig.templateNodeMap.put(rawTemplateDeclareNode.getName(), rawTemplateDeclareNode);
 
             } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
                 IRBlock irBlock = new IRBlock();
-                RawTemplateDeclareNode rawTemplateDeclareNode = templateNodeMap.get(rawTemplateInvoke.getName());
+                RawTemplateDeclareNode rawTemplateDeclareNode = irCodeConfig.templateNodeMap.get(rawTemplateInvoke.getName());
 
                 if (rawTemplateDeclareNode == null) {
                     throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
@@ -176,8 +163,8 @@ public class CodeGeneration {
 
                 List<String> argNames = new ArrayList<>();
                 for (OperationNode argOp : argOps) {
-                    IROperation opBlock = generateIROperation(argOp, irCode, irFunctionMap, hashSimplifier, depth, debugMode);
-                    irCode.irBlocks.add(opBlock);
+                    IROperation opBlock = generateIROperation(irCodeConfig, argOp, depth);
+                    irCodeConfig.irCode.irBlocks.add(opBlock);
 
                     Line lastLine = opBlock.lineList.get(opBlock.lineList.size() - 1);
 
@@ -185,7 +172,7 @@ public class CodeGeneration {
                         argNames.add(binaryOp.getVarName());
 
                     } else if (lastLine instanceof SetLine setLine) {
-                        // remove because we dont need this
+                        // remove because we don't need this
                         opBlock.lineList.remove(opBlock.lineList.size() - 1);
                         argNames.add(setLine.getValue());
 
@@ -193,7 +180,6 @@ public class CodeGeneration {
                         throw new Exception("Expected a BinaryOp or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
                     }
                 }
-
                 String formatted = rawTemplateDeclareNode.getScope().asFormatted(argNames);
 
                 String[] lineContent = formatted.split(KEY_NEWLINE);
@@ -201,41 +187,31 @@ public class CodeGeneration {
                     if (!s.isEmpty())
                         irBlock.addLine(new Line(s.trim(), depth));
                 }
-                irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
-                irCode.irBlocks.add(irBlock);
+                irCodeConfig.irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
+                irCodeConfig.irCode.irBlocks.add(irBlock);
             }
         }
     }
 
-    private static IRFunction generateFunctionCall(FunctionCallNode fnCall,
-                                                   IRCode irCode, Map<String, IRFunction> functionMap,
-                                                   HashCodeSimplifier hashCodeSimplifier,
-                                                   int depth,
-                                                   boolean debugMode) throws Exception {
+    private static IRFunction generateFunctionCall(IRCodeConfig irCodeConfig, FunctionCallNode fnCall, int depth) throws Exception {
         String fnKey = fnCall.getFnKey();
-        if (!functionMap.containsKey(fnKey))
+        if (!irCodeConfig.irFunctionMap.containsKey(fnKey))
             throw new Exception(String.format("IRFunction of key \"%s\" does not exist", fnKey));
 
-        IRFunction calledFunction = functionMap.get(fnKey);
+        IRFunction calledFunction = irCodeConfig.irFunctionMap.get(fnKey);
 
         for (int a = 0; a < fnCall.getArgCount(); a++) {
-            addOperationIRBlock(fnCall.getArg(a), irCode, functionMap, calledFunction.getArg(a), hashCodeSimplifier, depth, debugMode);
+            addOperationIRBlock(irCodeConfig, fnCall.getArg(a), calledFunction.getArg(a), depth);
         }
 
-        irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
-        irCode.addSingleLineBlock(new BinaryOp(calledFunction.getCallbackVar(), KEY_OP_ADD, "@counter", "1", depth));
-        irCode.addSingleLineBlock(new Jump("always", calledFunction.getCallLabel(), depth));
+        irCodeConfig.irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
+        irCodeConfig.irCode.addSingleLineBlock(new BinaryOp(calledFunction.getCallbackVar(), KEY_OP_ADD, "@counter", "1", depth));
+        irCodeConfig.irCode.addSingleLineBlock(new Jump("always", calledFunction.getCallLabel(), depth));
 
         return calledFunction;
     }
 
-    private static void generateFunctionDeclare(FunctionDeclareNode fn,
-                                                IRCode irCode,
-                                                Map<String, IRFunction> functionMap,
-                                                Map<String, RawTemplateDeclareNode> templateNodeMap,
-                                                HashCodeSimplifier hashSimplifier,
-                                                int depth,
-                                                boolean debugMode) throws Exception {
+    private static void generateFunctionDeclare(FunctionDeclareNode fn, IRCodeConfig irCodeConfig, int depth) throws Exception {
         String fnKey = fn.getFnKey();
         String startJumpLabel = fnKey + "_start";
         String endJumpLabel = fnKey + "_end";
@@ -247,30 +223,25 @@ public class CodeGeneration {
         for (int a = 0; a < fn.getArgCount(); a++) {
             irFunction.addArg(fn.getArgType(a), fn.getArg(a));
         }
-        functionMap.put(fnKey, irFunction);
+        irCodeConfig.irFunctionMap.put(fnKey, irFunction);
 
-        irCode.addSingleLineBlock(new CommentLine("function: " + fnKey, depth));
-        irCode.addSingleLineBlock((new Jump("always", endJumpLabel, depth)));
-        irCode.addSingleLineBlock(new Label(startJumpLabel, depth));
+        irCodeConfig.irCode.addSingleLineBlock(new CommentLine("function: " + fnKey, depth));
+        irCodeConfig.irCode.addSingleLineBlock((new Jump("always", endJumpLabel, depth)));
+        irCodeConfig.irCode.addSingleLineBlock(new Label(startJumpLabel, depth));
 
-        generateIRScopeRecursive(fn.getScope(), irCode, functionMap, templateNodeMap, irFunction, hashSimplifier, depth + 1, debugMode);
+        generateIRScopeRecursive(irCodeConfig, fn.getScope(), irFunction, depth + 1);
 
-        irCode.addSingleLineBlock((new Label(endJumpLabel, depth)));
+        irCodeConfig.irCode.addSingleLineBlock((new Label(endJumpLabel, depth)));
     }
 
-    private static void generateBranchStatement(IfStatementNode ifs,
-                                                IRCode irCode, Map<String, IRFunction> functionMap,
-                                                Map<String, RawTemplateDeclareNode> templateNodeMap,
-                                                IRFunction function, HashCodeSimplifier hashSimplifier,
-                                                int depth,
-                                                boolean debugMode) throws Exception {
-        String branchEndLabel = "branch_end_" + hashSimplifier.simplifyHash(ifs.hashCode());
+    private static void generateBranchStatement(IfStatementNode ifs, IRCodeConfig irCodeConfig, IRFunction function, int depth) throws Exception {
+        String branchEndLabel = "branch_end_" + irCodeConfig.hashCodeSimplifier.simplifyHash(ifs.hashCode());
 
         // while loop to go through all the else blocks
         // todo change the true to an actual conditional
         while (true) {
             // loop repeats with a new ifs object
-            String currentifHashCode = "" + hashSimplifier.simplifyHash(ifs.hashCode());
+            String currentifHashCode = "" + irCodeConfig.hashCodeSimplifier.simplifyHash(ifs.hashCode());
             String currentIfEndLabel = ifs.nameToken + "_" + currentifHashCode;
 
             // if current if statement has no else block, just jump to the end
@@ -282,27 +253,25 @@ public class CodeGeneration {
 
             boolean invertCondition = true;
             Jump startJump = createConditionalJump(
+                    irCodeConfig,
                     ifs.getExpression(),
                     currentifHashCode,
                     currentIfEndLabel,
-                    irCode,
-                    functionMap,
-                    hashSimplifier,
                     invertCondition,
-                    depth,
-                    debugMode);
+                    depth
+            );
 
             startJumpBlock.addLine(startJump);
-            irCode.irBlocks.add(startJumpBlock);
-            generateIRScopeRecursive(ifs.getScope(), irCode, functionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
+            irCodeConfig.irCode.irBlocks.add(startJumpBlock);
+            generateIRScopeRecursive(irCodeConfig, ifs.getScope(), function, depth + 1);
 
             // if there is an else node, then there must be an always jump to the end
             if (ifs.getElseNode() != null) {
-                irCode.addSingleLineBlock(new Jump("always", branchEndLabel, depth));
+                irCodeConfig.irCode.addSingleLineBlock(new Jump("always", branchEndLabel, depth));
             }
 
             // end label for the current if statement
-            irCode.addSingleLineBlock(new Label(currentIfEndLabel, depth));
+            irCodeConfig.irCode.addSingleLineBlock(new Label(currentIfEndLabel, depth));
 
             // if there is an else node
             if (ifs.getElseNode() != null) {
@@ -313,10 +282,8 @@ public class CodeGeneration {
 
                 } else {
                     // if it is just an else
-                    generateIRScopeRecursive(elseNode.getScope(), irCode, functionMap, templateNodeMap, function, hashSimplifier, depth + 1, debugMode);
-
-                    irCode.addSingleLineBlock(new Label(branchEndLabel, depth));
-
+                    generateIRScopeRecursive(irCodeConfig, elseNode.getScope(), function, depth + 1);
+                    irCodeConfig.irCode.addSingleLineBlock(new Label(branchEndLabel, depth));
                     break;
                 }
             } else {
@@ -326,17 +293,9 @@ public class CodeGeneration {
         }
     }
 
-    private static Jump createConditionalJump(OperationNode exp,
-                                              String jumpId, String targetLabel,
-                                              IRCode irCode,
-                                              Map<String, IRFunction> functionMap,
-                                              HashCodeSimplifier hashCodeSimplifier,
-                                              boolean invertCondition,
-                                              int depth,
-                                              boolean debugMode) throws Exception {
+    private static Jump createConditionalJump(IRCodeConfig irCodeConfig, OperationNode exp, String jumpId, String targetLabel, boolean invertCondition, int depth) throws Exception {
         String conditionalVarName = "if_cond_" + jumpId;
-        IROperation conditionalOp = addOperationIRBlock(exp, irCode, functionMap, conditionalVarName, hashCodeSimplifier, depth, debugMode);
-//        Line lastOperation = conditionalOp.lineList.removeLast();
+        IROperation conditionalOp = addOperationIRBlock(irCodeConfig, exp, conditionalVarName, depth);
         Line lastOperation = conditionalOp.lineList.remove(conditionalOp.lineList.size() - 1);
 
         Jump startJump;
@@ -359,17 +318,10 @@ public class CodeGeneration {
         return startJump;
     }
 
-    private static IROperation addOperationIRBlock(OperationNode op,
-                                                   IRCode irCode,
-                                                   Map<String, IRFunction> functionMap,
-                                                   String variableName,
-                                                   HashCodeSimplifier hashCodeSimplifier,
-                                                   int depth,
-                                                   boolean debugMode) throws Exception {
-        IROperation opBlock = generateIROperation(op, irCode, functionMap, hashCodeSimplifier, depth, debugMode);
-        irCode.irBlocks.add(opBlock);
+    private static IROperation addOperationIRBlock(IRCodeConfig irCodeConfig, OperationNode op, String variableName, int depth) throws Exception {
+        IROperation opBlock = generateIROperation(irCodeConfig, op, depth);
+        irCodeConfig.irCode.irBlocks.add(opBlock);
         // change the name of the last op to the declared var name
-//        Line lastLine = opBlock.lineList.getLast();
         Line lastLine = opBlock.lineList.get(opBlock.lineList.size() - 1);
 
         if (lastLine instanceof VariableLine variableLine)
@@ -378,26 +330,17 @@ public class CodeGeneration {
         return opBlock;
     }
 
-    private static IROperation generateIROperation(OperationNode operationNode,
-                                                   IRCode irCode,
-                                                   Map<String, IRFunction> functionMap,
-                                                   HashCodeSimplifier hashCodeSimplifier,
-                                                   int depth,
-                                                   boolean debugMode) throws Exception {
+    private static IROperation generateIROperation(IRCodeConfig irCodeConfig,
+                                                   OperationNode operationNode,
+                                                   int depth) throws Exception {
         IROperation irOperation = new IROperation();
 
-        generateIROperationHelper(operationNode, irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);
+        generateIROperationHelper(irCodeConfig, operationNode, irOperation, depth);
 
         return irOperation;
     }
 
-    private static void generateIROperationHelper(OperationNode operationNode,
-                                                  IRCode irCode,
-                                                  Map<String, IRFunction> functionMap,
-                                                  IROperation irOperation,
-                                                  HashCodeSimplifier hashCodeSimplifier,
-                                                  int depth,
-                                                  boolean debugMode) throws Exception {
+    private static void generateIROperationHelper(IRCodeConfig irCodeConfig, OperationNode operationNode, IROperation irOperation, int depth) throws Exception {
         if (operationNode.isBinary()) {
             boolean leftConstant = operationNode.getLeftSide().isConstant();
             boolean rightConstant = operationNode.getRightSide().isConstant();
@@ -406,11 +349,11 @@ public class CodeGeneration {
             String rightVar = "";
 
             if (leftConstant) {
-                leftVar = processConstantToken(operationNode.getLeftSide().getConstantToken(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
+                leftVar = processConstantToken(irCodeConfig, operationNode.getLeftSide().getConstantToken(), depth);
             }
 
             if (rightConstant) {
-                rightVar = processConstantToken(operationNode.getRightSide().getConstantToken(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
+                rightVar = processConstantToken(irCodeConfig, operationNode.getRightSide().getConstantToken(), depth);
             }
 
             // TODO messy
@@ -423,36 +366,31 @@ public class CodeGeneration {
 
                 if (!rightConstant && leftConstant) {
                     binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), leftVar, operationNode.getRightSide().nameToken.string, depth);
-                    generateIROperationHelper(operationNode.getRightSide(), irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);
+                    generateIROperationHelper(irCodeConfig, operationNode.getRightSide(), irOperation, depth);
 
                 } else if (rightConstant) {
                     binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftSide().nameToken.string, rightVar, depth);
-                    generateIROperationHelper(operationNode.getLeftSide(), irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);
+                    generateIROperationHelper(irCodeConfig, operationNode.getLeftSide(), irOperation, depth);
 
                 } else {
                     binaryOp = new BinaryOp(operationNode.nameToken.string, operationNode.getOperator(), operationNode.getLeftSide().nameToken.string, operationNode.getRightSide().nameToken.string, depth);
-                    generateIROperationHelper(operationNode.getLeftSide(), irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);
-                    generateIROperationHelper(operationNode.getRightSide(), irCode, functionMap, irOperation, hashCodeSimplifier, depth, debugMode);
+                    generateIROperationHelper(irCodeConfig, operationNode.getLeftSide(), irOperation, depth);
+                    generateIROperationHelper(irCodeConfig, operationNode.getRightSide(), irOperation, depth);
                 }
                 irOperation.addLine(binaryOp);
             }
         } else if (operationNode.isConstant()) {
-            String constantVar = processConstantToken(operationNode.getConstantToken(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
+            String constantVar = processConstantToken(irCodeConfig, operationNode.getConstantToken(), depth);
             irOperation.addLine(new SetLine(operationNode.nameToken.string, constantVar, depth));
         }
     }
 
-    private static String processConstantToken(TypedToken token,
-                                               IRCode irCode,
-                                               Map<String, IRFunction> functionMap,
-                                               HashCodeSimplifier hashCodeSimplifier,
-                                               int depth,
-                                               boolean debugMode) throws Exception {
+    private static String processConstantToken(IRCodeConfig irCodeConfig, TypedToken token, int depth) throws Exception {
 
         if (token instanceof FunctionCallToken functionCallToken) {
-            IRFunction irFunction = generateFunctionCall(functionCallToken.getNode(), irCode, functionMap, hashCodeSimplifier, depth, debugMode);
-            String argOutput = irFunction.getReturnVar() + "_" + hashCodeSimplifier.simplifyHash(functionCallToken.hashCode());
-            irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
+            IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallToken.getNode(), depth);
+            String argOutput = irFunction.getReturnVar() + "_" + irCodeConfig.hashCodeSimplifier.simplifyHash(functionCallToken.hashCode());
+            irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
             return argOutput;
 
         } else {
