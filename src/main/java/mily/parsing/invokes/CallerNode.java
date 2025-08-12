@@ -12,7 +12,6 @@ import static mily.constants.Keywords.KEY_BRACKET_OPEN;
 import static mily.constants.Keywords.KEY_COMMA;
 import static mily.constants.Keywords.KEY_SEMICOLON;
 
-// TOOD implement this
 public abstract class CallerNode extends EvaluatorNode implements Caller {
 
     protected List<OperationNode> arguments = new ArrayList<>();
