@@ -1,4 +1,5 @@
 # Urgent TODO:
+ - template invokes in operations
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
