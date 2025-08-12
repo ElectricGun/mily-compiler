@@ -214,7 +214,7 @@ public class OperationNode extends EvaluatorNode {
                     continue;
                 }
 
-                 if (token.equalsKey(KEY_SPEECH_MARK)) {
+                if (token.equalsKey(KEY_SPEECH_MARK)) {
                     // Process STRINGS
                     StringBuilder stringTokenBuffer = new StringBuilder();
                     Token prevStringToken = null;

@@ -33,12 +33,12 @@ public class TypedToken extends Token implements Typed {
         this.type = type;
     }
 
-    public void setVariableRef(boolean variableRef) {
-        isVariableRef = variableRef;
-    }
-
     public boolean isVariableRef() {
         return isVariableRef;
+    }
+
+    public void setVariableRef(boolean variableRef) {
+        isVariableRef = variableRef;
     }
 
     @Override

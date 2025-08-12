@@ -412,14 +412,6 @@ public class Validation {
             validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
         }
 
-//        if (operationNode.getLeftSide() != null && operationNode.getLeftSide().getConstantToken() instanceof FunctionCallToken fn) {
-//            validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
-//        }
-//
-//        if (operationNode.getRightSide() != null && operationNode.getRightSide().getConstantToken() instanceof FunctionCallToken fn) {
-//            validateCaller(fn.getNode(), functionDeclares, doAssignTypes, debugMode);
-//        }
-
         if (operationNode.getLeftSide() != null) {
             validateCallerOperation(operationNode.getLeftSide(), functionDeclares, doAssignTypes, debugMode);
         }

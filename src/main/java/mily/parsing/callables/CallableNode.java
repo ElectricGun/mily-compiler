@@ -26,13 +26,13 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
     }
 
     @Override
-    public void setType(String type) {
-        this.returnType = type;
+    public String getType() {
+        return returnType;
     }
 
     @Override
-    public String getType() {
-        return returnType;
+    public void setType(String type) {
+        this.returnType = type;
     }
 
     // todo probably give this a name var
