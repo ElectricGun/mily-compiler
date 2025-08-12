@@ -209,9 +209,6 @@ public class Validation {
 
             } else if (operationNode.isConstant()) {
                 type = operationNode.getConstantToken().getType();
-
-//                System.out.println(operationNode.getConstantToken());
-
                 type = type == null ? KEY_DATA_UNKNOWN : type;
             }
 
@@ -402,8 +399,6 @@ public class Validation {
         for (int a = 0; a < callTypes.length; a++) {
             callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), false, debugMode);
         }
-//        System.out.println(Arrays.toString(callTypes));
-
         return callTypes;
     }
 

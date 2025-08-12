@@ -256,8 +256,6 @@ public class CodeGeneration {
         generateIRScopeRecursive(fn.getScope(), irCode, functionMap, templateNodeMap, irFunction, hashSimplifier, depth + 1, debugMode);
 
         irCode.addSingleLineBlock((new Label(endJumpLabel, depth)));
-
-//        return irFunction;
     }
 
     private static void generateBranchStatement(IfStatementNode ifs,
@@ -307,11 +305,9 @@ public class CodeGeneration {
             irCode.addSingleLineBlock(new Label(currentIfEndLabel, depth));
 
             // if there is an else node
-//            if (ifs.getElseNode() instanceof ElseNode elseNode) {
             if (ifs.getElseNode() != null) {
                 ElseNode elseNode = ifs.getElseNode();
                 // if it is an else if
-//                if (elseNode.getIfStatementNode() instanceof IfStatementNode nestedIf) {
                 if (elseNode.getIfStatementNode() != null) {
                     ifs = elseNode.getIfStatementNode();
 
