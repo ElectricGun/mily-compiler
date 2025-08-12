@@ -4,8 +4,8 @@ int test(int x, int y) {
     return x + 1;
 }
 
-string testa = "among\"us\"";
+string out = "test";
 
-print$(testa);
-
+print$(test(1, 2));
+print$(out);
 printflush$(@message1);
