@@ -30,7 +30,6 @@ public class MacroScope extends EvaluatorNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             String str = token.string;
 
             if (debugMode)
