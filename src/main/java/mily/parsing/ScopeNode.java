@@ -141,7 +141,18 @@ public class ScopeNode extends EvaluatorNode {
             } else if (keyEquals(KEY_RAW, token)) {
                 if (debugMode)
                     System.out.printf(indent + "Creating for raw template %n");
-                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(KEY_DATA_VOID, token, depth + 1);
+
+                Token returnType = tokenList.remove(0);
+
+                while (returnType.isWhiteSpace()) {
+                    returnType = tokenList.remove(0);
+                }
+
+                if (!isVariableOrDeclarator(returnType)) {
+                    return throwSyntaxError("Expecting return type after raw", returnType);
+                }
+
+                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(returnType.string, token, depth + 1);
                 members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree, debugMode));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
