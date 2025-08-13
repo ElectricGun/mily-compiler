@@ -1,10 +1,9 @@
 package mily.processing;
 
-import mily.abstracts.Caller;
+import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.CallerNode;
-import mily.parsing.invokes.FunctionCallNode;
-import mily.tokens.CallerNodeToken;
+import mily.parsing.invokes.*;
+import mily.tokens.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Maps.*;

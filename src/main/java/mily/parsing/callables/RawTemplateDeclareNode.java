@@ -179,4 +179,14 @@ public class RawTemplateDeclareNode extends CallableNode {
         }
         return fnKey.toString();
     }
+
+    public String scopeAsFormatted(List<String> replacers, String outputVariable) {
+        String out = scope.asFormatted(replacers);
+        String out2 = out.replaceAll(returnVariableRaw, outputVariable);
+        return out2;
+    }
+
+    public String scopeAsFormatted(List<String> replacers) {
+        return scope.asFormatted(replacers);
+    }
 }

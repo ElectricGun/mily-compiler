@@ -1,10 +1,10 @@
 # Urgent TODO:
- - template invokes in operations
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
  - append "user_" to user specified variables to avoid conflicts with generated ones
  - Remove explicit casting entirely, its making OperationNode confusing, just use functions or something
+ - templates with return types shouldnt be able to be called outside of operations
 
 # Flags
  - --help flag

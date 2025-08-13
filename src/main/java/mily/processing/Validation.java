@@ -129,8 +129,8 @@ public class Validation {
                 String assignedVar = memberOp.getConstantToken().string;
                 // THE SAME #1
                 if (memberOp.getConstantToken() instanceof CallerNodeToken callerNodeToken) {
-                    CallerNode functionCallNode = callerNodeToken.getNode();
-                    validateDeclarationsHelper(functionCallNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
+                    CallerNode callerNode = callerNodeToken.getNode();
+                    validateDeclarationsHelper(callerNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
 
                 } else if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
@@ -143,8 +143,8 @@ public class Validation {
                     }
                     // THE SAME #2
                     if (memberOp.getConstantToken() instanceof CallerNodeToken callerNodeToken) {
-                        CallerNode functionCallNode = callerNodeToken.getNode();
-                        validateDeclarationsHelper(functionCallNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
+                        CallerNode callerNode = callerNodeToken.getNode();
+                        validateDeclarationsHelper(callerNode, declaredVariablesNames, variableTypes, doAssignTypes, debugMode);
                     }
                 }
             }
@@ -371,9 +371,9 @@ public class Validation {
 
                 if (operationNode.getConstantToken() instanceof CallerNodeToken callerNodeToken) {
                     Caller subCaller = callerNodeToken.getNode();
-                    if (subCaller instanceof CallerNode functionCallNode) {
+                    if (subCaller instanceof CallerNode callerNode) {
                         if (!validateCaller(subCaller, callables, doAssignTypes, debugMode)) {
-                            member.throwSemanticError(String.format("No overload for caller \"%s\" with arguments of types %s", subCaller.getName(), Arrays.toString(getCallTypes(subCaller, debugMode))), functionCallNode.nameToken);
+                            member.throwSemanticError(String.format("No overload for caller \"%s\" with arguments of types %s", subCaller.getName(), Arrays.toString(getCallTypes(subCaller, debugMode))), callerNode.nameToken);
                         }
 
                         for (int a = 0; a < subCaller.getArgCount(); a++) {
@@ -394,10 +394,10 @@ public class Validation {
         }
     }
 
-    private static String[] getCallTypes(Caller functionCallNode, boolean debugMode) {
-        String[] callTypes = new String[functionCallNode.getArgCount()];
+    private static String[] getCallTypes(Caller caller, boolean debugMode) {
+        String[] callTypes = new String[caller.getArgCount()];
         for (int a = 0; a < callTypes.length; a++) {
-            callTypes[a] = validateTypesHelper(functionCallNode.getArg(a), false, debugMode);
+            callTypes[a] = validateTypesHelper(caller.getArg(a), false, debugMode);
         }
         return callTypes;
     }

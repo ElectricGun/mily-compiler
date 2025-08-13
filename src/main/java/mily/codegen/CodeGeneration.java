@@ -154,12 +154,12 @@ public class CodeGeneration {
                 irCodeConfig.templateNodeMap.put(rawTemplateDeclareNode.getName(), rawTemplateDeclareNode);
 
             } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
-                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, depth);
+                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, null, depth);
             }
         }
     }
 
-    private static void generateRawTemplateInvoke(IRCodeConfig irCodeConfig, RawTemplateInvoke rawTemplateInvoke, int depth) throws Exception {
+    private static void generateRawTemplateInvoke(IRCodeConfig irCodeConfig, RawTemplateInvoke rawTemplateInvoke, String outputVariable, int depth) throws Exception {
         IRBlock irBlock = new IRBlock();
         RawTemplateDeclareNode rawTemplateDeclareNode = irCodeConfig.templateNodeMap.get(rawTemplateInvoke.getName());
 
@@ -187,7 +187,13 @@ public class CodeGeneration {
                 throw new Exception("Expected a BinaryOp or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
             }
         }
-        String formatted = rawTemplateDeclareNode.getScope().asFormatted(argNames);
+        String formatted;
+        if (outputVariable == null) {
+            formatted = rawTemplateDeclareNode.scopeAsFormatted(argNames);
+
+        } else {
+            formatted = rawTemplateDeclareNode.scopeAsFormatted(argNames, outputVariable);
+        }
 
         String[] lineContent = formatted.split(KEY_NEWLINE);
         for (String s : lineContent) {
@@ -393,14 +399,16 @@ public class CodeGeneration {
     private static String processConstantToken(IRCodeConfig irCodeConfig, TypedToken token, int depth) throws Exception {
         if (token instanceof CallerNodeToken callerNodeToken) {
             CallerNode callerNode = callerNodeToken.getNode();
+            int callerHashCode =  irCodeConfig.hashCodeSimplifier.simplifyHash(callerNodeToken.hashCode());
             if (callerNode instanceof FunctionCallNode functionCallNode) {
                 IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallNode, depth);
-                String argOutput = irFunction.getReturnVar() + "_" + irCodeConfig.hashCodeSimplifier.simplifyHash(callerNodeToken.hashCode());
+                String argOutput = irFunction.getReturnVar() + "_" + callerHashCode;
                 irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
                 return argOutput;
 
             } else if (callerNode instanceof RawTemplateInvoke rawTemplateInvoke) {
-                throw new UnsupportedOperationException(rawTemplateInvoke.getClass() + " is unimplemented");
+                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, token.string, depth);
+                return token.string + "_" + callerHashCode;
 
             } else {
                 throw new IllegalArgumentException("Unknown node in CallerNodeToken");
