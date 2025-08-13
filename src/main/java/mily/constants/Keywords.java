@@ -29,6 +29,7 @@ public class Keywords {
         KEY_SPACE = " ",
         KEY_TAB = "\t",
         KEY_ESCAPE = "\\",
+        KEY_OUTPUTS = "->",
 
     // comment punctuations
         KEY_COMMENT_MULTILINE_START = "/*",
