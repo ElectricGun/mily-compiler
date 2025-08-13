@@ -407,6 +407,17 @@ public class OperationNode extends EvaluatorNode {
                         previousOrder = currentOrder;
                     }
 
+                    boolean noOperators = orders.size() > 1;
+                    for (int i = 0; i < orders.size(); i++) {
+                        if (orders.get(i) != -1) {
+                            noOperators = false;
+                        }
+                    }
+
+                    if (noOperators) {
+                        return throwSyntaxError("Illegal operation consisting of adjacent constants found", token);
+                    }
+
                     if (operationTokens.isEmpty()) {
                         constantToken = new VoidToken("void", token.source, token.line);
                         return this;
