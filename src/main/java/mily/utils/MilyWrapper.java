@@ -64,7 +64,6 @@ public class MilyWrapper {
         if (debugMode) {
             System.out.println("PRE VALIDATION AST (unassigned reference types)");
             evaluatorTree.printRecursive();
-            return null;
         }
 
         // check for syntax errors
