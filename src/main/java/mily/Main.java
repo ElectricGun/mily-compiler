@@ -63,7 +63,7 @@ public class Main {
             System.exit(1);
             return;
         }
-        
+
         if (printAst) {
             output.getAST().printRecursive();
         }
@@ -107,7 +107,9 @@ public class Main {
             if (!isQuiet) {
                 System.out.println("Successfully written to " + fullOutputPath.getAbsolutePath());
             }
-        } else if (printOutput) {
+        }
+
+        if (printOutput) {
             if (!isQuiet) {
                 System.out.println("# Output:");
             }
