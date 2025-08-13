@@ -38,7 +38,6 @@ public class AssignmentNode extends VariableNode {
             return this;
         }
 
-
         return throwSyntaxError("Unexpected end of file", nameToken);
     }
 

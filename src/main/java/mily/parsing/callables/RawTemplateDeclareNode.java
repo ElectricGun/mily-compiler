@@ -146,7 +146,7 @@ public class RawTemplateDeclareNode extends CallableNode {
                 expectingReturnPattern = false;
 
             } else if (expectingReturnPattern) {
-              return throwSyntaxError("Non-void template requires a raw return variable name", token);
+                return throwSyntaxError("Non-void template requires a raw return variable name", token);
 
             } else {
                 return throwSyntaxError("Unexpected token after raw template input declaration", token);
