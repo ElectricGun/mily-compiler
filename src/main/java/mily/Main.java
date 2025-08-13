@@ -59,7 +59,7 @@ public class Main {
             output = wrapper.compile(code, cwd);
 
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             System.exit(1);
             return;
         }

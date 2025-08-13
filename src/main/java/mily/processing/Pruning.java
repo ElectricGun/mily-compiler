@@ -4,7 +4,7 @@ import mily.abstracts.Caller;
 import mily.parsing.*;
 import mily.parsing.invokes.CallerNode;
 import mily.parsing.invokes.FunctionCallNode;
-import mily.tokens.FunctionCallToken;
+import mily.tokens.CallerNodeToken;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Maps.*;
@@ -38,8 +38,8 @@ public class Pruning {
             }
 
             // truncate from function arguments within operators
-            if (operationNode.getConstantToken() instanceof FunctionCallToken callerToken) {
-                FunctionCallNode caller = callerToken.getNode();
+            if (operationNode.getConstantToken() instanceof CallerNodeToken callerToken) {
+                CallerNode caller = callerToken.getNode();
                 truncateFunctionArgs(caller);
             }
         }

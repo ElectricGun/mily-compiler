@@ -60,7 +60,7 @@ public class MilyWrapper {
         if (debugMode) {
             System.out.println("PRE VALIDATION AST (unassigned reference types)");
             evaluatorTree.printRecursive();
-            System.out.println();
+            return null;
         }
 
         // check for syntax errors
@@ -84,7 +84,7 @@ public class MilyWrapper {
         } catch (Exception e) {
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            System.exit(1);
+            return null;
         }
 
         // check for semantic errors
@@ -97,12 +97,8 @@ public class MilyWrapper {
         long optimizationDuration = (codeGenerationStartTime - optimizationStartTime);
 
         IRCode irCode;
-        try {
-            irCode = generateIRCode(evaluatorTree, debugMode);
+        irCode = generateIRCode(evaluatorTree, debugMode);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to compile: syntax error!");
-        }
         long endCompileTime = System.nanoTime();
         long codeGenerationDuration = (endCompileTime - codeGenerationStartTime);
         long compileDuration = (endCompileTime - compileStartTime);

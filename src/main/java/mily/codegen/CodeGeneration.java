@@ -4,6 +4,7 @@ import mily.codegen.blocks.*;
 import mily.codegen.lines.*;
 import mily.parsing.*;
 import mily.parsing.callables.*;
+import mily.parsing.invokes.CallerNode;
 import mily.parsing.invokes.FunctionCallNode;
 import mily.parsing.invokes.RawTemplateInvoke;
 import mily.structures.structs.IRCodeConfig;
@@ -390,13 +391,20 @@ public class CodeGeneration {
     }
 
     private static String processConstantToken(IRCodeConfig irCodeConfig, TypedToken token, int depth) throws Exception {
+        if (token instanceof CallerNodeToken callerNodeToken) {
+            CallerNode callerNode = callerNodeToken.getNode();
+            if (callerNode instanceof FunctionCallNode functionCallNode) {
+                IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallNode, depth);
+                String argOutput = irFunction.getReturnVar() + "_" + irCodeConfig.hashCodeSimplifier.simplifyHash(callerNodeToken.hashCode());
+                irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
+                return argOutput;
 
-        if (token instanceof FunctionCallToken functionCallToken) {
-            IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallToken.getNode(), depth);
-            String argOutput = irFunction.getReturnVar() + "_" + irCodeConfig.hashCodeSimplifier.simplifyHash(functionCallToken.hashCode());
-            irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
-            return argOutput;
+            } else if (callerNode instanceof RawTemplateInvoke rawTemplateInvoke) {
+                throw new UnsupportedOperationException(rawTemplateInvoke.getClass() + " is unimplemented");
 
+            } else {
+                throw new IllegalArgumentException("Unknown node in CallerNodeToken");
+            }
         } else {
             return tokenAsMlog(token);
         }

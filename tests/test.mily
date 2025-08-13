@@ -1,4 +1,3 @@
-
 #include std/bulb.mily;
 
 int test(int x, int y) {
@@ -11,7 +10,7 @@ print$(test(1, 2));
 print$(out);
 printflush$(@message1);
 
-as_int$(1.0);
+int sussy = as_int$(1.0);
 
 /*
 
