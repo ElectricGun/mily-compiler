@@ -24,8 +24,8 @@ public class ElseNode extends EvaluatorNode {
     IfStatementNode ifStatementNode = null;
     ScopeNode block = null;
 
-    public ElseNode(Token token, int depth) {
-        super(token, depth);
+    public ElseNode(Token nameToken, int depth) {
+        super(nameToken, depth);
     }
 
     public ScopeNode getScope() {
@@ -37,16 +37,16 @@ public class ElseNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing else block %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
 
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "else\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
@@ -56,12 +56,12 @@ public class ElseNode extends EvaluatorNode {
 
             if (keyEquals(KEY_CURLY_OPEN, token)) {
                 block = new ScopeNode(this.nameToken, depth + 1, true);
-                members.add(block.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(block.evaluate(tokenList, evaluatorTree));
                 return this;
 
             } else if (keyEquals(KEY_CONDITIONAL_IF, token)) {
                 ifStatementNode = new IfStatementNode(this.nameToken, depth + 1);
-                members.add(ifStatementNode.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(ifStatementNode.evaluate(tokenList, evaluatorTree));
                 return this;
 
             } else {

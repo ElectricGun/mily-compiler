@@ -69,7 +69,7 @@ public class RawTemplateDeclareNode extends CallableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         StringBuilder argBufferString = new StringBuilder();
@@ -80,7 +80,7 @@ public class RawTemplateDeclareNode extends CallableNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-            if (true)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "raw template %s: %s%n", name, token);
 
 
@@ -93,7 +93,7 @@ public class RawTemplateDeclareNode extends CallableNode {
                     name = token.string;
 
                 } else if (returnType != null && name != null && keyEquals(KEY_BRACKET_OPEN, token) && !isParsingArg) {
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.printf(indent + "parsing raw template arguments", this.nameToken, token);
                     isParsingArg = true;
 
@@ -128,7 +128,7 @@ public class RawTemplateDeclareNode extends CallableNode {
                 }
             } else if (!expectingReturnPattern && token.equalsKey(KEY_MACRO_LITERAL)) {
                 MacroScope macroScope = new MacroScope(token, argumentNames, depth + 1);
-                members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(macroScope.evaluate(tokenList, evaluatorTree));
                 scope = macroScope;
                 return this;
 

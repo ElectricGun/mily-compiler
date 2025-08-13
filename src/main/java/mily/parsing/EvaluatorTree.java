@@ -14,7 +14,7 @@ import mily.tokens.*;
 
 public class EvaluatorTree {
 
-    protected final boolean debugMode;
+    public final boolean debugMode;
     public String name = "";
     public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", "__MAIN__", 1), 0);
 
@@ -47,7 +47,7 @@ public class EvaluatorTree {
 
     @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode begin(List<Token> tokenList) {
-        mainBlock.evaluate(tokenList, this, debugMode);
+        mainBlock.evaluate(tokenList, this);
         return mainBlock;
     }
 

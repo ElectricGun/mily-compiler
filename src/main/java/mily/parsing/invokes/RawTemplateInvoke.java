@@ -30,19 +30,19 @@ public class RawTemplateInvoke extends CallerNode implements Named {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
 
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "raw template invoke %s: %s%n", this.nameToken, token);
 
             if (!token.isWhiteSpace()) {
 
                 if (token.equalsKey(KEY_BRACKET_OPEN)) {
-                    evaluateArgs(tokenList, evaluatorTree, debugMode);
+                    evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
                     return this;
 
                 } else {

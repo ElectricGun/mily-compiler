@@ -69,7 +69,7 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
             if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE)) {
                 if (!opTokens.isEmpty()) {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
-                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
+                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree);
                     members.add(operationNode);
                     arguments.add((OperationNode) operationNode);
                 }
@@ -80,7 +80,7 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
 
                 } else {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
-                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
+                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree);
                     members.add(operationNode);
                     arguments.add((OperationNode) operationNode);
                     argCount++;

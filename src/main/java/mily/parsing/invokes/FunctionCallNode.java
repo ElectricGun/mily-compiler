@@ -32,8 +32,8 @@ public class FunctionCallNode extends CallerNode implements Named {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
-        evaluateArgs(tokenList, evaluatorTree, debugMode);
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+        evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
         return this;
     }
 

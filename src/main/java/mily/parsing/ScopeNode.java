@@ -53,16 +53,16 @@ public class ScopeNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing Block %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
 // Token token = tokenList.removeFirst();
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "block : %s%n", token);
 
 
@@ -80,23 +80,23 @@ public class ScopeNode extends EvaluatorNode {
                 if (isVariableName(previousToken) && keyEquals(KEY_BRACKET_OPEN, token)) {
                     // FUNCTION CALL
                     FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
-                    members.add(functionCallNode.evaluate(tokenList, evaluatorTree, debugMode));
+                    members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
                     expectingSemicolon = true;
 
                 } else if (isVariableName(previousToken) && keyEquals(KEY_OP_ASSIGN, token)) {
                     // ASSIGNMENT
                     AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
-                    members.add(assignmentNode.evaluate(tokenList, evaluatorTree, debugMode));
+                    members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
                 } else if (isVariableName(token)) {
                     // VARIABLE DECLARATION
-                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
+                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree);
                     members.add(node);
 
                 } else if (isVariableName(previousToken) && keyEquals(KEY_MACRO_LITERAL, token)) {
                     // TEMPLATE INVOKE
                     RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-                    members.add(templateInvoke.evaluate(tokenList, evaluatorTree, debugMode));
+                    members.add(templateInvoke.evaluate(tokenList, evaluatorTree));
                     expectingSemicolon = true;
 
                 } else {
@@ -109,7 +109,7 @@ public class ScopeNode extends EvaluatorNode {
 
             } else if (isPunctuation(token)) {
                 if (needsClosing && keyEquals(KEY_CURLY_CLOSE, token)) {
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.printf(indent + "Created scope \"%s\"%n", this.nameToken);
                     return this;
 
@@ -121,25 +121,25 @@ public class ScopeNode extends EvaluatorNode {
                 return throwSyntaxError("Unexpected operator in scope", token);
 
             } else if (keyEquals(KEY_CONDITIONAL_IF, token)) {
-                if (debugMode)
+                if (evaluatorTree.debugMode)
                     System.out.printf(indent + "Creating if statement loop %n");
                 IfStatementNode ifStatementEvaluatorNode = new IfStatementNode(token, depth + 1);
-                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(ifStatementEvaluatorNode.evaluate(tokenList, evaluatorTree));
 
             } else if (keyEquals(KEY_LOOPING_WHILE, token)) {
-                if (debugMode)
+                if (evaluatorTree.debugMode)
                     System.out.printf(indent + "Creating while loop %n");
                 WhileLoopNode whileLoopEvaluatorNode = new WhileLoopNode(token, depth + 1);
-                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(whileLoopEvaluatorNode.evaluate(tokenList, evaluatorTree));
 
             } else if (keyEquals(KEY_LOOPING_FOR, token)) {
-                if (debugMode)
+                if (evaluatorTree.debugMode)
                     System.out.printf(indent + "Creating for loop %n");
                 ForLoopNode forLoopNode = new ForLoopNode(token, depth + 1);
-                members.add(forLoopNode.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(forLoopNode.evaluate(tokenList, evaluatorTree));
 
             } else if (keyEquals(KEY_RAW, token)) {
-                if (debugMode)
+                if (evaluatorTree.debugMode)
                     System.out.printf(indent + "Creating for raw template %n");
 
                 Token returnType = tokenList.remove(0);
@@ -153,12 +153,12 @@ public class ScopeNode extends EvaluatorNode {
                 }
 
                 RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(returnType.string, token, depth + 1);
-                members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
                 // FUNCTION RETURN
                 OperationNode returnOp = new OperationNode(new Token(this.nameToken + "_return", token.source, token.line), depth + 1, true);
-                members.add(returnOp.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(returnOp.evaluate(tokenList, evaluatorTree));
             }
             previousToken = token;
         }

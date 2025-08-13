@@ -33,20 +33,19 @@ public class FunctionDeclareNode extends CallableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         boolean isInitialized = false;
         boolean functionDeclared = false;
         boolean argumentWanted = false;
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing Function %s:%n", this.nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
@@ -63,11 +62,11 @@ public class FunctionDeclareNode extends CallableNode {
                     argumentWanted = true;
 
                 } else if (functionDeclared && keyEquals(KEY_CURLY_OPEN, token)) {
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.printf(indent + "Function header \"%s(%s)\" created%n", this.nameToken, String.join(", ", argumentNames));
 
                     scope = new ScopeNode(this.nameToken, depth + 1, true, this);
-                    members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
+                    members.add(scope.evaluate(tokenList, evaluatorTree));
                     return this;
 
                 } else {
@@ -79,11 +78,9 @@ public class FunctionDeclareNode extends CallableNode {
 
             } else if (isVariableOrDeclarator(token)) {
                 argumentTypes.add(token.string);
-//                Token variableName = tokenList.removeFirst();
                 Token variableName = tokenList.remove(0);
 
                 while (isWhiteSpace(variableName)) {
-//                    variableName = tokenList.removeFirst();
                     variableName = tokenList.remove(0);
                 }
                 if (!isVariableName(variableName)) {
@@ -97,7 +94,7 @@ public class FunctionDeclareNode extends CallableNode {
                     functionArgNode.setVariableName(variableName.string);
                     members.add(functionArgNode);
 
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.printf("Added argument %s%n", variableName);
 
                 } else {

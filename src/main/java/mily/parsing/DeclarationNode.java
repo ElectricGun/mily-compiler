@@ -22,15 +22,15 @@ public class DeclarationNode extends VariableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing Variable Declaration %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "declaration :  %s : %s%n", this.nameToken, token);
 
             // evaluate punctuations
@@ -41,10 +41,10 @@ public class DeclarationNode extends VariableNode {
 
                 if (keyEquals(KEY_BRACKET_OPEN, token) && isDeclared()) {
                     // FUNCTION DECLARATION
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.printf(indent + "Creating new function \"%s\"%n", this.nameToken);
 
-                    return new FunctionDeclareNode(this.getType(), new Token(variableName, nameToken.source, token.line), depth + 1).evaluate(tokenList, evaluatorTree, debugMode);
+                    return new FunctionDeclareNode(this.getType(), new Token(variableName, nameToken.source, token.line), depth + 1).evaluate(tokenList, evaluatorTree);
 
                 } else {
                     return throwSyntaxError("Unexpected punctuation on variable declaration", token);
@@ -53,12 +53,12 @@ public class DeclarationNode extends VariableNode {
             // evaluate operators
             else if (isOperator(token)) {
 
-                if (debugMode)
+                if (evaluatorTree.debugMode)
                     System.out.println(variableName);
                 // check for equal sign
                 if (keyEquals(KEY_OP_ASSIGN, token) && isDeclared()) {
                     OperationNode operationNode = new OperationNode(new Token("op_" + this.nameToken, this.nameToken.source, this.nameToken.line), depth + 1);
-                    members.add(operationNode.evaluate(tokenList, evaluatorTree, debugMode));
+                    members.add(operationNode.evaluate(tokenList, evaluatorTree));
                     return this;
 
                 } else {
@@ -68,7 +68,7 @@ public class DeclarationNode extends VariableNode {
             // evaluate strings
             else if (!isKeyWord(token)) {
                 if (!isDeclared()) {
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.printf(indent + "Declaring variable name : %s%n", token.string);
                     variableName = token.string;
 

@@ -22,17 +22,16 @@ public class WhileLoopNode extends ConditionalNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
         String indent = " ".repeat(depth);
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing While Loop %s:%n", nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "while\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
@@ -41,11 +40,11 @@ public class WhileLoopNode extends ConditionalNode {
             }
 
             if (keyEquals(KEY_BRACKET_OPEN, token)) {
-                parseOperation(tokenList, evaluatorTree, depth, debugMode);
+                parseOperation(tokenList, evaluatorTree, depth, evaluatorTree.debugMode);
 
             } else if (expression != null && scope == null) {
                 if (keyEquals(KEY_CURLY_OPEN, token)) {
-                    createBlock(tokenList, evaluatorTree, debugMode);
+                    createBlock(tokenList, evaluatorTree, evaluatorTree.debugMode);
                     return this;
 
                 } else {

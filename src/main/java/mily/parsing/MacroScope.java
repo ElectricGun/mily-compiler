@@ -26,13 +26,13 @@ public class MacroScope extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
             String str = token.string;
 
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent() + "macro scope %s: %s%n", this.nameToken, token);
 
             if (keyEquals(KEY_MACRO_LITERAL, token)) {

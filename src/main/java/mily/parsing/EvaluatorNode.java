@@ -60,14 +60,14 @@ public class EvaluatorNode {
         return members.get(i);
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
+    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         try {
-            return evaluator(tokenList, evaluatorTree, debugMode);
+            return evaluator(tokenList, evaluatorTree);
 
         } catch (Exception e) {
             e.printStackTrace();

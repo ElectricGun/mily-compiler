@@ -19,8 +19,8 @@ public abstract class ConditionalNode extends EvaluatorNode {
     ScopeNode scope = null;
     OperationNode expression = null;
 
-    public ConditionalNode(Token token, int depth) {
-        super(token, depth);
+    public ConditionalNode(Token nameToken, int depth) {
+        super(nameToken, depth);
     }
 
     public OperationNode getExpression() {
@@ -69,7 +69,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
 
                     operationTokens.add(new Token(";", nameToken.source, nameToken.line));
                     OperationNode operationNode = new OperationNode(this.nameToken, depth + 1);
-                    members.add(operationNode.evaluate(operationTokens, evaluatorTree, debugMode));
+                    members.add(operationNode.evaluate(operationTokens, evaluatorTree));
                     this.expression = operationNode;
                     break;
                 }
@@ -81,7 +81,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
 
     public void createBlock(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         ScopeNode scopeNode = new ScopeNode(this.nameToken, depth + 1, true);
-        scopeNode.evaluate(tokenList, evaluatorTree, debugMode);
+        scopeNode.evaluate(tokenList, evaluatorTree);
         members.add(scopeNode);
         scope = scopeNode;
     }
