@@ -62,6 +62,10 @@ public class Pruning {
 
                 arg = childArg;
             }
+
+            if (arg.getConstantToken() instanceof CallerNodeToken callerNodeToken) {
+                truncateFunctionArgs(callerNodeToken.getNode());
+            }
         }
     }
 
