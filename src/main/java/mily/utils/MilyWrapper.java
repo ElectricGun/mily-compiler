@@ -46,6 +46,10 @@ public class MilyWrapper {
             return null;
         }
 
+        if (debugMode) {
+            System.out.println(tokenList);
+        }
+
         // end lexing -- start building ast
         long startAstBuildDuration = System.nanoTime();
         long lexingDuration = (startAstBuildDuration - compileStartTime);
