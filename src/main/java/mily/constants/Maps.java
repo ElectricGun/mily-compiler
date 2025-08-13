@@ -22,9 +22,6 @@ public class Maps {
 
     public final static OperationMap operationMap = new OperationMap();
     protected final static List<String> PUNCTUATION_KEYS = new ArrayList<>(Arrays.asList(
-            KEY_SYMBOL_IDENTIFIER,
-            KEY_ESCAPE,
-            KEY_SPEECH_MARK,
             KEY_BRACKET_OPEN,
             KEY_BRACKET_CLOSE,
             KEY_CURLY_OPEN,
@@ -39,7 +36,11 @@ public class Maps {
             KEY_COMMENT_INLINE,
             KEY_COLON,
             KEY_MACRO_LITERAL,
-            KEY_HASH
+            KEY_HASH,
+            KEY_SYMBOL_IDENTIFIER,
+            KEY_ESCAPE,
+            KEY_SPEECH_MARK,
+            KEY_OUTPUTS
     ));
     protected final static List<String> KEYWORD_KEYS = new ArrayList<>(Arrays.asList(
             KEY_RETURN,
