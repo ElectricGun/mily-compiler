@@ -415,7 +415,7 @@ public class OperationNode extends EvaluatorNode {
                     }
 
                     if (noOperators) {
-                        return throwSyntaxError("Illegal operation consisting of adjacent constants found", token);
+                        return throwSyntaxError("Illegal operation consisting of adjacent constants found", nameToken);
                     }
 
                     if (operationTokens.isEmpty()) {
