@@ -22,6 +22,8 @@ public class RawTemplateDeclareNode extends CallableNode {
     protected String name;
     protected MacroScope scope;
 
+    protected String returnVariableRaw;
+
     public RawTemplateDeclareNode(String returnType, Token nameToken, int depth) {
         super(nameToken, depth);
 
@@ -74,10 +76,13 @@ public class RawTemplateDeclareNode extends CallableNode {
         boolean isParsingArg = false;
         boolean doneParsingArgs = false;
 
+        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID);
+
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-            if (debugMode)
+            if (true)
                 System.out.printf(indent + "raw template %s: %s%n", name, token);
+
 
             if (isWhiteSpace(token) && !isParsingArg) {
                 continue;
@@ -94,20 +99,23 @@ public class RawTemplateDeclareNode extends CallableNode {
 
                 } else if (isParsingArg && token.equalsKey(KEY_BRACKET_CLOSE)) {
                     argBufferString = new StringBuilder(argBufferString.toString().trim());
-                    List<String> argStringsRaw = List.of(argBufferString.toString().split(KEY_COMMA));
 
-                    for (String arg : argStringsRaw) {
-                        String[] stringArgType = arg.trim().split(" ");
+                    if (!argBufferString.isEmpty()) {
+                        List<String> argStringsRaw = List.of(argBufferString.toString().split(KEY_COMMA));
 
-                        if (isWhiteSpace(arg)) {
-                            return throwSyntaxError("Empty token in template input arguments", nameToken);
+                        for (String arg : argStringsRaw) {
+                            String[] stringArgType = arg.trim().split(" ");
 
-                        } else if (stringArgType.length != 2) {
-                            return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
+                            if (isWhiteSpace(arg)) {
+                                return throwSyntaxError("Empty token in template input arguments", nameToken);
+
+                            } else if (stringArgType.length != 2) {
+                                return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
+                            }
+
+                            argumentTypes.add(stringArgType[0]);
+                            argumentNames.add(stringArgType[1]);
                         }
-
-                        argumentTypes.add(stringArgType[0]);
-                        argumentNames.add(stringArgType[1]);
                     }
                     isParsingArg = false;
                     doneParsingArgs = true;
@@ -118,11 +126,27 @@ public class RawTemplateDeclareNode extends CallableNode {
                 } else if (isParsingArg) {
                     return throwSyntaxError("Unexpected token in template input arguments", token);
                 }
-            } else if (token.equalsKey(KEY_MACRO_LITERAL)) {
+            } else if (!expectingReturnPattern && token.equalsKey(KEY_MACRO_LITERAL)) {
                 MacroScope macroScope = new MacroScope(token, argumentNames, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree, debugMode));
                 scope = macroScope;
                 return this;
+
+            } else if (expectingReturnPattern && token.equalsKey(KEY_TEMPLATE_RETURNS)) {
+                Token outputPatternToken = tokenList.remove(0);
+
+                while (outputPatternToken.isWhiteSpace()) {
+                    outputPatternToken = tokenList.remove(0);
+                }
+
+                if (!isVariableName(outputPatternToken)) {
+                    return throwSyntaxError("Invalid return pattern", outputPatternToken);
+                }
+                returnVariableRaw = outputPatternToken.string;
+                expectingReturnPattern = false;
+
+            } else if (expectingReturnPattern) {
+              return throwSyntaxError("Non-void template requires a raw return variable name", token);
 
             } else {
                 return throwSyntaxError("Unexpected token after raw template input declaration", token);
@@ -138,7 +162,8 @@ public class RawTemplateDeclareNode extends CallableNode {
 
     @Override
     public String toString() {
-        return "template: " + getName() + argumentNames + " arg_types: " + argumentTypes;
+        return "template: " + getName() + argumentNames + " arg_types: " + argumentTypes +
+                ((returnVariableRaw != null && returnVariableRaw.isEmpty()) ? returnType : " -> " + returnVariableRaw + " : " + returnType);
     }
 
     @Override

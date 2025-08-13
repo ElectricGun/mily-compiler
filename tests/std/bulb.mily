@@ -16,20 +16,21 @@ raw void wait(double x) $
     wait x
 $
 
-raw void end $
+raw void end() $
     end
 $
 
-raw void stop $
+raw void stop() $
     stop
 $
 
-raw int as_int(double x) $
-    op floor out x
-    jump to_int_label greaterThanEq out 0
-        op add out out 1
+raw int as_int(double x) -> output $
+    op floor output x
+    jump to_int_label greaterThanEq output 0
+        op add output output 1
     to_int_label:
 $
+
 /*
 int as_int(double x) {
     int out = x // 1;

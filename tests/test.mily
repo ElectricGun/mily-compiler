@@ -1,3 +1,4 @@
+
 #include std/bulb.mily;
 
 int test(int x, int y) {
@@ -9,3 +10,31 @@ string out = "test";
 print$(test(1, 2));
 print$(out);
 printflush$(@message1);
+
+as_int$(1.0);
+
+/*
+
+int test(int x, int y, int z) {
+    int test2(int x_) {
+        int test3(int x__) {
+            return x + x_ + x__;
+        }
+        return test3(x) + x_;
+    }
+    return test2(x + y + z);
+}
+int output = test(3, 3, 3) + test(1, 2, 3);
+
+int n = 1000;
+/- count even numbers
+int i = 0;
+int j = 0;
+while (i < n) {
+    if (i % 2 == 0) {
+        j = j + 1;
+    }
+    i = i + 1;
+}
+
+*/
