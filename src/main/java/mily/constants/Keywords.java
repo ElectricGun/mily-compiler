@@ -80,7 +80,7 @@ public class Keywords {
         KEY_OP_ADD = "+",
         KEY_OP_SUB = "-",
         KEY_OP_DIV = "/",
-        KEY_OP_POW = "**",
+//        KEY_OP_POW = "**", //UNUSED
         KEY_OP_IDIV = "//",
         KEY_OP_MOD = "%",
 

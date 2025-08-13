@@ -73,7 +73,7 @@ public class Maps {
             KEY_OP_ADD,
             KEY_OP_SUB,
             KEY_OP_DIV,
-            KEY_OP_POW,
+//            KEY_OP_POW,  //UNUSED
             KEY_OP_IDIV,
             KEY_OP_MOD,
             KEY_OP_EQUALS,
@@ -135,7 +135,9 @@ public class Maps {
         // -2 is reserved for unary operators
         PEMDAS.put(KEY_OP_NEGATE, -2);
         // -1 is reserved for constants (default value)
-        PEMDAS.put(KEY_OP_POW, 0); // 0 is the highest priority, supersedes unary operators (special case)
+
+        // NOTE: unused
+//        PEMDAS.put(KEY_OP_POW, 0); // 0 is the highest priority, supersedes unary operators (special case)
         PEMDAS.put(KEY_OP_MUL, 1);
         PEMDAS.put(KEY_OP_DIV, 1);
         PEMDAS.put(KEY_OP_IDIV, 1);
@@ -238,7 +240,7 @@ public class Maps {
                 ));
             }
         };
-        addGenericNumericOperation(KEY_OP_POW, powConsumer);
+//        addGenericNumericOperation(KEY_OP_POW, powConsumer);
 
         // ---- Casts
         Consumer<OperationNode> castToInt = o ->

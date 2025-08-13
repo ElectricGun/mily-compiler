@@ -16,7 +16,7 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_MUL, "mul");
         mlogOperationMap.put(KEY_OP_SUB, "sub");
         mlogOperationMap.put(KEY_OP_DIV, "div");
-        mlogOperationMap.put(KEY_OP_POW, "pow");
+//        mlogOperationMap.put(KEY_OP_POW, "pow");
         mlogOperationMap.put(KEY_OP_IDIV, "idiv");
         mlogOperationMap.put(KEY_OP_MOD, "mod");
         mlogOperationMap.put(KEY_OP_EQUALS, "equal");

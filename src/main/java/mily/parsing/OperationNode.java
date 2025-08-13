@@ -389,11 +389,12 @@ public class OperationNode extends EvaluatorNode {
 
                         // if it is an operator, then set the order
                         if (orders.get(i) >= 0 && (largestOrder == -1 || orders.get(i) >= largestOrder)) {
-                            // special case for exponents, because they supersede unary operators
-                            if (largestOrder != -2 || orders.get(i) != 0) {
+                            // NOTE: REMOVED
+//                            // special case for exponents, because they supersede unary operators
+//                            if (largestOrder != -2 || orders.get(i) != 0) {
                                 largestOrder = orders.get(i);
                                 largestOrderIndex = i;
-                            }
+//                            }
 
                         } else if (orders.get(i) == -2 && largestOrderIndex == -1) {
                             largestOrder = orders.get(i);

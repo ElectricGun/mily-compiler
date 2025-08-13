@@ -67,6 +67,9 @@ public class Main {
         if (printAst) {
             output.getAST().printRecursive();
         }
+        if (output == null) {
+            return;
+        }
         IRCode irCode = output.getOutputCode();
 
         if (argParser.hasStringFlag(FLAG_OUTPUT)) {

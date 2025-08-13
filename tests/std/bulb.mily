@@ -24,11 +24,15 @@ raw void stop() $
     stop
 $
 
+raw double pow(any x, any y) -> output $
+    op pow output x y
+$
+
 raw int as_int(double x) -> output $
     op floor output x
-    jump to_int_label greaterThanEq output 0
+    jump output greaterThanEq output 0
         op add output output 1
-    to_int_label:
+    output:
 $
 
 /*
