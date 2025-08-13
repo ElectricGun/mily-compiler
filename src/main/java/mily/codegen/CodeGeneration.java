@@ -407,8 +407,9 @@ public class CodeGeneration {
                 return argOutput;
 
             } else if (callerNode instanceof RawTemplateInvoke rawTemplateInvoke) {
-                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, token.string, depth);
-                return token.string + "_" + callerHashCode;
+                String argOutput = token.string + "_" + callerHashCode;
+                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, argOutput, depth);
+                return argOutput;
 
             } else {
                 throw new IllegalArgumentException("Unknown node in CallerNodeToken");
