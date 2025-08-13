@@ -62,11 +62,11 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
             if (debugMode)
                 System.out.println(indent + "arg: " + token + " expectingArg: " + expectingArgument);
 
-            if (token.isWhiteSpace()) {
-                continue;
-            }
+//            if (token.isWhiteSpace()) {
+//                continue;
+//            }
 
-            if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE)) {
+            if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE) && !token.isWhiteSpace()) {
                 if (!opTokens.isEmpty()) {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
                     EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree);
@@ -74,7 +74,7 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
                     arguments.add((OperationNode) operationNode);
                 }
                 return;
-            } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0) {
+            } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0 && !token.isWhiteSpace()) {
                 if (opTokens.isEmpty()) {
                     this.throwSyntaxError("Empty argument found", token);
 
