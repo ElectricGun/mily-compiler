@@ -77,7 +77,7 @@ public class EvaluatorNode {
 
     // TODO: use polymorphism instead
     public EvaluatorNode throwSyntaxError(String message, Token token) {
-        String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilySyntaxError(errorMessage));
 
         return this;
@@ -85,7 +85,7 @@ public class EvaluatorNode {
 
     @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode throwSemanticError(String message, Token token) {
-        String errorMessage = String.format(errorTemplate, "Semantic error", token.source, token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Semantic error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilySemanticError(errorMessage));
 
         return this;
@@ -93,7 +93,7 @@ public class EvaluatorNode {
 
     @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode throwTypeError(String message, Token token) {
-        String errorMessage = String.format(errorTemplate, "Type error", token.source, token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Type error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilyTypeError(errorMessage));
 
         return this;

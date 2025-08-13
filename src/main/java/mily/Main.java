@@ -63,12 +63,9 @@ public class Main {
             System.exit(1);
             return;
         }
-
+        
         if (printAst) {
             output.getAST().printRecursive();
-        }
-        if (output == null) {
-            return;
         }
         IRCode irCode = output.getOutputCode();
 
