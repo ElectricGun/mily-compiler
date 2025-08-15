@@ -18,7 +18,7 @@ import static mily.constants.Keywords.*;
 
 public class AssignmentNode extends VariableNode {
 
-    OperationNode expression = null;
+    protected OperationNode expression = null;
 
     public AssignmentNode(Token token, int depth) {
         super(KEY_DATA_UNKNOWN, token, depth);

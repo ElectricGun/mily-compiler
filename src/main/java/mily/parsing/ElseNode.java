@@ -21,8 +21,8 @@ import static mily.constants.Keywords.*;
 
 public class ElseNode extends EvaluatorNode {
 
-    IfStatementNode ifStatementNode = null;
-    ScopeNode block = null;
+    protected IfStatementNode ifStatementNode = null;
+    protected ScopeNode block = null;
 
     public ElseNode(Token nameToken, int depth) {
         super(nameToken, depth);

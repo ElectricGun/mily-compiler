@@ -16,8 +16,8 @@ import static mily.constants.Keywords.*;
 
 public abstract class ConditionalNode extends EvaluatorNode {
 
-    ScopeNode scope = null;
-    OperationNode expression = null;
+    protected ScopeNode scope = null;
+    protected OperationNode expression = null;
 
     public ConditionalNode(Token nameToken, int depth) {
         super(nameToken, depth);

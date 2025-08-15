@@ -31,8 +31,8 @@ public class OperationNode extends EvaluatorNode {
     public List<Token> operationTokens = new ArrayList<>();
     protected TypedToken constantToken = null;
     protected boolean isReturnOperation;
-    String type = KEY_OP_TYPE_CONSTANT;
-    String operator = "";
+    protected String type = KEY_OP_TYPE_CONSTANT;
+    protected String operator = "";
     private OperationNode leftSide = null;
     private OperationNode rightSide = null;
 

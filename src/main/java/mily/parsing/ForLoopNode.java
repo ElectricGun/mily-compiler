@@ -17,10 +17,10 @@ import static mily.constants.Keywords.*;
 
 public class ForLoopNode extends EvaluatorNode {
 
-    VariableNode initial;
-    OperationNode condition;
-    AssignmentNode updater;
-    ScopeNode scope;
+    protected VariableNode initial;
+    protected OperationNode condition;
+    protected AssignmentNode updater;
+    protected ScopeNode scope;
     private boolean isExpectingOpeningBracket = true;
 
     public ForLoopNode(Token token, int depth) {

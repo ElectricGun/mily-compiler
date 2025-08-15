@@ -20,7 +20,7 @@ import static mily.constants.Keywords.*;
 
 public class IfStatementNode extends ConditionalNode {
 
-    ElseNode elseNode = null;
+    protected ElseNode elseNode = null;
 
     public IfStatementNode(Token token, int depth) {
         super(token, depth);

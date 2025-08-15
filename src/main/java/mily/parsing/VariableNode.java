@@ -12,8 +12,8 @@ import mily.tokens.*;
 
 public abstract class VariableNode extends EvaluatorNode implements Typed {
 
-    String variableName;
-    String type;
+    protected String variableName;
+    protected String type;
 
     public VariableNode(String type, Token token, int depth) {
         super(token, depth);
