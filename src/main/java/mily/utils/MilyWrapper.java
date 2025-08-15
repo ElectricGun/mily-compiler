@@ -84,11 +84,13 @@ public class MilyWrapper {
         invalidateDynamicDatatype(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree);
 
-
         // check for semantic errors
         if (checkThrowables(evaluatorTree)) {
             throw new RuntimeException("Failed to compile: semantic error!");
         }
+
+        // refine
+
 
         // end optimisation -- start code generation
         long codeGenerationStartTime = System.nanoTime();

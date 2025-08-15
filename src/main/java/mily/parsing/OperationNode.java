@@ -2,12 +2,10 @@ package mily.parsing;
 
 import java.util.*;
 
-import mily.parsing.invokes.FunctionCallNode;
-import mily.parsing.invokes.RawTemplateInvoke;
+import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
-import static mily.constants.Functions.isVariableOrDeclarator;
 import static mily.constants.Keywords.*;
 import static mily.constants.Maps.*;
 
@@ -260,7 +258,7 @@ public class OperationNode extends EvaluatorNode {
                         // remove last token because it will be replaced by a single FunctionCallToken
                         operationTokens.remove(operationTokens.size() - 1);
 
-                        FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
+                        FunctionCallNode functionCallNode = new FunctionCallNode(previousToken.string, previousToken, depth + 1);
                         FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree);
 
                         CallerNodeToken callerNodeToken = new CallerNodeToken(evaluated.nameToken.string, token.source, token.line, evaluated);

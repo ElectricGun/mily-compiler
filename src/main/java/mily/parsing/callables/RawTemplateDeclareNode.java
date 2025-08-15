@@ -19,13 +19,11 @@ import static mily.constants.Keywords.*;
 
 public class RawTemplateDeclareNode extends CallableNode {
 
-    protected String name;
     protected MacroScope scope;
-
     protected String returnVariableRaw;
 
-    public RawTemplateDeclareNode(String returnType, Token nameToken, int depth) {
-        super(nameToken, depth);
+    public RawTemplateDeclareNode(String name, String returnType, Token nameToken, int depth) {
+        super(name, nameToken, depth);
 
         this.returnType = returnType;
     }

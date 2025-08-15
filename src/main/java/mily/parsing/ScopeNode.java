@@ -3,8 +3,8 @@ package mily.parsing;
 import java.util.*;
 
 import mily.parsing.callables.*;
-import mily.parsing.invokes.FunctionCallNode;
-import mily.parsing.invokes.RawTemplateInvoke;
+import mily.parsing.invokes.*;
+import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -79,7 +79,7 @@ public class ScopeNode extends EvaluatorNode {
             } else if (isVariableOrDeclarator(previousToken)) {
                 if (isVariableName(previousToken) && keyEquals(KEY_BRACKET_OPEN, token)) {
                     // FUNCTION CALL
-                    FunctionCallNode functionCallNode = new FunctionCallNode(previousToken, depth + 1);
+                    FunctionCallNode functionCallNode = new FunctionCallNode(previousToken.string, previousToken, depth + 1);
                     members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
                     expectingSemicolon = true;
 
@@ -152,7 +152,7 @@ public class ScopeNode extends EvaluatorNode {
                     return throwSyntaxError("Expecting return type after raw", returnType);
                 }
 
-                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(returnType.string, token, depth + 1);
+                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(token.string, returnType.string, token, depth + 1);
                 members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {

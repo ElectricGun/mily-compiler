@@ -7,22 +7,26 @@ import mily.tokens.*;
 import java.util.*;
 
 public abstract class CallableNode extends EvaluatorNode implements Callable {
-    List<String> argumentNames = new ArrayList<>();
-    List<String> argumentTypes = new ArrayList<>();
-    String returnType;
 
-    public CallableNode(Token nameToken, int depth) {
+    protected String name;
+    protected List<String> argumentNames = new ArrayList<>();
+    protected List<String> argumentTypes = new ArrayList<>();
+    protected String returnType;
+
+    public CallableNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
+
+        this.name = name;
     }
 
     @Override
     public List<String> getArgumentTypes() {
-        return new ArrayList<>(argumentTypes);
+        return argumentTypes;
     }
 
     @Override
     public List<String> getArgumentNames() {
-        return new ArrayList<>(argumentNames);
+        return argumentNames;
     }
 
     @Override
@@ -35,10 +39,14 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         this.returnType = type;
     }
 
-    // todo probably give this a name var
     @Override
     public String getName() {
-        return nameToken.string;
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String[] getArgumentNamesArr() {

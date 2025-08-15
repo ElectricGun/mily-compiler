@@ -1,4 +1,5 @@
 # Urgent TODO:
+ - variable names must be appended their scope's hashcode to prevent accessing local variales from outside
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
@@ -11,10 +12,7 @@
  - shorthand flags such as -h, -p, -v, etc
 
 # Problems:
- - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
- - "let test = 1; let test2 = test + 1 + false;" is valid
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation
- - Cannot declare a string var, such as string x = "1", it regards "1" as a variable name;
  - library circular dependencies
 
 # Useful

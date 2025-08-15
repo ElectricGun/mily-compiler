@@ -18,15 +18,12 @@ import static mily.constants.Keywords.*;
 
 public class RawTemplateInvoke extends CallerNode implements Named {
 
-    String name;
-
     public RawTemplateInvoke(String name, Token nameToken, int depth) {
-        super(nameToken, depth);
-        this.name = name;
+        super(name, nameToken, depth);
     }
 
     public List<OperationNode> getArgs() {
-        return new ArrayList<>(arguments);
+        return arguments;
     }
 
     @Override
@@ -54,10 +51,6 @@ public class RawTemplateInvoke extends CallerNode implements Named {
         return this;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
     @Override
     public String toString() {

@@ -22,13 +22,8 @@ import java.util.*;
 
 public class FunctionCallNode extends CallerNode implements Named {
 
-    public FunctionCallNode(Token token, int depth) {
-        super(token, depth);
-    }
-
-    // todo probably give this a name var
-    public String getName() {
-        return nameToken.string;
+    public FunctionCallNode(String name, Token token, int depth) {
+        super(name, token, depth);
     }
 
     @Override
@@ -46,7 +41,7 @@ public class FunctionCallNode extends CallerNode implements Named {
             arguments.append(i > 0 ? ", " : "").append(operationNode);
             i++;
         }
-        return "call " + nameToken.string + " | args: (" + arguments + ")";
+        return "call " + getName() + " | args: (" + arguments + ")";
     }
 
     @Override

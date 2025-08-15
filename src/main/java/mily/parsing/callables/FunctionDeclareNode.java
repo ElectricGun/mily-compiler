@@ -20,10 +20,10 @@ import static mily.constants.Keywords.*;
 
 public class FunctionDeclareNode extends CallableNode {
 
-    ScopeNode scope;
+    protected ScopeNode scope;
 
-    public FunctionDeclareNode(String returnType, Token name, int depth) {
-        super(name, depth);
+    public FunctionDeclareNode(String name, String returnType, Token nameToken, int depth) {
+        super(name, nameToken, depth);
 
         this.returnType = returnType;
     }

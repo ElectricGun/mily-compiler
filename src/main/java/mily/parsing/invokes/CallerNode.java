@@ -7,18 +7,27 @@ import mily.tokens.*;
 import java.util.*;
 
 import static mily.constants.Keywords.*;
-import static mily.constants.Keywords.KEY_BRACKET_CLOSE;
-import static mily.constants.Keywords.KEY_BRACKET_OPEN;
-import static mily.constants.Keywords.KEY_COMMA;
-import static mily.constants.Keywords.KEY_SEMICOLON;
 
 public abstract class CallerNode extends EvaluatorNode implements Caller {
 
+    protected String name;
     protected List<OperationNode> arguments = new ArrayList<>();
     protected String type = KEY_DATA_UNKNOWN;
 
-    public CallerNode(Token nameToken, int depth) {
+    public CallerNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
+
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
