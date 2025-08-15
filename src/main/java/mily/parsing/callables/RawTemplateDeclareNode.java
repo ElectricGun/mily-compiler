@@ -154,14 +154,9 @@ public class RawTemplateDeclareNode extends CallableNode {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
     public String toString() {
-        return "template: " + getName() + argumentNames + " arg_types: " + argumentTypes +
-                ((returnVariableRaw != null && returnVariableRaw.isEmpty()) ? returnType : " -> " + returnVariableRaw + " : " + returnType);
+        return "template: " + getName() + getArgumentNames() + " arg_types: " + getArgumentTypes() +
+                ((returnVariableRaw != null && returnVariableRaw.isEmpty()) ? getType() : " -> " + returnVariableRaw + " : " + getType());
     }
 
     @Override
@@ -180,8 +175,7 @@ public class RawTemplateDeclareNode extends CallableNode {
 
     public String scopeAsFormatted(List<String> replacers, String outputVariable) {
         String out = scope.asFormatted(replacers);
-        String out2 = out.replaceAll(returnVariableRaw, outputVariable);
-        return out2;
+        return out.replaceAll(returnVariableRaw, outputVariable);
     }
 
     public String scopeAsFormatted(List<String> replacers) {

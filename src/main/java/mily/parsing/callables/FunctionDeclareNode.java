@@ -160,13 +160,4 @@ public class FunctionDeclareNode extends CallableNode {
         return fnKey.toString();
     }
 
-    @Override
-    public String getType() {
-        return returnType;
-    }
-
-    @Override
-    public void setType(String type) {
-        returnType = type;
-    }
 }

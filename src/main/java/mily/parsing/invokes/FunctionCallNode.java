@@ -34,14 +34,7 @@ public class FunctionCallNode extends CallerNode implements Named {
 
     @Override
     public String toString() {
-        StringBuilder arguments = new StringBuilder();
-        int i = 0;
-
-        for (OperationNode operationNode : this.arguments) {
-            arguments.append(i > 0 ? ", " : "").append(operationNode);
-            i++;
-        }
-        return "call " + getName() + " | args: (" + arguments + ")";
+        return "call function: " + getName() + getArgs();
     }
 
     @Override

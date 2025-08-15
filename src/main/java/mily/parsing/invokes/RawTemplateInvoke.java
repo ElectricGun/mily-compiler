@@ -22,10 +22,6 @@ public class RawTemplateInvoke extends CallerNode implements Named {
         super(name, nameToken, depth);
     }
 
-    public List<OperationNode> getArgs() {
-        return arguments;
-    }
-
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
@@ -54,7 +50,7 @@ public class RawTemplateInvoke extends CallerNode implements Named {
 
     @Override
     public String toString() {
-        return "invoke template: " + name + arguments;
+        return "invoke template: " + getName() + getArgs();
     }
 
     @Override

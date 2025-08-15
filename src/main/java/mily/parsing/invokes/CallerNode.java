@@ -55,6 +55,10 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
         this.type = type;
     }
 
+    public List<OperationNode> getArgs() {
+        return arguments;
+    }
+
     protected void evaluateArgs(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         String indent = " ".repeat(depth);
 
