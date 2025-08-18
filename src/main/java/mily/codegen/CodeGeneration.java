@@ -58,7 +58,7 @@ public class CodeGeneration {
 
             } else if (member instanceof DeclarationNode declarationNode) {
                 if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
-                    addOperationIRBlock(irCodeConfig, op, declarationNode.getVariableName(), depth);
+                    addOperationIRBlock(irCodeConfig, op, declarationNode.getName(), depth);
 
                 } else if (declarationNode.memberCount() == 0) {
 
@@ -71,7 +71,7 @@ public class CodeGeneration {
                 // otherwise throw an error
                 if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed assignment node found on codegen stage");
-                addOperationIRBlock(irCodeConfig, (OperationNode) member.getMember(0), as.getVariableName(), depth);
+                addOperationIRBlock(irCodeConfig, (OperationNode) member.getMember(0), as.getName(), depth);
 
             } else if (member instanceof IfStatementNode ifs) {
                 generateBranchStatement(ifs, irCodeConfig, function, depth);
@@ -117,7 +117,7 @@ public class CodeGeneration {
                 if (initial == null || initial.memberCount() <= 0 || !(initial.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed for loop updater found on codegen stage");
 
-                addOperationIRBlock(irCodeConfig, (OperationNode) initial.getMember(0), initial.getVariableName(), depth);
+                addOperationIRBlock(irCodeConfig, (OperationNode) initial.getMember(0), initial.getName(), depth);
 
                 // loop start label
                 irCodeConfig.irCode.addSingleLineBlock(new Label(startLabelString, depth));
@@ -142,7 +142,7 @@ public class CodeGeneration {
                 if (updater == null || updater.memberCount() <= 0 || !(updater.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed for loop updater found on codegen stage");
 
-                addOperationIRBlock(irCodeConfig, (OperationNode) updater.getMember(0), updater.getVariableName(), depth);
+                addOperationIRBlock(irCodeConfig, (OperationNode) updater.getMember(0), updater.getName(), depth);
 
                 // always jump
                 irCodeConfig.irCode.addSingleLineBlock(new Jump("always", startLabelString, depth));

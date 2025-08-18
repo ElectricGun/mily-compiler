@@ -91,7 +91,7 @@ public class FunctionDeclareNode extends CallableNode {
                     argumentWanted = false;
 
                     FunctionArgNode functionArgNode = new FunctionArgNode(token.string, variableName, depth + 1);
-                    functionArgNode.setVariableName(variableName.string);
+                    functionArgNode.setName(variableName.string);
                     members.add(functionArgNode);
 
                     if (evaluatorTree.debugMode)

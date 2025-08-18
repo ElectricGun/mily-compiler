@@ -87,15 +87,16 @@ public class Validation {
         if (debugMode)
             System.out.println("Node: " + evaluatorNode + "\nVariables: " + declaredVariablesNames + "\nTypes: " + variableTypes);
 
+        String alreadyDeclaredMessage = "Variable \"%s\" is already declared within scope";
+        String undeclaredMessage = "Cannot find variable \"%s\" within scope";
+
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
 
             // TODO not optimal implementation
-            String alreadyDeclaredMessage = "Variable \"%s\" is already declared within scope";
-            String undeclaredMessage = "Cannot find variable \"%s\" within scope";
 
             if (member instanceof FunctionArgNode functionArgNode) {
-                String declaredVar = functionArgNode.getVariableName();
+                String declaredVar = functionArgNode.getName();
                 if (declaredVariablesNames.contains(declaredVar)) {
                     member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.nameToken);
                 }
@@ -103,7 +104,7 @@ public class Validation {
                 variableTypes.add(functionArgNode.getType());
 
             } else if (member instanceof DeclarationNode memberDeclaration) {
-                String declaredVar = memberDeclaration.getVariableName();
+                String declaredVar = memberDeclaration.getName();
                 if (declaredVariablesNames.contains(declaredVar)) {
                     member.throwSemanticError(String.format(alreadyDeclaredMessage, declaredVar), member.nameToken);
                 }
@@ -111,7 +112,7 @@ public class Validation {
                 variableTypes.add(memberDeclaration.getType());
 
             } else if (member instanceof AssignmentNode memberAssignment) {
-                String assignedVar = memberAssignment.getVariableName();
+                String assignedVar = memberAssignment.getName();
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 

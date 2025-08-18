@@ -4,7 +4,6 @@ import java.util.*;
 
 import mily.parsing.callables.*;
 import mily.parsing.invokes.*;
-import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -152,7 +151,17 @@ public class ScopeNode extends EvaluatorNode {
                     return throwSyntaxError("Expecting return type after raw", returnType);
                 }
 
-                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(token.string, returnType.string, token, depth + 1);
+                Token templateName = tokenList.remove(0);
+
+                while (templateName.isWhiteSpace()) {
+                    templateName = tokenList.remove(0);
+                }
+
+                if (!isVariableName(templateName)) {
+                    return throwSyntaxError("Expecting template name", templateName);
+                }
+
+                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(templateName.string, returnType.string, token, depth + 1);
                 members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {

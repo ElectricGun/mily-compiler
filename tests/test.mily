@@ -1,39 +1,22 @@
 #include std/bulb.mily;
 
-int test(int x, int y) {
-    return x + 1;
+int f(int x) {
+    int out = 1;
+
+    for (int i = 1; i <= x; i = i + 1) {
+        out = out * i;
+    }
+    return out;
 }
 
-string out = "test";
+print$("\n");
+print$("\n");
 
-print$(test(1, 2));
-print$(out);
+for (int i = 0; i < 20; i = i + 1) {
+    print$("factorial of ");
+    print$(i);
+    print$(": ");
+    print$(f(i));
+    print$("\n");
+}
 printflush$(@message1);
-
-int sussy = as_int$(1.0);
-
-/*
-
-int test(int x, int y, int z) {
-    int test2(int x_) {
-        int test3(int x__) {
-            return x + x_ + x__;
-        }
-        return test3(x) + x_;
-    }
-    return test2(x + y + z);
-}
-int output = test(3, 3, 3) + test(1, 2, 3);
-
-int n = 1000;
-/- count even numbers
-int i = 0;
-int j = 0;
-while (i < n) {
-    if (i % 2 == 0) {
-        j = j + 1;
-    }
-    i = i + 1;
-}
-
-*/

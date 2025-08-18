@@ -1,5 +1,6 @@
 package mily.tokens;
 
+import mily.abstracts.Named;
 import mily.constants.Functions;
 
 /**
@@ -8,7 +9,7 @@ import mily.constants.Functions;
  * @author ElectricGun
  */
 
-public class Token {
+public class Token implements Named {
 
     public String string;
     public String source;
@@ -18,6 +19,16 @@ public class Token {
         this.string = string;
         this.line = line;
         this.source = source;
+    }
+
+    @Override
+    public String getName() {
+        return string;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.string = name;
     }
 
     public int length() {

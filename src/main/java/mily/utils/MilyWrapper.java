@@ -13,6 +13,7 @@ import static mily.codegen.CodeGeneration.*;
 import static mily.constants.Ansi.*;
 import static mily.preprocessing.Lexing.*;
 import static mily.processing.Pruning.*;
+import static mily.processing.Refining.*;
 import static mily.processing.Validation.*;
 
 public class MilyWrapper {
@@ -90,7 +91,7 @@ public class MilyWrapper {
         }
 
         // refine
-
+        renameByScope(evaluatorTree);
 
         // end optimisation -- start code generation
         long codeGenerationStartTime = System.nanoTime();

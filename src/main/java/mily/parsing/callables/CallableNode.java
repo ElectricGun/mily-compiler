@@ -49,6 +49,10 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         this.name = name;
     }
 
+    public void setArgName(int i, String newArg) {
+        argumentNames.set(i, newArg);
+    }
+
     public String[] getArgumentNamesArr() {
         String[] out = new String[argumentNames.size()];
         for (int i = 0; i < out.length; i++) {
