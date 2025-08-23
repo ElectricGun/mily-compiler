@@ -3,6 +3,7 @@ package mily.processing;
 import mily.parsing.*;
 import mily.parsing.callables.*;
 import mily.tokens.*;
+import mily.utils.HashCodeSimplifier;
 
 import java.util.*;
 
@@ -62,34 +63,34 @@ public class Refining {
         renameVarsRecursive(member, new HashMap<>(renameMap));
     }
     public static void renameByScope(EvaluatorTree evaluatorTree) {
-        renameByScopeRecursive(evaluatorTree.mainBlock, new HashMap<>());
+        renameByScopeRecursive(evaluatorTree.mainBlock, new HashMap<>(), new HashCodeSimplifier());
     }
 
-    private static void renameByScopeRecursive(EvaluatorNode evaluatorNode, Map<String, DeclarationNode> declarationMap) {
+    private static void renameByScopeRecursive(EvaluatorNode evaluatorNode, Map<String, DeclarationNode> declarationMap, HashCodeSimplifier hcs) {
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
 
-            _renameByScope(member, declarationMap);
+            _renameByScope(member, declarationMap, hcs);
         }
     }
 
-    private static void _renameByScope(EvaluatorNode evaluatorNode, Map<String, DeclarationNode> declarationMap) {
+    private static void _renameByScope(EvaluatorNode evaluatorNode, Map<String, DeclarationNode> declarationMap, HashCodeSimplifier hcs) {
         if (evaluatorNode instanceof DeclarationNode dec) {
             declarationMap.put(dec.getName(), dec);
-            dec.setName(dec.getName() + "_" + dec.hashCode());
+            dec.setName(dec.getName() + "_" + hcs.simplifyHash(dec.hashCode()));
 
         } else if (evaluatorNode instanceof AssignmentNode assign) {
-            assign.setName(assign.getName() + "_" + declarationMap.get(assign.getName()).hashCode());
+            assign.setName(assign.getName() + "_" + hcs.simplifyHash(declarationMap.get(assign.getName()).hashCode()));
 
         } else if (evaluatorNode instanceof OperationNode op) {
             if (op.getConstantToken() != null) {
                 TypedToken constantToken = op.getConstantToken();
 
                 if (constantToken instanceof CallerNodeToken callerNodeToken) {
-                    _renameByScope(callerNodeToken.getNode(), new HashMap<>(declarationMap));
+                    _renameByScope(callerNodeToken.getNode(), new HashMap<>(declarationMap), hcs);
 
                 } else if (constantToken.isVariableRef()) {
-                    constantToken.setName(constantToken.getName() + "_" + declarationMap.get(constantToken.getName()).hashCode());
+                    constantToken.setName(constantToken.getName() + "_" + hcs.simplifyHash(declarationMap.get(constantToken.getName()).hashCode()));
                 }
             }
         } else if (evaluatorNode instanceof FunctionDeclareNode fnDeclare) {
@@ -98,18 +99,18 @@ public class Refining {
 
                 if (fnMember instanceof DeclarationNode fnArgDec) {
                     declarationMap.put(fnArgDec.getName(), fnArgDec);
-                    fnArgDec.setName(fnArgDec.getName() + "_" + fnArgDec.hashCode());
+                    fnArgDec.setName(fnArgDec.getName() + "_" + hcs.simplifyHash(fnArgDec.hashCode()));
                 }
             }
             for (int a = 0; a < fnDeclare.getArgCount(); a++) {
-                fnDeclare.setArgName(a, fnDeclare.getArg(a) + "_" + declarationMap.get(fnDeclare.getArg(a)).hashCode());
+                fnDeclare.setArgName(a, fnDeclare.getArg(a) + "_" + hcs.simplifyHash(declarationMap.get(fnDeclare.getArg(a)).hashCode()));
             }
 
-            renameByScopeRecursive(fnDeclare.getScope(), new HashMap<>(declarationMap));
+            renameByScopeRecursive(fnDeclare.getScope(), new HashMap<>(declarationMap), hcs);
             return;
         }
 
-        renameByScopeRecursive(evaluatorNode, new HashMap<>(declarationMap));
+        renameByScopeRecursive(evaluatorNode, new HashMap<>(declarationMap), hcs);
     }
 
 //    private static void renameNamedByScope(Named named, Map<String, DeclarationNode> declarationMap) {
