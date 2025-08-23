@@ -161,8 +161,9 @@ public class Pruning {
         if (evaluatorNode instanceof OperationNode operationNode) {
             if (operationNode.isConstant()) {
                 return;
-
-            } else if (!operationNode.isUnary()) {
+            }
+            
+            if (!operationNode.isUnary()) {
                 boolean leftIsConstant = operationNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationNode.getRightSide().isConstant();
 

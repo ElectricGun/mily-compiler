@@ -1,7 +1,6 @@
 package mily.structures.structs;
 
 import mily.parsing.*;
-import mily.tokens.*;
 
 import java.util.*;
 import java.util.function.*;
