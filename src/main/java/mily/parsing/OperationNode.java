@@ -319,12 +319,13 @@ public class OperationNode extends EvaluatorNode {
                         if (!datatypeFound || !closeBracketFound || !constantFound) {
                             operationTokens.add(token);
                         } else {
-                            if (evaluatorTree.debugMode)
-                                System.out.println(indent + "cast found (" + datatypeToken.string + ")");
-                            CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.source, token.line);
-                            operationTokens.add(castToken);
-
-                            tokenList.add(0, castConstantToken);
+                            return throwSyntaxError("Illegal parenthesis value", token);
+//                            if (evaluatorTree.debugMode)
+//                                System.out.println(indent + "cast found (" + datatypeToken.string + ")");
+//                            CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.source, token.line);
+//                            operationTokens.add(castToken);
+//
+//                            tokenList.add(0, castConstantToken);
                         }
                     }
 
@@ -367,17 +368,18 @@ public class OperationNode extends EvaluatorNode {
                         }
 
                         // because parentheses are constants
-                        if (orderIsConstant(currentOrder) && !(currentOperationToken instanceof CastToken)) {
+                        if (orderIsConstant(currentOrder)/* && !(currentOperationToken instanceof CastToken)*/) {
                             constantFound = true;
                         }
 
                         // this is checking for unary operators,
                         // if it's an explicit cast
-                        if (currentOperationToken instanceof CastToken) {
-                            orders.set(i, -2);
-                        }
+//                        if (currentOperationToken instanceof CastToken) {
+//                            orders.set(i, -2);
+//                        }
                         // if two constants are side by side it just breaks (as it should)
-                        else if ((!(previousOrder > -1 && currentOrder > -1 || !constantFound)) && !(previousOrder == -2 && currentOrder > -1)) {
+//                        else
+                        if ((!(previousOrder > -1 && currentOrder > -1 || !constantFound)) && !(previousOrder == -2 && currentOrder > -1)) {
                             orders.set(i, currentOrder);
                         }
                         // if the operators come before any constants, they should not be counted as binary
@@ -431,13 +433,13 @@ public class OperationNode extends EvaluatorNode {
                     if (orders.size() > 2 && largestOrder != -1) {
                         Token largestOp = operationTokens.get(largestOrderIndex);
 
-                        if (largestOp instanceof CastToken castToken) {
-                            type = KEY_OP_CAST_EXPLICIT;
-                            operator = castToken.getType();
-                        } else {
+//                        if (largestOp instanceof CastToken castToken) {
+//                            type = KEY_OP_CAST_EXPLICIT;
+//                            operator = castToken.getType();
+//                        } else {
                             type = KEY_OP_TYPE_OPERATION;
                             operator = largestOp.string;
-                        }
+//                        }
 
                         List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
                         List<Token> right = new ArrayList<>(operationTokens.subList(largestOrderIndex + 1, operationTokens.size()));
@@ -490,14 +492,14 @@ public class OperationNode extends EvaluatorNode {
 
                         Token unaryOperator = operationTokens.remove(0);
 
-                        if (unaryOperator instanceof CastToken castToken) {
-                            type = KEY_OP_CAST_EXPLICIT;
-                            this.operator = castToken.getType();
+//                        if (unaryOperator instanceof CastToken castToken) {
+//                            type = KEY_OP_CAST_EXPLICIT;
+//                            this.operator = castToken.getType();
 
-                        } else {
+//                        } else {
                             type = KEY_OP_TYPE_OPERATION;
                             this.operator = unaryOperator.string;
-                        }
+//                        }
                         Token newConstantToken = operationTokens.remove(0);
 
                         OperationNode op = new OperationNode(this.nameToken, depth + 1);
@@ -580,9 +582,9 @@ public class OperationNode extends EvaluatorNode {
         return operationMap.generateBinaryFromUnaryAtMember(this, memberIndex);
     }
 
-    public boolean isCast() {
-        return keyEquals(KEY_OP_CAST_EXPLICIT, type);
-    }
+//    public boolean isCast() {
+//        return keyEquals(KEY_OP_CAST_EXPLICIT, type);
+//    }
 
     @Override
     public String toString() {
@@ -593,9 +595,9 @@ public class OperationNode extends EvaluatorNode {
             out += "return ";
         }
 
-        if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {
-            return out + "unary cast(\"" + operator + "\")";
-        }
+//        if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {
+//            return out + "unary cast(\"" + operator + "\")";
+//        }
 
         if (isEmptyConstant()) {
             return out + "empty";

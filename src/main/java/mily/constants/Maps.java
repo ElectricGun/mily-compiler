@@ -253,10 +253,10 @@ public class Maps {
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
 
         // explicit casts
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, castToInt);
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
-        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
+//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
 
         // comparisons
         addGenericNumericComparison(KEY_OP_LESS_THAN, o ->

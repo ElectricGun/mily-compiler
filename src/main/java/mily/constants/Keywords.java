@@ -112,6 +112,6 @@ public class Keywords {
         KEY_OP_TYPE_CONSTANT = "key_constant",
         KEY_OP_TYPE_OPERATION = "key_operation",
         KEY_OP_TYPE_GROUP = "key_group",
-        KEY_OP_CAST_EXPLICIT = "key_cast_explicit",
+//        KEY_OP_CAST_EXPLICIT = "key_cast_explicit",
         KEY_OP_CAST_IMPLICIT = "key_op_type_cast_implicit";
 }

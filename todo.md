@@ -1,10 +1,8 @@
 # Urgent TODO:
- - variable names must be appended their scope's hashcode to prevent accessing local variales from outside
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
  - Function arg names may cause conflicts
  - append "user_" to user specified variables to avoid conflicts with generated ones
- - Remove explicit casting entirely, its making OperationNode confusing, just use functions or something
  - templates with return types shouldnt be able to be called outside of operations
 
 # Flags
@@ -16,8 +14,6 @@
  - library circular dependencies
 
 # Useful
- - Inline raw mlog (can be used for defining mlog commands in libraries)
- - Type hinting system for raw mlog blocks if they return something
  - pointers for memory variables
  - pre-ast macros
 
