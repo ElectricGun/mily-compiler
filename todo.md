@@ -6,7 +6,6 @@
  - templates with return types shouldnt be able to be called outside of operations
 
 # Flags
- - --help flag
  - shorthand flags such as -h, -p, -v, etc
 
 # Problems:
