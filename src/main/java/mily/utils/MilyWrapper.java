@@ -91,6 +91,7 @@ public class MilyWrapper {
         }
 
         // refine
+        renameVars(evaluatorTree);
         renameByScope(evaluatorTree);
 
         // end optimisation -- start code generation

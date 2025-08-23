@@ -1,8 +1,6 @@
 # Urgent TODO:
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
- - Function arg names may cause conflicts
- - append "user_" to user specified variables to avoid conflicts with generated ones
  - templates with return types shouldnt be able to be called outside of operations
 
 # Flags
