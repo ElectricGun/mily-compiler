@@ -106,6 +106,7 @@ public class ArgParser {
                 } else if (nextType == ArgTypes.INTEGER) {
                     flagValuesInt.put(onFlag, Integer.parseInt(str));
                 }
+                expectingValue = false;
 
             } else {
                 throw new IllegalArgumentException("You have made some illegal arguments!");
