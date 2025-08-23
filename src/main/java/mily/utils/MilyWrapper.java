@@ -33,7 +33,7 @@ public class MilyWrapper {
         this.isQuiet = isQuiet;
     }
 
-    public CompilerOutput compile(CodeFile code, String cwd) throws Exception {
+    public CompilerOutput compile(CodeFile code, String cwd, boolean generateComments) throws Exception {
         long compileStartTime = System.nanoTime();
 
         // tokenise
@@ -99,7 +99,7 @@ public class MilyWrapper {
         long optimizationDuration = (codeGenerationStartTime - optimizationStartTime);
 
         IRCode irCode;
-        irCode = generateIRCode(evaluatorTree, debugMode);
+        irCode = generateIRCode(evaluatorTree, generateComments, debugMode);
 
         long endCompileTime = System.nanoTime();
         long codeGenerationDuration = (endCompileTime - codeGenerationStartTime);

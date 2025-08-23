@@ -19,13 +19,14 @@ import static mily.constants.Keywords.*;
 
 public class CodeGeneration {
 
-    public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean generateComments, boolean debugMode) throws Exception {
         IRCodeConfig irCodeConfig = new IRCodeConfig();
 
         irCodeConfig.irCode = new IRCode();
         irCodeConfig.irFunctionMap = new HashMap<>();
         irCodeConfig.templateNodeMap = new HashMap<>();
         irCodeConfig.hashCodeSimplifier = new HashCodeSimplifier();
+        irCodeConfig.generateComments = generateComments;
         irCodeConfig.debugMode = debugMode;
 
         generateIRScopeRecursive(
@@ -200,7 +201,8 @@ public class CodeGeneration {
             if (!s.isEmpty())
                 irBlock.addLine(new Line(s.trim(), depth));
         }
-        irCodeConfig.irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
+        if (irCodeConfig.generateComments)
+            irCodeConfig.irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
         irCodeConfig.irCode.irBlocks.add(irBlock);
     }
 
@@ -215,7 +217,8 @@ public class CodeGeneration {
             addOperationIRBlock(irCodeConfig, fnCall.getArg(a), calledFunction.getArg(a), depth);
         }
 
-        irCodeConfig.irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
+        if (irCodeConfig.generateComments)
+            irCodeConfig.irCode.addSingleLineBlock(new CommentLine("call: " + fnKey, depth));
         irCodeConfig.irCode.addSingleLineBlock(new BinaryOp(calledFunction.getCallbackVar(), KEY_OP_ADD, "@counter", "1", depth));
         irCodeConfig.irCode.addSingleLineBlock(new Jump("always", calledFunction.getCallLabel(), depth));
 
@@ -236,7 +239,8 @@ public class CodeGeneration {
         }
         irCodeConfig.irFunctionMap.put(fnKey, irFunction);
 
-        irCodeConfig.irCode.addSingleLineBlock(new CommentLine("function: " + fnKey, depth));
+        if (irCodeConfig.generateComments)
+            irCodeConfig.irCode.addSingleLineBlock(new CommentLine("function: " + fnKey, depth));
         irCodeConfig.irCode.addSingleLineBlock((new Jump("always", endJumpLabel, depth)));
         irCodeConfig.irCode.addSingleLineBlock(new Label(startJumpLabel, depth));
 

@@ -20,7 +20,8 @@ public class Main {
             FLAG_BENCHMARK = "--benchmark",
             FLAG_OUTPUT = "--output",
             FLAG_NO_CONFIRMATION = "--no-confirm",
-            FLAG_HELP = "--help";
+            FLAG_HELP = "--help",
+            FLAG_GENERATE_COMMENTS = "--generate-comments";
 
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(FLAG_PREFIX);
@@ -32,6 +33,7 @@ public class Main {
         argParser.addFlag(FLAG_PRINT_AST, ArgParser.ArgTypes.BOOLEAN, "Print final AST");
         argParser.addFlag(FLAG_PRINT_OUTPUT, ArgParser.ArgTypes.BOOLEAN, "Print compiled output");
         argParser.addFlag(FLAG_NO_CONFIRMATION, ArgParser.ArgTypes.BOOLEAN, "Disable confirmations");
+        argParser.addFlag(FLAG_GENERATE_COMMENTS, ArgParser.ArgTypes.BOOLEAN, "Enabled system generated comments in compiled code");
         argParser.processFlags(args);
 
         final boolean debugMode = argParser.getBoolean(FLAG_DEBUG);
@@ -41,6 +43,7 @@ public class Main {
         final boolean printOutput = argParser.getBoolean(FLAG_PRINT_OUTPUT);
         final boolean noConfirmation = argParser.getBoolean(FLAG_NO_CONFIRMATION);
         final boolean help = argParser.getBoolean(FLAG_HELP);
+        final boolean generateComments = argParser.getBoolean(FLAG_GENERATE_COMMENTS);
 
         if (help) {
             argParser.printHelp();
@@ -64,7 +67,7 @@ public class Main {
         MilyWrapper wrapper = new MilyWrapper(debugMode, isQuiet);
         CompilerOutput output;
         try {
-            output = wrapper.compile(code, cwd);
+            output = wrapper.compile(code, cwd, generateComments);
 
         } catch (RuntimeException e) {
             e.printStackTrace();

@@ -13,5 +13,6 @@ public class IRCodeConfig {
     public Map<String, IRFunction> irFunctionMap;
     public Map<String, RawTemplateDeclareNode> templateNodeMap;
     public HashCodeSimplifier hashCodeSimplifier;
+    public boolean generateComments;
     public boolean debugMode;
 }
