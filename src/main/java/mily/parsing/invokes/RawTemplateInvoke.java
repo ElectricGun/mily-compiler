@@ -23,6 +23,11 @@ public class RawTemplateInvoke extends CallerNode implements Named {
     }
 
     @Override
+    public String errorName() {
+        return "invoke template " + "\"" + getName() + "\"";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 

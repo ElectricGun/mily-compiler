@@ -19,6 +19,11 @@ public class MacroScope extends EvaluatorNode {
     protected List<String> tokens = new ArrayList<>();
     protected List<String> args;
 
+    @Override
+    public String errorName() {
+        return "macro";
+    }
+
     public MacroScope(Token nameToken, List<String> args, int depth) {
         super(nameToken, depth);
 

@@ -22,6 +22,11 @@ public class DeclarationNode extends VariableNode {
     }
 
     @Override
+    public String errorName() {
+        return "declare " + "\"" + getName() + "\"";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 

@@ -13,7 +13,7 @@ import mily.tokens.*;
  * @author ElectricGun
  */
 
-public class EvaluatorNode {
+public abstract class EvaluatorNode {
 
     private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
     public int depth;
@@ -78,6 +78,8 @@ public class EvaluatorNode {
             return null;
         }
     }
+
+    public abstract String errorName();
 
     // TODO: use polymorphism instead
     public EvaluatorNode throwSyntaxError(String message, Token token) {

@@ -25,6 +25,11 @@ public class AssignmentNode extends VariableNode {
     }
 
     @Override
+    public String errorName() {
+        return "assign " + "\"" + getName() + "\"";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 

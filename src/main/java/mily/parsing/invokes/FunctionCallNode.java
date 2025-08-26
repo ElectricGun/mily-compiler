@@ -27,6 +27,11 @@ public class FunctionCallNode extends CallerNode implements Named {
     }
 
     @Override
+    public String errorName() {
+        return "function call " + "\"" + getName() + "\"";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
         return this;

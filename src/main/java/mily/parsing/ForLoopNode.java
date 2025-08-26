@@ -28,6 +28,11 @@ public class ForLoopNode extends EvaluatorNode {
     }
 
     @Override
+    public String errorName() {
+        return "for loop";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 

@@ -618,4 +618,9 @@ public class OperationNode extends EvaluatorNode {
 
         return out;
     }
+
+    @Override
+    public String errorName() {
+        return "op";
+    }
 }

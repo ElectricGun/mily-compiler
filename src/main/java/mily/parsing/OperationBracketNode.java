@@ -28,6 +28,11 @@ public class OperationBracketNode extends EvaluatorNode {
     }
 
     @Override
+    public String errorName() {
+        return "parenthesis";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
         String indent = " ".repeat(depth);

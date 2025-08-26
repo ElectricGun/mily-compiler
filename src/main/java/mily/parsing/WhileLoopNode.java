@@ -22,6 +22,11 @@ public class WhileLoopNode extends ConditionalNode {
     }
 
     @Override
+    public String errorName() {
+        return "while loops";
+    }
+
+    @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
         String indent = " ".repeat(depth);

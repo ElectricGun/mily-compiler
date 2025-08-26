@@ -28,6 +28,11 @@ public class FunctionDeclareNode extends CallableNode {
         this.returnType = returnType;
     }
 
+    @Override
+    public String errorName() {
+        return "function " + "\"" + nameToken.string + "\"";
+    }
+
     public ScopeNode getScope() {
         return scope;
     }

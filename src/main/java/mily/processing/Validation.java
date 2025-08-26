@@ -56,7 +56,7 @@ public class Validation {
             // > 1 to avoid unnecessarily printing the __MAIN__ node
             while (newStack.size() > 1) {
                 EvaluatorNode trace = newStack.pop();
-                System.out.printf((isMultipleErrors ? "\t" : "") + "\tat %s, file: \"%s\", line: %s%n", trace.nameToken, trace.nameToken.source, trace.nameToken.line);
+                System.out.printf((isMultipleErrors ? "\t" : "") + "    under %s in file: \"%s\", line: %s%n", trace.errorName(), trace.nameToken.source, trace.nameToken.line);
             }
             System.out.print(ANSI_RESET);
         }
