@@ -52,6 +52,10 @@ public class EvaluatorNode {
         return members.size();
     }
 
+    public void appendMember(EvaluatorNode evaluatorNode) {
+        members.add(evaluatorNode);
+    }
+
     public void replaceMember(EvaluatorNode replaced, EvaluatorNode replacement) {
         members.set(members.indexOf(replaced), replacement);
     }

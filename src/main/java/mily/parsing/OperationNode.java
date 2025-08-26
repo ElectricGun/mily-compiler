@@ -419,7 +419,7 @@ public class OperationNode extends EvaluatorNode {
                     }
 
                     if (operationTokens.isEmpty()) {
-                        constantToken = new VoidToken("void", token.source, token.line);
+                        constantToken = new VoidToken(token.source, token.line);
                         return this;
                     }
 

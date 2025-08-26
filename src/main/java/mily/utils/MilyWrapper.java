@@ -93,6 +93,7 @@ public class MilyWrapper {
         // refine
         renameVars(evaluatorTree);
         renameByScope(evaluatorTree);
+        addVoidReturns(evaluatorTree);
 
         // end optimisation -- start code generation
         long codeGenerationStartTime = System.nanoTime();

@@ -62,6 +62,7 @@ public class Refining {
 
         renameVarsRecursive(member, new HashMap<>(renameMap));
     }
+
     public static void renameByScope(EvaluatorTree evaluatorTree) {
         renameByScopeRecursive(evaluatorTree.mainBlock, new HashMap<>(), new HashCodeSimplifier());
     }
@@ -113,9 +114,24 @@ public class Refining {
         renameByScopeRecursive(evaluatorNode, new HashMap<>(declarationMap), hcs);
     }
 
-//    private static void renameNamedByScope(Named named, Map<String, DeclarationNode> declarationMap) {
-//        DeclarationNode declarator = declarationMap.get(named.getName());
-//        String newName = named.getName() + "_" + declarator.hashCode();
-//        named.setName(newName);
-//    }
+    public static void addVoidReturns(EvaluatorTree evaluatorTree) {
+        addVoidReturnsRecursive(evaluatorTree.mainBlock);
+    }
+
+    private static void addVoidReturnsRecursive(EvaluatorNode evaluatorNode) {
+        if (evaluatorNode instanceof FunctionDeclareNode fn) {
+            ScopeNode sc = fn.getScope();
+            if (!(sc.memberCount() > 0 && sc.getMember(sc.memberCount() -1) instanceof OperationNode op && op.isReturnOperation())) {
+                EvaluatorNode lastMember = sc.getMember(sc.memberCount() - 1);
+                OperationNode returnOperation = new OperationNode(new Token("return", lastMember.nameToken.source, lastMember.nameToken.line), lastMember.depth);
+                returnOperation.setReturnOperation(true);
+                returnOperation.setConstantToken(new VoidToken(lastMember.nameToken.source, lastMember.nameToken.line));
+                sc.appendMember(returnOperation);
+            }
+        }
+
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
+            addVoidReturnsRecursive(evaluatorNode.getMember(i));
+        }
+    }
 }
