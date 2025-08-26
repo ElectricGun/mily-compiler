@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import mily.codegen.*;
+import mily.structures.errors.*;
 import mily.structures.structs.*;
 import mily.utils.*;
 
@@ -69,8 +70,8 @@ public class Main {
         try {
             output = wrapper.compile(code, cwd, generateComments);
 
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+        } catch (JavaMilyException e) {
+            System.out.println(e.getMessage());
             System.exit(1);
             return;
         }
