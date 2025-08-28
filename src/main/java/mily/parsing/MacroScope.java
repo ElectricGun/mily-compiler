@@ -52,7 +52,7 @@ public class MacroScope extends EvaluatorNode {
         StringBuilder out = new StringBuilder();
         for (String token : tokens) {
             int tokenIndex = args.indexOf(token);
-            if (tokenIndex != -1) {
+            if (tokenIndex != -1 && !replacers.isEmpty()) {
                 out.append(replacers.get(tokenIndex));
             } else {
                 out.append(token);
