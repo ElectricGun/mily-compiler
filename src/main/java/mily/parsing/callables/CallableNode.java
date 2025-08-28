@@ -2,6 +2,7 @@ package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.structures.structs.CallableSignature;
 import mily.tokens.*;
 
 import java.util.*;
@@ -17,6 +18,10 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         super(nameToken, depth);
 
         this.name = name;
+    }
+
+    public CallableSignature signature() {
+        return new CallableSignature(name, argumentTypes);
     }
 
     @Override

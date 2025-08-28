@@ -39,9 +39,9 @@ public class RawTemplateDeclareNode extends CallableNode {
 
     @Override
     public boolean isOverload(Caller caller, String name, String... types) {
-        if (!(caller instanceof RawTemplateInvoke)) {
-            return false;
-        }
+//        if (!(caller instanceof RawTemplateInvoke)) {
+//            return false;
+//        }
 
         return isOverload(name, types);
     }
@@ -160,23 +160,23 @@ public class RawTemplateDeclareNode extends CallableNode {
 
     @Override
     public String toString() {
-        return "template: " + getName() + getArgumentNames() + " arg_types: " + getArgumentTypes() +
+        return "declare template: " + getName() + getArgumentNames() + " arg_types: " + getArgumentTypes() +
                 ((returnVariableRaw != null && returnVariableRaw.isEmpty()) ? getType() : " -> " + returnVariableRaw + " : " + getType());
     }
 
-    @Override
-    public String getFnKey() {
-        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
-
-        int argCount = getArgumentNames().size();
-        for (int a = 0; a < argCount; a++) {
-            fnKey.append(getArgumentTypes().get(a));
-            if (a < argCount - 1) {
-                fnKey.append("_");
-            }
-        }
-        return fnKey.toString();
-    }
+//    @Override
+//    public String getFnKey() {
+//        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
+//
+//        int argCount = getArgumentNames().size();
+//        for (int a = 0; a < argCount; a++) {
+//            fnKey.append(getArgumentTypes().get(a));
+//            if (a < argCount - 1) {
+//                fnKey.append("_");
+//            }
+//        }
+//        return fnKey.toString();
+//    }
 
     public String scopeAsFormatted(List<String> replacers, String outputVariable) {
         String out = scope.asFormatted(replacers);

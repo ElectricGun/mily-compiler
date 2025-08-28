@@ -2,7 +2,7 @@ package mily.abstracts;
 
 import mily.parsing.*;
 
-public interface Caller extends Named, HasFunctionKey, Typed {
+public interface Caller extends Named, CallSignatured, Typed {
 
     OperationNode getArg(int i);
 

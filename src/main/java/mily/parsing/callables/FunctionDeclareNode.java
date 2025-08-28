@@ -119,9 +119,9 @@ public class FunctionDeclareNode extends CallableNode {
 
     @Override
     public boolean isOverload(Caller caller, String name, String... types) {
-        if (!(caller instanceof FunctionCallNode)) {
-            return false;
-        }
+//        if (!(caller instanceof FunctionCallNode)) {
+//            return false;
+//        }
 
         return isOverload(name, types);
     }
@@ -151,18 +151,18 @@ public class FunctionDeclareNode extends CallableNode {
         return true;
     }
 
-    @Override
-    public String getFnKey() {
-        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
-
-        int argCount = this.getArgCount();
-        for (int a = 0; a < argCount; a++) {
-            fnKey.append(this.getArgType(a));
-            if (a < argCount - 1) {
-                fnKey.append("_");
-            }
-        }
-        return fnKey.toString();
-    }
+//    @Override
+//    public String getFnKey() {
+//        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
+//
+//        int argCount = this.getArgCount();
+//        for (int a = 0; a < argCount; a++) {
+//            fnKey.append(this.getArgType(a));
+//            if (a < argCount - 1) {
+//                fnKey.append("_");
+//            }
+//        }
+//        return fnKey.toString();
+//    }
 
 }

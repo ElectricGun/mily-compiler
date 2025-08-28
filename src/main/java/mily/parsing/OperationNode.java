@@ -233,18 +233,18 @@ public class OperationNode extends EvaluatorNode {
 
                     operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, KEY_DATA_STRING, token.line));
 
-                } else if (token.equalsKey(KEY_MACRO_LITERAL) && isVariableName(previousToken)) {
-                    if (evaluatorTree.debugMode)
-                        System.out.printf(indent + "Parsing raw template invoke : prev %s : %s%n", previousToken, token);
-
-                    // remove last token because it will be replaced by a single RawTemplateInvoke
-                    operationTokens.remove(operationTokens.size() - 1);
-
-                    RawTemplateInvoke functionCallNode = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-                    RawTemplateInvoke evaluated = (RawTemplateInvoke) functionCallNode.evaluate(tokenList, evaluatorTree);
-
-                    CallerNodeToken callerNodeToken = new CallerNodeToken(evaluated.nameToken.string, token.source, token.line, evaluated);
-                    operationTokens.add(callerNodeToken);
+//                } else if (token.equalsKey(KEY_MACRO_LITERAL) && isVariableName(previousToken)) {
+//                    if (evaluatorTree.debugMode)
+//                        System.out.printf(indent + "Parsing raw template invoke : prev %s : %s%n", previousToken, token);
+//
+//                    // remove last token because it will be replaced by a single RawTemplateInvoke
+//                    operationTokens.remove(operationTokens.size() - 1);
+//
+//                    RawTemplateInvoke functionCallNode = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
+//                    RawTemplateInvoke evaluated = (RawTemplateInvoke) functionCallNode.evaluate(tokenList, evaluatorTree);
+//
+//                    CallerNodeToken callerNodeToken = new CallerNodeToken(evaluated.nameToken.string, token.source, token.line, evaluated);
+//                    operationTokens.add(callerNodeToken);
 
                 } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     // function calls should be evaluated here because they don't change the order of operations
@@ -258,8 +258,8 @@ public class OperationNode extends EvaluatorNode {
                         // remove last token because it will be replaced by a single FunctionCallToken
                         operationTokens.remove(operationTokens.size() - 1);
 
-                        FunctionCallNode functionCallNode = new FunctionCallNode(previousToken.string, previousToken, depth + 1);
-                        FunctionCallNode evaluated = (FunctionCallNode) functionCallNode.evaluate(tokenList, evaluatorTree);
+                        CallerNode functionCallNode = new CallerNode(previousToken.string, previousToken, depth + 1);
+                        CallerNode evaluated = (CallerNode) functionCallNode.evaluate(tokenList, evaluatorTree);
 
                         CallerNodeToken callerNodeToken = new CallerNodeToken(evaluated.nameToken.string, token.source, token.line, evaluated);
                         operationTokens.add(callerNodeToken);

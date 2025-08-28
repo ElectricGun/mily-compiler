@@ -2,7 +2,7 @@ package mily.abstracts;
 
 import java.util.*;
 
-public interface Callable extends Named, Typed, HasFunctionKey {
+public interface Callable extends Named, Typed, CallSignatured {
 
     List<String> getArgumentTypes();
 

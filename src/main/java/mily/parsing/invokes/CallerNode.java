@@ -2,13 +2,15 @@ package mily.parsing.invokes;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.processing.Validation;
+import mily.structures.structs.CallableSignature;
 import mily.tokens.*;
 
 import java.util.*;
 
 import static mily.constants.Keywords.*;
 
-public abstract class CallerNode extends EvaluatorNode implements Caller {
+public class CallerNode extends EvaluatorNode implements Caller {
 
     protected String name;
     protected List<OperationNode> arguments = new ArrayList<>();
@@ -18,6 +20,34 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
         super(nameToken, depth);
 
         this.name = name;
+    }
+
+    @Override
+    public String errorName() {
+        return "function call " + "\"" + getName() + "\"";
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+        evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "call function: " + getName() + getArgs();
+    }
+
+    @Override
+    public CallableSignature signature() {
+        int argCount = this.getArgCount();
+
+        String[] argTypes = new String[argCount];
+        for (int a = 0; a < argCount; a++) {
+            argTypes[a] = Validation.getOperationType(this.getArg(a), false);
+        }
+
+        return new CallableSignature(this.getName(), argTypes);
     }
 
     @Override

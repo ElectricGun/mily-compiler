@@ -4,12 +4,10 @@ import mily.codegen.blocks.*;
 import mily.codegen.lines.*;
 import mily.parsing.*;
 import mily.parsing.callables.*;
-import mily.parsing.invokes.CallerNode;
-import mily.parsing.invokes.FunctionCallNode;
-import mily.parsing.invokes.RawTemplateInvoke;
-import mily.structures.structs.IRCodeConfig;
+import mily.parsing.invokes.*;
+import mily.structures.structs.*;
 import mily.tokens.*;
-import mily.utils.HashCodeSimplifier;
+import mily.utils.*;
 
 import java.util.*;
 
@@ -24,7 +22,7 @@ public class CodeGeneration {
 
         irCodeConfig.irCode = new IRCode();
         irCodeConfig.irFunctionMap = new HashMap<>();
-        irCodeConfig.templateNodeMap = new HashMap<>();
+        irCodeConfig.callableNodeMap = new HashMap<>();
         irCodeConfig.hashCodeSimplifier = new HashCodeSimplifier();
         irCodeConfig.generateComments = generateComments;
         irCodeConfig.debugMode = debugMode;
@@ -44,8 +42,19 @@ public class CodeGeneration {
         for (int i = 0; i < scopeNode.memberCount(); i++) {
             EvaluatorNode member = scopeNode.getMember(i);
 
-            if (member instanceof FunctionCallNode fnCall) {
-                generateFunctionCall(irCodeConfig, fnCall, depth);
+            if (member instanceof CallerNode fnCall) {
+                CallableSignature sig = fnCall.signature();
+                CallableNode callable = irCodeConfig.callableNodeMap.get(sig);
+
+                if (callable instanceof FunctionDeclareNode) {
+                    generateFunctionCall(irCodeConfig, fnCall, depth);
+
+                } else if (callable instanceof RawTemplateDeclareNode) {
+                    generateRawTemplateInvoke(irCodeConfig, fnCall, null, depth);
+                }
+
+//            } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
+//                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, null, depth);
 
             } else if (member instanceof OperationNode operationNode && operationNode.isReturnOperation()) {
                 if (function == null)
@@ -154,22 +163,19 @@ public class CodeGeneration {
                 irCodeConfig.irCode.addSingleLineBlock(new Label(endLabelString, depth));
 
             } else if (member instanceof RawTemplateDeclareNode rawTemplateDeclareNode) {
-                irCodeConfig.templateNodeMap.put(rawTemplateDeclareNode.getName(), rawTemplateDeclareNode);
-
-            } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
-                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, null, depth);
+                irCodeConfig.callableNodeMap.put(rawTemplateDeclareNode.signature(), rawTemplateDeclareNode);
             }
         }
     }
 
-    private static void generateRawTemplateInvoke(IRCodeConfig irCodeConfig, RawTemplateInvoke rawTemplateInvoke, String outputVariable, int depth) throws Exception {
+    private static void generateRawTemplateInvoke(IRCodeConfig irCodeConfig, CallerNode callerNode, String outputVariable, int depth) throws Exception {
         IRBlock irBlock = new IRBlock();
-        RawTemplateDeclareNode rawTemplateDeclareNode = irCodeConfig.templateNodeMap.get(rawTemplateInvoke.getName());
+        RawTemplateDeclareNode rawTemplateDeclareNode = (RawTemplateDeclareNode) irCodeConfig.callableNodeMap.get(callerNode.signature());
 
         if (rawTemplateDeclareNode == null) {
-            throw new Exception(String.format("Raw template with name \"%s\" does not exist", rawTemplateInvoke.getName()));
+            throw new Exception(String.format("Raw template with name \"%s\" does not exist", callerNode.getName()));
         }
-        List<OperationNode> argOps = rawTemplateInvoke.getArgs();
+        List<OperationNode> argOps = callerNode.getArgs();
 
         List<String> argNames = new ArrayList<>();
         for (OperationNode argOp : argOps) {
@@ -204,16 +210,17 @@ public class CodeGeneration {
                 irBlock.addLine(new Line(s.trim(), depth));
         }
         if (irCodeConfig.generateComments)
-            irCodeConfig.irCode.addSingleLineBlock(new CommentLine(rawTemplateInvoke.getName() + ":", depth));
+            irCodeConfig.irCode.addSingleLineBlock(new CommentLine(callerNode.getName() + ":", depth));
         irCodeConfig.irCode.irBlocks.add(irBlock);
     }
 
-    private static IRFunction generateFunctionCall(IRCodeConfig irCodeConfig, FunctionCallNode fnCall, int depth) throws Exception {
-        String fnKey = fnCall.getFnKey();
-        if (!irCodeConfig.irFunctionMap.containsKey(fnKey))
+    private static IRFunction generateFunctionCall(IRCodeConfig irCodeConfig, CallerNode fnCall, int depth) throws Exception {
+        CallableSignature fnKey = fnCall.signature();
+        FunctionDeclareNode fn = (FunctionDeclareNode) irCodeConfig.callableNodeMap.get(fnKey);
+        if (!irCodeConfig.irFunctionMap.containsKey(fn))
             throw new Exception(String.format("IRFunction of key \"%s\" does not exist", fnKey));
 
-        IRFunction calledFunction = irCodeConfig.irFunctionMap.get(fnKey);
+        IRFunction calledFunction = irCodeConfig.irFunctionMap.get(fn);
 
         for (int a = 0; a < fnCall.getArgCount(); a++) {
             addOperationIRBlock(irCodeConfig, fnCall.getArg(a), calledFunction.getArg(a), depth);
@@ -228,7 +235,7 @@ public class CodeGeneration {
     }
 
     private static void generateFunctionDeclare(FunctionDeclareNode fn, IRCodeConfig irCodeConfig, int depth) throws Exception {
-        String fnKey = fn.getFnKey();
+        CallableSignature fnKey = fn.signature();
         String startJumpLabel = fnKey + "_start";
         String endJumpLabel = fnKey + "_end";
         String callbackVar = fnKey + "_callback";
@@ -239,7 +246,8 @@ public class CodeGeneration {
         for (int a = 0; a < fn.getArgCount(); a++) {
             irFunction.addArg(fn.getArgType(a), fn.getArg(a));
         }
-        irCodeConfig.irFunctionMap.put(fnKey, irFunction);
+        irCodeConfig.irFunctionMap.put(fn, irFunction);
+        irCodeConfig.callableNodeMap.put(fnKey, fn);
 
         if (irCodeConfig.generateComments)
             irCodeConfig.irCode.addSingleLineBlock(new CommentLine("function: " + fnKey, depth));
@@ -406,20 +414,36 @@ public class CodeGeneration {
         if (token instanceof CallerNodeToken callerNodeToken) {
             CallerNode callerNode = callerNodeToken.getNode();
             int callerHashCode =  irCodeConfig.hashCodeSimplifier.simplifyHash(callerNodeToken.hashCode());
-            if (callerNode instanceof FunctionCallNode functionCallNode) {
-                IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallNode, depth);
+            CallableNode callableNode = irCodeConfig.callableNodeMap.get(callerNode.signature());
+
+            if (callableNode instanceof FunctionDeclareNode) {
+                IRFunction irFunction = generateFunctionCall(irCodeConfig, callerNode, depth);
                 String argOutput = irFunction.getReturnVar() + "_" + callerHashCode;
                 irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
                 return argOutput;
 
-            } else if (callerNode instanceof RawTemplateInvoke rawTemplateInvoke) {
+            } else if (callableNode instanceof RawTemplateDeclareNode) {
                 String argOutput = token.string + "_" + callerHashCode;
-                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, argOutput, depth);
+                generateRawTemplateInvoke(irCodeConfig, callerNode, argOutput, depth);
                 return argOutput;
 
             } else {
                 throw new IllegalArgumentException("Unknown node in CallerNodeToken");
             }
+//            if (callerNode instanceof FunctionCallNode functionCallNode) {
+//                IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallNode, depth);
+//                String argOutput = irFunction.getReturnVar() + "_" + callerHashCode;
+//                irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
+//                return argOutput;
+
+//            } else if (callerNode instanceof RawTemplateInvoke rawTemplateInvoke) {
+//                String argOutput = token.string + "_" + callerHashCode;
+//                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, argOutput, depth);
+//                return argOutput;
+//
+//            } else {
+//                throw new IllegalArgumentException("Unknown node in CallerNodeToken");
+//            }
         } else {
             return tokenAsMlog(token);
         }

@@ -83,7 +83,7 @@ public class ScopeNode extends EvaluatorNode {
             } else if (isVariableOrDeclarator(previousToken)) {
                 if (isVariableName(previousToken) && keyEquals(KEY_BRACKET_OPEN, token)) {
                     // FUNCTION CALL
-                    FunctionCallNode functionCallNode = new FunctionCallNode(previousToken.string, previousToken, depth + 1);
+                    CallerNode functionCallNode = new CallerNode(previousToken.string, previousToken, depth + 1);
                     members.add(functionCallNode.evaluate(tokenList, evaluatorTree));
                     expectingSemicolon = true;
 
@@ -97,11 +97,11 @@ public class ScopeNode extends EvaluatorNode {
                     EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree);
                     members.add(node);
 
-                } else if (isVariableName(previousToken) && keyEquals(KEY_MACRO_LITERAL, token)) {
-                    // TEMPLATE INVOKE
-                    RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-                    members.add(templateInvoke.evaluate(tokenList, evaluatorTree));
-                    expectingSemicolon = true;
+//                } else if (isVariableName(previousToken) && keyEquals(KEY_MACRO_LITERAL, token)) {
+//                    // TEMPLATE INVOKE
+//                    RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
+//                    members.add(templateInvoke.evaluate(tokenList, evaluatorTree));
+//                    expectingSemicolon = true;
 
                 } else {
                     return throwSyntaxError("Invalid token", token);
