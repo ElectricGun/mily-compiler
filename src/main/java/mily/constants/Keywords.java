@@ -34,7 +34,7 @@ public class Keywords {
     // comment punctuations
         KEY_COMMENT_MULTILINE_START = "/*",
         KEY_COMMENT_MULTILINE_END = "*/",
-        KEY_COMMENT_INLINE = "/-",
+        KEY_COMMENT_INLINE = "--",
 
         // keywords
         KEY_RETURN = "return",

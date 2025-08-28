@@ -1,7 +1,19 @@
-/-------- Standard library file --------
+--------- Standard library file --------
 
-raw void print(any x) $
+raw void print(string x) $
     print x
+$
+
+raw void print(int x) $
+    print x
+$
+
+raw void print(double x) $
+    print x
+$
+
+raw void println() $
+    print "\n"
 $
 
 raw void printflush(symbol target) $

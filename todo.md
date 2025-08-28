@@ -1,7 +1,9 @@
 # Urgent TODO:
+ - Overload validation for templates and functions
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
  - templates with return types shouldnt be able to be called outside of operations
+ - "any" datatype shouldnt be able to be used outside of template args
 
 # Flags
  - shorthand flags such as -h, -p, -v, etc
@@ -49,6 +51,7 @@
  - scope validation can be simplified
  - current variable naming may lead to conflicts in output mlog 
  - rewrite Lexing
+ - its better to store function overrides in lists within a dictionary, using its name as the key
 
 # Syntax Document
  - A syntax document for Milyscript
