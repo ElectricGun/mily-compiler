@@ -16,6 +16,7 @@
  - declaring macros into variables for reusability
  - pointers for memory variables
  - pre-ast macros
+ - optimization hints invoked in the pruning stage, such as unused functions
 
 # Semantic Checking
  - Check for unreachable code
