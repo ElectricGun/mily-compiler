@@ -1,7 +1,6 @@
 package mily.structures.structs;
 
 import mily.parsing.*;
-import mily.tokens.*;
 
 import java.util.*;
 import java.util.function.*;
@@ -40,7 +39,7 @@ public class OperationMap {
 
         UnaryToBinaryStruct unaryToBinaryStruct = new UnaryToBinaryStruct(operationNode, newOp, memberChild, factorConstant);
 
-        if (!operationNode.isCast()) {
+//        if (!operationNode.isCast()) {
             String key = operationNode.getOperator();
 
             if (unaryOperationConversionMap.containsKey(key)) {
@@ -49,10 +48,10 @@ public class OperationMap {
                 throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
 
             }
-        } else {
-            newOp.setOperator(KEY_OP_CAST_EXPLICIT);
-            factorConstant.setConstantToken(new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line));
-        }
+//        } else {
+//            newOp.setOperator(KEY_OP_CAST_EXPLICIT);
+//            factorConstant.setConstantToken(new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line));
+//        }
 
         newOp.setLeftSide(memberChild);
         newOp.setRightSide(factorConstant);

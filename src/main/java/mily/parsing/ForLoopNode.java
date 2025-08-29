@@ -17,10 +17,10 @@ import static mily.constants.Keywords.*;
 
 public class ForLoopNode extends EvaluatorNode {
 
-    VariableNode initial;
-    OperationNode condition;
-    AssignmentNode updater;
-    ScopeNode scope;
+    protected VariableNode initial;
+    protected OperationNode condition;
+    protected AssignmentNode updater;
+    protected ScopeNode scope;
     private boolean isExpectingOpeningBracket = true;
 
     public ForLoopNode(Token token, int depth) {
@@ -28,15 +28,19 @@ public class ForLoopNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    public String errorName() {
+        return "for loop";
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
         Token previousToken = null;
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "for loop : %s%n", token);
 
             if (isWhiteSpace(token)) {
@@ -53,20 +57,20 @@ public class ForLoopNode extends EvaluatorNode {
                 if (!keyEquals(KEY_BRACKET_OPEN, previousToken)) {
                     if (isVariableName(previousToken) && keyEquals(KEY_OP_ASSIGN, token)) {
                         initial = new AssignmentNode(previousToken, depth + 1);
-                        members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
+                        members.add(initial.evaluate(tokenList, evaluatorTree));
 
-                    } else if (isDeclaratorAmbiguous(previousToken)) {
+                    } else if (isVariableOrDeclarator(previousToken)) {
                         if (isVariableName(token)) {
                             // VARIABLE DECLARATION
                             initial = new DeclarationNode(previousToken.string, token, depth + 1);
-                            members.add(initial.evaluate(tokenList, evaluatorTree, debugMode));
+                            members.add(initial.evaluate(tokenList, evaluatorTree));
                         } else {
                             return throwSyntaxError("Unexpected token in for loop initial variable declaration", token);
                         }
-                    } else if (!isDeclaratorAmbiguous(token)) {
+                    } else if (!isVariableOrDeclarator(token)) {
                         return throwSyntaxError("Unexpected token in for loop initial", token);
                     }
-                    if (debugMode)
+                    if (evaluatorTree.debugMode)
                         System.out.println(indent + " Created initial " + initial);
                 }
             } else if (condition == null) {
@@ -80,7 +84,7 @@ public class ForLoopNode extends EvaluatorNode {
                     operationTokens.add(currentToken);
                 }
                 condition = new OperationNode(this.nameToken, depth + 1);
-                members.add(condition.evaluate(operationTokens, evaluatorTree, debugMode));
+                members.add(condition.evaluate(operationTokens, evaluatorTree));
 
             } else if (updater == null) {
                 List<Token> operationTokens = new ArrayList<>();
@@ -111,7 +115,7 @@ public class ForLoopNode extends EvaluatorNode {
                         if (keyEquals(KEY_OP_ASSIGN, opToken)) {
                             operationTokens.add(new Token(KEY_SEMICOLON, nameToken.source, token.line));
                             updater = new AssignmentNode(variableName, depth + 1);
-                            members.add(updater.evaluate(operationTokens, evaluatorTree, debugMode));
+                            members.add(updater.evaluate(operationTokens, evaluatorTree));
                             break;
 
                         } else if (!isWhiteSpace(opToken)) {
@@ -124,7 +128,7 @@ public class ForLoopNode extends EvaluatorNode {
 
             } else if (keyEquals(KEY_CURLY_OPEN, token)) {
                 scope = new ScopeNode(this.nameToken, depth + 1, true);
-                members.add(scope.evaluate(tokenList, evaluatorTree, debugMode));
+                members.add(scope.evaluate(tokenList, evaluatorTree));
                 return this;
 
             } else {

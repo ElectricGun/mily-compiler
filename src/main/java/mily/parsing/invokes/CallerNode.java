@@ -2,24 +2,62 @@ package mily.parsing.invokes;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.processing.Validation;
+import mily.structures.structs.CallableSignature;
 import mily.tokens.*;
 
 import java.util.*;
 
 import static mily.constants.Keywords.*;
-import static mily.constants.Keywords.KEY_BRACKET_CLOSE;
-import static mily.constants.Keywords.KEY_BRACKET_OPEN;
-import static mily.constants.Keywords.KEY_COMMA;
-import static mily.constants.Keywords.KEY_SEMICOLON;
 
-// TOOD implement this
-public abstract class CallerNode extends EvaluatorNode implements Caller {
+public class CallerNode extends EvaluatorNode implements Caller {
 
+    protected String name;
     protected List<OperationNode> arguments = new ArrayList<>();
     protected String type = KEY_DATA_UNKNOWN;
 
-    public CallerNode(Token nameToken, int depth) {
+    public CallerNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
+
+        this.name = name;
+    }
+
+    @Override
+    public String errorName() {
+        return "function call " + "\"" + getName() + "\"";
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+        evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "call function: " + getName() + getArgs();
+    }
+
+    @Override
+    public CallableSignature signature() {
+        int argCount = this.getArgCount();
+
+        String[] argTypes = new String[argCount];
+        for (int a = 0; a < argCount; a++) {
+            argTypes[a] = Validation.getOperationType(this.getArg(a), false);
+        }
+
+        return new CallableSignature(this.getName(), argTypes);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -47,6 +85,10 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
         this.type = type;
     }
 
+    public List<OperationNode> getArgs() {
+        return arguments;
+    }
+
     protected void evaluateArgs(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
         String indent = " ".repeat(depth);
 
@@ -63,25 +105,25 @@ public abstract class CallerNode extends EvaluatorNode implements Caller {
             if (debugMode)
                 System.out.println(indent + "arg: " + token + " expectingArg: " + expectingArgument);
 
-            if (token.isWhiteSpace()) {
-                continue;
-            }
+//            if (token.isWhiteSpace()) {
+//                continue;
+//            }
 
-            if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE)) {
+            if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE) && !token.isWhiteSpace()) {
                 if (!opTokens.isEmpty()) {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
-                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
+                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree);
                     members.add(operationNode);
                     arguments.add((OperationNode) operationNode);
                 }
                 return;
-            } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0) {
+            } else if (token.equalsKey(KEY_COMMA) && bracketCount == 0 && !token.isWhiteSpace()) {
                 if (opTokens.isEmpty()) {
                     this.throwSyntaxError("Empty argument found", token);
 
                 } else {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));
-                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree, debugMode);
+                    EvaluatorNode operationNode = new OperationNode(argName, depth + 1).evaluate(opTokens, evaluatorTree);
                     members.add(operationNode);
                     arguments.add((OperationNode) operationNode);
                     argCount++;

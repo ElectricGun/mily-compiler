@@ -11,6 +11,7 @@ import mily.abstracts.*;
 public class TypedToken extends Token implements Typed {
 
     String type;
+    boolean isVariableRef = false;
 
     public TypedToken(String string, String source, String type, int line) {
         super(string, source, line);
@@ -32,8 +33,16 @@ public class TypedToken extends Token implements Typed {
         this.type = type;
     }
 
+    public boolean isVariableRef() {
+        return isVariableRef;
+    }
+
+    public void setVariableRef(boolean variableRef) {
+        isVariableRef = variableRef;
+    }
+
     @Override
     public String toString() {
-        return "(" + super.toString() + " : " + type + ")";
+        return "(" + super.toString() + " : " + type + " | " + (isVariableRef ? "REF" : "VAL") + ")";
     }
 }

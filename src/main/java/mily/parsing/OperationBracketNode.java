@@ -28,11 +28,16 @@ public class OperationBracketNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    public String errorName() {
+        return "parenthesis";
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
         String indent = " ".repeat(depth);
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing Brackets %s:%n", nameToken);
 
         // remove the start bracket
@@ -44,7 +49,7 @@ public class OperationBracketNode extends EvaluatorNode {
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(operatorIndex);
 
-            if (debugMode)
+            if (evaluatorTree.debugMode)
                 System.out.printf(indent + "brackets : %s : %s%n", this.nameToken, token);
 
             if (token.length() == 1 && keyEquals(KEY_BRACKET_OPEN, token)) {
@@ -57,7 +62,7 @@ public class OperationBracketNode extends EvaluatorNode {
             if (bracketCounter < 0) {
                 OperationNode operationNode = new OperationNode(new Token(this.nameToken.string, this.nameToken.source, this.nameToken.line), depth + 1);
                 operationTokens.add(new Token(";", this.nameToken.source, this.nameToken.line));
-                OperationNode evaluated = (OperationNode) operationNode.evaluate(operationTokens, evaluatorTree, debugMode);
+                OperationNode evaluated = (OperationNode) operationNode.evaluate(operationTokens, evaluatorTree);
 
                 // substitute the operator removed with a BracketToken
                 // an integer is not added to orders because we are not removing one on this final loop

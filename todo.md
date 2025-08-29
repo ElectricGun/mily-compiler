@@ -1,23 +1,22 @@
 # Urgent TODO:
- - parse strings in operations
- - Function arg names may cause conflicts
- - Create a string counter for generated variables to prevent conflicts
+ - Overload validation for templates and functions
+ - Make unary and constant setting neater in OperationNode
+ - Replace all keyEquals(x, token) with token.keyEquals()
+ - templates with return types shouldnt be able to be called outside of operations
+ - "any" datatype shouldnt be able to be used outside of template args
+
+# Flags
+ - shorthand flags such as -h, -p, -v, etc
 
 # Problems:
- - (int) x ** y evaluates as (int) (x ** y), that may or may not be an issue
- - "let test = 1; let test2 = test + 1 + false;" is valid
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation
- - Cannot declare a string var, such as string x = "1", it regards "1" as a variable name;
  - library circular dependencies
 
-# Operations
- - Compile explicit casting
- - 
 # Useful
- - Inline raw mlog (can be used for defining mlog commands in libraries)
- - Type hinting system for raw mlog blocks if they return something
+ - declaring macros into variables for reusability
  - pointers for memory variables
  - pre-ast macros
+ - optimization hints invoked in the pruning stage, such as unused functions
 
 # Semantic Checking
  - Check for unreachable code
@@ -29,7 +28,7 @@
 
 # Datatypes
  - Constants (final keyword)
- - Ambiguous datatype for raw macros such as: int | double | string
+ - Ambiguous datatypes intended for templates, such as: int | double, int | double | string, int | boolean, etc.
 
 # Compound Operators
  - += += -= *= /= %= &= ^= |= <<= >>= **=
@@ -54,14 +53,14 @@
  - scope validation can be simplified
  - current variable naming may lead to conflicts in output mlog 
  - rewrite Lexing
+ - its better to store function overrides in lists within a dictionary, using its name as the key
 
 # Syntax Document
  - A syntax document for Milyscript
 
 # Future Features (low priority)
  - Arrays and structs
- - Libraries
  - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
- - Aliasing and Macros:
-  - should be processed during the AST building stage
-  - #define keyword
+ - Macros (before AST stage)
+ - Templates (after AST stage)
+ - actual template/macro parsing into AST

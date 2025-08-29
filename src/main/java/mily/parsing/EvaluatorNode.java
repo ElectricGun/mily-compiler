@@ -13,7 +13,7 @@ import mily.tokens.*;
  * @author ElectricGun
  */
 
-public class EvaluatorNode {
+public abstract class EvaluatorNode {
 
     private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
     public int depth;
@@ -52,6 +52,10 @@ public class EvaluatorNode {
         return members.size();
     }
 
+    public void appendMember(EvaluatorNode evaluatorNode) {
+        members.add(evaluatorNode);
+    }
+
     public void replaceMember(EvaluatorNode replaced, EvaluatorNode replacement) {
         members.set(members.indexOf(replaced), replacement);
     }
@@ -60,25 +64,26 @@ public class EvaluatorNode {
         return members.get(i);
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) {
+    public final EvaluatorNode evaluate(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         try {
-            return evaluator(tokenList, evaluatorTree, debugMode);
+            return evaluator(tokenList, evaluatorTree);
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(0);
             return null;
         }
     }
 
+    public abstract String errorName();
+
     // TODO: use polymorphism instead
     public EvaluatorNode throwSyntaxError(String message, Token token) {
-        String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilySyntaxError(errorMessage));
 
         return this;
@@ -86,7 +91,7 @@ public class EvaluatorNode {
 
     @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode throwSemanticError(String message, Token token) {
-        String errorMessage = String.format(errorTemplate, "Semantic error", token.source, token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Semantic error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilySemanticError(errorMessage));
 
         return this;
@@ -94,7 +99,7 @@ public class EvaluatorNode {
 
     @SuppressWarnings("UnusedReturnValue")
     public EvaluatorNode throwTypeError(String message, Token token) {
-        String errorMessage = String.format(errorTemplate, "Type error", token.source, token.line, token) + message;
+        String errorMessage = String.format(errorTemplate, "Type error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilyTypeError(errorMessage));
 
         return this;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import mily.codegen.*;
+import mily.structures.errors.*;
 import mily.structures.structs.*;
 import mily.utils.*;
 
@@ -19,17 +20,21 @@ public class Main {
             FLAG_PRINT_OUTPUT = "--print-output",
             FLAG_BENCHMARK = "--benchmark",
             FLAG_OUTPUT = "--output",
-            FLAG_NO_CONFIRMATION = "--no-confirm";
+            FLAG_NO_CONFIRMATION = "--no-confirm",
+            FLAG_HELP = "--help",
+            FLAG_GENERATE_COMMENTS = "--generate-comments";
 
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(FLAG_PREFIX);
-        argParser.addFlag(FLAG_DEBUG, ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag(FLAG_QUIET, ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag(FLAG_BENCHMARK, ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag(FLAG_OUTPUT, ArgParser.ArgTypes.STRING);
-        argParser.addFlag(FLAG_PRINT_AST, ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag(FLAG_PRINT_OUTPUT, ArgParser.ArgTypes.BOOLEAN);
-        argParser.addFlag(FLAG_NO_CONFIRMATION, ArgParser.ArgTypes.BOOLEAN);
+        argParser.addFlag(FLAG_HELP, ArgParser.ArgTypes.BOOLEAN, "Print this page");
+        argParser.addFlag(FLAG_DEBUG, ArgParser.ArgTypes.BOOLEAN, "Print very convoluted logs");
+        argParser.addFlag(FLAG_QUIET, ArgParser.ArgTypes.BOOLEAN, "Disable descriptive prints");
+        argParser.addFlag(FLAG_BENCHMARK, ArgParser.ArgTypes.BOOLEAN, "Print benchmark");
+        argParser.addFlag(FLAG_OUTPUT, ArgParser.ArgTypes.STRING, "Output directory (folder)");
+        argParser.addFlag(FLAG_PRINT_AST, ArgParser.ArgTypes.BOOLEAN, "Print final AST");
+        argParser.addFlag(FLAG_PRINT_OUTPUT, ArgParser.ArgTypes.BOOLEAN, "Print compiled output");
+        argParser.addFlag(FLAG_NO_CONFIRMATION, ArgParser.ArgTypes.BOOLEAN, "Disable confirmations");
+        argParser.addFlag(FLAG_GENERATE_COMMENTS, ArgParser.ArgTypes.BOOLEAN, "Enabled system generated comments in compiled code");
         argParser.processFlags(args);
 
         final boolean debugMode = argParser.getBoolean(FLAG_DEBUG);
@@ -38,6 +43,13 @@ public class Main {
         final boolean printAst = argParser.getBoolean(FLAG_PRINT_AST);
         final boolean printOutput = argParser.getBoolean(FLAG_PRINT_OUTPUT);
         final boolean noConfirmation = argParser.getBoolean(FLAG_NO_CONFIRMATION);
+        final boolean help = argParser.getBoolean(FLAG_HELP);
+        final boolean generateComments = argParser.getBoolean(FLAG_GENERATE_COMMENTS);
+
+        if (help) {
+            argParser.printHelp();
+            return;
+        }
 
         File toRead;
         try {
@@ -45,7 +57,7 @@ public class Main {
 
         } catch (NullPointerException e) {
             System.out.println("Input file unspecified");
-            System.exit(1);
+            System.exit(2);
             return;
         }
 
@@ -56,13 +68,10 @@ public class Main {
         MilyWrapper wrapper = new MilyWrapper(debugMode, isQuiet);
         CompilerOutput output;
         try {
-            output = wrapper.compile(code, cwd);
+            output = wrapper.compile(code, cwd, generateComments);
 
-        } catch (RuntimeException e) {
-            System.out.println("Failed to compile");
-
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+        } catch (JavaMilyException e) {
+            System.out.println(e.getMessage());
             System.exit(1);
             return;
         }
@@ -110,7 +119,9 @@ public class Main {
             if (!isQuiet) {
                 System.out.println("Successfully written to " + fullOutputPath.getAbsolutePath());
             }
-        } else if (printOutput) {
+        }
+
+        if (printOutput) {
             if (!isQuiet) {
                 System.out.println("# Output:");
             }

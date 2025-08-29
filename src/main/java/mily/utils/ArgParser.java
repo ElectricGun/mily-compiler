@@ -8,6 +8,7 @@ public class ArgParser {
     protected String positionalArgument;
     protected List<String> flags = new ArrayList<>();
     protected Map<String, ArgTypes> flagsTypes = new HashMap<>();
+    protected Map<String, String> flagDescription = new HashMap<>();
     protected Map<String, Boolean> flagValuesBoolean = new HashMap<>();
     protected Map<String, String> flagValuesString = new HashMap<>();
     protected Map<String, Double> flagValuesDouble = new HashMap<>();
@@ -52,12 +53,13 @@ public class ArgParser {
         return flagValuesDouble.get(flag);
     }
 
-    public void addFlag(String flag, ArgTypes type) {
+    public void addFlag(String flag, ArgTypes type, String description) {
         if (flags.contains(flag)) {
             throw new IllegalArgumentException("ArgParses already contains flag \"" + flag + "\"");
         }
         flags.add(flag);
         flagsTypes.put(flag, type);
+        flagDescription.put(flag, description);
 
         if (type == ArgTypes.BOOLEAN) {
             flagValuesBoolean.put(flag, false);
@@ -106,10 +108,30 @@ public class ArgParser {
                 } else if (nextType == ArgTypes.INTEGER) {
                     flagValuesInt.put(onFlag, Integer.parseInt(str));
                 }
+                expectingValue = false;
 
             } else {
                 throw new IllegalArgumentException("You have made some illegal arguments!");
             }
+        }
+    }
+
+    public void printHelp() {
+
+        int longest = 0;
+        for (String key : flags) {
+            int c = key.length();
+            if (c > longest) {
+                longest = c;
+            }
+        }
+        System.out.println("\t\tMily Compiler");
+        System.out.println();
+        System.out.println("Usage: [main file] [options...]");
+        System.out.println("Options:");
+        for (String key : flags) {
+            System.out.printf("   %s%s   %s", key, " ".repeat(longest - key.length()), flagDescription.get(key));
+            System.out.println();
         }
     }
 

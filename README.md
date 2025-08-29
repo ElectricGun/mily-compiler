@@ -9,7 +9,7 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 - Functions
 - Static variable typing
 - Strict typing with minimal implicit casting e.g. `int x = 3 / 2;` is not allowed, use intdiv instead `int x = 3 // 2;`
-- Comments (`/* */` and `/-`)
+- Comments (`/* */` and `--`)
 - Type casting: (int), (boolean), etc
 - Full operations, such as `(x + y) * 3 - 9 * -z ** 2`
 

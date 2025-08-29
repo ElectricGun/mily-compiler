@@ -1,5 +1,7 @@
 package mily.codegen;
 
+import mily.tokens.TypedToken;
+
 import java.util.*;
 
 import static mily.constants.Keywords.*;
@@ -14,7 +16,7 @@ public class Mlogs {
         mlogOperationMap.put(KEY_OP_MUL, "mul");
         mlogOperationMap.put(KEY_OP_SUB, "sub");
         mlogOperationMap.put(KEY_OP_DIV, "div");
-        mlogOperationMap.put(KEY_OP_POW, "pow");
+//        mlogOperationMap.put(KEY_OP_POW, "pow");
         mlogOperationMap.put(KEY_OP_IDIV, "idiv");
         mlogOperationMap.put(KEY_OP_MOD, "mod");
         mlogOperationMap.put(KEY_OP_EQUALS, "equal");
@@ -28,9 +30,9 @@ public class Mlogs {
     }
 
     public static String opAsMlog(String op) throws IllegalArgumentException {
-        if (op.equals(KEY_OP_CAST_EXPLICIT))
+//        if (op.equals(KEY_OP_CAST_EXPLICIT))
             // make this a mily error
-            throw new IllegalArgumentException("Primitive explicit casting may only be done on constant values in compile time");
+//            throw new IllegalArgumentException("Primitive explicit casting may only be done on constant values in compile time");
 
         if (!mlogOperationMap.containsKey(op))
             throw new IllegalArgumentException(String.format("Operation \"%s\" has no mlog equivalent", op));
@@ -38,19 +40,22 @@ public class Mlogs {
         return mlogOperationMap.get(op);
     }
 
-    public static String valueAsMlog(String value) {
-        if (isBoolean(value)) {
-            if (keyEquals(KEY_BOOLEAN_FALSE, value)) {
-                return "0";
+    public static String tokenAsMlog(TypedToken typedToken) {
+        if (typedToken.getType().equals(KEY_DATA_BOOLEAN)) {
+            if (typedToken.equalsKey(KEY_BOOLEAN_FALSE)) {
+                    return "0";
 
-            } else if (keyEquals(KEY_BOOLEAN_TRUE, value)) {
+            } else if (typedToken.equalsKey(KEY_BOOLEAN_TRUE)) {
                 return "1";
 
             } else {
-                throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", value));
+                throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", typedToken));
             }
+        } else if (typedToken.getType().equals(KEY_DATA_STRING) && !typedToken.isVariableRef()) {
+            return "\"" + typedToken.string + "\"";
+
         } else {
-            return value;
+            return typedToken.string;
         }
     }
 }

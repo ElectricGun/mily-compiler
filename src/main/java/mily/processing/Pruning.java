@@ -1,10 +1,9 @@
 package mily.processing;
 
-import mily.abstracts.Caller;
+import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.CallerNode;
-import mily.parsing.invokes.FunctionCallNode;
-import mily.tokens.FunctionCallToken;
+import mily.parsing.invokes.*;
+import mily.tokens.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Maps.*;
@@ -38,8 +37,8 @@ public class Pruning {
             }
 
             // truncate from function arguments within operators
-            if (operationNode.getConstantToken() instanceof FunctionCallToken callerToken) {
-                FunctionCallNode caller = callerToken.getNode();
+            if (operationNode.getConstantToken() instanceof CallerNodeToken callerToken) {
+                CallerNode caller = callerToken.getNode();
                 truncateFunctionArgs(caller);
             }
         }
@@ -62,6 +61,10 @@ public class Pruning {
                 caller.setArg(a, childArg);
 
                 arg = childArg;
+            }
+
+            if (arg.getConstantToken() instanceof CallerNodeToken callerNodeToken) {
+                truncateFunctionArgs(callerNodeToken.getNode());
             }
         }
     }
@@ -158,8 +161,9 @@ public class Pruning {
         if (evaluatorNode instanceof OperationNode operationNode) {
             if (operationNode.isConstant()) {
                 return;
-
-            } else if (!operationNode.isUnary()) {
+            }
+            
+            if (!operationNode.isUnary()) {
                 boolean leftIsConstant = operationNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationNode.getRightSide().isConstant();
 
@@ -194,16 +198,16 @@ public class Pruning {
         }
 
         // validate and parse casts (has to be here because of how binary simplification works)
-        if (evaluatorNode instanceof OperationNode operationNode && operationNode.isCast()) {
-            if (operationNode.getMember(0) instanceof OperationNode opChild && opChild.isConstant()) {
-//                if (castSolverMap.containsKey(operationNode.getOperator())) {
-//                    castSolverMap.get(operationNode.getOperator()).accept(operationNode);
-//
-//                } else {
-//                    throw new Exception(String.format("Unknown cast type \"%s\" on line %s", operationNode.getOperator(), evaluatorNode.token.line));
-//                }
-                System.out.println("SECTION NOT IMPLEMENTED");
-            }
-        }
+//        if (evaluatorNode instanceof OperationNode operationNode && operationNode.isCast()) {
+//            if (operationNode.getMember(0) instanceof OperationNode opChild && opChild.isConstant()) {
+////                if (castSolverMap.containsKey(operationNode.getOperator())) {
+////                    castSolverMap.get(operationNode.getOperator()).accept(operationNode);
+////
+////                } else {
+////                    throw new Exception(String.format("Unknown cast type \"%s\" on line %s", operationNode.getOperator(), evaluatorNode.token.line));
+////                }
+//                System.out.println("SECTION NOT IMPLEMENTED");
+//            }
+//        }
     }
 }

@@ -10,10 +10,10 @@ import mily.tokens.*;
  * @author ElectricGun
  */
 
-public abstract class VariableNode extends EvaluatorNode implements Typed {
+public abstract class VariableNode extends EvaluatorNode implements Typed, Named {
 
-    String variableName;
-    String type;
+    protected String variableName;
+    protected String type;
 
     public VariableNode(String type, Token token, int depth) {
         super(token, depth);
@@ -21,11 +21,13 @@ public abstract class VariableNode extends EvaluatorNode implements Typed {
         this.variableName = token.string;
     }
 
-    public String getVariableName() {
+    @Override
+    public String getName() {
         return variableName;
     }
 
-    public void setVariableName(String variableName) {
+    @Override
+    public void setName(String variableName) {
         this.variableName = variableName;
     }
 

@@ -3,6 +3,7 @@ package mily.utils;
 import mily.codegen.*;
 import mily.parsing.*;
 import mily.preprocessing.*;
+import mily.structures.errors.JavaMilyException;
 import mily.structures.structs.*;
 import mily.tokens.*;
 
@@ -13,6 +14,7 @@ import static mily.codegen.CodeGeneration.*;
 import static mily.constants.Ansi.*;
 import static mily.preprocessing.Lexing.*;
 import static mily.processing.Pruning.*;
+import static mily.processing.Refining.*;
 import static mily.processing.Validation.*;
 
 public class MilyWrapper {
@@ -32,8 +34,7 @@ public class MilyWrapper {
         this.isQuiet = isQuiet;
     }
 
-
-    public CompilerOutput compile(CodeFile code, String cwd) throws Exception {
+    public CompilerOutput compile(CodeFile code, String cwd, boolean generateComments) throws Exception {
         long compileStartTime = System.nanoTime();
 
         // tokenise
@@ -47,6 +48,10 @@ public class MilyWrapper {
             return null;
         }
 
+        if (debugMode) {
+            System.out.println(tokenList);
+        }
+
         // end lexing -- start building ast
         long startAstBuildDuration = System.nanoTime();
         long lexingDuration = (startAstBuildDuration - compileStartTime);
@@ -58,10 +63,16 @@ public class MilyWrapper {
         long optimizationStartTime = System.nanoTime();
         long astBuildDuration = (optimizationStartTime - startAstBuildDuration);
 
+        if (debugMode) {
+            System.out.println("PRE VALIDATION AST (unassigned reference types)");
+            evaluatorTree.printRecursive();
+        }
+
         // check for syntax errors
         if (checkThrowables(evaluatorTree)) {
-            throw new RuntimeException("Failed to compile: syntax error!");
+            throw new JavaMilyException("Failed to compile: syntax error!");
         }
+
         boolean doAssignTypes = true;
         removeEmptyOperations(evaluatorTree);
         convertUnariesToBinary(evaluatorTree, debugMode);
@@ -72,24 +83,26 @@ public class MilyWrapper {
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
+        invalidateDynamicDatatype(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree);
 
         // check for semantic errors
         if (checkThrowables(evaluatorTree)) {
-            throw new RuntimeException("Failed to compile: semantic error!");
+            throw new JavaMilyException("Failed to compile: semantic error!");
         }
+
+        // refine
+        renameVars(evaluatorTree);
+        renameByScope(evaluatorTree);
+        addVoidReturns(evaluatorTree);
 
         // end optimisation -- start code generation
         long codeGenerationStartTime = System.nanoTime();
         long optimizationDuration = (codeGenerationStartTime - optimizationStartTime);
 
         IRCode irCode;
-        try {
-            irCode = generateIRCode(evaluatorTree, debugMode);
+        irCode = generateIRCode(evaluatorTree, generateComments, debugMode);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to compile: syntax error!");
-        }
         long endCompileTime = System.nanoTime();
         long codeGenerationDuration = (endCompileTime - codeGenerationStartTime);
         long compileDuration = (endCompileTime - compileStartTime);

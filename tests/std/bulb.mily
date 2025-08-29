@@ -1,41 +1,4 @@
-/-------- Standard library file --------
-
-raw void print:int x $
-    print x
-$
-
-raw void printflush:int x $
-    printflush x
-$
-
-raw void print_to: int x, int y $
-    print x
-    printflush y
-$
-
-raw void wait:int x $
-    wait x
-$
-
-raw void end $
-    end
-$
-
-raw void stop $
-    stop
-$
-
-raw int as_int:int x $
-    op floor out x
-    jump to_int_label greaterThanEq out 0
-        op add out out 1
-    to_int_label:
-$
-
-int as_int(double x) {
-    int out = x // 1;
-    if (out < 0) {
-        out = out + 1;
-    }
-    return out;
-}
+--------- Main Standard Library File --------
+#include prints.mily;
+#include math.mily;
+#include flow.mily;

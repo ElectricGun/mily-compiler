@@ -20,7 +20,7 @@ import static mily.constants.Keywords.*;
 
 public class IfStatementNode extends ConditionalNode {
 
-    ElseNode elseNode = null;
+    protected ElseNode elseNode = null;
 
     public IfStatementNode(Token token, int depth) {
         super(token, depth);
@@ -31,10 +31,15 @@ public class IfStatementNode extends ConditionalNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws Exception {
+    public String errorName() {
+        return "if";
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
         String indent = " ".repeat(depth);
 
-        if (debugMode)
+        if (evaluatorTree.debugMode)
             System.out.printf(indent + "Parsing if statement %n");
 
         while (!tokenList.isEmpty()) {
@@ -42,15 +47,14 @@ public class IfStatementNode extends ConditionalNode {
 
             if (isWhiteSpace(token)) {
                 continue;
-
             }
 
             if (keyEquals(KEY_BRACKET_OPEN, token)) {
-                parseOperation(tokenList, evaluatorTree, depth, debugMode);
+                parseOperation(tokenList, evaluatorTree, depth, evaluatorTree.debugMode);
 
             } else if (expression != null && scope == null) {
                 if (keyEquals(KEY_CURLY_OPEN, token)) {
-                    createBlock(tokenList, evaluatorTree, debugMode);
+                    createBlock(tokenList, evaluatorTree, evaluatorTree.debugMode);
                     // dont return yet, check for an else statement
 
                 } else {
@@ -60,7 +64,7 @@ public class IfStatementNode extends ConditionalNode {
             } else if (scope != null) {
                 if (keyEquals(KEY_CONDITIONAL_ELSE, token)) {
                     ElseNode elseNode = new ElseNode(token, depth + 1);
-                    members.add(elseNode.evaluate(tokenList, evaluatorTree, debugMode));
+                    members.add(elseNode.evaluate(tokenList, evaluatorTree));
                     this.elseNode = elseNode;
 
                 } else {
