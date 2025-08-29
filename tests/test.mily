@@ -15,7 +15,7 @@ void main(int amount) {
         print(i);
         print(": ");
         print(f(i));
-        print("\n");
+        println();
     }
     printflush(@message1);
 }
@@ -23,6 +23,6 @@ void main(int amount) {
 main(16);
 
 -- should throw an error because the same signature is already defined
--- raw int f(int x) -> out $
+-- raw int f(int x) -> out ${
 --
---$
+--}

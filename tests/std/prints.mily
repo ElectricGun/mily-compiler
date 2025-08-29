@@ -1,35 +1,35 @@
 --------- Print Utilities --------
-raw void print(string x) $
+raw void print(string x) ${
     print x
-$
+}
 
-raw void print(int x) $
+raw void print(int x) ${
     print x
-$
+}
 
-raw void print(double x) $
+raw void print(double x) ${
     print x
-$
+}
 
-raw void println(string x) $
-    print x
-    print "\n"
-$
-
-raw void println(int x) $
+raw void println(string x) ${
     print x
     print "\n"
-$
+}
 
-raw void println(double x) $
+raw void println(int x) ${
     print x
     print "\n"
-$
+}
 
-raw void println() $
+raw void println(double x) ${
+    print x
     print "\n"
-$
+}
 
-raw void printflush(symbol target) $
+raw void println() ${
+    print "\n"
+}
+
+raw void printflush(symbol target) ${
     printflush target
-$
+}

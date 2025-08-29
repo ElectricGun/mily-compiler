@@ -13,6 +13,7 @@
  - library circular dependencies
 
 # Useful
+ - declaring macros into variables for reusability
  - pointers for memory variables
  - pre-ast macros
 

@@ -5,7 +5,6 @@ import mily.tokens.*;
 import java.util.*;
 
 import static mily.constants.Keywords.*;
-import static mily.constants.Functions.*;
 
 /**
  * <h1> Class MacroScope </h1>
@@ -16,7 +15,7 @@ import static mily.constants.Functions.*;
 
 public class MacroScope extends EvaluatorNode {
 
-    protected List<String> tokens = new ArrayList<>();
+    protected List<String> content = new ArrayList<>();
     protected List<String> args;
 
     @Override
@@ -33,6 +32,8 @@ public class MacroScope extends EvaluatorNode {
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
 
+        boolean isEvaluatingBlock = false;
+        int bracketAmount = 0;
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
             String str = token.string;
@@ -40,17 +41,34 @@ public class MacroScope extends EvaluatorNode {
             if (evaluatorTree.debugMode)
                 System.out.printf(indent() + "macro scope %s: %s%n", this.nameToken, token);
 
-            if (keyEquals(KEY_MACRO_LITERAL, token)) {
-                return this;
+            if (!isEvaluatingBlock && token.equalsKey(KEY_CURLY_OPEN)) {
+                isEvaluatingBlock = true;
+                continue;
+
+            } else if (isEvaluatingBlock) {
+                if (bracketAmount == 0 && token.equalsKey(KEY_CURLY_CLOSE)) {
+                    return this;
+
+                } else if (token.equalsKey(KEY_CURLY_OPEN)) {
+                    bracketAmount ++;
+
+                } else if (token.equalsKey(KEY_CURLY_CLOSE)) {
+                    bracketAmount --;
+                }
+            } else if (!token.isWhiteSpace()){
+                return throwSyntaxError("Unexpected token in macro", token);
             }
-            tokens.add(str);
+
+            if (isEvaluatingBlock) {
+                content.add(str);
+            }
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     public String asFormatted(List<String> replacers) {
         StringBuilder out = new StringBuilder();
-        for (String token : tokens) {
+        for (String token : content) {
             int tokenIndex = args.indexOf(token);
             if (tokenIndex != -1 && !replacers.isEmpty()) {
                 out.append(replacers.get(tokenIndex));
@@ -63,8 +81,8 @@ public class MacroScope extends EvaluatorNode {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder("$");
-        for (String s : tokens) {
+        StringBuilder out = new StringBuilder("${");
+        for (String s : content) {
             if (!s.equals(KEY_NEWLINE)) {
                 out.append(s);
 
@@ -72,7 +90,7 @@ public class MacroScope extends EvaluatorNode {
                 out.append(KEY_NEWLINE).append(indent(depth + 2));
             }
         }
-        out.append("$");
+        out.append("}");
         return out.toString();
     }
 }
