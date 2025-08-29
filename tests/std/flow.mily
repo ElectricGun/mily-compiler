@@ -5,5 +5,4 @@ raw void wait(double x) ${ wait x }
 
 raw void end() ${ end }
 
-
 raw void stop() ${ stop }
