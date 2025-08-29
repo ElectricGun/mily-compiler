@@ -1,0 +1,16 @@
+--------- Control Flow Utils --------
+raw void wait(int x) $
+    wait x
+$
+
+raw void wait(double x) $
+    wait x
+$
+
+raw void end() $
+    end
+$
+
+raw void stop() $
+    stop
+$
