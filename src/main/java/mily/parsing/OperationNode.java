@@ -16,7 +16,6 @@ import static mily.constants.Maps.*;
  * Routes:
  * <ul>
  *     <li> {@link OperationNode}</li>
- *     <li> {@link FunctionCallNode}</li>
  *     <li> {@link OperationBracketNode}</li>
  * </ul>
  *
