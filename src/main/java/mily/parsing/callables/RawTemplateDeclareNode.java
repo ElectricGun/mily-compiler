@@ -1,8 +1,6 @@
 package mily.parsing.callables;
 
-import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -37,23 +35,23 @@ public class RawTemplateDeclareNode extends CallableNode {
         return scope;
     }
 
-    @Override
-    public boolean isOverload(Caller caller, String name, String... types) {
+//    @Override
+//    public boolean isOverload(Caller caller, String name, String... types) {
 //        if (!(caller instanceof RawTemplateInvoke)) {
 //            return false;
 //        }
 
-        return isOverload(name, types);
-    }
+//        return isOverload(name, types);
+//    }
 
-    @Override
-    public boolean isOverload(Callable callable, String name, String... types) {
-        if (!(callable instanceof RawTemplateDeclareNode)) {
-            return false;
-        }
-
-        return isOverload(name, types);
-    }
+//    @Override
+//    public boolean isOverload(Callable callable, String name, String... types) {
+//        if (!(callable instanceof RawTemplateDeclareNode)) {
+//            return false;
+//        }
+//
+//        return isOverload(name, types);
+//    }
 
     @Override
     public boolean isOverload(String name, String... types) {

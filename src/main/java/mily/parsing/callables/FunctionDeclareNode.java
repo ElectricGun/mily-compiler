@@ -1,8 +1,6 @@
 package mily.parsing.callables;
 
-import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -13,8 +11,7 @@ import static mily.constants.Keywords.*;
 /**
  * <h1> Class FunctionDeclareNode </h1>
  * Function Declarations
- * Parses function declarations; not to be confused with the {@link FunctionCallNode}
- *
+ * Parses function declarations
  * @author ElectricGun
  */
 
@@ -117,23 +114,23 @@ public class FunctionDeclareNode extends CallableNode {
         return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), String.join(", ", argumentTypes));
     }
 
-    @Override
-    public boolean isOverload(Caller caller, String name, String... types) {
+//    @Override
+//    public boolean isOverload(Caller caller, String name, String... types) {
 //        if (!(caller instanceof FunctionCallNode)) {
 //            return false;
 //        }
 
-        return isOverload(name, types);
-    }
+//        return isOverload(name, types);
+//    }
 
-    @Override
-    public boolean isOverload(Callable callable, String name, String... types) {
-        if (!(callable instanceof FunctionDeclareNode)) {
-            return false;
-        }
-
-        return isOverload(name, types);
-    }
+//    @Override
+//    public boolean isOverload(Callable callable, String name, String... types) {
+//        if (!(callable instanceof FunctionDeclareNode)) {
+//            return false;
+//        }
+//
+//        return isOverload(name, types);
+//    }
 
     @Override
     public boolean isOverload(String name, String... types) {

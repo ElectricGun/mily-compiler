@@ -274,7 +274,7 @@ public class Validation {
     private static void validateFunctionDeclaresHelper(EvaluatorNode evaluatorNode, List<CallableNode> functionDeclares, boolean debugMode) throws Exception {
         if (evaluatorNode instanceof CallableNode callable) {
             for (CallableNode f : functionDeclares) {
-                if (callable.isOverload(f, f.getName(), f.getArgumentTypesArr())) {
+                if (callable.isOverload(f.getName(), f.getArgumentTypesArr())) {
                     callable.throwSemanticError(String.format("Redeclaration of function %s with argument types %s and types %s", callable.getName(), callable.getArgumentTypes(), f.getArgumentTypes()), callable.nameToken);
                 }
             }
@@ -432,7 +432,7 @@ public class Validation {
         String[] callTypes = getCallTypes(caller, debugMode);
 
         for (Callable fn : functionDeclares) {
-            if (fn.isOverload(caller, caller.getName(), callTypes)) {
+            if (fn.isOverload(caller.getName(), callTypes)) {
                 valid = true;
                 if (doAssignTypes)
                     caller.setType(fn.getType());
