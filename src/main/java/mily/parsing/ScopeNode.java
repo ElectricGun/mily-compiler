@@ -65,7 +65,6 @@ public class ScopeNode extends EvaluatorNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             if (evaluatorTree.debugMode)
                 System.out.printf(indent + "block : %s%n", token);
 
@@ -92,17 +91,24 @@ public class ScopeNode extends EvaluatorNode {
                     AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
                     members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
-                } else if (isVariableName(token)) {
+                } else {
+                    // add the token back because it has been consumed
+                    tokenList.add(0, token);
                     DatatypeNode datatypeNode = new DatatypeNode(previousToken.string, previousToken, depth + 1);
                     datatypeNode.evaluate(tokenList, evaluatorTree);
-                    // VARIABLE DECLARATION
-                    //TODO use DataTypeNode
-                    Type type = new Type(previousToken.string);
-                    EvaluatorNode node = new DeclarationNode(type, token, depth + 1).evaluate(tokenList, evaluatorTree);
-                    members.add(node);
 
-                } else {
-                    return throwSyntaxError("Invalid token", token);
+                    Token varName;
+                    do {
+                        varName = tokenList.remove(0);
+                        if (tokenList.isEmpty()) {
+                            break;
+                        }
+                    } while (varName.isWhiteSpace());
+
+                    // VARIABLE DECLARATION
+                    Type type = datatypeNode.type;
+                    EvaluatorNode node = new DeclarationNode(type, varName, depth + 1).evaluate(tokenList, evaluatorTree);
+                    members.add(node);
                 }
                 // clear previous token otherwise it won't be true to reality
                 // as the evaluators below will consume newer tokens

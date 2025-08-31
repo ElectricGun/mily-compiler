@@ -311,7 +311,7 @@ public class Validation {
 
                 Type opType = validateTypesHelper(op, false, debugMode);
                 if (!returnType.equals(opType))
-                    op.throwTypeError("Invalid return type " + opType, op.nameToken);
+                    op.throwTypeError("Invalid return type " + opType + ", expected " + returnType, op.nameToken);
 
                 if (debugMode)
                     System.out.println("Return found on " + evaluatorNode);

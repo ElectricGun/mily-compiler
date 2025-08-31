@@ -24,6 +24,8 @@ public class Maps {
     protected final static List<String> PUNCTUATION_KEYS = new ArrayList<>(Arrays.asList(
             KEY_BRACKET_OPEN,
             KEY_BRACKET_CLOSE,
+            KEY_DIAMOND_OPEN,
+            KEY_DIAMOND_CLOSE,
             KEY_CURLY_OPEN,
             KEY_CURLY_CLOSE,
             KEY_SEMICOLON,
@@ -65,7 +67,9 @@ public class Maps {
             KEY_DATA_INT.typeString,
             KEY_DATA_STRING.typeString,
             KEY_DATA_BOOLEAN.typeString,
-            KEY_DATA_VOID.typeString
+            KEY_DATA_VOID.typeString,
+            KEY_DATA_MRAY.typeString,
+            KEY_DATA_PTR.typeString
     ));
     protected final static List<String> OPERATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,

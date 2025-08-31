@@ -19,6 +19,8 @@ public class Keywords {
         KEY_CURLY_CLOSE = "}",
         KEY_SQUARE_OPEN = "[",
         KEY_SQUARE_CLOSE = "]",
+        KEY_DIAMOND_OPEN = "<",
+        KEY_DIAMOND_CLOSE = ">",
         KEY_COLON = ":",
         KEY_SPEECH_MARK = "\"",
         KEY_SYMBOL_IDENTIFIER = "@",
@@ -101,7 +103,7 @@ public class Keywords {
         KEY_OP_CAST_IMPLICIT = "key_op_type_cast_implicit";
 
     // datatypes
-    public static Type
+    public final static Type
         // keywords: datatypes
         KEY_DATA_INT = new Type("int"),
         KEY_DATA_DOUBLE = new Type("double"),
@@ -111,6 +113,8 @@ public class Keywords {
         KEY_DATA_SYMBOL = new Type("symbol"),
         // for template arguments only
         KEY_DATA_ANY = new Type("any"),
+        KEY_DATA_PTR = new Type("ptr"),
+        KEY_DATA_MRAY = new Type("mray"),
 
         // keywords: other datatypes (not in maps)
         KEY_DATA_UNKNOWN = new Type("unknown_type")

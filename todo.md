@@ -1,4 +1,5 @@
 # Urgent TODO:
+ - rewrite scopenode
  - templates with return types shouldnt be able to be called outside of operations
  - "any" datatype shouldnt be able to be used outside of template args
  - implement "any" datatype. requires to be casted everytime it is used with anything that is "any"

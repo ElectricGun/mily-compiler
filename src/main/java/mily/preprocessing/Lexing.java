@@ -116,10 +116,9 @@ public class Lexing {
                 tryAddToken(debugMode);
                 tokenString = "" + c;
 
-            } else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
+            } else if ((isPunctuation(c) || isOperator("" + c)) && !isKeywordIncomplete(tokenString)) {
                 tryAddToken(debugMode);
                 tokenString = "" + c;
-
 
             } else if (!(isPunctuation(c) || isOperator("" + c)) && previousIsPunctuation && !isKeywordIncomplete(tokenString)) {
                 tryAddToken(debugMode);

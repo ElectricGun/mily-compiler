@@ -208,7 +208,7 @@ public class OperationNode extends EvaluatorNode {
                 } else {
                     return this.throwSyntaxError("Invalid token on @ symbol", token);
                 }
-            } else if (token.length() == 1 && isPunctuation(token)) {
+            } else if (token.length() == 1 && isPunctuation(token) && !isOperator(token)) {
                 // evaluate punctuations
 
                 if (isWhiteSpace(token)) {
@@ -519,7 +519,7 @@ public class OperationNode extends EvaluatorNode {
                         return throwSyntaxError("Invalid operation", token);
                     }
                 } else {
-                    return throwSyntaxError("Unexpected token in operation", token);
+                    return throwSyntaxError("Unexpected punctuation in operation", token);
                 }
             } else {
                 operationTokens.add(token);

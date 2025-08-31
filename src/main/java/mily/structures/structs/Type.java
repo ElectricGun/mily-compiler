@@ -5,45 +5,52 @@ import java.util.*;
 public class Type {
 
     public String typeString;
-    public List<String> diamondStrings = new ArrayList<>(); // such as the String in List<String>
+    public List<Type> diamondTypes = new ArrayList<>(); // such as the String in List<String>
 
     public Type(String typeString) {
         this.typeString = typeString;
     }
 
-    public Type(String typeString, List<String> diamondStrings) {
+    public Type(String typeString, List<Type> diamondTypes) {
         this(typeString);
-        this.diamondStrings = diamondStrings;
+        this.diamondTypes = diamondTypes;
     }
 
     public boolean equals(String string) {
-        return diamondStrings.isEmpty() && string.equals(typeString);
+        return diamondTypes.isEmpty() && string.equals(typeString);
     }
 
     public Type create() {
-        return new Type(typeString, diamondStrings);
+        return new Type(typeString, diamondTypes);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Type type = (Type) o;
-        return Objects.equals(typeString, type.typeString) && Objects.equals(diamondStrings, type.diamondStrings);
+        return Objects.equals(typeString, type.typeString) && Objects.equals(diamondTypes, type.diamondTypes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(typeString, diamondStrings);
+        return Objects.hash(typeString, diamondTypes);
     }
 
     @Override
     public String toString() {
-        String out = typeString;
+        StringBuilder out = new StringBuilder(typeString);
 
-        if (!diamondStrings.isEmpty()) {
-            out += "<" + String.join(", ", diamondStrings) + ">";
+        if (!diamondTypes.isEmpty()) {
+            out.append("<");
+            for (int i = 0; i < diamondTypes.size(); i++) {
+                out.append(diamondTypes.get(i).toString());
+                if (i < diamondTypes.size() - 1) {
+                    out.append(", ");
+                }
+            }
+            out.append(">");
         }
 
-        return out;
+        return out.toString();
     }
 }
