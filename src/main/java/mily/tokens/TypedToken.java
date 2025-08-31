@@ -10,8 +10,8 @@ import mily.abstracts.*;
 
 public class TypedToken extends Token implements Typed {
 
-    String type;
-    boolean isVariableRef = false;
+    protected String type;
+    protected boolean isVariableRef = false;
 
     public TypedToken(String string, String source, String type, int line) {
         super(string, source, line);

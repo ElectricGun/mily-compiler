@@ -2,7 +2,7 @@ package mily.codegen.lines;
 
 public class VariableLine extends Line {
 
-    String varName;
+    protected String varName;
 
     public VariableLine(String varName, String string, int indent) {
         super(string, indent);

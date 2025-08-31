@@ -3,10 +3,11 @@ package mily.structures.structs;
 import mily.parsing.*;
 
 public class UnaryToBinaryStruct {
-    OperationNode oldOp;
-    OperationNode newOp;
-    OperationNode child;
-    OperationNode factor;
+
+    protected OperationNode oldOp;
+    protected OperationNode newOp;
+    protected OperationNode child;
+    protected OperationNode factor;
 
     public UnaryToBinaryStruct(OperationNode oldOp, OperationNode newOp, OperationNode child, OperationNode factor) {
         this.oldOp = oldOp;

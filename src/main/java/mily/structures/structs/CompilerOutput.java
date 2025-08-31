@@ -4,6 +4,7 @@ import mily.codegen.*;
 import mily.parsing.*;
 
 public class CompilerOutput {
+
     protected EvaluatorTree AST;
     protected IRCode outputCode;
 

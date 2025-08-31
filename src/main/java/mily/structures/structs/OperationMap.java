@@ -17,9 +17,9 @@ import static mily.constants.Keywords.*;
 
 public class OperationMap {
 
-    Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
-    Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
-    Map<OperationKey, String> operationCastMap = new HashMap<>();
+    protected Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
+    protected Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
+    protected Map<OperationKey, String> operationCastMap = new HashMap<>();
 
     /**
      * Adds a converter for unary operations to binary <br>

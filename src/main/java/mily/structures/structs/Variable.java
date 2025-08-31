@@ -15,8 +15,8 @@ import java.util.*;
 
 public class Variable implements Typed {
 
-    String name;
-    String type;
+    protected String name;
+    protected String type;
 
     public Variable(String type, String name) {
         this.type = type;

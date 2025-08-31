@@ -6,8 +6,8 @@ import java.util.*;
 
 public class CallableSignature implements Named {
 
-    String name;
-    List<String> argTypes = new ArrayList<>();
+    protected String name;
+    protected List<String> argTypes = new ArrayList<>();
 
     public CallableSignature(String name) {
         this.name = name;

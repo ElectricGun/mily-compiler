@@ -4,7 +4,7 @@ import mily.abstracts.*;
 
 public class MilyError implements MilyThrowable {
 
-    String message;
+    protected String message;
 
     public MilyError(String message) {
         this.message = message;
