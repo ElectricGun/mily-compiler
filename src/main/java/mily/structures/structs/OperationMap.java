@@ -119,7 +119,7 @@ public class OperationMap {
         return operationCastMap.containsKey(operationKeyCheck);
     }
 
-    static class OperationKey {
+    protected static class OperationKey {
         String operator;
         Type leftType;
         Type rightType;

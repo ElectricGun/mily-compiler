@@ -5,7 +5,6 @@ import mily.tokens.TypedToken;
 import java.util.*;
 
 import static mily.constants.Keywords.*;
-import static mily.constants.Functions.*;
 
 public class Mlogs {
     protected static final HashMap<String, String> mlogOperationMap = new HashMap<>();

@@ -40,7 +40,7 @@ public class Type {
     public String toString() {
         String out = typeString;
 
-        if (diamondStrings.size() > 0) {
+        if (!diamondStrings.isEmpty()) {
             out += "<" + String.join(", ", diamondStrings) + ">";
         }
 

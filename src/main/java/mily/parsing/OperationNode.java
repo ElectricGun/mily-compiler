@@ -397,8 +397,8 @@ public class OperationNode extends EvaluatorNode {
                     }
 
                     boolean noOperators = orders.size() > 1;
-                    for (int i = 0; i < orders.size(); i++) {
-                        if (orders.get(i) != -1) {
+                    for (Integer order : orders) {
+                        if (order != -1) {
                             noOperators = false;
                         }
                     }
