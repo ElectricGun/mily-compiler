@@ -4,6 +4,7 @@ import java.util.*;
 
 import mily.parsing.callables.*;
 import mily.parsing.invokes.*;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -92,15 +93,13 @@ public class ScopeNode extends EvaluatorNode {
                     members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
                 } else if (isVariableName(token)) {
+                    DatatypeNode datatypeNode = new DatatypeNode(previousToken.string, previousToken, depth + 1);
+                    datatypeNode.evaluate(tokenList, evaluatorTree);
                     // VARIABLE DECLARATION
-                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree);
+                    //TODO use DataTypeNode
+                    Type type = new Type(previousToken.string);
+                    EvaluatorNode node = new DeclarationNode(type, token, depth + 1).evaluate(tokenList, evaluatorTree);
                     members.add(node);
-
-//                } else if (isVariableName(previousToken) && keyEquals(KEY_MACRO_LITERAL, token)) {
-//                    // TEMPLATE INVOKE
-//                    RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-//                    members.add(templateInvoke.evaluate(tokenList, evaluatorTree));
-//                    expectingSemicolon = true;
 
                 } else {
                     return throwSyntaxError("Invalid token", token);
@@ -150,6 +149,8 @@ public class ScopeNode extends EvaluatorNode {
                 while (returnType.isWhiteSpace()) {
                     returnType = tokenList.remove(0);
                 }
+                //TODO use DataTypeNode
+                Type type = new Type(returnType.string);
 
                 if (!isVariableOrDeclarator(returnType)) {
                     return throwSyntaxError("Expecting return type after raw", returnType);
@@ -165,7 +166,7 @@ public class ScopeNode extends EvaluatorNode {
                     return throwSyntaxError("Expecting template name", templateName);
                 }
 
-                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(templateName.string, returnType.string, token, depth + 1);
+                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(templateName.string, type, token, depth + 1);
                 members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {

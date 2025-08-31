@@ -16,9 +16,9 @@ import java.util.*;
 public class Variable implements Typed {
 
     protected String name;
-    protected String type;
+    protected Type type;
 
-    public Variable(String type, String name) {
+    public Variable(Type type, String name) {
         this.type = type;
         this.name = name;
     }
@@ -31,12 +31,12 @@ public class Variable implements Typed {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

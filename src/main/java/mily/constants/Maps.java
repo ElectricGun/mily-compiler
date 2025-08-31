@@ -61,11 +61,11 @@ public class Maps {
     ));
     protected final static List<String> DECLARATOR_KEYS = new ArrayList<>(Arrays.asList(
 //            KEY_DATA_DYNAMIC,
-            KEY_DATA_DOUBLE,
-            KEY_DATA_INT,
-            KEY_DATA_STRING,
-            KEY_DATA_BOOLEAN,
-            KEY_DATA_VOID
+            KEY_DATA_DOUBLE.typeString,
+            KEY_DATA_INT.typeString,
+            KEY_DATA_STRING.typeString,
+            KEY_DATA_BOOLEAN.typeString,
+            KEY_DATA_VOID.typeString
     ));
     protected final static List<String> OPERATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,

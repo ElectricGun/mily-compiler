@@ -1,6 +1,7 @@
 package mily.parsing.callables;
 
 import mily.parsing.*;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
@@ -25,12 +26,13 @@ public class RawTemplateDeclareNode extends CallableNode {
         return "template " + "\"" + nameToken.string + "\"";
     }
 
-    public RawTemplateDeclareNode(String name, String returnType, Token nameToken, int depth) {
+    public RawTemplateDeclareNode(String name, Type returnType, Token nameToken, int depth) {
         super(name, nameToken, depth);
 
         this.returnType = returnType;
     }
 
+    @SuppressWarnings("unused")
     public MacroScope getScope() {
         return scope;
     }
@@ -54,7 +56,7 @@ public class RawTemplateDeclareNode extends CallableNode {
 //    }
 
     @Override
-    public boolean isOverload(String name, String... types) {
+    public boolean isOverload(String name, Type... types) {
         if (!this.getName().equals(name)) {
             return false;
         }
@@ -77,7 +79,7 @@ public class RawTemplateDeclareNode extends CallableNode {
         boolean isParsingArg = false;
         boolean doneParsingArgs = false;
 
-        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID);
+        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID.create());
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
@@ -106,6 +108,7 @@ public class RawTemplateDeclareNode extends CallableNode {
 
                         for (String arg : argStringsRaw) {
                             String[] stringArgType = arg.trim().split(" ");
+                            //TODO use DataTypeNode
 
                             if (isWhiteSpace(arg)) {
                                 return throwSyntaxError("Empty token in template input arguments", nameToken);
@@ -114,7 +117,7 @@ public class RawTemplateDeclareNode extends CallableNode {
                                 return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
                             }
 
-                            argumentTypes.add(stringArgType[0]);
+                            argumentTypes.add(new Type(stringArgType[0]));
                             argumentNames.add(stringArgType[1]);
                         }
                     }

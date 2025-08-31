@@ -19,7 +19,7 @@ public class OperationMap {
 
     protected Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
     protected Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
-    protected Map<OperationKey, String> operationCastMap = new HashMap<>();
+    protected Map<OperationKey, Type> operationCastMap = new HashMap<>();
 
     /**
      * Adds a converter for unary operations to binary <br>
@@ -63,7 +63,11 @@ public class OperationMap {
 //        generateBinaryFromUnaryAtMember(operationNode, 0);
 //    }
 
-    public void addOperation(String operator, String leftType, String rightType, String castsTo, Consumer<OperationNode> operationConsumer) {
+    public void addOperation(String operator, String leftTypeString, String rightTypeString, String castsTo, Consumer<OperationNode> operationConsumer) {
+        addOperation(operator, new Type(leftTypeString), new Type(rightTypeString), new Type(castsTo), operationConsumer);
+    }
+
+    public void addOperation(String operator, Type leftType, Type rightType, Type castsTo, Consumer<OperationNode> operationConsumer) {
         OperationKey newOperationKey = new OperationKey(operator, leftType, rightType);
 
         operationParseMap.put(newOperationKey, operationConsumer);
@@ -72,15 +76,15 @@ public class OperationMap {
 
     public void parseOperation(OperationNode operationNode) throws IllegalArgumentException, NoSuchMethodError {
         String operator = operationNode.getOperator();
-        String leftType = operationNode.getLeftTokenType();
-        String rightType = operationNode.getRightTokenType();
+        Type leftType = operationNode.getLeftTokenType();
+        Type rightType = operationNode.getRightTokenType();
 
 //        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
 //            return;
 //        }
 
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
-        String castTo = operationCastMap.get(operationKeyCheck);
+        Type castTo = operationCastMap.get(operationKeyCheck);
 
         if (!operationParseMap.containsKey(operationKeyCheck) || !operationCastMap.containsKey(operationKeyCheck)) {
             throw new IllegalArgumentException(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.nameToken.line));
@@ -95,7 +99,7 @@ public class OperationMap {
         }
     }
 
-    public String getCastTo(String operator, String leftType, String rightType) throws IllegalArgumentException {
+    public Type getCastTo(String operator, Type leftType, Type rightType) throws IllegalArgumentException {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
 
 //        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
@@ -109,7 +113,7 @@ public class OperationMap {
         }
     }
 
-    public boolean isOperationValid(String operator, String leftType, String rightType) {
+    public boolean isOperationValid(String operator, Type leftType, Type rightType) {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
 
         return operationCastMap.containsKey(operationKeyCheck);
@@ -117,10 +121,10 @@ public class OperationMap {
 
     static class OperationKey {
         String operator;
-        String leftType;
-        String rightType;
+        Type leftType;
+        Type rightType;
 
-        public OperationKey(String operator, String leftType, String rightType) {
+        public OperationKey(String operator, Type leftType, Type rightType) {
             this.operator = operator;
             this.leftType = leftType;
             this.rightType = rightType;

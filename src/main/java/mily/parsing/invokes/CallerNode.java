@@ -4,6 +4,7 @@ import mily.abstracts.*;
 import mily.parsing.*;
 import mily.processing.Validation;
 import mily.structures.structs.CallableSignature;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
@@ -14,7 +15,7 @@ public class CallerNode extends EvaluatorNode implements Caller {
 
     protected String name;
     protected List<OperationNode> arguments = new ArrayList<>();
-    protected String type = KEY_DATA_UNKNOWN;
+    protected Type type = KEY_DATA_UNKNOWN.create();
 
     public CallerNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
@@ -42,7 +43,7 @@ public class CallerNode extends EvaluatorNode implements Caller {
     public CallableSignature signature() {
         int argCount = this.getArgCount();
 
-        String[] argTypes = new String[argCount];
+        Type[] argTypes = new Type[argCount];
         for (int a = 0; a < argCount; a++) {
             argTypes[a] = Validation.getOperationType(this.getArg(a), false);
         }
@@ -76,12 +77,12 @@ public class CallerNode extends EvaluatorNode implements Caller {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

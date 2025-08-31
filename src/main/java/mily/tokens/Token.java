@@ -52,4 +52,8 @@ public class Token implements Named {
     public boolean isWhiteSpace() {
         return Functions.isWhiteSpace(this);
     }
+
+    public boolean isVariableName() {
+        return Functions.isVariableName(this);
+    }
 }

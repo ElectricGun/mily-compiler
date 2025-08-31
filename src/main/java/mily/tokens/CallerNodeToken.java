@@ -1,6 +1,7 @@
 package mily.tokens;
 
 import mily.parsing.invokes.*;
+import mily.structures.structs.Type;
 
 import static mily.constants.Keywords.*;
 
@@ -25,12 +26,12 @@ public class CallerNodeToken extends TypedToken {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return callerNode.getType();
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         callerNode.setType(type);
     }
 

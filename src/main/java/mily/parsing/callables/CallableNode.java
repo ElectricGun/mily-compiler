@@ -3,6 +3,7 @@ package mily.parsing.callables;
 import mily.abstracts.*;
 import mily.parsing.*;
 import mily.structures.structs.CallableSignature;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
@@ -11,8 +12,8 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
 
     protected String name;
     protected List<String> argumentNames = new ArrayList<>();
-    protected List<String> argumentTypes = new ArrayList<>();
-    protected String returnType;
+    protected List<Type> argumentTypes = new ArrayList<>();
+    protected Type returnType;
 
     public CallableNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
@@ -25,7 +26,7 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
     }
 
     @Override
-    public List<String> getArgumentTypes() {
+    public List<Type> getArgumentTypes() {
         return argumentTypes;
     }
 
@@ -35,12 +36,12 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return returnType;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.returnType = type;
     }
 
@@ -66,8 +67,8 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         return out;
     }
 
-    public String[] getArgumentTypesArr() {
-        String[] out = new String[argumentTypes.size()];
+    public Type[] getArgumentTypesArr() {
+        Type[] out = new Type[argumentTypes.size()];
         for (int i = 0; i < out.length; i++) {
             out[i] = argumentTypes.get(i);
         }
@@ -82,7 +83,7 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         return argumentNames.get(i);
     }
 
-    public String getArgType(int i) {
+    public Type getArgType(int i) {
         return argumentTypes.get(i);
     }
 }

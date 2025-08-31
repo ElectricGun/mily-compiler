@@ -2,6 +2,7 @@ package mily.parsing;
 
 import java.util.*;
 
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -62,7 +63,9 @@ public class ForLoopNode extends EvaluatorNode {
                     } else if (isVariableOrDeclarator(previousToken)) {
                         if (isVariableName(token)) {
                             // VARIABLE DECLARATION
-                            initial = new DeclarationNode(previousToken.string, token, depth + 1);
+                            //TODO use DataTypeNode
+                            Type type = new Type(previousToken.string);
+                            initial = new DeclarationNode(type, token, depth + 1);
                             members.add(initial.evaluate(tokenList, evaluatorTree));
                         } else {
                             return throwSyntaxError("Unexpected token in for loop initial variable declaration", token);

@@ -1,5 +1,7 @@
 package mily.abstracts;
 
+import mily.structures.structs.*;
+
 /**
  * <h1> Interface Typed </h1>
  * Used for typed classes
@@ -9,7 +11,7 @@ package mily.abstracts;
 
 public interface Typed {
 
-    String getType();
+    Type getType();
 
-    void setType(String type);
+    void setType(Type type);
 }

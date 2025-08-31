@@ -1,5 +1,7 @@
 package mily.constants;
 
+import mily.structures.structs.Type;
+
 /**
  * <h1> Class Keywords </h1>
  * Static lexicon of pre-defined keywords
@@ -57,23 +59,6 @@ public class Keywords {
         KEY_BOOLEAN_FALSE = "false",
         KEY_BOOLEAN_TRUE = "true",
 
-        // keywords: datatypes
-        KEY_DATA_INT = "int",
-        KEY_DATA_DOUBLE = "double",
-        KEY_DATA_STRING = "string",
-        KEY_DATA_BOOLEAN = "boolean",
-        KEY_DATA_VOID = "void",
-        KEY_DATA_SYMBOL = "symbol",
-        // for template arguments only
-        KEY_DATA_ANY = "any",
-
-        // keywords: variable data
-        KEY_MEM = "mem",
-        KEY_LOCAL = "local",
-
-        // keywords: other datatypes (not in maps)
-        KEY_DATA_UNKNOWN = "unknown_type",
-
         // operators
         KEY_OP_ASSIGN = "=",
         KEY_OP_MUL = "*",
@@ -114,4 +99,20 @@ public class Keywords {
         KEY_OP_TYPE_GROUP = "key_group",
 //        KEY_OP_CAST_EXPLICIT = "key_cast_explicit",
         KEY_OP_CAST_IMPLICIT = "key_op_type_cast_implicit";
+
+    // datatypes
+    public static Type
+        // keywords: datatypes
+        KEY_DATA_INT = new Type("int"),
+        KEY_DATA_DOUBLE = new Type("double"),
+        KEY_DATA_STRING = new Type("string"),
+        KEY_DATA_BOOLEAN = new Type("boolean"),
+        KEY_DATA_VOID = new Type("void"),
+        KEY_DATA_SYMBOL = new Type("symbol"),
+        // for template arguments only
+        KEY_DATA_ANY = new Type("any"),
+
+        // keywords: other datatypes (not in maps)
+        KEY_DATA_UNKNOWN = new Type("unknown_type")
+                ;
 }

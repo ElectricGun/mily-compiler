@@ -1,6 +1,7 @@
 package mily.parsing.callables;
 
 import mily.parsing.*;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public class FunctionDeclareNode extends CallableNode {
 
     protected ScopeNode scope;
 
-    public FunctionDeclareNode(String name, String returnType, Token nameToken, int depth) {
+    public FunctionDeclareNode(String name, Type returnType, Token nameToken, int depth) {
         super(name, nameToken, depth);
 
         this.returnType = returnType;
@@ -79,7 +80,9 @@ public class FunctionDeclareNode extends CallableNode {
                 return throwSyntaxError("Unexpected operator on function declaration", token);
 
             } else if (isVariableOrDeclarator(token)) {
-                argumentTypes.add(token.string);
+                //TODO use DataTypeNode
+                Type type = new Type(token.string);
+                argumentTypes.add(type);
                 Token variableName = tokenList.remove(0);
 
                 while (isWhiteSpace(variableName)) {
@@ -92,7 +95,7 @@ public class FunctionDeclareNode extends CallableNode {
                     argumentNames.add(variableName.string);
                     argumentWanted = false;
 
-                    FunctionArgNode functionArgNode = new FunctionArgNode(token.string, variableName, depth + 1);
+                    FunctionArgNode functionArgNode = new FunctionArgNode(type, variableName, depth + 1);
                     functionArgNode.setName(variableName.string);
                     members.add(functionArgNode);
 
@@ -111,7 +114,7 @@ public class FunctionDeclareNode extends CallableNode {
 
     @Override
     public String toString() {
-        return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), String.join(", ", argumentTypes));
+        return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), argumentTypes);
     }
 
 //    @Override
@@ -133,7 +136,7 @@ public class FunctionDeclareNode extends CallableNode {
 //    }
 
     @Override
-    public boolean isOverload(String name, String... types) {
+    public boolean isOverload(String name, Type... types) {
         if (!this.getName().equals(name)) {
             return false;
         }

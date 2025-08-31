@@ -182,6 +182,8 @@ public class Functions {
     }
 
     public static boolean isDeclarator(Token t) {
+        if (t == null)
+            return false;
         return isDeclarator(t.string);
     }
 

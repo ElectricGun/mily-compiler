@@ -1,6 +1,7 @@
 package mily.codegen.blocks;
 
 import mily.parsing.callables.*;
+import mily.structures.structs.Type;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ public class IRFunction extends IRBlock {
     protected String returnVar;
     protected String argPrefix;
     protected List<String> argNames = new ArrayList<>();
-    protected List<String> argTypes = new ArrayList<>();
+    protected List<Type> argTypes = new ArrayList<>();
 
     public IRFunction(FunctionDeclareNode sourceFunctionNode, String callLabel, String callbackVar, String argPrefix, String retunVar) {
         this.sourceFunctionNode = sourceFunctionNode;
@@ -43,7 +44,7 @@ public class IRFunction extends IRBlock {
         return argNames.get(i);
     }
 
-    public void addArg(String type, String arg) {
+    public void addArg(Type type, String arg) {
         argNames.add(arg);
         argTypes.add(type);
     }

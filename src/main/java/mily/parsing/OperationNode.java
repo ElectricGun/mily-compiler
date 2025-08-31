@@ -3,6 +3,7 @@ package mily.parsing;
 import java.util.*;
 
 import mily.parsing.invokes.*;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -46,23 +47,25 @@ public class OperationNode extends EvaluatorNode {
     }
 
     // its private here because it is too dangerous to be used outside of this class
-    private static String guessValueType(String s) {
+    private static Type guessValueType(String s) {
         if (s == null)
             return null;
 
+        Type output = new Type(KEY_DATA_UNKNOWN.typeString);
+
         if (isInteger(s)) {
-            return KEY_DATA_INT;
+            output.typeString = KEY_DATA_INT.typeString;
 
         } else if (isNumeric(s)) {
-            return KEY_DATA_DOUBLE;
+            output.typeString =  KEY_DATA_DOUBLE.typeString;
 
         } else if (s.startsWith("\"") && s.endsWith("\"")) {
-            return KEY_DATA_STRING;
+            output.typeString =  KEY_DATA_STRING.typeString;
 
         } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
-            return KEY_DATA_BOOLEAN;
+            output.typeString =  KEY_DATA_BOOLEAN.typeString;
         }
-        return KEY_DATA_UNKNOWN;
+        return output;
     }
 
     public boolean isReturnOperation() {
@@ -159,11 +162,11 @@ public class OperationNode extends EvaluatorNode {
                 Double.parseDouble(getRightConstantString()) : null;
     }
 
-    public String getLeftTokenType() {
+    public Type getLeftTokenType() {
         return getLeftSide().constantToken.getType();
     }
 
-    public String getRightTokenType() {
+    public Type getRightTokenType() {
         return getRightSide().constantToken.getType();
     }
 
@@ -232,19 +235,6 @@ public class OperationNode extends EvaluatorNode {
 
                     operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, KEY_DATA_STRING, token.line));
 
-//                } else if (token.equalsKey(KEY_MACRO_LITERAL) && isVariableName(previousToken)) {
-//                    if (evaluatorTree.debugMode)
-//                        System.out.printf(indent + "Parsing raw template invoke : prev %s : %s%n", previousToken, token);
-//
-//                    // remove last token because it will be replaced by a single RawTemplateInvoke
-//                    operationTokens.remove(operationTokens.size() - 1);
-//
-//                    RawTemplateInvoke functionCallNode = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-//                    RawTemplateInvoke evaluated = (RawTemplateInvoke) functionCallNode.evaluate(tokenList, evaluatorTree);
-//
-//                    CallerNodeToken callerNodeToken = new CallerNodeToken(evaluated.nameToken.string, token.source, token.line, evaluated);
-//                    operationTokens.add(callerNodeToken);
-
                 } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     // function calls should be evaluated here because they don't change the order of operations
                     // and can be regarded as constants
@@ -275,7 +265,7 @@ public class OperationNode extends EvaluatorNode {
                         boolean closeBracketFound = false;
                         boolean constantFound = false;
 
-                        Token datatypeToken = null;
+                        Token datatypeToken;
                         Token castConstantToken = null;
 
                         while (!datatypeFound || !closeBracketFound || !constantFound) {
@@ -476,7 +466,7 @@ public class OperationNode extends EvaluatorNode {
                             constantToken = typedToken;
 
                         } else {
-                            String guessedValueType = guessValueType(newConstantToken.string);
+                            Type guessedValueType = guessValueType(newConstantToken.string);
                             constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
 
                             if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
@@ -514,7 +504,7 @@ public class OperationNode extends EvaluatorNode {
                             setLeftSide(op);
 
                         } else {
-                            String guessedValueType = guessValueType(newConstantToken.string);
+                            Type guessedValueType = guessValueType(newConstantToken.string);
                             op.constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
                             setLeftSide(op);
 
@@ -549,7 +539,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public void makeConstant(String newString) {
-        String newTokenType = guessValueType(newString);
+        Type newTokenType = guessValueType(newString);
         setConstantToken(new TypedToken(newString, this.nameToken.source, newTokenType, this.nameToken.line));
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);

@@ -1,6 +1,7 @@
 package mily.parsing;
 
 import mily.parsing.callables.*;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
@@ -17,7 +18,7 @@ import static mily.constants.Keywords.*;
 
 public class DeclarationNode extends VariableNode {
 
-    public DeclarationNode(String type, Token token, int depth) {
+    public DeclarationNode(Type type, Token token, int depth) {
         super(type, token, depth);
     }
 

@@ -1,6 +1,7 @@
 package mily.parsing;
 
 import mily.abstracts.*;
+import mily.structures.structs.Type;
 import mily.tokens.*;
 
 /**
@@ -13,9 +14,9 @@ import mily.tokens.*;
 public abstract class VariableNode extends EvaluatorNode implements Typed, Named {
 
     protected String variableName;
-    protected String type;
+    protected Type type;
 
-    public VariableNode(String type, Token token, int depth) {
+    public VariableNode(Type type, Token token, int depth) {
         super(token, depth);
         this.type = type;
         this.variableName = token.string;
@@ -32,12 +33,12 @@ public abstract class VariableNode extends EvaluatorNode implements Typed, Named
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
