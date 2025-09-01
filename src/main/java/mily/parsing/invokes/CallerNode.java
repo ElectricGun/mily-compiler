@@ -13,8 +13,8 @@ import static mily.constants.Keywords.*;
 
 public class CallerNode extends EvaluatorNode implements Caller {
 
+    protected final List<OperationNode> arguments = new ArrayList<>();
     protected String name;
-    protected List<OperationNode> arguments = new ArrayList<>();
     protected Type type = KEY_DATA_UNKNOWN.create();
 
     public CallerNode(String name, Token nameToken, int depth) {

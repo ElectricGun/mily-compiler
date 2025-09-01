@@ -9,9 +9,9 @@ package mily.structures.structs;
 
 public class CodeFile {
 
-    protected String code;
-    protected String filename;
-    protected String directory;
+    protected final String code;
+    protected final String filename;
+    protected final String directory;
 
     public CodeFile(String directory, String filename, String code) {
         this.directory = directory;

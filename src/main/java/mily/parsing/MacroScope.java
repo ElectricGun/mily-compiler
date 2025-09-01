@@ -15,8 +15,8 @@ import static mily.constants.Keywords.*;
 
 public class MacroScope extends EvaluatorNode {
 
-    protected List<String> content = new ArrayList<>();
-    protected List<String> args;
+    protected final List<String> content = new ArrayList<>();
+    protected final List<String> args;
 
     public MacroScope(Token nameToken, List<String> args, int depth) {
         super(nameToken, depth);

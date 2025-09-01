@@ -7,14 +7,14 @@ import java.util.*;
 
 public class IRFunction extends IRBlock {
 
-    protected FunctionDeclareNode sourceFunctionNode;
+    protected final FunctionDeclareNode sourceFunctionNode;
 
-    protected String callLabel;
-    protected String callbackVar;
-    protected String returnVar;
-    protected String argPrefix;
-    protected List<String> argNames = new ArrayList<>();
-    protected List<Type> argTypes = new ArrayList<>();
+    protected final String callLabel;
+    protected final String callbackVar;
+    protected final String returnVar;
+    protected final String argPrefix;
+    protected final List<String> argNames = new ArrayList<>();
+    protected final List<Type> argTypes = new ArrayList<>();
 
     public IRFunction(FunctionDeclareNode sourceFunctionNode, String callLabel, String callbackVar, String argPrefix, String retunVar) {
         this.sourceFunctionNode = sourceFunctionNode;

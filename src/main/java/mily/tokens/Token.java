@@ -11,9 +11,9 @@ import mily.constants.Functions;
 
 public class Token implements Named {
 
+    public final String source;
+    public final int line;
     public String string;
-    public String source;
-    public int line;
 
     public Token(String string, String source, int line) {
         this.string = string;

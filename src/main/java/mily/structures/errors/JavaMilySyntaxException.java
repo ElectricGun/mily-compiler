@@ -4,7 +4,7 @@ import mily.tokens.*;
 
 public class JavaMilySyntaxException extends JavaMilyException {
 
-    Token token;
+    final Token token;
 
     public JavaMilySyntaxException(String message, Token token) {
         super(message);

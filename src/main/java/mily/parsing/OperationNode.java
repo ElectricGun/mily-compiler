@@ -25,10 +25,10 @@ import static mily.constants.Maps.*;
 
 public class OperationNode extends EvaluatorNode {
 
-    public List<OperationBracketNode> bracketOperations = new ArrayList<>();
+    public final List<OperationBracketNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
-    public List<Token> operationTokens = new ArrayList<>();
+    public final List<Token> operationTokens = new ArrayList<>();
     protected TypedToken constantToken = null;
     protected boolean isReturnOperation;
     protected String type = KEY_OP_TYPE_CONSTANT;

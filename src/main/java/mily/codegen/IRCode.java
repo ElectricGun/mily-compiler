@@ -7,7 +7,7 @@ import java.util.*;
 
 public class IRCode {
 
-    public List<IRBlock> irBlocks = new ArrayList<>();
+    public final List<IRBlock> irBlocks = new ArrayList<>();
 
     public String generateMlog() {
         StringBuilder out = new StringBuilder();

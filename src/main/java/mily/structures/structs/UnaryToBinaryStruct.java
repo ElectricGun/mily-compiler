@@ -4,10 +4,10 @@ import mily.parsing.*;
 
 public class UnaryToBinaryStruct {
 
-    protected OperationNode oldOp;
-    protected OperationNode newOp;
-    protected OperationNode child;
-    protected OperationNode factor;
+    protected final OperationNode oldOp;
+    protected final OperationNode newOp;
+    protected final OperationNode child;
+    protected final OperationNode factor;
 
     public UnaryToBinaryStruct(OperationNode oldOp, OperationNode newOp, OperationNode child, OperationNode factor) {
         this.oldOp = oldOp;

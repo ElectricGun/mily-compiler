@@ -4,8 +4,8 @@ import java.util.*;
 
 public class HashCodeSimplifier {
 
-    protected List<Integer> keys = new ArrayList<>();
-    protected List<Integer> values = new ArrayList<>();
+    protected final List<Integer> keys = new ArrayList<>();
+    protected final List<Integer> values = new ArrayList<>();
 
     public int simplifyHash(int hashCode) {
         if (!keys.contains(hashCode)) {

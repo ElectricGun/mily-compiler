@@ -17,9 +17,9 @@ import static mily.constants.Keywords.*;
 
 public class OperationMap {
 
-    protected Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
-    protected Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
-    protected Map<OperationKey, Type> operationCastMap = new HashMap<>();
+    protected final Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
+    protected final Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
+    protected final Map<OperationKey, Type> operationCastMap = new HashMap<>();
 
     /**
      * Adds a converter for unary operations to binary <br>
@@ -108,9 +108,9 @@ public class OperationMap {
     }
 
     protected static class OperationKey {
-        String operator;
-        Type leftType;
-        Type rightType;
+        final String operator;
+        final Type leftType;
+        final Type rightType;
 
         public OperationKey(String operator, Type leftType, Type rightType) {
             this.operator = operator;

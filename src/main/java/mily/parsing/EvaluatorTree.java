@@ -15,8 +15,8 @@ import mily.tokens.*;
 public class EvaluatorTree {
 
     public final boolean debugMode;
+    public final ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", "__MAIN__", 1), 0);
     public String name = "";
-    public ScopeNode mainBlock = new ScopeNode(new Token("__MAIN__", "__MAIN__", 1), 0);
 
     public EvaluatorTree(boolean debugMode) {
         this.debugMode = debugMode;

@@ -13,7 +13,7 @@ import static mily.constants.Keywords.*;
 
 public class CallerNodeToken extends TypedToken {
 
-    CallerNode callerNode;
+    final CallerNode callerNode;
 
     public CallerNodeToken(String string, String source, int line, CallerNode callerNode) {
         super(string, source, KEY_DATA_UNKNOWN, line);

@@ -5,14 +5,14 @@ import mily.parsing.*;
 
 public class CompilerOutput {
 
-    protected EvaluatorTree AST;
-    protected IRCode outputCode;
+    protected final EvaluatorTree AST;
+    protected final IRCode outputCode;
 
-    long lexingDuration;
-    long astBuildDuration;
-    long optimizationDuration;
-    long codeGenerationDuration;
-    long compileDuration;
+    final long lexingDuration;
+    final long astBuildDuration;
+    final long optimizationDuration;
+    final long codeGenerationDuration;
+    final long compileDuration;
 
     public CompilerOutput(EvaluatorTree ast,
                           IRCode outputCode,

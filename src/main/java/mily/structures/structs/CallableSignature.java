@@ -6,8 +6,8 @@ import java.util.*;
 
 public class CallableSignature implements Named {
 
+    protected final List<Type> argTypes = new ArrayList<>();
     protected String name;
-    protected List<Type> argTypes = new ArrayList<>();
 
     public CallableSignature(String name) {
         this.name = name;
@@ -51,7 +51,7 @@ public class CallableSignature implements Named {
         StringBuilder out = new StringBuilder(name + "_");
 
         for (Type argType : argTypes) {
-            out.append(argTypes.toString());
+            out.append(argTypes);
         }
 
         return out.toString();

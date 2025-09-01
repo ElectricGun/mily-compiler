@@ -14,9 +14,9 @@ import static mily.constants.Keywords.*;
 
 public abstract class CallableNode extends EvaluatorNode implements Callable {
 
+    protected final List<String> argumentNames = new ArrayList<>();
+    protected final List<Type> argumentTypes = new ArrayList<>();
     protected String name;
-    protected List<String> argumentNames = new ArrayList<>();
-    protected List<Type> argumentTypes = new ArrayList<>();
     protected Type returnType;
 
     public CallableNode(String name, Token nameToken, int depth) {

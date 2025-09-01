@@ -15,13 +15,13 @@ import mily.tokens.*;
 
 public abstract class EvaluatorNode {
 
+    public final Token nameToken;
+    // for storing general information
+    protected final Map<String, String> flags = new HashMap<>();
+    protected final List<MilyThrowable> throwables = new ArrayList<>();
+    protected final List<EvaluatorNode> members = new ArrayList<>();
     private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
     public int depth;
-    public Token nameToken;
-    // for storing general information
-    protected Map<String, String> flags = new HashMap<>();
-    protected List<MilyThrowable> throwables = new ArrayList<>();
-    protected List<EvaluatorNode> members = new ArrayList<>();
 
     public EvaluatorNode(Token nameToken, int depth) {
         this.nameToken = nameToken;
