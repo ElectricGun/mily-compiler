@@ -18,6 +18,17 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
         this.type = new Type(datatype);
     }
 
+    public static Type processType(Token type, List<Token> tokenList, EvaluatorTree evaluatorTree) throws NullPointerException {
+        DatatypeNode datatypeNode = new DatatypeNode(type.string, type, 0);
+        DatatypeNode out = (DatatypeNode) datatypeNode.evaluate(tokenList, evaluatorTree);
+
+        if (out == null) {
+            throw new NullPointerException("DatatypeNode in processType() is null!");
+        }
+
+        return out.getType();
+    }
+
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
@@ -60,17 +71,6 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
             }
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
-    }
-
-    public static Type processType(Token type, List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws NullPointerException {
-        DatatypeNode datatypeNode = new DatatypeNode(type.string, type, 0);
-        DatatypeNode out = (DatatypeNode) datatypeNode.evaluate(tokenList, evaluatorTree);
-
-        if (out == null) {
-            throw new NullPointerException("DatatypeNode in processType() is null!");
-        }
-
-        return out.getType();
     }
 
     @Override

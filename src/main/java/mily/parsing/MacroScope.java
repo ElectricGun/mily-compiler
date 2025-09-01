@@ -18,15 +18,15 @@ public class MacroScope extends EvaluatorNode {
     protected List<String> content = new ArrayList<>();
     protected List<String> args;
 
-    @Override
-    public String errorName() {
-        return "macro";
-    }
-
     public MacroScope(Token nameToken, List<String> args, int depth) {
         super(nameToken, depth);
 
         this.args = args;
+    }
+
+    @Override
+    public String errorName() {
+        return "macro";
     }
 
     @Override
@@ -50,12 +50,12 @@ public class MacroScope extends EvaluatorNode {
                     return this;
 
                 } else if (token.equalsKey(KEY_CURLY_OPEN)) {
-                    bracketAmount ++;
+                    bracketAmount++;
 
                 } else if (token.equalsKey(KEY_CURLY_CLOSE)) {
-                    bracketAmount --;
+                    bracketAmount--;
                 }
-            } else if (!token.isWhiteSpace()){
+            } else if (!token.isWhiteSpace()) {
                 return throwSyntaxError("Unexpected token in macro", token);
             }
 

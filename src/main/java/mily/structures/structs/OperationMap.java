@@ -40,14 +40,14 @@ public class OperationMap {
         UnaryToBinaryStruct unaryToBinaryStruct = new UnaryToBinaryStruct(operationNode, newOp, memberChild, factorConstant);
 
 //        if (!operationNode.isCast()) {
-            String key = operationNode.getOperator();
+        String key = operationNode.getOperator();
 
-            if (unaryOperationConversionMap.containsKey(key)) {
-                unaryOperationConversionMap.get(key).accept(unaryToBinaryStruct);
-            } else {
-                throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
+        if (unaryOperationConversionMap.containsKey(key)) {
+            unaryOperationConversionMap.get(key).accept(unaryToBinaryStruct);
+        } else {
+            throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
 
-            }
+        }
 //        } else {
 //            newOp.setOperator(KEY_OP_CAST_EXPLICIT);
 //            factorConstant.setConstantToken(new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line));

@@ -413,7 +413,7 @@ public class CodeGeneration {
     private static String processConstantToken(IRCodeConfig irCodeConfig, TypedToken token, int depth) throws Exception {
         if (token instanceof CallerNodeToken callerNodeToken) {
             CallerNode callerNode = callerNodeToken.getNode();
-            int callerHashCode =  irCodeConfig.hashCodeSimplifier.simplifyHash(callerNodeToken.hashCode());
+            int callerHashCode = irCodeConfig.hashCodeSimplifier.simplifyHash(callerNodeToken.hashCode());
             CallableNode callableNode = irCodeConfig.callableNodeMap.get(callerNode.signature());
 
             if (callableNode instanceof FunctionDeclareNode) {

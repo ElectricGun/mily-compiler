@@ -28,6 +28,18 @@ public abstract class EvaluatorNode {
         this.depth = depth;
     }
 
+    public static Token fetchNextNonWhitespaceToken(List<Token> tokenList) throws JavaMilySyntaxException {
+        Token output;
+        do {
+            output = tokenList.remove(0);
+            if (tokenList.isEmpty()) {
+                throw new JavaMilySyntaxException("Unexpected end of file in token list", output);
+            }
+        } while (output.isWhiteSpace());
+
+        return output;
+    }
+
     public void putFlag(String flag, String value) {
         flags.put(flag, value);
     }

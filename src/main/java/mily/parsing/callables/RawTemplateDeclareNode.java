@@ -21,15 +21,15 @@ public class RawTemplateDeclareNode extends CallableNode {
     protected MacroScope scope;
     protected String returnVariableRaw;
 
-    @Override
-    public String errorName() {
-        return "template " + "\"" + nameToken.string + "\"";
-    }
-
     public RawTemplateDeclareNode(String name, Type returnType, Token nameToken, int depth) {
         super(name, nameToken, depth);
 
         this.returnType = returnType;
+    }
+
+    @Override
+    public String errorName() {
+        return "template " + "\"" + nameToken.string + "\"";
     }
 
     @SuppressWarnings("unused")

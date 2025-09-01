@@ -31,6 +31,7 @@ public abstract class ConditionalNode extends EvaluatorNode {
         return scope;
     }
 
+    // what even is this method?
     public void parseOperation(List<Token> tokenList, EvaluatorTree evaluatorTree, int depth, boolean debugMode) {
         String indent = " ".repeat(depth);
         List<Token> operationTokens = new ArrayList<>();

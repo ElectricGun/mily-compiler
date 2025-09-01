@@ -2,6 +2,7 @@ package mily.parsing;
 
 import java.util.*;
 
+import mily.structures.errors.*;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -60,8 +61,13 @@ public class ForLoopNode extends EvaluatorNode {
                         members.add(initial.evaluate(tokenList, evaluatorTree));
 
                     } else if (isVariableOrDeclarator(previousToken)) {
-                        initial = (VariableNode) ScopeNode.processDeclarationDatatype(token, previousToken, tokenList, evaluatorTree, depth + 1);
-                        members.add(initial);
+                        try {
+                            initial = (VariableNode) ScopeNode.processDeclarationDatatype(token, previousToken, tokenList, evaluatorTree, depth + 1);
+                            members.add(initial);
+
+                        } catch (JavaMilySyntaxException e) {
+                            return throwSyntaxError("Unexpected end of file", token);
+                        }
 
                     } else if (!isVariableOrDeclarator(token)) {
                         return throwSyntaxError("Unexpected token in for loop initial", token);
@@ -84,21 +90,12 @@ public class ForLoopNode extends EvaluatorNode {
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
-//                while (!keyEquals(KEY_BRACKET_CLOSE, operationTokens.getLast())) {
-//                    Token currentToken = tokenList.removeFirst();
                 while (!keyEquals(KEY_BRACKET_CLOSE, operationTokens.get(operationTokens.size() - 1))) {
                     Token currentToken = tokenList.remove(0);
                     operationTokens.add(currentToken);
                 }
                 // remove last bracket
-//                operationTokens.removeLast();
                 operationTokens.remove(operationTokens.size() - 1);
-
-//                if (isVariableName(operationTokens.getFirst())) {
-//                    Token variableName = operationTokens.removeFirst();
-//
-//                    while (true) {
-//                        Token opToken = operationTokens.removeFirst();
 
                 if (isVariableName(operationTokens.get(0))) {
                     Token variableName = operationTokens.remove(0);

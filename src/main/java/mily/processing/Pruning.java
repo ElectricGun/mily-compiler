@@ -162,7 +162,7 @@ public class Pruning {
             if (operationNode.isConstant()) {
                 return;
             }
-            
+
             if (!operationNode.isUnary()) {
                 boolean leftIsConstant = operationNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationNode.getRightSide().isConstant();

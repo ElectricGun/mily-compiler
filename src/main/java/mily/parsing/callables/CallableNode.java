@@ -2,11 +2,19 @@ package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
+import mily.structures.errors.JavaMilySyntaxException;
 import mily.structures.structs.CallableSignature;
 import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
+
+import static mily.constants.Functions.*;
+import static mily.constants.Functions.isOperator;
+import static mily.constants.Functions.isVariableName;
+import static mily.constants.Functions.isVariableOrDeclarator;
+import static mily.constants.Functions.keyEquals;
+import static mily.constants.Keywords.*;
 
 public abstract class CallableNode extends EvaluatorNode implements Callable {
 
@@ -85,5 +93,70 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
 
     public Type getArgType(int i) {
         return argumentTypes.get(i);
+    }
+
+    protected void processArgs(List<Token> tokenList, EvaluatorTree evaluatorTree) throws JavaMilySyntaxException {
+        String indent = " ".repeat(depth);
+
+        boolean isInitialized = false;
+        boolean argumentWanted = false;
+
+        if (evaluatorTree.debugMode)
+            System.out.printf(indent + "Parsing Function %s:%n", this.nameToken);
+
+        while (!tokenList.isEmpty()) {
+            Token token = tokenList.remove(0);
+            if (evaluatorTree.debugMode)
+                System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.nameToken, token);
+
+            if (isWhiteSpace(token)) {
+                continue;
+
+            } else if (isPunctuation(token) && !isWhiteSpace(token)) {
+                if (argumentWanted) {
+                    throw new JavaMilySyntaxException("Expecting an argument on function declaration", token);
+
+                } else if (keyEquals(KEY_BRACKET_CLOSE, token)) {
+                    return;
+
+                } else if (keyEquals(KEY_COMMA, token)) {
+                    argumentWanted = true;
+
+                } else {
+                    throw new JavaMilySyntaxException("Unexpected punctuation on function declaration", token);
+
+                }
+            } else if (isOperator(token)) {
+                throw new JavaMilySyntaxException("Unexpected operator on function declaration", token);
+
+            } else if (isVariableOrDeclarator(token)) {
+                Type type = DatatypeNode.processType(token, tokenList, evaluatorTree);
+                argumentTypes.add(type);
+//                Type type = new Type(token.string);
+//                argumentTypes.add(type);
+                Token variableName = EvaluatorNode.fetchNextNonWhitespaceToken(tokenList);
+
+                if (!isVariableName(variableName)) {
+                    throw new JavaMilySyntaxException("Not a variable name on function declaration", token);
+
+                } else if (!isInitialized || argumentWanted) {
+                    argumentNames.add(variableName.string);
+                    argumentWanted = false;
+
+                    FunctionArgNode functionArgNode = new FunctionArgNode(type, variableName, depth + 1);
+                    functionArgNode.setName(variableName.string);
+                    members.add(functionArgNode);
+
+                    if (evaluatorTree.debugMode)
+                        System.out.printf("Added argument %s%n", variableName);
+
+                } else {
+                    throw new JavaMilySyntaxException("Unexpected token on function declaration", token);
+
+                }
+            }
+            isInitialized = true;
+        }
+        throw new JavaMilySyntaxException("Unexpected end of file", nameToken);
     }
 }

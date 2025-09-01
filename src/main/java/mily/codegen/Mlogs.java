@@ -30,7 +30,7 @@ public class Mlogs {
 
     public static String opAsMlog(String op) throws IllegalArgumentException {
 //        if (op.equals(KEY_OP_CAST_EXPLICIT))
-            // make this a mily error
+        // make this a mily error
 //            throw new IllegalArgumentException("Primitive explicit casting may only be done on constant values in compile time");
 
         if (!mlogOperationMap.containsKey(op))
@@ -42,7 +42,7 @@ public class Mlogs {
     public static String tokenAsMlog(TypedToken typedToken) {
         if (typedToken.getType().equals(KEY_DATA_BOOLEAN)) {
             if (typedToken.equalsKey(KEY_BOOLEAN_FALSE)) {
-                    return "0";
+                return "0";
 
             } else if (typedToken.equalsKey(KEY_BOOLEAN_TRUE)) {
                 return "1";

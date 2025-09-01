@@ -11,7 +11,7 @@ public class IRCodeConfig {
 
     public IRCode irCode;
     public Map<FunctionDeclareNode, IRFunction> irFunctionMap;
-//    public Map<String, RawTemplateDeclareNode> templateNodeMap;
+    //    public Map<String, RawTemplateDeclareNode> templateNodeMap;
     public Map<CallableSignature, CallableNode> callableNodeMap;
     public HashCodeSimplifier hashCodeSimplifier;
     public boolean generateComments;

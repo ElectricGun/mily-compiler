@@ -57,13 +57,13 @@ public class OperationNode extends EvaluatorNode {
             output.typeString = KEY_DATA_INT.typeString;
 
         } else if (isNumeric(s)) {
-            output.typeString =  KEY_DATA_DOUBLE.typeString;
+            output.typeString = KEY_DATA_DOUBLE.typeString;
 
         } else if (s.startsWith("\"") && s.endsWith("\"")) {
-            output.typeString =  KEY_DATA_STRING.typeString;
+            output.typeString = KEY_DATA_STRING.typeString;
 
         } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
-            output.typeString =  KEY_DATA_BOOLEAN.typeString;
+            output.typeString = KEY_DATA_BOOLEAN.typeString;
         }
         return output;
     }
@@ -381,8 +381,8 @@ public class OperationNode extends EvaluatorNode {
                             // NOTE: REMOVED
 //                            // special case for exponents, because they supersede unary operators
 //                            if (largestOrder != -2 || orders.get(i) != 0) {
-                                largestOrder = orders.get(i);
-                                largestOrderIndex = i;
+                            largestOrder = orders.get(i);
+                            largestOrderIndex = i;
 //                            }
 
                         } else if (orders.get(i) == -2 && largestOrderIndex == -1) {
@@ -400,6 +400,7 @@ public class OperationNode extends EvaluatorNode {
                     for (Integer order : orders) {
                         if (order != -1) {
                             noOperators = false;
+                            break;
                         }
                     }
 
@@ -426,8 +427,8 @@ public class OperationNode extends EvaluatorNode {
 //                            type = KEY_OP_CAST_EXPLICIT;
 //                            operator = castToken.getType();
 //                        } else {
-                            type = KEY_OP_TYPE_OPERATION;
-                            operator = largestOp.string;
+                        type = KEY_OP_TYPE_OPERATION;
+                        operator = largestOp.string;
 //                        }
 
                         List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
@@ -486,8 +487,8 @@ public class OperationNode extends EvaluatorNode {
 //                            this.operator = castToken.getType();
 
 //                        } else {
-                            type = KEY_OP_TYPE_OPERATION;
-                            this.operator = unaryOperator.string;
+                        type = KEY_OP_TYPE_OPERATION;
+                        this.operator = unaryOperator.string;
 //                        }
                         Token newConstantToken = operationTokens.remove(0);
 
