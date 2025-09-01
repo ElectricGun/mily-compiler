@@ -106,10 +106,6 @@ public class CallerNode extends EvaluatorNode implements Caller {
             if (debugMode)
                 System.out.println(indent + "arg: " + token + " expectingArg: " + expectingArgument);
 
-//            if (token.isWhiteSpace()) {
-//                continue;
-//            }
-
             if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE) && !token.isWhiteSpace()) {
                 if (!opTokens.isEmpty()) {
                     opTokens.add(new Token(KEY_SEMICOLON, token.source, token.line));

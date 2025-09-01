@@ -24,10 +24,6 @@ public class IRFunction extends IRBlock {
         this.returnVar = retunVar;
     }
 
-//    public String getArgPrefix() {
-//        return argPrefix;
-//    }
-
     public String getCallbackVar() {
         return callbackVar;
     }
@@ -35,10 +31,6 @@ public class IRFunction extends IRBlock {
     public String getReturnVar() {
         return returnVar;
     }
-
-//    public int getArgCount() {
-//        return argNames.size();
-//    }
 
     public String getArg(int i) {
         return argNames.get(i);

@@ -309,12 +309,6 @@ public class OperationNode extends EvaluatorNode {
                             operationTokens.add(token);
                         } else {
                             return throwSyntaxError("Illegal parenthesis value", token);
-//                            if (evaluatorTree.debugMode)
-//                                System.out.println(indent + "cast found (" + datatypeToken.string + ")");
-//                            CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.source, token.line);
-//                            operationTokens.add(castToken);
-//
-//                            tokenList.add(0, castConstantToken);
                         }
                     }
 
@@ -572,10 +566,6 @@ public class OperationNode extends EvaluatorNode {
         return operationMap.generateBinaryFromUnaryAtMember(this, memberIndex);
     }
 
-//    public boolean isCast() {
-//        return keyEquals(KEY_OP_CAST_EXPLICIT, type);
-//    }
-
     @Override
     public String toString() {
         //TODO fix this stupid thing
@@ -584,10 +574,6 @@ public class OperationNode extends EvaluatorNode {
         if (isReturnOperation) {
             out += "return ";
         }
-
-//        if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {
-//            return out + "unary cast(\"" + operator + "\")";
-//        }
 
         if (isEmptyConstant()) {
             return out + "empty";

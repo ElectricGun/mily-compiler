@@ -10,10 +10,6 @@ import mily.tokens.*;
 import java.util.*;
 
 import static mily.constants.Functions.*;
-import static mily.constants.Functions.isOperator;
-import static mily.constants.Functions.isVariableName;
-import static mily.constants.Functions.isVariableOrDeclarator;
-import static mily.constants.Functions.keyEquals;
 import static mily.constants.Keywords.*;
 
 public abstract class CallableNode extends EvaluatorNode implements Callable {
@@ -132,8 +128,6 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
             } else if (isVariableOrDeclarator(token)) {
                 Type type = DatatypeNode.processType(token, tokenList, evaluatorTree);
                 argumentTypes.add(type);
-//                Type type = new Type(token.string);
-//                argumentTypes.add(type);
                 Token variableName = EvaluatorNode.fetchNextNonWhitespaceToken(tokenList);
 
                 if (!isVariableName(variableName)) {

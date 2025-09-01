@@ -37,24 +37,6 @@ public class RawTemplateDeclareNode extends CallableNode {
         return scope;
     }
 
-//    @Override
-//    public boolean isOverload(Caller caller, String name, String... types) {
-//        if (!(caller instanceof RawTemplateInvoke)) {
-//            return false;
-//        }
-
-//        return isOverload(name, types);
-//    }
-
-//    @Override
-//    public boolean isOverload(Callable callable, String name, String... types) {
-//        if (!(callable instanceof RawTemplateDeclareNode)) {
-//            return false;
-//        }
-//
-//        return isOverload(name, types);
-//    }
-
     @Override
     public boolean isOverload(String name, Type... types) {
         if (!this.getName().equals(name)) {
@@ -164,20 +146,6 @@ public class RawTemplateDeclareNode extends CallableNode {
         return "declare template: " + getName() + getArgumentNames() + " arg_types: " + getArgumentTypes() +
                 ((returnVariableRaw != null && returnVariableRaw.isEmpty()) ? getType() : " -> " + returnVariableRaw + " : " + getType());
     }
-
-//    @Override
-//    public String getFnKey() {
-//        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
-//
-//        int argCount = getArgumentNames().size();
-//        for (int a = 0; a < argCount; a++) {
-//            fnKey.append(getArgumentTypes().get(a));
-//            if (a < argCount - 1) {
-//                fnKey.append("_");
-//            }
-//        }
-//        return fnKey.toString();
-//    }
 
     public String scopeAsFormatted(List<String> replacers, String outputVariable) {
         String out = scope.asFormatted(replacers);

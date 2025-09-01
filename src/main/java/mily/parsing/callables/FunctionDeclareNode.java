@@ -66,24 +66,6 @@ public class FunctionDeclareNode extends CallableNode {
         return String.format("declare function : %s | args: %s | arg_types: %s", nameToken, String.join(", ", argumentNames), argumentTypes);
     }
 
-//    @Override
-//    public boolean isOverload(Caller caller, String name, String... types) {
-//        if (!(caller instanceof FunctionCallNode)) {
-//            return false;
-//        }
-
-//        return isOverload(name, types);
-//    }
-
-//    @Override
-//    public boolean isOverload(Callable callable, String name, String... types) {
-//        if (!(callable instanceof FunctionDeclareNode)) {
-//            return false;
-//        }
-//
-//        return isOverload(name, types);
-//    }
-
     @Override
     public boolean isOverload(String name, Type... types) {
         if (!this.getName().equals(name)) {
@@ -99,19 +81,5 @@ public class FunctionDeclareNode extends CallableNode {
         }
         return true;
     }
-
-//    @Override
-//    public String getFnKey() {
-//        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
-//
-//        int argCount = this.getArgCount();
-//        for (int a = 0; a < argCount; a++) {
-//            fnKey.append(this.getArgType(a));
-//            if (a < argCount - 1) {
-//                fnKey.append("_");
-//            }
-//        }
-//        return fnKey.toString();
-//    }
 
 }

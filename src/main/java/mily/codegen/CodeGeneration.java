@@ -430,20 +430,7 @@ public class CodeGeneration {
             } else {
                 throw new IllegalArgumentException("Unknown node in CallerNodeToken");
             }
-//            if (callerNode instanceof FunctionCallNode functionCallNode) {
-//                IRFunction irFunction = generateFunctionCall(irCodeConfig, functionCallNode, depth);
-//                String argOutput = irFunction.getReturnVar() + "_" + callerHashCode;
-//                irCodeConfig.irCode.addSingleLineBlock(new SetLine(argOutput, irFunction.getReturnVar(), depth));
-//                return argOutput;
 
-//            } else if (callerNode instanceof RawTemplateInvoke rawTemplateInvoke) {
-//                String argOutput = token.string + "_" + callerHashCode;
-//                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, argOutput, depth);
-//                return argOutput;
-//
-//            } else {
-//                throw new IllegalArgumentException("Unknown node in CallerNodeToken");
-//            }
         } else {
             return tokenAsMlog(token);
         }

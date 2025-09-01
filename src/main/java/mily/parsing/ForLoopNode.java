@@ -11,7 +11,7 @@ import static mily.constants.Keywords.*;
 /**
  * <h1> Class ForLoopNode </h1>
  * For Loops
- * Parsing AST node for for loops.
+ * Parsing AST node of for loops.
  *
  * @author ElectricGun
  */

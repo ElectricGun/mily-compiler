@@ -59,10 +59,6 @@ public class OperationMap {
         return newOp;
     }
 
-//    public void generateBinaryFromUnary(OperationNode operationNode, int memberIndex) {
-//        generateBinaryFromUnaryAtMember(operationNode, 0);
-//    }
-
     public void addOperation(String operator, String leftTypeString, String rightTypeString, String castsTo, Consumer<OperationNode> operationConsumer) {
         addOperation(operator, new Type(leftTypeString), new Type(rightTypeString), new Type(castsTo), operationConsumer);
     }
@@ -78,10 +74,6 @@ public class OperationMap {
         String operator = operationNode.getOperator();
         Type leftType = operationNode.getLeftTokenType();
         Type rightType = operationNode.getRightTokenType();
-
-//        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
-//            return;
-//        }
 
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
         Type castTo = operationCastMap.get(operationKeyCheck);
@@ -101,10 +93,6 @@ public class OperationMap {
 
     public Type getCastTo(String operator, Type leftType, Type rightType) throws IllegalArgumentException {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
-
-//        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
-//            return KEY_DATA_DYNAMIC;
-//        }
 
         if (operationCastMap.containsKey(operationKeyCheck)) {
             return operationCastMap.get(operationKeyCheck);
