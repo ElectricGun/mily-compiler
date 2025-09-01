@@ -2,7 +2,6 @@ package mily.parsing;
 
 import java.util.*;
 
-import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import static mily.constants.Functions.*;
@@ -34,7 +33,7 @@ public class ForLoopNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         Token previousToken = null;
@@ -61,15 +60,9 @@ public class ForLoopNode extends EvaluatorNode {
                         members.add(initial.evaluate(tokenList, evaluatorTree));
 
                     } else if (isVariableOrDeclarator(previousToken)) {
-                        if (isVariableName(token)) {
-                            // VARIABLE DECLARATION
-                            //TODO use DataTypeNode
-                            Type type = new Type(previousToken.string);
-                            initial = new DeclarationNode(type, token, depth + 1);
-                            members.add(initial.evaluate(tokenList, evaluatorTree));
-                        } else {
-                            return throwSyntaxError("Unexpected token in for loop initial variable declaration", token);
-                        }
+                        initial = (VariableNode) ScopeNode.processDeclarationDatatype(token, previousToken, tokenList, evaluatorTree, depth + 1);
+                        members.add(initial);
+
                     } else if (!isVariableOrDeclarator(token)) {
                         return throwSyntaxError("Unexpected token in for loop initial", token);
                     }
@@ -80,8 +73,6 @@ public class ForLoopNode extends EvaluatorNode {
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
-//                while (!keyEquals(KEY_SEMICOLON, operationTokens.getLast())) {
-//                    Token currentToken = tokenList.removeFirst();
                 while (!keyEquals(KEY_SEMICOLON, operationTokens.get(operationTokens.size() - 1))) {
                     Token currentToken = tokenList.remove(0);
                     operationTokens.add(currentToken);

@@ -57,7 +57,7 @@ public class ScopeNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         if (evaluatorTree.debugMode)
@@ -92,23 +92,8 @@ public class ScopeNode extends EvaluatorNode {
                     members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
                 } else {
-                    // add the token back because it has been consumed
-                    tokenList.add(0, token);
-                    DatatypeNode datatypeNode = new DatatypeNode(previousToken.string, previousToken, depth + 1);
-                    datatypeNode.evaluate(tokenList, evaluatorTree);
-
-                    Token varName;
-                    do {
-                        varName = tokenList.remove(0);
-                        if (tokenList.isEmpty()) {
-                            break;
-                        }
-                    } while (varName.isWhiteSpace());
-
                     // VARIABLE DECLARATION
-                    Type type = datatypeNode.type;
-                    EvaluatorNode node = new DeclarationNode(type, varName, depth + 1).evaluate(tokenList, evaluatorTree);
-                    members.add(node);
+                    members.add(processDeclarationDatatype(token, previousToken, tokenList, evaluatorTree, depth + 1));
                 }
                 // clear previous token otherwise it won't be true to reality
                 // as the evaluators below will consume newer tokens
@@ -155,12 +140,10 @@ public class ScopeNode extends EvaluatorNode {
                 while (returnType.isWhiteSpace()) {
                     returnType = tokenList.remove(0);
                 }
-                //TODO use DataTypeNode
-                Type type = new Type(returnType.string);
 
-                if (!isVariableOrDeclarator(returnType)) {
-                    return throwSyntaxError("Expecting return type after raw", returnType);
-                }
+                DatatypeNode datatypeNode = new DatatypeNode(returnType.string, returnType, depth + 1);
+                datatypeNode.evaluate(tokenList, evaluatorTree);
+                Type type = datatypeNode.type;
 
                 Token templateName = tokenList.remove(0);
 
@@ -198,5 +181,23 @@ public class ScopeNode extends EvaluatorNode {
     @Override
     public String toString() {
         return ("scope : " + nameToken + "     #" + hashCode());
+    }
+
+    public static EvaluatorNode processDeclarationDatatype(Token token, Token previousToken, List<Token> tokenList, EvaluatorTree evaluatorTree, int depth) {
+        // add the token back because it has been consumed
+        tokenList.add(0, token);
+        DatatypeNode datatypeNode = new DatatypeNode(previousToken.string, previousToken, depth);
+        datatypeNode.evaluate(tokenList, evaluatorTree);
+
+        Token varName;
+        do {
+            varName = tokenList.remove(0);
+            if (tokenList.isEmpty()) {
+                break;
+            }
+        } while (varName.isWhiteSpace());
+        Type type = datatypeNode.type;
+
+        return new DeclarationNode(type, varName, depth + 1).evaluate(tokenList, evaluatorTree);
     }
 }

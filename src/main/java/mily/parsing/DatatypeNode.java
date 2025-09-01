@@ -6,7 +6,6 @@ import mily.structures.structs.*;
 import mily.tokens.*;
 
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 import static mily.constants.Keywords.*;
 
@@ -20,7 +19,7 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         boolean parsingDiamond = false;
@@ -61,6 +60,17 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
             }
         }
         return throwSyntaxError("Unexpected end of file", nameToken);
+    }
+
+    public static Type processType(Token type, List<Token> tokenList, EvaluatorTree evaluatorTree, boolean debugMode) throws NullPointerException {
+        DatatypeNode datatypeNode = new DatatypeNode(type.string, type, 0);
+        DatatypeNode out = (DatatypeNode) datatypeNode.evaluate(tokenList, evaluatorTree);
+
+        if (out == null) {
+            throw new NullPointerException("DatatypeNode in processType() is null!");
+        }
+
+        return out.getType();
     }
 
     @Override

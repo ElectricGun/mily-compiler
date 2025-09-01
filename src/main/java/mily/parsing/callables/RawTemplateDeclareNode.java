@@ -72,7 +72,7 @@ public class RawTemplateDeclareNode extends CallableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         StringBuilder argBufferString = new StringBuilder();

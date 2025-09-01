@@ -36,7 +36,7 @@ public class FunctionDeclareNode extends CallableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         boolean isInitialized = false;
@@ -84,7 +84,6 @@ public class FunctionDeclareNode extends CallableNode {
                 Type type = new Type(token.string);
                 argumentTypes.add(type);
                 Token variableName = tokenList.remove(0);
-
                 while (isWhiteSpace(variableName)) {
                     variableName = tokenList.remove(0);
                 }

@@ -29,7 +29,7 @@ public class CallerNode extends EvaluatorNode implements Caller {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
         return this;
     }

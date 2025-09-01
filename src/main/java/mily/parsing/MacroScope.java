@@ -30,7 +30,7 @@ public class MacroScope extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
 
         boolean isEvaluatingBlock = false;
         int bracketAmount = 0;

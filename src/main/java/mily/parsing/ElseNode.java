@@ -42,7 +42,7 @@ public class ElseNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         if (evaluatorTree.debugMode)
@@ -70,7 +70,7 @@ public class ElseNode extends EvaluatorNode {
                 return this;
 
             } else {
-                throw new Exception();
+                return throwSyntaxError("Unexpected token in else statement", token);
             }
         }
         return throwSyntaxError("Unexpected end of file", nameToken);

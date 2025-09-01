@@ -64,7 +64,7 @@ public abstract class EvaluatorNode {
         return members.get(i);
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
@@ -87,7 +87,7 @@ public abstract class EvaluatorNode {
         this.throwables.add(new MilySyntaxError(errorMessage));
 
         System.out.println(errorMessage);
-        System.exit(10);
+//        System.exit(10);
         return this;
     }
 
