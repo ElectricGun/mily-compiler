@@ -1,12 +1,12 @@
 package mily.parsing.callables;
 
 import mily.parsing.*;
+import mily.structures.errors.JavaMilySyntaxException;
 import mily.structures.structs.Type;
 import mily.tokens.*;
 
 import java.util.*;
 
-import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
 
 /**
@@ -57,88 +57,44 @@ public class RawTemplateDeclareNode extends CallableNode {
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
-        StringBuilder argBufferString = new StringBuilder();
-        boolean isParsingArg = false;
-        boolean doneParsingArgs = false;
+        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID);
 
-        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID.create());
+        try {
+            Token openingToken = fetchNextNonWhitespaceToken(tokenList);
 
-        while (!tokenList.isEmpty()) {
-            Token token = tokenList.remove(0);
-            if (evaluatorTree.debugMode)
-                System.out.printf(indent + "raw template %s: %s%n", name, token);
-
-
-            if (isWhiteSpace(token) && !isParsingArg) {
-                continue;
+            if (!openingToken.equalsKey(KEY_BRACKET_OPEN)) {
+                return throwSyntaxError("Expected opening parenthesis", openingToken);
             }
 
-            if (!doneParsingArgs) {
-                if (name == null && !isParsingArg && isVariableName(token)) {
-                    name = token.string;
+            processArgs(tokenList, evaluatorTree);
 
-                } else if (returnType != null && name != null && keyEquals(KEY_BRACKET_OPEN, token) && !isParsingArg) {
-                    if (evaluatorTree.debugMode)
-                        System.out.printf(indent + "parsing raw template arguments", this.nameToken, token);
-                    isParsingArg = true;
+            if (expectingReturnPattern) {
+                Token nextToken = fetchNextNonWhitespaceToken(tokenList);
 
-                } else if (isParsingArg && token.equalsKey(KEY_BRACKET_CLOSE)) {
-                    argBufferString = new StringBuilder(argBufferString.toString().trim());
+                if (nextToken.equalsKey(KEY_TEMPLATE_RETURN_ARROW)) {
+                    Token returnPattern = fetchNextNonWhitespaceToken(tokenList);
+                    returnVariableRaw = returnPattern.string;
 
-                    if (!argBufferString.isEmpty()) {
-                        List<String> argStringsRaw = List.of(argBufferString.toString().split(KEY_COMMA));
-
-                        for (String arg : argStringsRaw) {
-                            String[] stringArgType = arg.trim().split(" ");
-                            //TODO use DataTypeNode
-
-                            if (isWhiteSpace(arg)) {
-                                return throwSyntaxError("Empty token in template input arguments", nameToken);
-
-                            } else if (stringArgType.length != 2) {
-                                return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
-                            }
-
-                            argumentTypes.add(new Type(stringArgType[0]));
-                            argumentNames.add(stringArgType[1]);
-                        }
-                    }
-                    isParsingArg = false;
-                    doneParsingArgs = true;
-
-                } else if (isParsingArg && (isWhiteSpace(token) || isVariableOrDeclarator(token) || isVariableName(token) || keyEquals(KEY_COMMA, token))) {
-                    argBufferString.append(token.string);
-
-                } else if (isParsingArg) {
-                    return throwSyntaxError("Unexpected token in template input arguments", token);
+                } else {
+                    return throwSyntaxError("Non-void template requires a raw return variable name", nextToken);
                 }
-            } else if (!expectingReturnPattern && token.equalsKey(KEY_MACRO_LITERAL)) {
-                MacroScope macroScope = new MacroScope(token, argumentNames, depth + 1);
+            }
+
+            Token nextToken = fetchNextNonWhitespaceToken(tokenList);
+
+            if (nextToken.equalsKey(KEY_MACRO_LITERAL)) {
+                MacroScope macroScope = new MacroScope(nextToken, argumentNames, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree));
                 scope = macroScope;
                 return this;
 
-            } else if (expectingReturnPattern && token.equalsKey(KEY_TEMPLATE_RETURNS)) {
-                Token outputPatternToken = tokenList.remove(0);
-
-                while (outputPatternToken.isWhiteSpace()) {
-                    outputPatternToken = tokenList.remove(0);
-                }
-
-                if (!isVariableName(outputPatternToken)) {
-                    return throwSyntaxError("Invalid return pattern", outputPatternToken);
-                }
-                returnVariableRaw = outputPatternToken.string;
-                expectingReturnPattern = false;
-
-            } else if (expectingReturnPattern) {
-                return throwSyntaxError("Non-void template requires a raw return variable name", token);
-
             } else {
-                return throwSyntaxError("Unexpected token after raw template input declaration", token);
+                return throwSyntaxError("Expected a macro after template declaration", nextToken);
             }
+
+        } catch (JavaMilySyntaxException e) {
+            return throwSyntaxError(e.getMessage(), e.getToken());
         }
-        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override

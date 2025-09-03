@@ -228,7 +228,7 @@ public class Validation {
                 return type;
             }
 
-        } else if (evaluatorNode instanceof DeclarationNode declarationNode) {
+        } else if (evaluatorNode instanceof DeclarationNode declarationNode && !(declarationNode instanceof FunctionArgNode)) {
 
             if (declarationNode.memberCount() == 0) {
                 System.out.println("Null declaration found");

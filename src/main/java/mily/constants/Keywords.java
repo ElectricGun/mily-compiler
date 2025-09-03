@@ -33,7 +33,7 @@ public class Keywords {
             KEY_SPACE = " ",
             KEY_TAB = "\t",
             KEY_ESCAPE = "\\",
-            KEY_TEMPLATE_RETURNS = "->",
+            KEY_TEMPLATE_RETURN_ARROW = "->",
 
     // comment punctuations
     KEY_COMMENT_MULTILINE_START = "/*",

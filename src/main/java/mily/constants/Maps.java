@@ -42,7 +42,7 @@ public class Maps {
             KEY_SYMBOL_IDENTIFIER,
             KEY_ESCAPE,
             KEY_SPEECH_MARK,
-            KEY_TEMPLATE_RETURNS
+            KEY_TEMPLATE_RETURN_ARROW
     ));
     protected final static List<String> KEYWORD_KEYS = new ArrayList<>(Arrays.asList(
             KEY_RETURN,

@@ -99,7 +99,7 @@ public abstract class EvaluatorNode {
         this.throwables.add(new MilySyntaxError(errorMessage));
 
         System.out.println(errorMessage);
-//        System.exit(10);
+        System.exit(10);
         return this;
     }
 

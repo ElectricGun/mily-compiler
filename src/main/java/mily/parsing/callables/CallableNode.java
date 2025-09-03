@@ -98,19 +98,19 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         boolean argumentWanted = false;
 
         if (evaluatorTree.debugMode)
-            System.out.printf(indent + "Parsing Function %s:%n", this.nameToken);
+            System.out.printf(indent + "Parsing arguments %s:%n", this.nameToken);
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
             if (evaluatorTree.debugMode)
-                System.out.printf(indent + "function\t:\t%s\t:\t%s%n", this.nameToken, token);
+                System.out.printf(indent + "args\t:\t%s\t:\t%s%n", this.nameToken, token);
 
             if (isWhiteSpace(token)) {
                 continue;
 
             } else if (isPunctuation(token) && !isWhiteSpace(token)) {
                 if (argumentWanted) {
-                    throw new JavaMilySyntaxException("Expecting an argument on function declaration", token);
+                    throw new JavaMilySyntaxException("Expected argument", token);
 
                 } else if (keyEquals(KEY_BRACKET_CLOSE, token)) {
                     return;
@@ -119,11 +119,11 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
                     argumentWanted = true;
 
                 } else {
-                    throw new JavaMilySyntaxException("Unexpected punctuation on function declaration", token);
+                    throw new JavaMilySyntaxException("Unexpected punctuation in arguments", token);
 
                 }
             } else if (isOperator(token)) {
-                throw new JavaMilySyntaxException("Unexpected operator on function declaration", token);
+                throw new JavaMilySyntaxException("Unexpected operator in arguments", token);
 
             } else if (isVariableOrDeclarator(token)) {
                 Type type = DatatypeNode.processType(token, tokenList, evaluatorTree);
@@ -131,7 +131,7 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
                 Token variableName = EvaluatorNode.fetchNextNonWhitespaceToken(tokenList);
 
                 if (!isVariableName(variableName)) {
-                    throw new JavaMilySyntaxException("Not a variable name on function declaration", token);
+                    throw new JavaMilySyntaxException("Not a variable name in arguments", token);
 
                 } else if (!isInitialized || argumentWanted) {
                     argumentNames.add(variableName.string);
@@ -145,7 +145,7 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
                         System.out.printf("Added argument %s%n", variableName);
 
                 } else {
-                    throw new JavaMilySyntaxException("Unexpected token on function declaration", token);
+                    throw new JavaMilySyntaxException("Unexpected token in arguments", token);
 
                 }
             }

@@ -29,6 +29,7 @@ public class OperationNode extends EvaluatorNode {
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
     public final List<Token> operationTokens = new ArrayList<>();
+    // TODO maybe this should be a node instead of a token
     protected TypedToken constantToken = null;
     protected boolean isReturnOperation;
     protected String type = KEY_OP_TYPE_CONSTANT;
