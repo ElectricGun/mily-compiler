@@ -17,6 +17,8 @@ import static mily.constants.Keywords.*;
 
 public class CodeGeneration {
 
+    protected static String pointerVariable = "mem_pointer";
+
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean generateComments, boolean debugMode) throws Exception {
         IRCodeConfig irCodeConfig = new IRCodeConfig();
 
@@ -24,8 +26,11 @@ public class CodeGeneration {
         irCodeConfig.irFunctionMap = new HashMap<>();
         irCodeConfig.callableNodeMap = new HashMap<>();
         irCodeConfig.hashCodeSimplifier = new HashCodeSimplifier();
+        irCodeConfig.declarationMap = new HashMap<>();
         irCodeConfig.generateComments = generateComments;
         irCodeConfig.debugMode = debugMode;
+
+        irCodeConfig.irCode.addSingleLineBlock(new SetLine(pointerVariable, "0", 0));
 
         generateIRScopeRecursive(
                 irCodeConfig,
@@ -69,8 +74,35 @@ public class CodeGeneration {
                 generateFunctionDeclare(fn, irCodeConfig, depth);
 
             } else if (member instanceof DeclarationNode declarationNode) {
+                irCodeConfig.declarationMap.put(declarationNode.getName(), declarationNode);
+
                 if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
-                    addOperationIRBlock(irCodeConfig, op, declarationNode.getName(), depth);
+                    IROperation declaredOp = addOperationIRBlock(irCodeConfig, op, declarationNode.getName(), depth);
+
+                    if (declarationNode.getType().typeString.equals(KEY_DATA_PTR.typeString)) {
+                        Line lastLine = declaredOp.lineList.get(declaredOp.lineList.size() - 1);
+
+
+                        if (lastLine instanceof VariableLine variableLine) {
+                            // if it is a set, just replace it with a write line
+                            String oldVarName = variableLine.getVarName();
+                            String ptrValueName = "value_" + oldVarName;
+
+                            if (variableLine instanceof SetLine setLine) {
+                                declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
+                                declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", pointerVariable, depth));
+                            } else {
+                                // if its an op, overwrite the var name of the evaluated value
+                                variableLine.setVarName(ptrValueName);
+                                declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", pointerVariable, depth));
+                            }
+                            declaredOp.lineList.add(new SetLine(oldVarName, pointerVariable, depth));
+                            declaredOp.lineList.add(new BinaryOp(pointerVariable, KEY_OP_ADD, pointerVariable, "1", depth));
+
+                        } else {
+                            throw new Exception("Why is the ptr var declaration line not a VariableLine?");
+                        }
+                    }
 
                 } else if (declarationNode.memberCount() == 0) {
 

@@ -1,5 +1,5 @@
 # Urgent TODO:
- - unify argument parsing for CallableNodes
+ - ptr declarations will cause memory leaks in loops
  - templates with return types shouldnt be able to be called outside of operations
  - rewrite scopenode
  - "any" datatype shouldnt be able to be used outside of template args
@@ -11,6 +11,8 @@
 # Problems:
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation
  - library circular dependencies
+ - one word symbols can break up in tokenization which is not good e.g. @test+test will become @, test, +, test, 
+ - add a way to write multi token symbols with literals, maybe @{} 
 
 # Useful
  - declaring macros into variables for reusability

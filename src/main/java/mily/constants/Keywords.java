@@ -105,17 +105,22 @@ public class Keywords {
     // TODO change how this work
     // datatypes
     public final static Type
-            // keywords: datatypes
-            KEY_DATA_INT = new Type("int"),
-            KEY_DATA_DOUBLE = new Type("double"),
-            KEY_DATA_STRING = new Type("string"),
-            KEY_DATA_BOOLEAN = new Type("boolean"),
-            KEY_DATA_VOID = new Type("void"),
-            KEY_DATA_SYMBOL = new Type("symbol"),
+        // keywords: datatypes
+        KEY_DATA_INT = new Type("int"),
+        KEY_DATA_DOUBLE = new Type("double"),
+        KEY_DATA_STRING = new Type("string"),
+        KEY_DATA_BOOLEAN = new Type("boolean"),
+        KEY_DATA_VOID = new Type("void"),
+        KEY_DATA_SYMBOL = new Type("symbol"),
     // for template arguments only
-    KEY_DATA_ANY = new Type("any"),
-            KEY_DATA_PTR = new Type("ptr"),
-            KEY_DATA_MRAY = new Type("mray"),
+        KEY_DATA_ANY = new Type("any"),
+
+    // pointer stuff
+        KEY_DATA_PTR = new Type("ptr"),
+        KEY_DATA_PTR_INT = new Type("ptr", KEY_DATA_INT),
+        KEY_DATA_PTR_DOUBLE = new Type("ptr", KEY_DATA_BOOLEAN),
+        KEY_DATA_PTR_BOOLEAN = new Type("ptr", KEY_DATA_DOUBLE),
+        KEY_DATA_MRAY = new Type("mray"),
 
     // keywords: other datatypes (not in maps)
     KEY_DATA_UNKNOWN = new Type("unknown_type");

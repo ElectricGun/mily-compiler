@@ -16,6 +16,11 @@ public class Type {
         this.diamondTypes = diamondTypes;
     }
 
+    public Type(String typeString, Type... diamondTypes) {
+        this(typeString, Arrays.asList(diamondTypes));
+    }
+
+
     public boolean equals(String string) {
         return diamondTypes.isEmpty() && string.equals(typeString);
     }

@@ -256,11 +256,13 @@ public class Maps {
         // implicit casts
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
 
-        // explicit casts
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, castToInt);
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+        // ptr casts
+
+        Consumer<OperationNode> castToPtr = o -> {};
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT,     KEY_DATA_PTR_INT,     KEY_DATA_PTR_INT,     castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_DOUBLE,  KEY_DATA_PTR_DOUBLE,  KEY_DATA_PTR_DOUBLE,  castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_BOOLEAN, KEY_DATA_PTR_BOOLEAN, KEY_DATA_PTR_BOOLEAN, castToDouble);
+
 
         // comparisons
         addGenericNumericComparison(KEY_OP_LESS_THAN, o ->

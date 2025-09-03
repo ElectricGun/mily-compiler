@@ -40,7 +40,7 @@ public class Refining {
             return;
 
         } else if (member instanceof DeclarationNode dec) {
-            String newName = "user_" + dec.getName();
+            String newName = "u_" + dec.getName();
             renameMap.put(dec.getName(), newName);
             dec.setName(newName);
 

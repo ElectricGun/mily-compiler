@@ -1,0 +1,12 @@
+--------- Memory Cell Manipulation --------
+raw int drf(ptr<int> pointer, symbol cell) -> output ${
+    read output cell pointer
+}
+
+raw double drf(ptr<double> pointer, symbol cell) -> output ${
+    read output cell pointer
+}
+
+raw boolean drf(ptr<boolean> pointer, symbol cell) -> output ${
+    read output cell pointer
+}

@@ -70,6 +70,10 @@ public class OperationMap {
         operationCastMap.put(newOperationKey, castsTo);
     }
 
+    public void addImplicitCast(Type leftType, Type rightType, Type castsTo, Consumer<OperationNode> operationConsumer) {
+        addOperation(KEY_OP_CAST_IMPLICIT, leftType, rightType, castsTo, operationConsumer);
+    }
+
     public void parseOperation(OperationNode operationNode) throws IllegalArgumentException, NoSuchMethodError {
         String operator = operationNode.getOperator();
         Type leftType = operationNode.getLeftTokenType();
