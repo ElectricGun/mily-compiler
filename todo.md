@@ -1,9 +1,8 @@
 # Urgent TODO:
+ - variable assignments for pointer variables
  - ptr declarations will cause memory leaks in loops
  - templates with return types shouldnt be able to be called outside of operations
  - rewrite scopenode
- - "any" datatype shouldnt be able to be used outside of template args
- - implement "any" datatype. requires to be casted everytime it is used with anything that is "any"
 
 # Flags
  - shorthand flags such as -h, -p, -v, etc
@@ -15,10 +14,13 @@
  - add a way to write multi token symbols with literals, maybe @{} 
 
 # Useful
+ - compiler calls, such as fetching an environmental variable like an allocated memory cell using an index
  - declaring macros into variables for reusability
  - pointers for memory variables
  - pre-ast macros
  - optimization hints invoked in the pruning stage, such as unused functions
+ - implement "any" datatype. requires to be casted every time it is used with anything that is "any"
+ - "any" datatype shouldnt be able to be used outside of template args
 
 # Semantic Checking
  - Check for unreachable code
