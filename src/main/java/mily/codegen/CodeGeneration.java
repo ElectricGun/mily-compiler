@@ -14,6 +14,7 @@ import java.util.*;
 import static mily.codegen.Mlogs.*;
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
+import static mily.processing.Validation.*;
 
 public class CodeGeneration {
 
@@ -62,7 +63,7 @@ public class CodeGeneration {
                 if (function == null)
                     throw new Exception("Return operation found outside a function at line " + operationNode.nameToken.line);
 
-                if (!operationNode.getConstantToken().getType().equals(KEY_DATA_VOID)) {
+                if (!getOperationType(operationNode, false).equals(KEY_DATA_VOID)) {
                     addOperationIRBlock(irCodeConfig, operationNode, function.getReturnVar(), depth);
                 }
                 irCodeConfig.irCode.addSingleLineBlock(new SetLine("@counter", function.getCallbackVar(), depth));

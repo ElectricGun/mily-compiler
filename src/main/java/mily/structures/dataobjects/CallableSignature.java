@@ -23,7 +23,6 @@ public class CallableSignature implements Named {
         this.argTypes.addAll(argTypes);
     }
 
-
     @Override
     public String getName() {
         return name;
@@ -50,8 +49,13 @@ public class CallableSignature implements Named {
     public String toString() {
         StringBuilder out = new StringBuilder(name + "_");
 
-        for (Type argType : argTypes) {
-            out.append(argTypes);
+        for (int i = 0; i < argTypes.size(); i++) {
+            Type argType = argTypes.get(i);
+            out.append(argType);
+
+            if (i < argTypes.size() - 1) {
+                out.append("_");
+            }
         }
 
         return out.toString();
