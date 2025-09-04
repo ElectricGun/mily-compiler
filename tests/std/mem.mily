@@ -1,5 +1,5 @@
 --------- Memory Cell Manipulation --------
---- temporary workaround ---
+--- temporary workaround, cell selection should be automatic ---
 raw int r(p<int> pointer, symbol cell) -> output ${
     read output cell pointer
 }
@@ -11,7 +11,6 @@ raw double r(p<double> pointer, symbol cell) -> output ${
 raw boolean r(p<boolean> pointer, symbol cell) -> output ${
     read output cell pointer
 }
-----------------------------
 
 raw int r(p<int> pointer) -> output ${
     read output cell1 pointer
