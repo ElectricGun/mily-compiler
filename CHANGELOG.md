@@ -4,6 +4,7 @@
 # v0.1.0-alpha
 - Unified callable overloads
 - Fixed error when having binary operators on function returns
+- Changed std function as_int() to dtoi() for brevity
 - Feature: Memory variables
   - Declared using `p<int>`, `p<double>`, `p<boolean>`
   - Dereferenced using `r()`
