@@ -23,27 +23,27 @@ raw double pow(int x, double y) -> output ${
 
 -- Trigonometry --
 
-raw double sin(int a) -> output {
+raw double sin(int a) -> output ${
     op sin output a
 }
 
-raw double sin(double a) -> output {
+raw double sin(double a) -> output ${
     op sin output a
 }
 
-raw double cos(int a) -> output {
+raw double cos(int a) -> output ${
     op cos output a
 }
 
-raw double cos(double a) -> output {
+raw double cos(double a) -> output ${
     op cos output a
 }
 
-raw double tan(int a) -> output {
+raw double tan(int a) -> output ${
     op tan output a
 }
 
-raw double tan(double a) -> output {
+raw double tan(double a) -> output ${
     op tan output a
 }
 
