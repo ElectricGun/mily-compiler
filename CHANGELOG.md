@@ -3,7 +3,8 @@
 
 # v0.1.0-alpha
 - Unified callable overloads
-- Added memory variables
+- Fixed error when having binary operators on function returns
+- Feature: Memory variables
   - Declared using `p<int>`, `p<double>`, `p<boolean>`
   - Dereferenced using `r()`
   - Example:

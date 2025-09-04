@@ -4,20 +4,24 @@ This program compiles the custom, C syntax programming language Mily to Mindustr
 The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of a learning curve for anyone to use this language.
 
 ## Key Features
-- Looping (for and while)
-- Branching (if statements)
-- Functions
-- Static variable typing
-- Strict typing with minimal implicit casting e.g. `int x = 3 / 2;` is not allowed, use intdiv instead `int x = 3 // 2;`
+- The basic stuff (looping, if statements, variables)
+- Functions such as `f(int  x) {return x}`
+- Static and strict typing with minimal implicit casting e.g. `int x = 3 / 2;` is not allowed, use intdiv instead `int x = 3 // 2;`
 - Comments (`/* */` and `--`)
-- Type casting: (int), (boolean), etc
 - Full operations, such as `(x + y) * 3 - 9 * -z ** 2`
+- A standard library imported using `#include std/bulb.mily;`
+- Memory cell pointers: declared using any of the pointer datatypes below, derefenced using the std function r()
 
-## Datatypes
+## Primitive Datatypes
 - double
 - int
 - string
 - boolean
+
+## Pointer Datatypes
+- p<int>
+- p<double>
+- p<boolean>
 
 ## Other Features
 - Compile error stack tracing.
@@ -51,29 +55,22 @@ for (int i = 0; i < 100; i = i + 1) {
 
 ### Nested Functions
 ```
-/- Nested Function
-int test(int x, int y, int z) {
-    int test2(int x_) {
-        int test3(int x__) {
-            return x + x_ + x__;
-        }
-        return test3(x) + x_;
+-- Nested Function
+int f(int x, int y) {
+    int g(int z) {
+        return 100;
     }
-    return test2(x + y + z);
+    
+    return x + g(y);
 }
-int output = test(3, 3, 3) + test(1, 2, 3);
 ```
 
-### Count Even Numbers
+### Print Even Numbers
 ```
-int n = 1000;
-/- count even numbers
+#include std/bulb.mily;
 int i = 0;
-int j = 0;
-while (i < n) {
-    if (i % 2 == 0) {
-        j = j + 1;
-    }
+while (i < 1000) {
+    print(i % 2 == 0);
     i = i + 1;
 }
 ```

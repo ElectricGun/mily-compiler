@@ -1,6 +1,5 @@
 # Urgent TODO:
  - variable assignments for pointer variables
- - ptr declarations will cause memory leaks in loops
  - templates with return types shouldnt be able to be called outside of operations
  - rewrite scopenode
 
