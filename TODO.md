@@ -1,7 +1,8 @@
 # Urgent TODO:
  - variable assignments for pointer variables
  - templates with return types shouldnt be able to be called outside of operations
- - rewrite scopenode
+ - pre ast macros, actual template parsing
+ - declaring macros into variables for reusability
 
 # Flags
  - shorthand flags such as -h, -p, -v, etc
@@ -17,12 +18,8 @@
 
 # Useful
  - compiler calls, such as fetching an environmental variable like an allocated memory cell using an index
- - declaring macros into variables for reusability
  - pointers for memory variables
- - pre-ast macros
  - optimization hints invoked in the pruning stage, such as unused functions
- - implement "any" datatype. requires to be casted every time it is used with anything that is "any"
- - "any" datatype shouldnt be able to be used outside of template args
  - multitoken variable names using \` \` literals
 
 # Semantic Checking
@@ -52,7 +49,7 @@
  - Unary operator orders
  - Add toggleable debugMode
 
-# Possible Improvements
+# Improvements
  - (Technical debt) Unaries, consts and binary operators being just one class may cause complications in the long run. 
   - OperationNode IS A MESS!
  - Docstrings can be improved
@@ -63,6 +60,8 @@
  - its better to store function overrides in lists within a dictionary, using its name as the key
  - Make unary and constant setting neater in OperationNode
  - Replace all keyEquals(x, token) with token.keyEquals()
+ - rewrite scopenode
+
 
 # Syntax Document
  - A syntax document for Milyscript

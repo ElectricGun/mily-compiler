@@ -1,5 +1,18 @@
 --------- Math Utils --------
-raw double pow(any x, any y) -> output ${
+-- TODO: create something to prevent copy pastes
+raw double pow(double x, double y) -> output ${
+    op pow output x y
+}
+
+raw double pow(int x, int y) -> output ${
+    op pow output x y
+}
+
+raw double pow(double x, int y) -> output ${
+    op pow output x y
+}
+
+raw double pow(int x, double y) -> output ${
     op pow output x y
 }
 
