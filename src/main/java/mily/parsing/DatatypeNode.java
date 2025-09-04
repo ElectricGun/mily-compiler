@@ -1,8 +1,8 @@
 package mily.parsing;
 
 import mily.abstracts.*;
-import mily.constants.Functions;
-import mily.structures.structs.*;
+import mily.constants.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 import java.util.*;

@@ -1,12 +1,12 @@
 package mily;
 
-import java.io.File;
-import java.util.*;
-
 import mily.codegen.*;
+import mily.structures.dataobjects.*;
 import mily.structures.errors.*;
-import mily.structures.structs.*;
 import mily.utils.*;
+
+import java.io.*;
+import java.util.*;
 
 import static mily.constants.Functions.*;
 

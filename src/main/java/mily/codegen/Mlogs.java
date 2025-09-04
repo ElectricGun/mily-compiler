@@ -1,6 +1,6 @@
 package mily.codegen;
 
-import mily.tokens.TypedToken;
+import mily.tokens.*;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package mily.structures.structs;
+package mily.structures.dataobjects;
 
 import mily.parsing.*;
 

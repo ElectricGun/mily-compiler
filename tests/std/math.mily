@@ -9,3 +9,11 @@ raw int as_int(double x) -> output ${
         op add output output 1
     output:
 }
+
+raw void inc(int i) ${
+    op add i i 1
+}
+
+raw void inc(double i) ${
+    op add i i 1
+}

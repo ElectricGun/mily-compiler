@@ -1,8 +1,8 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.tokens.*;
+
+import java.util.*;
 
 /**
  * <h1> Class EvaluatorTree </h1>

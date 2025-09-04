@@ -2,8 +2,8 @@ package mily.codegen.lines;
 
 public abstract class MemoryLine extends Line {
 
-    protected String position;
-    protected String cell;
+    protected final String position;
+    protected final String cell;
 
     public MemoryLine(String value, String cell, String position, int indent) {
         super(value, indent);

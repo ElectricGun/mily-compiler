@@ -1,7 +1,7 @@
 package mily.tokens;
 
 import mily.abstracts.*;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
 
 /**
  * A token with a datatype

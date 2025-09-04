@@ -1,7 +1,7 @@
 package mily.constants;
 
 import mily.parsing.*;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 import java.util.*;

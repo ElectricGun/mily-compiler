@@ -5,7 +5,7 @@ import mily.codegen.lines.*;
 import mily.parsing.*;
 import mily.parsing.callables.*;
 import mily.parsing.invokes.*;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 import mily.utils.*;
 
@@ -17,7 +17,7 @@ import static mily.constants.Keywords.*;
 
 public class CodeGeneration {
 
-    protected static String pointerVariable = "mem_pointer";
+    protected static final String POINTER_VARIABLE = "mem_pointer";
 
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean generateComments, boolean debugMode) throws Exception {
         IRCodeConfig irCodeConfig = new IRCodeConfig();
@@ -30,7 +30,7 @@ public class CodeGeneration {
         irCodeConfig.generateComments = generateComments;
         irCodeConfig.debugMode = debugMode;
 
-        irCodeConfig.irCode.addSingleLineBlock(new SetLine(pointerVariable, "0", 0));
+        irCodeConfig.irCode.addSingleLineBlock(new SetLine(POINTER_VARIABLE, "0", 0));
 
         generateIRScopeRecursive(
                 irCodeConfig,
@@ -57,9 +57,6 @@ public class CodeGeneration {
                 } else if (callable instanceof RawTemplateDeclareNode) {
                     generateRawTemplateInvoke(irCodeConfig, fnCall, null, depth);
                 }
-
-//            } else if (member instanceof RawTemplateInvoke rawTemplateInvoke) {
-//                generateRawTemplateInvoke(irCodeConfig, rawTemplateInvoke, null, depth);
 
             } else if (member instanceof OperationNode operationNode && operationNode.isReturnOperation()) {
                 if (function == null)
@@ -90,14 +87,14 @@ public class CodeGeneration {
 
                             if (variableLine instanceof SetLine setLine) {
                                 declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
-                                declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", pointerVariable, depth));
+                                declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", POINTER_VARIABLE, depth));
                             } else {
                                 // if its an op, overwrite the var name of the evaluated value
                                 variableLine.setVarName(ptrValueName);
-                                declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", pointerVariable, depth));
+                                declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE, depth));
                             }
-                            declaredOp.lineList.add(new SetLine(oldVarName, pointerVariable, depth));
-                            declaredOp.lineList.add(new BinaryOp(pointerVariable, KEY_OP_ADD, pointerVariable, "1", depth));
+                            declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE, depth));
+                            declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE, KEY_OP_ADD, POINTER_VARIABLE, "1", depth));
 
                         } else {
                             throw new Exception("Why is the ptr var declaration line not a VariableLine?");
@@ -125,9 +122,14 @@ public class CodeGeneration {
                 String whileHashCode = "" + irCodeConfig.hashCodeSimplifier.simplifyHash(whileLoop.hashCode());
                 String startLabelString = "while_loop_start_" + whileHashCode;
                 String endLabelString = "while_loop_end_" + whileHashCode;
+                String checkpointVariableString = "while_loop_checkpoint" + whileHashCode;
 
+                // set checkpoint
+                irCodeConfig.irCode.addSingleLineBlock(new SetLine(checkpointVariableString, POINTER_VARIABLE, depth));
                 // loop start label
                 irCodeConfig.irCode.addSingleLineBlock(new Label(startLabelString, depth));
+                // set pointer to checkpoint (prevent memory leaks on loops
+                irCodeConfig.irCode.addSingleLineBlock(new SetLine(POINTER_VARIABLE, checkpointVariableString, depth));
 
                 // create exit jump
                 boolean invertCondition = true;
@@ -155,6 +157,7 @@ public class CodeGeneration {
                 String forLoopHashCode = "" + irCodeConfig.hashCodeSimplifier.simplifyHash(forLoop.hashCode());
                 String startLabelString = "for_loop_start_" + forLoopHashCode;
                 String endLabelString = "for_loop_end_" + forLoopHashCode;
+                String checkpointVariableString = "for_loop_checkpoint" + forLoopHashCode;
 
                 // initial
                 VariableNode initial = forLoop.getInitial();
@@ -163,8 +166,12 @@ public class CodeGeneration {
 
                 addOperationIRBlock(irCodeConfig, (OperationNode) initial.getMember(0), initial.getName(), depth);
 
+                // set checkpoint
+                irCodeConfig.irCode.addSingleLineBlock(new SetLine(checkpointVariableString, POINTER_VARIABLE, depth));
                 // loop start label
                 irCodeConfig.irCode.addSingleLineBlock(new Label(startLabelString, depth));
+                // set pointer to checkpoint (prevent memory leaks on loops
+                irCodeConfig.irCode.addSingleLineBlock(new SetLine(POINTER_VARIABLE, checkpointVariableString, depth));
 
                 // create exit jump
                 boolean invertCondition = true;

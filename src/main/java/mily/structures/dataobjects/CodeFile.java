@@ -1,4 +1,4 @@
-package mily.structures.structs;
+package mily.structures.dataobjects;
 
 /**
  * <h1> Class CodeFile </h1>

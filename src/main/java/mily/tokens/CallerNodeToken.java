@@ -1,7 +1,7 @@
 package mily.tokens;
 
 import mily.parsing.invokes.*;
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
 
 import static mily.constants.Keywords.*;
 

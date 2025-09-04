@@ -3,8 +3,8 @@ package mily.utils;
 import mily.codegen.*;
 import mily.parsing.*;
 import mily.preprocessing.*;
-import mily.structures.errors.JavaMilyException;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
 
 import java.io.*;
@@ -70,6 +70,9 @@ public class MilyWrapper {
 
         // check for syntax errors
         if (checkThrowables(evaluatorTree)) {
+            if (debugMode)
+                evaluatorTree.printRecursive();
+
             throw new JavaMilyException("Failed to compile: syntax error!");
         }
 
@@ -88,6 +91,9 @@ public class MilyWrapper {
 
         // check for semantic errors
         if (checkThrowables(evaluatorTree)) {
+            if (debugMode)
+                evaluatorTree.printRecursive();
+
             throw new JavaMilyException("Failed to compile: semantic error!");
         }
 

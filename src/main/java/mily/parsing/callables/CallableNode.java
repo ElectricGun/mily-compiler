@@ -2,9 +2,8 @@ package mily.parsing.callables;
 
 import mily.abstracts.*;
 import mily.parsing.*;
-import mily.structures.errors.JavaMilySyntaxException;
-import mily.structures.structs.CallableSignature;
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
 
 import java.util.*;

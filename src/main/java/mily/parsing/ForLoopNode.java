@@ -1,9 +1,9 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.structures.errors.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;

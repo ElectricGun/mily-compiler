@@ -1,7 +1,7 @@
 package mily.tokens;
 
-import mily.abstracts.Named;
-import mily.constants.Functions;
+import mily.abstracts.*;
+import mily.constants.*;
 
 /**
  * Basic token, contains a string and line number.

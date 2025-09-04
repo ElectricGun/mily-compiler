@@ -1,18 +1,18 @@
 package mily.processing;
 
-import java.util.*;
-
 import mily.abstracts.*;
 import mily.parsing.*;
 import mily.parsing.callables.*;
 import mily.parsing.invokes.*;
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
+import java.util.*;
+
+import static mily.constants.Ansi.*;
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
 import static mily.constants.Maps.*;
-import static mily.constants.Ansi.*;
 
 /**
  * <h1> Class Validation </h1>

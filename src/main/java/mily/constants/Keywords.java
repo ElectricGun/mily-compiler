@@ -1,6 +1,6 @@
 package mily.constants;
 
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
 
 /**
  * <h1> Class Keywords </h1>
@@ -118,8 +118,8 @@ public class Keywords {
     // pointer stuff
         KEY_DATA_PTR = new Type("p"),
         KEY_DATA_PTR_INT = new Type("p", KEY_DATA_INT),
-        KEY_DATA_PTR_DOUBLE = new Type("p", KEY_DATA_BOOLEAN),
-        KEY_DATA_PTR_BOOLEAN = new Type("p", KEY_DATA_DOUBLE),
+        KEY_DATA_PTR_DOUBLE = new Type("p", KEY_DATA_DOUBLE),
+        KEY_DATA_PTR_BOOLEAN = new Type("p", KEY_DATA_BOOLEAN),
         KEY_DATA_MRAY = new Type("arr"),
 
     // keywords: other datatypes (not in maps)

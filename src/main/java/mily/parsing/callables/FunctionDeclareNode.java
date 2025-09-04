@@ -1,8 +1,8 @@
 package mily.parsing.callables;
 
 import mily.parsing.*;
+import mily.structures.dataobjects.*;
 import mily.structures.errors.*;
-import mily.structures.structs.*;
 import mily.tokens.*;
 
 import java.util.*;

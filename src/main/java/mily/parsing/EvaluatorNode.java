@@ -1,10 +1,10 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.abstracts.*;
 import mily.structures.errors.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 /**
  * <h1> Class EvaluatorNode </h1>

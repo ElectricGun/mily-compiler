@@ -1,6 +1,6 @@
 package mily.abstracts;
 
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
 
 /**
  * <h1> Interface Typed </h1>

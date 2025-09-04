@@ -7,6 +7,9 @@
 # Flags
  - shorthand flags such as -h, -p, -v, etc
 
+# Optimize
+ - Pointer variables declared inside a scope should be unallocated
+
 # Problems:
  - Sometimes, multiple of the same errors are thrown on one token, specifically because validateTypesHelper is called in many functions within Validation
  - library circular dependencies
@@ -21,6 +24,7 @@
  - optimization hints invoked in the pruning stage, such as unused functions
  - implement "any" datatype. requires to be casted every time it is used with anything that is "any"
  - "any" datatype shouldnt be able to be used outside of template args
+ - multitoken variable names using \` \` literals
 
 # Semantic Checking
  - Check for unreachable code

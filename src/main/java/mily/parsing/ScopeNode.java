@@ -1,12 +1,12 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.parsing.callables.*;
 import mily.parsing.invokes.*;
-import mily.structures.errors.JavaMilySyntaxException;
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;

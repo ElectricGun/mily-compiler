@@ -1,13 +1,13 @@
 package mily.constants;
 
+import mily.structures.dataobjects.*;
+import mily.tokens.*;
+
 import java.io.*;
 import java.util.*;
 
-import mily.structures.structs.*;
-import mily.tokens.*;
-
-import static mily.constants.Maps.*;
 import static mily.constants.Keywords.*;
+import static mily.constants.Maps.*;
 
 /**
  * <h1> Class Functions </h1>

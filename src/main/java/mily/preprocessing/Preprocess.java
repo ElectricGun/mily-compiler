@@ -1,10 +1,10 @@
 package mily.preprocessing;
 
 import mily.constants.*;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 import static mily.constants.Keywords.*;

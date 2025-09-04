@@ -1,7 +1,7 @@
 package mily.codegen.blocks;
 
 import mily.parsing.callables.*;
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
 
 import java.util.*;
 

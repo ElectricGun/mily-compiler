@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 /**

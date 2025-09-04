@@ -1,10 +1,10 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.parsing.invokes.*;
-import mily.structures.structs.Type;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -294,7 +294,6 @@ public class OperationNode extends EvaluatorNode {
 
                             } else if (!constantFound && (isVariableOrDeclarator(currToken) || isNumeric(currToken) || keyEquals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
                                 constantFound = true;
-                                castConstantToken = currToken;
                                 if (evaluatorTree.debugMode)
                                     System.out.println(indent + "constant found");
 

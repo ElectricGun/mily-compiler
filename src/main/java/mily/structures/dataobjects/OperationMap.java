@@ -1,4 +1,4 @@
-package mily.structures.structs;
+package mily.structures.dataobjects;
 
 import mily.parsing.*;
 
@@ -34,33 +34,23 @@ public class OperationMap {
         OperationNode memberChild = (OperationNode) operationNode.getMember(memberIndex);
         OperationNode factorConstant = new OperationNode(operationNode.nameToken, operationNode.depth + 1);
         memberChild.depth += 1;
-        // todo hardcode might reduce flexibility
+        //this hardcode may reduce flexibility
         newOp.setType(KEY_OP_TYPE_OPERATION);
 
         UnaryToBinaryStruct unaryToBinaryStruct = new UnaryToBinaryStruct(operationNode, newOp, memberChild, factorConstant);
-
-//        if (!operationNode.isCast()) {
         String key = operationNode.getOperator();
 
         if (unaryOperationConversionMap.containsKey(key)) {
             unaryOperationConversionMap.get(key).accept(unaryToBinaryStruct);
+
         } else {
             throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
-
         }
-//        } else {
-//            newOp.setOperator(KEY_OP_CAST_EXPLICIT);
-//            factorConstant.setConstantToken(new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line));
-//        }
 
         newOp.setLeftSide(memberChild);
         newOp.setRightSide(factorConstant);
 
         return newOp;
-    }
-
-    public void addOperation(String operator, String leftTypeString, String rightTypeString, String castsTo, Consumer<OperationNode> operationConsumer) {
-        addOperation(operator, new Type(leftTypeString), new Type(rightTypeString), new Type(castsTo), operationConsumer);
     }
 
     public void addOperation(String operator, Type leftType, Type rightType, Type castsTo, Consumer<OperationNode> operationConsumer) {
@@ -90,6 +80,7 @@ public class OperationMap {
 
         try {
             operationNode.getConstantToken().setType(castTo);
+
         } catch (NullPointerException e) {
             throw new NoSuchMethodError(String.format("Unable to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
         }
@@ -100,6 +91,7 @@ public class OperationMap {
 
         if (operationCastMap.containsKey(operationKeyCheck)) {
             return operationCastMap.get(operationKeyCheck);
+
         } else {
             throw new IllegalArgumentException(String.format("Operator %s cannot be applied to %s and %s", operator, leftType, rightType));
         }
