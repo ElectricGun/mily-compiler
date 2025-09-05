@@ -114,10 +114,8 @@ public class CodeGeneration {
             } else if (member instanceof AssignmentNode as) {
                 // first member of assignment nodes should always be an operator
                 // otherwise throw an error
-                if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode))
+                if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode op))
                     throw new Exception("Malformed assignment node found on codegen stage");
-
-                OperationNode op = (OperationNode) member.getMember(0);
 
                 IROperation irOperation = addOperationIRBlock(irCodeConfig, op, as.getName(), depth);
 
