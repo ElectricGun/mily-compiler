@@ -18,8 +18,8 @@ import static mily.processing.Validation.*;
 
 public class CodeGeneration {
 
-    protected static final String POINTER_VARIABLE = "mem_pointer";
-    static Map<Class<? extends EvaluatorNode>, ScopeFunctionConsumer<ScopeNode, IRScopeConfig, IRFunction, Integer>> map = new HashMap<>();
+    public static final String POINTER_VARIABLE = "mem_pointer";
+    private static Map<Class<? extends EvaluatorNode>, ScopeFunctionConsumer<ScopeNode, IRScopeConfig, IRFunction, Integer>> map = new HashMap<>();
 
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean generateComments, boolean debugMode) throws Exception {
         IRScopeConfig irScopeConfig = new IRScopeConfig(
