@@ -63,7 +63,7 @@ public class CodeGeneration {
                 if (function == null)
                     throw new Exception("Return operation found outside a function at line " + operationNode.nameToken.line);
 
-                if (!getOperationType(operationNode, false).equals(KEY_DATA_VOID)) {
+                if (!getOperationType(operationNode, false).equals(DATATYPE_VOID)) {
                     addOperationIRBlock(irCodeConfig, operationNode, function.getReturnVar(), depth);
                 }
                 irCodeConfig.irCode.addSingleLineBlock(new SetLine("@counter", function.getCallbackVar(), depth));
@@ -77,13 +77,13 @@ public class CodeGeneration {
                 if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
                     IROperation declaredOp = addOperationIRBlock(irCodeConfig, op, declarationNode.getName(), depth);
 
-                    if (declarationNode.getType().typeString.equals(KEY_DATA_PTR.typeString)) {
+                    if (declarationNode.getType().typeString.equals(DATATYPE_PTR.typeString)) {
                         Line lastLine = declaredOp.lineList.get(declaredOp.lineList.size() - 1);
 
                         if (lastLine instanceof VariableLine variableLine) {
 
                             // if the assigned value is a reference then just assign it normally
-                            if (!getOperationType(op, false).typeString.equals(KEY_DATA_PTR.typeString)) {
+                            if (!getOperationType(op, false).typeString.equals(DATATYPE_PTR.typeString)) {
                                 // if it is a set, just replace it with a write line
                                 String oldVarName = variableLine.getVarName();
                                 String ptrValueName = "value_" + oldVarName;
@@ -124,11 +124,11 @@ public class CodeGeneration {
                 // get type of declarator to see if it is a reference
                 DeclarationNode declarator = irCodeConfig.declarationMap.get(as.getName());
 
-                if (declarator.getType().typeString.equals(KEY_DATA_PTR.typeString)) {
+                if (declarator.getType().typeString.equals(DATATYPE_PTR.typeString)) {
                     // replace the last operation with a memcell write
                     Line lastline = irOperation.lineList.get(irOperation.lineList.size() - 1);
 
-                    if (!getOperationType(op, false).typeString.equals(KEY_DATA_PTR.typeString)) {
+                    if (!getOperationType(op, false).typeString.equals(DATATYPE_PTR.typeString)) {
                         if (lastline instanceof SetLine setLine) {
                             irOperation.lineList.remove(irOperation.lineList.size() - 1);
                             irOperation.addLine(new WriteLine(setLine.getValue(), "cell1", declarator.getName(), setLine.getIndent()));

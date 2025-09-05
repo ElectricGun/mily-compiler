@@ -14,7 +14,7 @@ public class CallerNode extends EvaluatorNode implements Caller {
 
     protected final List<OperationNode> arguments = new ArrayList<>();
     protected String name;
-    protected Type type = KEY_DATA_UNKNOWN.create();
+    protected Type type = DATATYPE_UNKNOWN.create();
 
     public CallerNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);

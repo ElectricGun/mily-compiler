@@ -21,7 +21,7 @@ public class AssignmentNode extends VariableNode {
     protected OperationNode expression = null;
 
     public AssignmentNode(Token token, int depth) {
-        super(KEY_DATA_UNKNOWN.create(), token, depth);
+        super(DATATYPE_UNKNOWN.create(), token, depth);
     }
 
     @Override

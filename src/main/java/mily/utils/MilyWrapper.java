@@ -86,7 +86,7 @@ public class MilyWrapper {
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
-        invalidateDynamicDatatype(evaluatorTree, debugMode);
+//        invalidateDynamicDatatype(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree);
 
         // check for semantic errors

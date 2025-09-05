@@ -117,7 +117,7 @@ public class Validation {
                 if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
-                } else if (memberAssignment.getType().equals(KEY_DATA_UNKNOWN)) {
+                } else if (memberAssignment.getType().equals(DATATYPE_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     Type type = variableTypes.get(varIndex);
                     if (doAssignTypes)
@@ -125,7 +125,7 @@ public class Validation {
                 }
             } else if (member instanceof OperationNode memberOp &&
                     memberOp.getConstantToken() != null &&
-                    memberOp.getConstantToken().getType().equals(KEY_DATA_UNKNOWN) &&
+                    memberOp.getConstantToken().getType().equals(DATATYPE_UNKNOWN) &&
                     isVariableName(memberOp.getConstantToken())) {
 
                 String assignedVar = memberOp.getConstantToken().string;
@@ -137,7 +137,7 @@ public class Validation {
                 } else if (!declaredVariablesNames.contains(assignedVar)) {
                     member.throwSemanticError(String.format(undeclaredMessage, assignedVar), member.nameToken);
 
-                } else if (memberOp.getConstantToken().getType().equals(KEY_DATA_UNKNOWN)) {
+                } else if (memberOp.getConstantToken().getType().equals(DATATYPE_UNKNOWN)) {
                     int varIndex = declaredVariablesNames.indexOf(assignedVar);
                     Type type = variableTypes.get(varIndex);
                     if (doAssignTypes) {
@@ -180,7 +180,7 @@ public class Validation {
     }
 
     private static Type validateTypesHelper(EvaluatorNode evaluatorNode, boolean throwErrors, boolean debugMode) {
-        Type type = KEY_DATA_UNKNOWN.create();
+        Type type = DATATYPE_UNKNOWN.create();
 
         if (debugMode)
             System.out.println("Depth: " + evaluatorNode.depth + " Node: " + evaluatorNode);
@@ -188,8 +188,8 @@ public class Validation {
         // validate binary operations
         if (evaluatorNode instanceof OperationNode operationNode) {
             if (operationNode.isBinary()) {
-                Type leftType = KEY_DATA_UNKNOWN.create();
-                Type rightType = KEY_DATA_UNKNOWN.create();
+                Type leftType = DATATYPE_UNKNOWN.create();
+                Type rightType = DATATYPE_UNKNOWN.create();
 
                 if (operationNode.getLeftSide() != null) {
                     leftType = validateTypesHelper(operationNode.getLeftSide(), throwErrors, debugMode);
@@ -211,7 +211,7 @@ public class Validation {
 
             } else if (operationNode.isConstant()) {
                 type = operationNode.getConstantToken().getType();
-                type = type == null ? KEY_DATA_UNKNOWN.create() : type;
+                type = type == null ? DATATYPE_UNKNOWN.create() : type;
             }
 
             // TODO remove redundancies
@@ -298,7 +298,7 @@ public class Validation {
         boolean isReturningSomething = validateReturns(scope, returnType, debugMode);
 
         // todo can be simplified
-        if (!isReturningSomething && !KEY_DATA_VOID.equals(returnType)) {
+        if (!isReturningSomething && !DATATYPE_VOID.equals(returnType)) {
             func.throwSemanticError("Not all paths return a value", func.nameToken);
         }
     }
@@ -451,7 +451,7 @@ public class Validation {
             OperationNode expression = conditionalNode.getExpression();
             Type type = validateTypesHelper(expression, false, debugMode);
 
-            if (!KEY_DATA_BOOLEAN.equals(type)) {
+            if (!DATATYPE_BOOLEAN.equals(type)) {
                 evaluatorNode.throwSemanticError("Expression in conditional must result in a value of type boolean, is instead of type " + type, evaluatorNode.nameToken);
             }
         }
@@ -460,7 +460,7 @@ public class Validation {
             validateConditionalsHelper(evaluatorNode.getMember(i), debugMode);
         }
     }
-
+/*
     public static void invalidateDynamicDatatype(EvaluatorTree evaluatorTree, boolean debugMode) {
         invalidateDynamicDatatypeHelper(evaluatorTree.mainBlock, debugMode);
     }
@@ -469,18 +469,18 @@ public class Validation {
         for (int i = 0; i < evaluatorNode.memberCount(); i++) {
             EvaluatorNode member = evaluatorNode.getMember(i);
 
-            if (member instanceof DeclarationNode declarationNode && declarationNode.getType().equals(KEY_DATA_ANY)) {
-                declarationNode.throwSemanticError(String.format("Cannot use datatype \"%s\" in variable declarations", KEY_DATA_ANY), declarationNode.nameToken);
+            if (member instanceof DeclarationNode declarationNode && declarationNode.getType().equals(DATATYPE_ANY)) {
+                declarationNode.throwSemanticError(String.format("Cannot use datatype \"%s\" in variable declarations", DATATYPE_ANY), declarationNode.nameToken);
 
             } else if (member instanceof CallableNode callableNode) {
                 if (callableNode instanceof FunctionDeclareNode functionDeclareNode) {
-                    if (functionDeclareNode.getArgumentTypes().contains(KEY_DATA_ANY)) {
-                        functionDeclareNode.throwSemanticError(String.format("Cannot use datatype type \"%s\" in function arguments", KEY_DATA_ANY), functionDeclareNode.nameToken);
+                    if (functionDeclareNode.getArgumentTypes().contains(DATATYPE_ANY)) {
+                        functionDeclareNode.throwSemanticError(String.format("Cannot use datatype type \"%s\" in function arguments", DATATYPE_ANY), functionDeclareNode.nameToken);
                     }
                     invalidateDynamicDatatypeHelper(functionDeclareNode.getScope(), debugMode);
                 }
-                if (callableNode.getType().equals(KEY_DATA_ANY)) {
-                    callableNode.throwSemanticError(String.format("Callable cannot return datatype \"%s\"", KEY_DATA_ANY), callableNode.nameToken);
+                if (callableNode.getType().equals(DATATYPE_ANY)) {
+                    callableNode.throwSemanticError(String.format("Callable cannot return datatype \"%s\"", DATATYPE_ANY), callableNode.nameToken);
                 }
 
             } else {
@@ -488,4 +488,5 @@ public class Validation {
             }
         }
     }
+ */
 }

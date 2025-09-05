@@ -106,22 +106,20 @@ public class Keywords {
     // datatypes
     public final static Type
         // keywords: datatypes
-        KEY_DATA_INT = new Type("int"),
-        KEY_DATA_DOUBLE = new Type("double"),
-        KEY_DATA_STRING = new Type("string"),
-        KEY_DATA_BOOLEAN = new Type("boolean"),
-        KEY_DATA_VOID = new Type("void"),
-        KEY_DATA_SYMBOL = new Type("symbol"),
-    // for template arguments only
-        KEY_DATA_ANY = new Type("any"),
+        DATATYPE_INT = new Type("int"),
+        DATATYPE_DOUBLE = new Type("double"),
+        DATATYPE_STRING = new Type("string"),
+        DATATYPE_BOOLEAN = new Type("boolean"),
+        DATATYPE_VOID = new Type("void"),
+        DATATYPE_SYMBOL = new Type("symbol"),
 
-    // pointer stuff
-        KEY_DATA_PTR = new Type("p"),
-        KEY_DATA_PTR_INT = new Type("p", KEY_DATA_INT),
-        KEY_DATA_PTR_DOUBLE = new Type("p", KEY_DATA_DOUBLE),
-        KEY_DATA_PTR_BOOLEAN = new Type("p", KEY_DATA_BOOLEAN),
-        KEY_DATA_MRAY = new Type("arr"),
+        // pointer stuff
+        DATATYPE_PTR = new Type("p"),
+        DATATYPE_PTR_INT = new Type("p", DATATYPE_INT),
+        DATATYPE_PTR_DOUBLE = new Type("p", DATATYPE_DOUBLE),
+        DATATYPE_PTR_BOOLEAN = new Type("p", DATATYPE_BOOLEAN),
+        DATATYPE_MRAY = new Type("arr"),
 
     // keywords: other datatypes (not in maps)
-    KEY_DATA_UNKNOWN = new Type("unknown_type");
+    DATATYPE_UNKNOWN = new Type("unknown_type");
 }

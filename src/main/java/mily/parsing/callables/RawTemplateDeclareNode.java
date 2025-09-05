@@ -46,7 +46,7 @@ public class RawTemplateDeclareNode extends CallableNode {
             return false;
         }
         for (int i = 0; i < types.length; i++) {
-            if (!types[i].equals(argumentTypes.get(i)) && !argumentTypes.get(i).equals(KEY_DATA_ANY)) {
+            if (!types[i].equals(argumentTypes.get(i)) /*&& !argumentTypes.get(i).equals(DATATYPE_ANY)*/) {
                 return false;
             }
         }
@@ -57,7 +57,7 @@ public class RawTemplateDeclareNode extends CallableNode {
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
-        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID);
+        boolean expectingReturnPattern = !returnType.equals(DATATYPE_VOID);
 
         try {
             Token openingToken = fetchNextNonWhitespaceToken(tokenList);

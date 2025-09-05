@@ -97,9 +97,8 @@ public abstract class EvaluatorNode {
     public EvaluatorNode throwSyntaxError(String message, Token token) {
         String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilySyntaxError(errorMessage));
-
-        System.out.println(errorMessage);
-        System.exit(10);
+//        System.out.println(errorMessage);
+//        System.exit(10);
         return this;
     }
 

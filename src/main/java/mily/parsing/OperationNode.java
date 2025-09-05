@@ -52,19 +52,19 @@ public class OperationNode extends EvaluatorNode {
         if (s == null)
             return null;
 
-        Type output = new Type(KEY_DATA_UNKNOWN.typeString);
+        Type output = new Type(DATATYPE_UNKNOWN.typeString);
 
         if (isInteger(s)) {
-            output.typeString = KEY_DATA_INT.typeString;
+            output.typeString = DATATYPE_INT.typeString;
 
         } else if (isNumeric(s)) {
-            output.typeString = KEY_DATA_DOUBLE.typeString;
+            output.typeString = DATATYPE_DOUBLE.typeString;
 
         } else if (s.startsWith("\"") && s.endsWith("\"")) {
-            output.typeString = KEY_DATA_STRING.typeString;
+            output.typeString = DATATYPE_STRING.typeString;
 
         } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
-            output.typeString = KEY_DATA_BOOLEAN.typeString;
+            output.typeString = DATATYPE_BOOLEAN.typeString;
         }
         return output;
     }
@@ -203,7 +203,7 @@ public class OperationNode extends EvaluatorNode {
                 // Process raw text (symbols)
 
                 if (isVariableOrDeclarator(token)) {
-                    operationTokens.add(new TypedToken(token.string, token.source, KEY_DATA_SYMBOL, token.line));
+                    operationTokens.add(new TypedToken(token.string, token.source, DATATYPE_SYMBOL, token.line));
                     previousIsSymbolIdentifier = false;
 
                 } else {
@@ -234,7 +234,7 @@ public class OperationNode extends EvaluatorNode {
                         prevStringToken = stringToken;
                     }
 
-                    operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, KEY_DATA_STRING, token.line));
+                    operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, DATATYPE_STRING, token.line));
 
                 } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     // function calls should be evaluated here because they don't change the order of operations
@@ -457,14 +457,14 @@ public class OperationNode extends EvaluatorNode {
                         } else if (newConstantToken instanceof CallerNodeToken callerNodeToken) {
                             constantToken = callerNodeToken;
 
-                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(KEY_DATA_UNKNOWN)) {
+                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(DATATYPE_UNKNOWN)) {
                             constantToken = typedToken;
 
                         } else {
                             Type guessedValueType = guessValueType(newConstantToken.string);
                             constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
 
-                            if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
+                            if (guessedValueType.equals(DATATYPE_UNKNOWN)) {
                                 constantToken.setVariableRef(true);
                             }
                         }
@@ -494,7 +494,7 @@ public class OperationNode extends EvaluatorNode {
                             op.constantToken = callerNodeToken;
                             setLeftSide(op);
 
-                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(KEY_DATA_UNKNOWN)) {
+                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(DATATYPE_UNKNOWN)) {
                             op.constantToken = typedToken;
                             setLeftSide(op);
 
@@ -503,7 +503,7 @@ public class OperationNode extends EvaluatorNode {
                             op.constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
                             setLeftSide(op);
 
-                            if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
+                            if (guessedValueType.equals(DATATYPE_UNKNOWN)) {
                                 op.constantToken.setVariableRef(true);
                             }
                         }

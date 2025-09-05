@@ -16,7 +16,7 @@ public class CallerNodeToken extends TypedToken {
     final CallerNode callerNode;
 
     public CallerNodeToken(String string, String source, int line, CallerNode callerNode) {
-        super(string, source, KEY_DATA_UNKNOWN, line);
+        super(string, source, DATATYPE_UNKNOWN, line);
 
         this.callerNode = callerNode;
     }
