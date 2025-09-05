@@ -79,7 +79,6 @@ public class ScopeNode extends EvaluatorNode {
             if (evaluatorTree.debugMode)
                 System.out.printf(indent + "block : %s%n", token);
 
-
             if (isWhiteSpace(token)) {
                 continue;
 
@@ -182,6 +181,10 @@ public class ScopeNode extends EvaluatorNode {
         // after running out of tokens
         if (needsClosing) {
             return throwSyntaxError("Scoped is undeclared", nameToken);
+        }
+
+        if (expectingSemicolon) {
+            return throwSyntaxError("Missing semicolon at end of file", nameToken);
         }
 
         if (isVariableOrDeclarator(previousToken)) {
