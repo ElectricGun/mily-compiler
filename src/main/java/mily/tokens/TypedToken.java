@@ -1,6 +1,6 @@
 package mily.tokens;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.structures.dataobjects.*;
 
 /**

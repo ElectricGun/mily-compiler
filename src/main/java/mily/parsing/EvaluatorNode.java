@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.structures.errors.*;
 import mily.tokens.*;
 

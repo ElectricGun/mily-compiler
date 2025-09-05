@@ -1,6 +1,6 @@
 package mily.structures.dataobjects;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
 package mily.parsing.invokes;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.parsing.*;
 import mily.processing.*;
 import mily.structures.dataobjects.*;

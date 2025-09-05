@@ -3,6 +3,17 @@
 This program compiles the custom, C syntax programming language Mily to Mindustry Logic (mlog). 
 The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of a learning curve for anyone to use this language.
 
+## Table of Contents
+
+* [Table of Contents](#table-of-contents)
+* [Key Features](#key-features)
+* [Datatypes](#datatypes)
+  * [Primitive Datatypes](#primitive-datatypes)
+  * [Reference Datatypes](#reference-datatypes)
+  * [Array Reference Datatypes](#array-reference-datatypes)
+* [Other Features](#other-features)
+* [Example Code](#example-code)
+
 ## Key Features
 - The basic stuff (looping, if statements, variables)
 - Functions such as `f(int  x) {return x}`
@@ -12,16 +23,32 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 - A standard library imported using `#include std/bulb.mily;`
 - Memory cell pointers: declared using any of the pointer datatypes below, derefenced using the std function r()
 
-## Primitive Datatypes
+## Datatypes
+
+### Primitive Datatypes
+Basic datatypes, able to be stored anywhere.
 - double
 - int
-- string
 - boolean
 
-## Pointer Datatypes
-- p<int>
-- p<double>
-- p<boolean>
+### Processor Datatypes
+These datatypes may only be stored within the processor's variable map.
+- string
+
+### Reference Datatypes
+Reference variables store the index of the value stored within a memory cell instead of the value itself. Only primitive datatypes may be stored in memory.
+- p<type>
+
+To access their value, call the dereference function `r(var)` found in standard library.
+
+### Array Reference Datatypes
+Complex datatypes. Able to store many primitive values.
+- [WIP] arr<type> ... [length] - Contiguous array of size `length`. Fixed size but fast element accessing - O(1).
+- [WIP] lnlist<type> - Linked list. Dynamic size, but slow element accessing - O(n).
+- [WIP] blnlist<type> ... [blocksize] - Blocked linked list. Essentially a linked list of contiguous arrays of size `blocksize`. 
+A larger block size will result in a faster element access speed, but more memory space.
+
+Access a value at index `n` using the array dereference function `ar(array, n)` found in the standard library
 
 ## Other Features
 - Compile error stack tracing.

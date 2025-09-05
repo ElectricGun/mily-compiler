@@ -1,4 +1,4 @@
-package mily.abstracts;
+package mily.interfaces;
 
 import mily.parsing.*;
 
