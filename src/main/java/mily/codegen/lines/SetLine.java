@@ -6,16 +6,12 @@ public class SetLine extends VariableLine {
         super(var, value, indent);
     }
 
-    public String getVar() {
-        return varName;
-    }
-
     public String getValue() {
         return string;
     }
 
     @Override
     public String asMlog() {
-        return indent() + "set " + getVar() + " " + getValue();
+        return indent() + "set " + getVarName() + " " + getValue();
     }
 }

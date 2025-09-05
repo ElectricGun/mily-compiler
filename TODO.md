@@ -1,5 +1,5 @@
 # Urgent TODO:
- - variable assignments for pointer variables
+ - maybe rewrite how code generation works, using lambda functions
  - templates with return types shouldnt be able to be called outside of operations
  - pre ast macros, actual template parsing
  - declaring macros into variables for reusability

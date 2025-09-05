@@ -80,22 +80,25 @@ public class CodeGeneration {
                     if (declarationNode.getType().typeString.equals(KEY_DATA_PTR.typeString)) {
                         Line lastLine = declaredOp.lineList.get(declaredOp.lineList.size() - 1);
 
-
                         if (lastLine instanceof VariableLine variableLine) {
-                            // if it is a set, just replace it with a write line
-                            String oldVarName = variableLine.getVarName();
-                            String ptrValueName = "value_" + oldVarName;
 
-                            if (variableLine instanceof SetLine setLine) {
-                                declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
-                                declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", POINTER_VARIABLE, depth));
-                            } else {
-                                // if its an op, overwrite the var name of the evaluated value
-                                variableLine.setVarName(ptrValueName);
-                                declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE, depth));
+                            // if the assigned value is a reference then just assign it normally
+                            if (!getOperationType(op, false).typeString.equals(KEY_DATA_PTR.typeString)) {
+                                // if it is a set, just replace it with a write line
+                                String oldVarName = variableLine.getVarName();
+                                String ptrValueName = "value_" + oldVarName;
+
+                                if (variableLine instanceof SetLine setLine) {
+                                    declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
+                                    declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", POINTER_VARIABLE, depth));
+                                } else {
+                                    // if its an op, overwrite the var name of the evaluated value
+                                    variableLine.setVarName(ptrValueName);
+                                    declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE, depth));
+                                }
+                                declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE, depth));
+                                declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE, KEY_OP_ADD, POINTER_VARIABLE, "1", depth));
                             }
-                            declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE, depth));
-                            declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE, KEY_OP_ADD, POINTER_VARIABLE, "1", depth));
 
                         } else {
                             throw new Exception("Why is the ptr var declaration line not a VariableLine?");
@@ -113,7 +116,30 @@ public class CodeGeneration {
                 // otherwise throw an error
                 if (member.memberCount() <= 0 || !(member.getMember(0) instanceof OperationNode))
                     throw new Exception("Malformed assignment node found on codegen stage");
-                addOperationIRBlock(irCodeConfig, (OperationNode) member.getMember(0), as.getName(), depth);
+
+                OperationNode op = (OperationNode) member.getMember(0);
+
+                IROperation irOperation = addOperationIRBlock(irCodeConfig, op, as.getName(), depth);
+
+                // get type of declarator to see if it is a reference
+                DeclarationNode declarator = irCodeConfig.declarationMap.get(as.getName());
+
+                if (declarator.getType().typeString.equals(KEY_DATA_PTR.typeString)) {
+                    // replace the last operation with a memcell write
+                    Line lastline = irOperation.lineList.get(irOperation.lineList.size() - 1);
+
+                    if (!getOperationType(op, false).typeString.equals(KEY_DATA_PTR.typeString)) {
+                        if (lastline instanceof SetLine setLine) {
+                            irOperation.lineList.remove(irOperation.lineList.size() - 1);
+                            irOperation.addLine(new WriteLine(setLine.getValue(), "cell1", declarator.getName(), setLine.getIndent()));
+
+                        } else if (lastline instanceof VariableLine variableLine) {
+                            // if its an op
+                            variableLine.setVarName("value_" + variableLine.getVarName());
+                            irOperation.addLine(new WriteLine(variableLine.getVarName(), "cell1", declarator.getName(), depth));
+                        }
+                    }
+                }
 
             } else if (member instanceof IfStatementNode ifs) {
                 generateBranchStatement(ifs, irCodeConfig, function, depth);

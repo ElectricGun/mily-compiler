@@ -22,4 +22,8 @@ public class Line {
     protected String indent() {
         return "  ".repeat(indent);
     }
+
+    public int getIndent() {
+        return indent;
+    }
 }

@@ -244,12 +244,12 @@ public class Maps {
                 ));
             }
         };
-//        addGenericNumericOperation(KEY_OP_POW, powConsumer);
 
         // ---- Casts
         Consumer<OperationNode> castToInt = o ->
                 o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).getConstantToken().string));
 
+        // this basically does nothing to the value
         Consumer<OperationNode> castToDouble = o ->
                 o.makeConstant(Double.parseDouble(((OperationNode) o.getMember(0)).getConstantToken().string));
 
@@ -257,9 +257,9 @@ public class Maps {
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
 
         // ptr casts
-
         Consumer<OperationNode> castToPtr = o -> {};
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT,     KEY_DATA_PTR_INT,     KEY_DATA_PTR_INT,     castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT,     KEY_DATA_PTR_DOUBLE,  KEY_DATA_PTR_DOUBLE,     castToDouble);
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_DOUBLE,  KEY_DATA_PTR_DOUBLE,  KEY_DATA_PTR_DOUBLE,  castToDouble);
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_BOOLEAN, KEY_DATA_PTR_BOOLEAN, KEY_DATA_PTR_BOOLEAN, castToDouble);
 
