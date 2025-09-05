@@ -1,9 +1,10 @@
 # Urgent TODO:
  - maybe rewrite how code generation works, using lambda functions
- - templates with return types shouldnt be able to be called outside of operations
+ - make dataobjects records
  - pre ast macros, actual template parsing
  - declaring macros into variables for reusability
  - Arrays and structs
+ - templates with return types shouldnt be able to be called outside of operations
 
 # Flags
  - shorthand flags such as -h, -p, -v, etc
