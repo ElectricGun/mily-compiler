@@ -3,6 +3,7 @@
  - templates with return types shouldnt be able to be called outside of operations
  - pre ast macros, actual template parsing
  - declaring macros into variables for reusability
+ - Arrays and structs
 
 # Flags
  - shorthand flags such as -h, -p, -v, etc
@@ -67,8 +68,5 @@
  - A syntax document for Milyscript
 
 # Future Features (low priority)
- - Arrays and structs
  - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
- - Macros (before AST stage)
- - Templates (after AST stage)
- - actual template/macro parsing into AST
+ - Byte packing, such as storing int8, int16, int32 inside a double
