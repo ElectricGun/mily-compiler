@@ -121,12 +121,14 @@ public class Refining {
     private static void addVoidReturnsRecursive(EvaluatorNode evaluatorNode) {
         if (evaluatorNode instanceof FunctionDeclareNode fn) {
             ScopeNode sc = fn.getScope();
-            if (!(sc.memberCount() > 0 && sc.getMember(sc.memberCount() - 1) instanceof OperationNode op && op.isReturnOperation())) {
-                EvaluatorNode lastMember = sc.getMember(sc.memberCount() - 1);
-                OperationNode returnOperation = new OperationNode(new Token("return", lastMember.nameToken.source, lastMember.nameToken.line), lastMember.depth);
-                returnOperation.setReturnOperation(true);
-                returnOperation.setConstantToken(new VoidToken(lastMember.nameToken.source, lastMember.nameToken.line));
-                sc.appendMember(returnOperation);
+            if (sc.memberCount() > 0) {
+                if (!(sc.getMember(sc.memberCount() - 1) instanceof OperationNode op && op.isReturnOperation())) {
+                    EvaluatorNode lastMember = sc.getMember(sc.memberCount() - 1);
+                    OperationNode returnOperation = new OperationNode(new Token("return", lastMember.nameToken.source, lastMember.nameToken.line), lastMember.depth);
+                    returnOperation.setReturnOperation(true);
+                    returnOperation.setConstantToken(new VoidToken(lastMember.nameToken.source, lastMember.nameToken.line));
+                    sc.appendMember(returnOperation);
+                }
             }
         }
 
