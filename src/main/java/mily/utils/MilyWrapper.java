@@ -40,7 +40,7 @@ public class MilyWrapper {
         // tokenise
         List<Token> tokenList;
         try {
-            tokenList = tokenize(code.getCode(), new File(code.getDirectory(), code.getFilename()).getPath(), debugMode);
+            tokenList = tokenize(code.code(), new File(code.directory(), code.filename()).getPath(), debugMode);
             tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode);
         } catch (Exception e) {
             // todo: unhardcode this message
@@ -56,7 +56,7 @@ public class MilyWrapper {
         long startAstBuildDuration = System.nanoTime();
         long lexingDuration = (startAstBuildDuration - compileStartTime);
 
-        EvaluatorTree evaluatorTree = new EvaluatorTree(code.getFilename(), debugMode);
+        EvaluatorTree evaluatorTree = new EvaluatorTree(code.filename(), debugMode);
         evaluatorTree.begin(tokenList);
 
         // end ast building -- start optimisation

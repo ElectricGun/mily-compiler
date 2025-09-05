@@ -19,6 +19,7 @@ import static mily.processing.Validation.*;
 public class CodeGeneration {
 
     protected static final String POINTER_VARIABLE = "mem_pointer";
+    static Map<Class<? extends EvaluatorNode>, ScopeFunctionConsumer<ScopeNode, IRScopeConfig, IRFunction, Integer>> map = new HashMap<>();
 
     public static IRCode generateIRCode(EvaluatorTree evaluatorTree, boolean generateComments, boolean debugMode) throws Exception {
         IRScopeConfig irScopeConfig = new IRScopeConfig(
@@ -38,12 +39,6 @@ public class CodeGeneration {
         irScopeConfig.irCode().addSingleLineBlock(new Stop(0));
         return irScopeConfig.irCode();
     }
-
-    protected interface ScopeFunctionConsumer<X, Y, Z, W> {
-        void apply(X scope, Y config, Z function, W depth);
-    }
-
-    static Map<Class<? extends EvaluatorNode>, ScopeFunctionConsumer<ScopeNode, IRScopeConfig, IRFunction, Integer>> map = new HashMap<>();
 
     private static void generateIrScopeRecursiveMapped(ScopeNode scopeNode, IRScopeConfig config, IRFunction function, int depth) throws Exception {
         for (int i = 0; i < scopeNode.memberCount(); i++) {
@@ -508,5 +503,9 @@ public class CodeGeneration {
         } else {
             return tokenAsMlog(token);
         }
+    }
+
+    protected interface ScopeFunctionConsumer<X, Y, Z, W> {
+        void apply(X scope, Y config, Z function, W depth);
     }
 }

@@ -257,10 +257,11 @@ public class Maps {
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_DOUBLE, DATATYPE_DOUBLE, castToDouble);
 
         // ptr casts
-        Consumer<OperationNode> castToPtr = o -> {};
-        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_PTR_INT, DATATYPE_PTR_INT,     castToDouble);
-        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_PTR_DOUBLE, DATATYPE_PTR_DOUBLE,     castToDouble);
-        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_DOUBLE, DATATYPE_PTR_DOUBLE, DATATYPE_PTR_DOUBLE,  castToDouble);
+        Consumer<OperationNode> castToPtr = o -> {
+        };
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_PTR_INT, DATATYPE_PTR_INT, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_PTR_DOUBLE, DATATYPE_PTR_DOUBLE, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_DOUBLE, DATATYPE_PTR_DOUBLE, DATATYPE_PTR_DOUBLE, castToDouble);
         operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_BOOLEAN, DATATYPE_PTR_BOOLEAN, DATATYPE_PTR_BOOLEAN, castToDouble);
 
 
@@ -294,12 +295,12 @@ public class Maps {
         // -------- Unary Operators --------
 
         Consumer<UnaryToBinaryStruct> baseUnaryConsumer = b -> {
-            b.getNewOp().setOperator(KEY_OP_MUL);
-            b.getFactor().setConstantToken(new TypedToken(
-                    b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1",
-                    b.getOldOp().nameToken.source,
+            b.newOp().setOperator(KEY_OP_MUL);
+            b.factor().setConstantToken(new TypedToken(
+                    b.oldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1",
+                    b.oldOp().nameToken.source,
                     DATATYPE_INT,
-                    b.getOldOp().nameToken.line
+                    b.oldOp().nameToken.line
             ));
         };
 

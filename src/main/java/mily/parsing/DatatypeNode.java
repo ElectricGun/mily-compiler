@@ -1,7 +1,7 @@
 package mily.parsing;
 
-import mily.interfaces.*;
 import mily.constants.*;
+import mily.interfaces.*;
 import mily.structures.dataobjects.*;
 import mily.tokens.*;
 

@@ -1,7 +1,7 @@
 package mily.tokens;
 
-import mily.interfaces.*;
 import mily.constants.*;
+import mily.interfaces.*;
 
 /**
  * Basic token, contains a string and line number.

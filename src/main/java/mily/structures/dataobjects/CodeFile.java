@@ -7,29 +7,7 @@ package mily.structures.dataobjects;
  * @author ElectricGun
  */
 
-public class CodeFile {
-
-    protected final String code;
-    protected final String filename;
-    protected final String directory;
-
-    public CodeFile(String directory, String filename, String code) {
-        this.directory = directory;
-        this.code = code;
-        this.filename = filename;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public String getDirectory() {
-        return directory;
-    }
+public record CodeFile(String directory, String filename, String code) {
 
     @Override
     public String toString() {

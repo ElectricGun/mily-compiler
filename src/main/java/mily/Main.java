@@ -77,15 +77,15 @@ public class Main {
         }
 
         if (printAst) {
-            output.getAST().printRecursive();
+            output.AST().printRecursive();
         }
-        IRCode irCode = output.getOutputCode();
+        IRCode irCode = output.outputCode();
 
         if (argParser.hasStringFlag(FLAG_OUTPUT)) {
             Scanner scanner = new Scanner(System.in);
 
             String outputFileNameWithoutExt;
-            String outputFileName = code.getFilename();
+            String outputFileName = code.filename();
 
             if (outputFileName.indexOf(".") > 0) {
                 outputFileNameWithoutExt = outputFileName.substring(0, outputFileName.lastIndexOf("."));
@@ -138,11 +138,11 @@ public class Main {
                             "Optimisation time: %sms%n" +
                             "Code generation time: %sms%n" +
                             "Total compile time: %sms%n",
-                    output.getLexingDuration() / 1000000,
-                    output.getAstBuildDuration() / 1000000,
-                    output.getOptimizationDuration() / 1000000,
-                    output.getCodeGenerationDuration() / 1000000,
-                    output.getCompileDuration() / 1000000
+                    output.lexingDuration() / 1000000,
+                    output.astBuildDuration() / 1000000,
+                    output.optimizationDuration() / 1000000,
+                    output.codeGenerationDuration() / 1000000,
+                    output.compileDuration() / 1000000
             );
         }
     }

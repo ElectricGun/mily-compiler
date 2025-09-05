@@ -105,20 +105,20 @@ public class Keywords {
     // TODO change how this work
     // datatypes
     public final static Type
-        // keywords: datatypes
-        DATATYPE_INT = new Type("int"),
-        DATATYPE_DOUBLE = new Type("double"),
-        DATATYPE_STRING = new Type("string"),
-        DATATYPE_BOOLEAN = new Type("boolean"),
-        DATATYPE_VOID = new Type("void"),
-        DATATYPE_SYMBOL = new Type("symbol"),
+            // keywords: datatypes
+            DATATYPE_INT = new Type("int"),
+            DATATYPE_DOUBLE = new Type("double"),
+            DATATYPE_STRING = new Type("string"),
+            DATATYPE_BOOLEAN = new Type("boolean"),
+            DATATYPE_VOID = new Type("void"),
+            DATATYPE_SYMBOL = new Type("symbol"),
 
-        // pointer stuff
-        DATATYPE_PTR = new Type("p"),
-        DATATYPE_PTR_INT = new Type("p", DATATYPE_INT),
-        DATATYPE_PTR_DOUBLE = new Type("p", DATATYPE_DOUBLE),
-        DATATYPE_PTR_BOOLEAN = new Type("p", DATATYPE_BOOLEAN),
-        DATATYPE_MRAY = new Type("arr"),
+    // pointer stuff
+    DATATYPE_PTR = new Type("p"),
+            DATATYPE_PTR_INT = new Type("p", DATATYPE_INT),
+            DATATYPE_PTR_DOUBLE = new Type("p", DATATYPE_DOUBLE),
+            DATATYPE_PTR_BOOLEAN = new Type("p", DATATYPE_BOOLEAN),
+            DATATYPE_MRAY = new Type("arr"),
 
     // keywords: other datatypes (not in maps)
     DATATYPE_UNKNOWN = new Type("unknown_type");

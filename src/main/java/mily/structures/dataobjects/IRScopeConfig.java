@@ -6,7 +6,7 @@ import mily.parsing.*;
 import mily.parsing.callables.*;
 import mily.utils.*;
 
-import java.util.Map;
+import java.util.*;
 
 public record IRScopeConfig(
         IRCode irCode,

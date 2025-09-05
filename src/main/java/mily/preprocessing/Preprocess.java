@@ -43,7 +43,7 @@ public class Preprocess {
                     File includedFile = new File(directory, buffer.toString().trim());
                     CodeFile includedCode = Functions.readFile(includedFile.getParent(), includedFile.getName());
 
-                    List<Token> includedTokens = Lexing.tokenize(includedCode.getCode(), includedFile.getPath(), debugMode);
+                    List<Token> includedTokens = Lexing.tokenize(includedCode.code(), includedFile.getPath(), debugMode);
                     includedTokens = processIncludes(includedTokens, includedFile.getParent(), debugMode);
 
                     newTokenList.addAll(includedTokens);
