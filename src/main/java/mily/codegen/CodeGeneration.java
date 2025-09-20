@@ -40,6 +40,7 @@ public class CodeGeneration {
         return irScopeConfig.irCode();
     }
 
+    // the IRFunction here should be a part of scopeNode
     private static void generateIrScopeRecursiveMapped(ScopeNode scopeNode, IRScopeConfig config, IRFunction function, int depth) throws Exception {
         for (int i = 0; i < scopeNode.memberCount(); i++) {
             EvaluatorNode member = scopeNode.getMember(i);
