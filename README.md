@@ -30,6 +30,7 @@ The alpha versions are unstable, and code syntax may change on updates!
 * [Key Features](#key-features)
 * [Datatypes](#datatypes)
   * [Primitive Datatypes](#primitive-datatypes)
+  * [Processor Datatypes](#processor-datatypes)
   * [Reference Datatypes](#reference-datatypes)
   <!-- * [Array Reference Datatypes](#array-reference-datatypes) -->
 * [Other Features](#other-features)
