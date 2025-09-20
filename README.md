@@ -9,7 +9,7 @@
 
 </div>
 
-This program compiles the custom, C syntax programming language Mily to Mindustry Logic (mlog) syntax bytecode. 
+This program compiles the high-level programming language Mily to Mindustry Logic (mlog) syntax bytecode. 
 The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of a learning curve for anyone using this language.
 
 ## Disclaimer
