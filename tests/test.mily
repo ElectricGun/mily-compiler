@@ -1,28 +1,15 @@
 #include std/bulb.mily;
 
-int f(int x) {
-    int out = 1;
+ptr<double> sus = 0;
+ptr<double> ref = sus;
+ref = 100;
 
-    for (int i = 1; i <= x; i = i + 1) {
-        out = out * i;
-    }
-    return out;
+void f(ptr<double> x) {
+    print(r(x));
 }
 
-void main(int amount) {
-    for (int i = 0; i < amount; i = i + 1) {
-        print("factorial of ");
-        print(i);
-        print(": ");
-        print(f(i));
-        println();
-    }
-    printflush(@message1);
-}
-
-main(16);
-
--- should throw an error because the same signature is already defined
--- raw int f(int x) -> out ${
---
---}
+f(sus);
+f(ref);
+printflush(@message1);
+-- prints 100100
+-- because both references have the same value

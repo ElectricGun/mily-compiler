@@ -19,3 +19,6 @@
 - Fixed exception when having binary operators on function returns
 - Fixed empty void function throwing an error
 - Changed std function `as_int` to `dtoi` for brevity
+
+# v0.1.1-alpha
+- Changed `p` datatype to `ptr`

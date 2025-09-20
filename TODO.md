@@ -1,5 +1,7 @@
 # Urgent TODO:
+ - diamond types are printed incorrectly in mlog
  - maybe rewrite how code generation works, using lambda functions
+   - make the IRFunction function arg in scope generation function a part of the scope config
  - make dataobjects records
  - pre ast macros, actual template parsing
  - declaring macros into variables for reusability
