@@ -16,8 +16,10 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 ## Disclaimer
 
 This project is currently in alpha and is very much work in progress; the code is still quite messy. 
-I would appreciate it if anyone could do a little testing and bug hunting to polish out any "unintended features". 
+I would appreciate it if anyone could do a little testing and bug hunting to polish out any "unintended features".
 If you find a bug, please create an issue containing the Mily code with a brief explanation regarding the issue.
+
+The alpha versions are unstable, and code syntax may change on updates!
 
 ## Table of Contents
 
