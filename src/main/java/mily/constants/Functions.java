@@ -1,13 +1,13 @@
 package mily.constants;
 
+import mily.structures.dataobjects.*;
+import mily.tokens.*;
+
 import java.io.*;
 import java.util.*;
 
-import mily.structures.structs.*;
-import mily.tokens.*;
-
-import static mily.constants.Maps.*;
 import static mily.constants.Keywords.*;
+import static mily.constants.Maps.*;
 
 /**
  * <h1> Class Functions </h1>
@@ -182,6 +182,8 @@ public class Functions {
     }
 
     public static boolean isDeclarator(Token t) {
+        if (t == null)
+            return false;
         return isDeclarator(t.string);
     }
 

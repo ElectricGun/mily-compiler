@@ -1,4 +1,4 @@
-package mily.structures.structs;
+package mily.structures.dataobjects;
 
 import mily.parsing.*;
 
@@ -17,9 +17,9 @@ import static mily.constants.Keywords.*;
 
 public class OperationMap {
 
-    Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
-    Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
-    Map<OperationKey, String> operationCastMap = new HashMap<>();
+    protected final Map<String, Consumer<UnaryToBinaryStruct>> unaryOperationConversionMap = new HashMap<>();
+    protected final Map<OperationKey, Consumer<OperationNode>> operationParseMap = new HashMap<>();
+    protected final Map<OperationKey, Type> operationCastMap = new HashMap<>();
 
     /**
      * Adds a converter for unary operations to binary <br>
@@ -34,24 +34,18 @@ public class OperationMap {
         OperationNode memberChild = (OperationNode) operationNode.getMember(memberIndex);
         OperationNode factorConstant = new OperationNode(operationNode.nameToken, operationNode.depth + 1);
         memberChild.depth += 1;
-        // todo hardcode might reduce flexibility
+        //this hardcode may reduce flexibility
         newOp.setType(KEY_OP_TYPE_OPERATION);
 
         UnaryToBinaryStruct unaryToBinaryStruct = new UnaryToBinaryStruct(operationNode, newOp, memberChild, factorConstant);
+        String key = operationNode.getOperator();
 
-//        if (!operationNode.isCast()) {
-            String key = operationNode.getOperator();
+        if (unaryOperationConversionMap.containsKey(key)) {
+            unaryOperationConversionMap.get(key).accept(unaryToBinaryStruct);
 
-            if (unaryOperationConversionMap.containsKey(key)) {
-                unaryOperationConversionMap.get(key).accept(unaryToBinaryStruct);
-            } else {
-                throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
-
-            }
-//        } else {
-//            newOp.setOperator(KEY_OP_CAST_EXPLICIT);
-//            factorConstant.setConstantToken(new TypedToken("1", operationNode.nameToken.source, operationNode.getOperator(), operationNode.nameToken.line));
-//        }
+        } else {
+            throw new IllegalArgumentException("invalid unary operator \"" + key + "\"");
+        }
 
         newOp.setLeftSide(memberChild);
         newOp.setRightSide(factorConstant);
@@ -59,28 +53,24 @@ public class OperationMap {
         return newOp;
     }
 
-//    public void generateBinaryFromUnary(OperationNode operationNode, int memberIndex) {
-//        generateBinaryFromUnaryAtMember(operationNode, 0);
-//    }
-
-    public void addOperation(String operator, String leftType, String rightType, String castsTo, Consumer<OperationNode> operationConsumer) {
+    public void addOperation(String operator, Type leftType, Type rightType, Type castsTo, Consumer<OperationNode> operationConsumer) {
         OperationKey newOperationKey = new OperationKey(operator, leftType, rightType);
 
         operationParseMap.put(newOperationKey, operationConsumer);
         operationCastMap.put(newOperationKey, castsTo);
     }
 
+    public void addImplicitCast(Type leftType, Type rightType, Type castsTo, Consumer<OperationNode> operationConsumer) {
+        addOperation(KEY_OP_CAST_IMPLICIT, leftType, rightType, castsTo, operationConsumer);
+    }
+
     public void parseOperation(OperationNode operationNode) throws IllegalArgumentException, NoSuchMethodError {
         String operator = operationNode.getOperator();
-        String leftType = operationNode.getLeftTokenType();
-        String rightType = operationNode.getRightTokenType();
-
-//        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
-//            return;
-//        }
+        Type leftType = operationNode.getLeftTokenType();
+        Type rightType = operationNode.getRightTokenType();
 
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
-        String castTo = operationCastMap.get(operationKeyCheck);
+        Type castTo = operationCastMap.get(operationKeyCheck);
 
         if (!operationParseMap.containsKey(operationKeyCheck) || !operationCastMap.containsKey(operationKeyCheck)) {
             throw new IllegalArgumentException(String.format("Invalid operator %s between types %s and %s on line %s", operator, leftType, rightType, operationNode.nameToken.line));
@@ -90,37 +80,35 @@ public class OperationMap {
 
         try {
             operationNode.getConstantToken().setType(castTo);
+
         } catch (NullPointerException e) {
             throw new NoSuchMethodError(String.format("Unable to parse operator %s on %s and %s. Is the lambda function empty?", operator, leftType, rightType));
         }
     }
 
-    public String getCastTo(String operator, String leftType, String rightType) throws IllegalArgumentException {
+    public Type getCastTo(String operator, Type leftType, Type rightType) throws IllegalArgumentException {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
-
-//        if (keyEquals(KEY_DATA_DYNAMIC, leftType) || keyEquals(KEY_DATA_DYNAMIC, rightType)) {
-//            return KEY_DATA_DYNAMIC;
-//        }
 
         if (operationCastMap.containsKey(operationKeyCheck)) {
             return operationCastMap.get(operationKeyCheck);
+
         } else {
             throw new IllegalArgumentException(String.format("Operator %s cannot be applied to %s and %s", operator, leftType, rightType));
         }
     }
 
-    public boolean isOperationValid(String operator, String leftType, String rightType) {
+    public boolean isOperationValid(String operator, Type leftType, Type rightType) {
         OperationKey operationKeyCheck = new OperationKey(operator, leftType, rightType);
 
         return operationCastMap.containsKey(operationKeyCheck);
     }
 
-    static class OperationKey {
-        String operator;
-        String leftType;
-        String rightType;
+    protected static class OperationKey {
+        final String operator;
+        final Type leftType;
+        final Type rightType;
 
-        public OperationKey(String operator, String leftType, String rightType) {
+        public OperationKey(String operator, Type leftType, Type rightType) {
             this.operator = operator;
             this.leftType = leftType;
             this.rightType = rightType;

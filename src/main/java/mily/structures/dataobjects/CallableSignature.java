@@ -1,28 +1,27 @@
-package mily.structures.structs;
+package mily.structures.dataobjects;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 
 import java.util.*;
 
 public class CallableSignature implements Named {
 
-    String name;
-    List<String> argTypes = new ArrayList<>();
+    protected final List<Type> argTypes = new ArrayList<>();
+    protected String name;
 
     public CallableSignature(String name) {
         this.name = name;
     }
 
-    public CallableSignature(String name, String... argTypes) {
+    public CallableSignature(String name, Type... argTypes) {
         this(name);
         Collections.addAll(this.argTypes, argTypes);
     }
 
-    public CallableSignature(String name, List<String> argTypes) {
+    public CallableSignature(String name, List<Type> argTypes) {
         this(name);
         this.argTypes.addAll(argTypes);
     }
-
 
     @Override
     public String getName() {
@@ -48,6 +47,17 @@ public class CallableSignature implements Named {
 
     @Override
     public String toString() {
-        return name + "_" + String.join("_", argTypes);
+        StringBuilder out = new StringBuilder(name + "_");
+
+        for (int i = 0; i < argTypes.size(); i++) {
+            Type argType = argTypes.get(i);
+            out.append(argType);
+
+            if (i < argTypes.size() - 1) {
+                out.append("_");
+            }
+        }
+
+        return out.toString();
     }
 }

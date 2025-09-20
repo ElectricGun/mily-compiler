@@ -21,7 +21,7 @@ public class AssignmentNode extends VariableNode {
     protected OperationNode expression = null;
 
     public AssignmentNode(Token token, int depth) {
-        super(KEY_DATA_UNKNOWN, token, depth);
+        super(DATATYPE_UNKNOWN.create(), token, depth);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AssignmentNode extends VariableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         if (evaluatorTree.debugMode)

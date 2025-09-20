@@ -1,10 +1,12 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.parsing.callables.*;
 import mily.parsing.invokes.*;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -17,7 +19,6 @@ import static mily.constants.Keywords.*;
  *  <ul>
  *      <li> {@link DeclarationNode}</li>
  *      <li> {@link OperationNode}</li>
- *      <li> {@link FunctionCallNode}</li>
  *      <li> {@link IfStatementNode}</li>
  *      <li> {@link WhileLoopNode}</li>
  *      <li> {@link ForLoopNode}</li>
@@ -51,13 +52,23 @@ public class ScopeNode extends EvaluatorNode {
         this.functionDeclareNode = functionDeclareNode;
     }
 
+    public static EvaluatorNode processDeclarationDatatype(Token token, Token previousToken, List<Token> tokenList, EvaluatorTree evaluatorTree, int depth) throws JavaMilySyntaxException {
+        // add the token back because it has been consumed
+        tokenList.add(0, token);
+        Type type = DatatypeNode.processType(previousToken, tokenList, evaluatorTree);
+
+        Token varName = EvaluatorNode.fetchNextNonWhitespaceToken(tokenList);
+
+        return new DeclarationNode(type, varName, depth + 1).evaluate(tokenList, evaluatorTree);
+    }
+
     @Override
     public String errorName() {
         return "scope " + "\"" + nameToken.string + "\"";
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         if (evaluatorTree.debugMode)
@@ -65,10 +76,8 @@ public class ScopeNode extends EvaluatorNode {
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
-// Token token = tokenList.removeFirst();
             if (evaluatorTree.debugMode)
                 System.out.printf(indent + "block : %s%n", token);
-
 
             if (isWhiteSpace(token)) {
                 continue;
@@ -92,19 +101,14 @@ public class ScopeNode extends EvaluatorNode {
                     AssignmentNode assignmentNode = new AssignmentNode(previousToken, depth + 1);
                     members.add(assignmentNode.evaluate(tokenList, evaluatorTree));
 
-                } else if (isVariableName(token)) {
-                    // VARIABLE DECLARATION
-                    EvaluatorNode node = new DeclarationNode(previousToken.string, token, depth + 1).evaluate(tokenList, evaluatorTree);
-                    members.add(node);
-
-//                } else if (isVariableName(previousToken) && keyEquals(KEY_MACRO_LITERAL, token)) {
-//                    // TEMPLATE INVOKE
-//                    RawTemplateInvoke templateInvoke = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-//                    members.add(templateInvoke.evaluate(tokenList, evaluatorTree));
-//                    expectingSemicolon = true;
-
                 } else {
-                    return throwSyntaxError("Invalid token", token);
+                    // VARIABLE DECLARATION
+                    try {
+                        members.add(processDeclarationDatatype(token, previousToken, tokenList, evaluatorTree, depth + 1));
+
+                    } catch (JavaMilySyntaxException e) {
+                        return throwSyntaxError("Unexpected end of file", token);
+                    }
                 }
                 // clear previous token otherwise it won't be true to reality
                 // as the evaluators below will consume newer tokens
@@ -151,10 +155,7 @@ public class ScopeNode extends EvaluatorNode {
                 while (returnType.isWhiteSpace()) {
                     returnType = tokenList.remove(0);
                 }
-
-                if (!isVariableOrDeclarator(returnType)) {
-                    return throwSyntaxError("Expecting return type after raw", returnType);
-                }
+                Type type = DatatypeNode.processType(returnType, tokenList, evaluatorTree);
 
                 Token templateName = tokenList.remove(0);
 
@@ -166,7 +167,7 @@ public class ScopeNode extends EvaluatorNode {
                     return throwSyntaxError("Expecting template name", templateName);
                 }
 
-                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(templateName.string, returnType.string, token, depth + 1);
+                RawTemplateDeclareNode rawTemplateDeclareNode = new RawTemplateDeclareNode(templateName.string, type, token, depth + 1);
                 members.add(rawTemplateDeclareNode.evaluate(tokenList, evaluatorTree));
 
             } else if (/*functionDeclareNode != null &&*/ keyEquals(KEY_RETURN, token)) {
@@ -180,6 +181,10 @@ public class ScopeNode extends EvaluatorNode {
         // after running out of tokens
         if (needsClosing) {
             return throwSyntaxError("Scoped is undeclared", nameToken);
+        }
+
+        if (expectingSemicolon) {
+            return throwSyntaxError("Missing semicolon at end of file", nameToken);
         }
 
         if (isVariableOrDeclarator(previousToken)) {

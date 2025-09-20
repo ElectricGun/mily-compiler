@@ -1,11 +1,10 @@
 package mily.codegen;
 
-import mily.tokens.TypedToken;
+import mily.tokens.*;
 
 import java.util.*;
 
 import static mily.constants.Keywords.*;
-import static mily.constants.Functions.*;
 
 public class Mlogs {
     protected static final HashMap<String, String> mlogOperationMap = new HashMap<>();
@@ -30,10 +29,6 @@ public class Mlogs {
     }
 
     public static String opAsMlog(String op) throws IllegalArgumentException {
-//        if (op.equals(KEY_OP_CAST_EXPLICIT))
-            // make this a mily error
-//            throw new IllegalArgumentException("Primitive explicit casting may only be done on constant values in compile time");
-
         if (!mlogOperationMap.containsKey(op))
             throw new IllegalArgumentException(String.format("Operation \"%s\" has no mlog equivalent", op));
 
@@ -41,9 +36,9 @@ public class Mlogs {
     }
 
     public static String tokenAsMlog(TypedToken typedToken) {
-        if (typedToken.getType().equals(KEY_DATA_BOOLEAN)) {
+        if (typedToken.getType().equals(DATATYPE_BOOLEAN)) {
             if (typedToken.equalsKey(KEY_BOOLEAN_FALSE)) {
-                    return "0";
+                return "0";
 
             } else if (typedToken.equalsKey(KEY_BOOLEAN_TRUE)) {
                 return "1";
@@ -51,7 +46,7 @@ public class Mlogs {
             } else {
                 throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", typedToken));
             }
-        } else if (typedToken.getType().equals(KEY_DATA_STRING) && !typedToken.isVariableRef()) {
+        } else if (typedToken.getType().equals(DATATYPE_STRING) && !typedToken.isVariableRef()) {
             return "\"" + typedToken.string + "\"";
 
         } else {

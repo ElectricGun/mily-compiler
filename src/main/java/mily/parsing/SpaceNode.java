@@ -1,6 +1,6 @@
 package mily.parsing;
 
-import mily.abstracts.Named;
+import mily.interfaces.*;
 import mily.tokens.*;
 
 public class SpaceNode extends EvaluatorNode implements Named {

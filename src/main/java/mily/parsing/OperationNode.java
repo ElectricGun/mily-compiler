@@ -1,9 +1,10 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.parsing.invokes.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -16,7 +17,6 @@ import static mily.constants.Maps.*;
  * Routes:
  * <ul>
  *     <li> {@link OperationNode}</li>
- *     <li> {@link FunctionCallNode}</li>
  *     <li> {@link OperationBracketNode}</li>
  * </ul>
  *
@@ -25,10 +25,11 @@ import static mily.constants.Maps.*;
 
 public class OperationNode extends EvaluatorNode {
 
-    public List<OperationBracketNode> bracketOperations = new ArrayList<>();
+    public final List<OperationBracketNode> bracketOperations = new ArrayList<>();
     // this list MUST always end with a semicolon token, including generated ones
     // all operations, including suboperations, are parsed when a semicolon is detected
-    public List<Token> operationTokens = new ArrayList<>();
+    public final List<Token> operationTokens = new ArrayList<>();
+    // TODO maybe this should be a node instead of a token
     protected TypedToken constantToken = null;
     protected boolean isReturnOperation;
     protected String type = KEY_OP_TYPE_CONSTANT;
@@ -47,23 +48,25 @@ public class OperationNode extends EvaluatorNode {
     }
 
     // its private here because it is too dangerous to be used outside of this class
-    private static String guessValueType(String s) {
+    private static Type guessValueType(String s) {
         if (s == null)
             return null;
 
+        Type output = new Type(DATATYPE_UNKNOWN.typeString);
+
         if (isInteger(s)) {
-            return KEY_DATA_INT;
+            output.typeString = DATATYPE_INT.typeString;
 
         } else if (isNumeric(s)) {
-            return KEY_DATA_DOUBLE;
+            output.typeString = DATATYPE_DOUBLE.typeString;
 
         } else if (s.startsWith("\"") && s.endsWith("\"")) {
-            return KEY_DATA_STRING;
+            output.typeString = DATATYPE_STRING.typeString;
 
         } else if (s.equals(KEY_BOOLEAN_FALSE) || s.equals(KEY_BOOLEAN_TRUE)) {
-            return KEY_DATA_BOOLEAN;
+            output.typeString = DATATYPE_BOOLEAN.typeString;
         }
-        return KEY_DATA_UNKNOWN;
+        return output;
     }
 
     public boolean isReturnOperation() {
@@ -160,11 +163,11 @@ public class OperationNode extends EvaluatorNode {
                 Double.parseDouble(getRightConstantString()) : null;
     }
 
-    public String getLeftTokenType() {
+    public Type getLeftTokenType() {
         return getLeftSide().constantToken.getType();
     }
 
-    public String getRightTokenType() {
+    public Type getRightTokenType() {
         return getRightSide().constantToken.getType();
     }
 
@@ -177,7 +180,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         if (evaluatorTree.debugMode)
@@ -200,13 +203,13 @@ public class OperationNode extends EvaluatorNode {
                 // Process raw text (symbols)
 
                 if (isVariableOrDeclarator(token)) {
-                    operationTokens.add(new TypedToken(token.string, token.source, KEY_DATA_SYMBOL, token.line));
+                    operationTokens.add(new TypedToken(token.string, token.source, DATATYPE_SYMBOL, token.line));
                     previousIsSymbolIdentifier = false;
 
                 } else {
                     return this.throwSyntaxError("Invalid token on @ symbol", token);
                 }
-            } else if (token.length() == 1 && isPunctuation(token)) {
+            } else if (token.length() == 1 && isPunctuation(token) && !isOperator(token)) {
                 // evaluate punctuations
 
                 if (isWhiteSpace(token)) {
@@ -231,20 +234,7 @@ public class OperationNode extends EvaluatorNode {
                         prevStringToken = stringToken;
                     }
 
-                    operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, KEY_DATA_STRING, token.line));
-
-//                } else if (token.equalsKey(KEY_MACRO_LITERAL) && isVariableName(previousToken)) {
-//                    if (evaluatorTree.debugMode)
-//                        System.out.printf(indent + "Parsing raw template invoke : prev %s : %s%n", previousToken, token);
-//
-//                    // remove last token because it will be replaced by a single RawTemplateInvoke
-//                    operationTokens.remove(operationTokens.size() - 1);
-//
-//                    RawTemplateInvoke functionCallNode = new RawTemplateInvoke(previousToken.string, previousToken, depth + 1);
-//                    RawTemplateInvoke evaluated = (RawTemplateInvoke) functionCallNode.evaluate(tokenList, evaluatorTree);
-//
-//                    CallerNodeToken callerNodeToken = new CallerNodeToken(evaluated.nameToken.string, token.source, token.line, evaluated);
-//                    operationTokens.add(callerNodeToken);
+                    operationTokens.add(new TypedToken(stringTokenBuffer.toString(), token.source, DATATYPE_STRING, token.line));
 
                 } else if (keyEquals(KEY_BRACKET_OPEN, token)) {
                     // function calls should be evaluated here because they don't change the order of operations
@@ -276,7 +266,7 @@ public class OperationNode extends EvaluatorNode {
                         boolean closeBracketFound = false;
                         boolean constantFound = false;
 
-                        Token datatypeToken = null;
+                        Token datatypeToken;
                         Token castConstantToken = null;
 
                         while (!datatypeFound || !closeBracketFound || !constantFound) {
@@ -304,7 +294,6 @@ public class OperationNode extends EvaluatorNode {
 
                             } else if (!constantFound && (isVariableOrDeclarator(currToken) || isNumeric(currToken) || keyEquals(KEY_BRACKET_OPEN, currToken) || isUnaryOperator(currToken))) {
                                 constantFound = true;
-                                castConstantToken = currToken;
                                 if (evaluatorTree.debugMode)
                                     System.out.println(indent + "constant found");
 
@@ -320,12 +309,6 @@ public class OperationNode extends EvaluatorNode {
                             operationTokens.add(token);
                         } else {
                             return throwSyntaxError("Illegal parenthesis value", token);
-//                            if (evaluatorTree.debugMode)
-//                                System.out.println(indent + "cast found (" + datatypeToken.string + ")");
-//                            CastToken castToken = new CastToken(datatypeToken.string, datatypeToken.string, token.source, token.line);
-//                            operationTokens.add(castToken);
-//
-//                            tokenList.add(0, castConstantToken);
                         }
                     }
 
@@ -392,8 +375,8 @@ public class OperationNode extends EvaluatorNode {
                             // NOTE: REMOVED
 //                            // special case for exponents, because they supersede unary operators
 //                            if (largestOrder != -2 || orders.get(i) != 0) {
-                                largestOrder = orders.get(i);
-                                largestOrderIndex = i;
+                            largestOrder = orders.get(i);
+                            largestOrderIndex = i;
 //                            }
 
                         } else if (orders.get(i) == -2 && largestOrderIndex == -1) {
@@ -408,9 +391,10 @@ public class OperationNode extends EvaluatorNode {
                     }
 
                     boolean noOperators = orders.size() > 1;
-                    for (int i = 0; i < orders.size(); i++) {
-                        if (orders.get(i) != -1) {
+                    for (Integer order : orders) {
+                        if (order != -1) {
                             noOperators = false;
+                            break;
                         }
                     }
 
@@ -437,8 +421,8 @@ public class OperationNode extends EvaluatorNode {
 //                            type = KEY_OP_CAST_EXPLICIT;
 //                            operator = castToken.getType();
 //                        } else {
-                            type = KEY_OP_TYPE_OPERATION;
-                            operator = largestOp.string;
+                        type = KEY_OP_TYPE_OPERATION;
+                        operator = largestOp.string;
 //                        }
 
                         List<Token> left = new ArrayList<>(operationTokens.subList(0, largestOrderIndex));
@@ -473,14 +457,14 @@ public class OperationNode extends EvaluatorNode {
                         } else if (newConstantToken instanceof CallerNodeToken callerNodeToken) {
                             constantToken = callerNodeToken;
 
-                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(KEY_DATA_UNKNOWN)) {
+                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(DATATYPE_UNKNOWN)) {
                             constantToken = typedToken;
 
                         } else {
-                            String guessedValueType = guessValueType(newConstantToken.string);
+                            Type guessedValueType = guessValueType(newConstantToken.string);
                             constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
 
-                            if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
+                            if (guessedValueType.equals(DATATYPE_UNKNOWN)) {
                                 constantToken.setVariableRef(true);
                             }
                         }
@@ -497,8 +481,8 @@ public class OperationNode extends EvaluatorNode {
 //                            this.operator = castToken.getType();
 
 //                        } else {
-                            type = KEY_OP_TYPE_OPERATION;
-                            this.operator = unaryOperator.string;
+                        type = KEY_OP_TYPE_OPERATION;
+                        this.operator = unaryOperator.string;
 //                        }
                         Token newConstantToken = operationTokens.remove(0);
 
@@ -510,16 +494,16 @@ public class OperationNode extends EvaluatorNode {
                             op.constantToken = callerNodeToken;
                             setLeftSide(op);
 
-                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(KEY_DATA_UNKNOWN)) {
+                        } else if (newConstantToken instanceof TypedToken typedToken && !typedToken.getType().equals(DATATYPE_UNKNOWN)) {
                             op.constantToken = typedToken;
                             setLeftSide(op);
 
                         } else {
-                            String guessedValueType = guessValueType(newConstantToken.string);
+                            Type guessedValueType = guessValueType(newConstantToken.string);
                             op.constantToken = TypedToken.fromToken(newConstantToken, guessedValueType);
                             setLeftSide(op);
 
-                            if (guessedValueType.equals(KEY_DATA_UNKNOWN)) {
+                            if (guessedValueType.equals(DATATYPE_UNKNOWN)) {
                                 op.constantToken.setVariableRef(true);
                             }
                         }
@@ -530,7 +514,7 @@ public class OperationNode extends EvaluatorNode {
                         return throwSyntaxError("Invalid operation", token);
                     }
                 } else {
-                    return throwSyntaxError("Unexpected token in operation", token);
+                    return throwSyntaxError("Unexpected punctuation in operation", token);
                 }
             } else {
                 operationTokens.add(token);
@@ -550,7 +534,7 @@ public class OperationNode extends EvaluatorNode {
     }
 
     public void makeConstant(String newString) {
-        String newTokenType = guessValueType(newString);
+        Type newTokenType = guessValueType(newString);
         setConstantToken(new TypedToken(newString, this.nameToken.source, newTokenType, this.nameToken.line));
         this.type = KEY_OP_TYPE_CONSTANT;
         setLeftSide(null);
@@ -582,10 +566,6 @@ public class OperationNode extends EvaluatorNode {
         return operationMap.generateBinaryFromUnaryAtMember(this, memberIndex);
     }
 
-//    public boolean isCast() {
-//        return keyEquals(KEY_OP_CAST_EXPLICIT, type);
-//    }
-
     @Override
     public String toString() {
         //TODO fix this stupid thing
@@ -594,10 +574,6 @@ public class OperationNode extends EvaluatorNode {
         if (isReturnOperation) {
             out += "return ";
         }
-
-//        if (keyEquals(KEY_OP_CAST_EXPLICIT, type)) {
-//            return out + "unary cast(\"" + operator + "\")";
-//        }
 
         if (isEmptyConstant()) {
             return out + "empty";

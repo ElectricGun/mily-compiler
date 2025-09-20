@@ -4,15 +4,15 @@ import java.util.*;
 
 public class ArgParser {
 
-    protected String flagPrefix;
+    protected final String flagPrefix;
+    protected final List<String> flags = new ArrayList<>();
+    protected final Map<String, ArgTypes> flagsTypes = new HashMap<>();
+    protected final Map<String, String> flagDescription = new HashMap<>();
+    protected final Map<String, Boolean> flagValuesBoolean = new HashMap<>();
+    protected final Map<String, String> flagValuesString = new HashMap<>();
+    protected final Map<String, Double> flagValuesDouble = new HashMap<>();
+    protected final Map<String, Integer> flagValuesInt = new HashMap<>();
     protected String positionalArgument;
-    protected List<String> flags = new ArrayList<>();
-    protected Map<String, ArgTypes> flagsTypes = new HashMap<>();
-    protected Map<String, String> flagDescription = new HashMap<>();
-    protected Map<String, Boolean> flagValuesBoolean = new HashMap<>();
-    protected Map<String, String> flagValuesString = new HashMap<>();
-    protected Map<String, Double> flagValuesDouble = new HashMap<>();
-    protected Map<String, Integer> flagValuesInt = new HashMap<>();
 
     public ArgParser(String flagPrefix) {
         this.flagPrefix = flagPrefix;

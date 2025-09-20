@@ -15,13 +15,8 @@ import static mily.constants.Keywords.*;
 
 public class MacroScope extends EvaluatorNode {
 
-    protected List<String> content = new ArrayList<>();
-    protected List<String> args;
-
-    @Override
-    public String errorName() {
-        return "macro";
-    }
+    protected final List<String> content = new ArrayList<>();
+    protected final List<String> args;
 
     public MacroScope(Token nameToken, List<String> args, int depth) {
         super(nameToken, depth);
@@ -30,7 +25,12 @@ public class MacroScope extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    public String errorName() {
+        return "macro";
+    }
+
+    @Override
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
 
         boolean isEvaluatingBlock = false;
         int bracketAmount = 0;
@@ -50,12 +50,12 @@ public class MacroScope extends EvaluatorNode {
                     return this;
 
                 } else if (token.equalsKey(KEY_CURLY_OPEN)) {
-                    bracketAmount ++;
+                    bracketAmount++;
 
                 } else if (token.equalsKey(KEY_CURLY_CLOSE)) {
-                    bracketAmount --;
+                    bracketAmount--;
                 }
-            } else if (!token.isWhiteSpace()){
+            } else if (!token.isWhiteSpace()) {
                 return throwSyntaxError("Unexpected token in macro", token);
             }
 

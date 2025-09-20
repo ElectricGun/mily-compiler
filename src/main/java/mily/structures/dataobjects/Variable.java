@@ -1,6 +1,6 @@
-package mily.structures.structs;
+package mily.structures.dataobjects;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.processing.*;
 
 import java.util.*;
@@ -15,10 +15,10 @@ import java.util.*;
 
 public class Variable implements Typed {
 
-    String name;
-    String type;
+    protected final String name;
+    protected Type type;
 
-    public Variable(String type, String name) {
+    public Variable(Type type, String name) {
         this.type = type;
         this.name = name;
     }
@@ -31,12 +31,12 @@ public class Variable implements Typed {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

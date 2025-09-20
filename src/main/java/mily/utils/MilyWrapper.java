@@ -3,8 +3,8 @@ package mily.utils;
 import mily.codegen.*;
 import mily.parsing.*;
 import mily.preprocessing.*;
-import mily.structures.errors.JavaMilyException;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
 
 import java.io.*;
@@ -40,7 +40,7 @@ public class MilyWrapper {
         // tokenise
         List<Token> tokenList;
         try {
-            tokenList = tokenize(code.getCode(), new File(code.getDirectory(), code.getFilename()).getPath(), debugMode);
+            tokenList = tokenize(code.code(), new File(code.directory(), code.filename()).getPath(), debugMode);
             tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode);
         } catch (Exception e) {
             // todo: unhardcode this message
@@ -56,7 +56,7 @@ public class MilyWrapper {
         long startAstBuildDuration = System.nanoTime();
         long lexingDuration = (startAstBuildDuration - compileStartTime);
 
-        EvaluatorTree evaluatorTree = new EvaluatorTree(code.getFilename(), debugMode);
+        EvaluatorTree evaluatorTree = new EvaluatorTree(code.filename(), debugMode);
         evaluatorTree.begin(tokenList);
 
         // end ast building -- start optimisation
@@ -70,6 +70,9 @@ public class MilyWrapper {
 
         // check for syntax errors
         if (checkThrowables(evaluatorTree)) {
+            if (debugMode)
+                evaluatorTree.printRecursive();
+
             throw new JavaMilyException("Failed to compile: syntax error!");
         }
 
@@ -83,11 +86,14 @@ public class MilyWrapper {
         //pruneNestedUnaries(evaluatorTree, debugMode);
         validateTypes(evaluatorTree, debugMode);
         validateConditionals(evaluatorTree, debugMode);
-        invalidateDynamicDatatype(evaluatorTree, debugMode);
+//        invalidateDynamicDatatype(evaluatorTree, debugMode);
         solveBinaryExpressions(evaluatorTree);
 
         // check for semantic errors
         if (checkThrowables(evaluatorTree)) {
+            if (debugMode)
+                evaluatorTree.printRecursive();
+
             throw new JavaMilyException("Failed to compile: semantic error!");
         }
 

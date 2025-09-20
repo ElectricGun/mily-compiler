@@ -1,10 +1,10 @@
 package mily.parsing;
 
-import java.util.*;
-
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.structures.errors.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 /**
  * <h1> Class EvaluatorNode </h1>
@@ -15,17 +15,29 @@ import mily.tokens.*;
 
 public abstract class EvaluatorNode {
 
+    public final Token nameToken;
+    // for storing general information
+    protected final Map<String, String> flags = new HashMap<>();
+    protected final List<MilyThrowable> throwables = new ArrayList<>();
+    protected final List<EvaluatorNode> members = new ArrayList<>();
     private final String errorTemplate = "%s on file \"%s\", line: %s, token: \"%s\": ";
     public int depth;
-    public Token nameToken;
-    // for storing general information
-    protected Map<String, String> flags = new HashMap<>();
-    protected List<MilyThrowable> throwables = new ArrayList<>();
-    protected List<EvaluatorNode> members = new ArrayList<>();
 
     public EvaluatorNode(Token nameToken, int depth) {
         this.nameToken = nameToken;
         this.depth = depth;
+    }
+
+    public static Token fetchNextNonWhitespaceToken(List<Token> tokenList) throws JavaMilySyntaxException {
+        Token output;
+        do {
+            output = tokenList.remove(0);
+            if (tokenList.isEmpty()) {
+                throw new JavaMilySyntaxException("Unexpected end of file in token list", output);
+            }
+        } while (output.isWhiteSpace());
+
+        return output;
     }
 
     public void putFlag(String flag, String value) {
@@ -64,7 +76,7 @@ public abstract class EvaluatorNode {
         return members.get(i);
     }
 
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         throw new UnsupportedOperationException("This method is not yet implemented.");
     }
 
@@ -85,7 +97,8 @@ public abstract class EvaluatorNode {
     public EvaluatorNode throwSyntaxError(String message, Token token) {
         String errorMessage = String.format(errorTemplate, "Syntax error", token.source, token.line, token.string) + message;
         this.throwables.add(new MilySyntaxError(errorMessage));
-
+//        System.out.println(errorMessage);
+//        System.exit(10);
         return this;
     }
 

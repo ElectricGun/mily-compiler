@@ -1,0 +1,25 @@
+--------- Memory Cell Manipulation --------
+--- temporary workaround, cell selection should be automatic ---
+raw int r(ptr<int> pointer, symbol cell) -> output ${
+    read output cell pointer
+}
+
+raw double r(ptr<double> pointer, symbol cell) -> output ${
+    read output cell pointer
+}
+
+raw boolean r(ptr<boolean> pointer, symbol cell) -> output ${
+    read output cell pointer
+}
+
+raw int r(ptr<int> pointer) -> output ${
+    read output cell1 pointer
+}
+
+raw double r(ptr<double> pointer) -> output ${
+    read output cell1 pointer
+}
+
+raw boolean r(ptr<boolean> pointer) -> output ${
+    read output cell1 pointer
+}

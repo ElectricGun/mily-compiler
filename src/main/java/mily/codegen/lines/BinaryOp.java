@@ -4,9 +4,9 @@ import static mily.codegen.Mlogs.*;
 
 public class BinaryOp extends VariableLine {
 
-    String op;
-    String left;
-    String right;
+    protected final String op;
+    protected final String left;
+    protected final String right;
 
     public BinaryOp(String varName, String op, String left, String right, int indent) {
         super(varName, "", indent);

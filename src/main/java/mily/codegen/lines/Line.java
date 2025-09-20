@@ -2,8 +2,8 @@ package mily.codegen.lines;
 
 public class Line {
 
-    String string;
-    int indent;
+    protected final String string;
+    protected final int indent;
 
     public Line(String string, int indent) {
         this.string = string;
@@ -21,5 +21,9 @@ public class Line {
 
     protected String indent() {
         return "  ".repeat(indent);
+    }
+
+    public int getIndent() {
+        return indent;
     }
 }

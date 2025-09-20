@@ -1,8 +1,8 @@
 package mily.parsing;
 
-import java.util.*;
-
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -17,9 +17,9 @@ import static mily.constants.Keywords.*;
 
 public class OperationBracketNode extends EvaluatorNode {
 
-    public int operatorIndex;
-    protected List<Token> operationTokens = new ArrayList<>();
-    protected List<Integer> orders;
+    public final int operatorIndex;
+    protected final List<Token> operationTokens = new ArrayList<>();
+    protected final List<Integer> orders;
 
     public OperationBracketNode(Token token, List<Integer> orders, int depth, int operatorIndex) {
         super(token, depth);
@@ -33,7 +33,7 @@ public class OperationBracketNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
 
         String indent = " ".repeat(depth);
 

@@ -1,9 +1,9 @@
 package mily.parsing.invokes;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.parsing.*;
-import mily.processing.Validation;
-import mily.structures.structs.CallableSignature;
+import mily.processing.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -12,9 +12,9 @@ import static mily.constants.Keywords.*;
 
 public class CallerNode extends EvaluatorNode implements Caller {
 
+    protected final List<OperationNode> arguments = new ArrayList<>();
     protected String name;
-    protected List<OperationNode> arguments = new ArrayList<>();
-    protected String type = KEY_DATA_UNKNOWN;
+    protected Type type = DATATYPE_UNKNOWN.create();
 
     public CallerNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
@@ -28,7 +28,7 @@ public class CallerNode extends EvaluatorNode implements Caller {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         evaluateArgs(tokenList, evaluatorTree, evaluatorTree.debugMode);
         return this;
     }
@@ -42,7 +42,7 @@ public class CallerNode extends EvaluatorNode implements Caller {
     public CallableSignature signature() {
         int argCount = this.getArgCount();
 
-        String[] argTypes = new String[argCount];
+        Type[] argTypes = new Type[argCount];
         for (int a = 0; a < argCount; a++) {
             argTypes[a] = Validation.getOperationType(this.getArg(a), false);
         }
@@ -76,12 +76,12 @@ public class CallerNode extends EvaluatorNode implements Caller {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
@@ -104,10 +104,6 @@ public class CallerNode extends EvaluatorNode implements Caller {
 
             if (debugMode)
                 System.out.println(indent + "arg: " + token + " expectingArg: " + expectingArgument);
-
-//            if (token.isWhiteSpace()) {
-//                continue;
-//            }
 
             if (bracketCount == 0 && token.equalsKey(KEY_BRACKET_CLOSE) && !token.isWhiteSpace()) {
                 if (!opTokens.isEmpty()) {

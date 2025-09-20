@@ -1,6 +1,7 @@
 package mily.tokens;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
+import mily.structures.dataobjects.*;
 
 /**
  * A token with a datatype
@@ -10,26 +11,32 @@ import mily.abstracts.*;
 
 public class TypedToken extends Token implements Typed {
 
-    String type;
-    boolean isVariableRef = false;
+    protected Type type;
+    protected boolean isVariableRef = false;
 
-    public TypedToken(String string, String source, String type, int line) {
+    public TypedToken(String string, String source, Type type, int line) {
         super(string, source, line);
 
         this.type = type;
     }
 
-    public static TypedToken fromToken(Token token, String type) {
+    public TypedToken(String string, String source, String datatypeString, int line) {
+        super(string, source, line);
+
+        this.type = new Type(datatypeString);
+    }
+
+    public static TypedToken fromToken(Token token, Type type) {
         return new TypedToken(token.string, token.source, type, token.line);
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

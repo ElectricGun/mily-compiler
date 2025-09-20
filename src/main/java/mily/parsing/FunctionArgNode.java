@@ -1,5 +1,6 @@
 package mily.parsing;
 
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 /**
@@ -14,7 +15,7 @@ import mily.tokens.*;
 
 public class FunctionArgNode extends DeclarationNode {
 
-    public FunctionArgNode(String type, Token token, int depth) {
+    public FunctionArgNode(Type type, Token token, int depth) {
         super(type, token, depth);
     }
 

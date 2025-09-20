@@ -105,21 +105,20 @@ public class Lexing {
             } else if (
                 // this else if block prevents
                 // malformed compound operators from forming
-                isKeywordIncomplete(tokenString) && (
-                    isOperator(tokenString) || isPunctuation(tokenString) ||
-                    isOperator(c) || isPunctuation(c)
-                ) &&
-                !isKeywordIncomplete(tokenString + c) &&
-                !isOperator(tokenString + c) &&
-                !isPunctuation(tokenString + c)
+                    isKeywordIncomplete(tokenString) && (
+                            isOperator(tokenString) || isPunctuation(tokenString) ||
+                                    isOperator(c) || isPunctuation(c)
+                    ) &&
+                            !isKeywordIncomplete(tokenString + c) &&
+                            !isOperator(tokenString + c) &&
+                            !isPunctuation(tokenString + c)
             ) {
                 tryAddToken(debugMode);
                 tokenString = "" + c;
 
-            } else if (isPunctuation(c) || isOperator("" + c) && !isKeywordIncomplete(tokenString)) {
+            } else if ((isPunctuation(c) || isOperator("" + c)) && !isKeywordIncomplete(tokenString)) {
                 tryAddToken(debugMode);
                 tokenString = "" + c;
-
 
             } else if (!(isPunctuation(c) || isOperator("" + c)) && previousIsPunctuation && !isKeywordIncomplete(tokenString)) {
                 tryAddToken(debugMode);

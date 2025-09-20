@@ -1,18 +1,22 @@
 package mily.parsing.callables;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.parsing.*;
-import mily.structures.structs.CallableSignature;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
 
 import java.util.*;
 
+import static mily.constants.Functions.*;
+import static mily.constants.Keywords.*;
+
 public abstract class CallableNode extends EvaluatorNode implements Callable {
 
+    protected final List<String> argumentNames = new ArrayList<>();
+    protected final List<Type> argumentTypes = new ArrayList<>();
     protected String name;
-    protected List<String> argumentNames = new ArrayList<>();
-    protected List<String> argumentTypes = new ArrayList<>();
-    protected String returnType;
+    protected Type returnType;
 
     public CallableNode(String name, Token nameToken, int depth) {
         super(nameToken, depth);
@@ -25,7 +29,7 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
     }
 
     @Override
-    public List<String> getArgumentTypes() {
+    public List<Type> getArgumentTypes() {
         return argumentTypes;
     }
 
@@ -35,12 +39,12 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
     }
 
     @Override
-    public String getType() {
+    public Type getType() {
         return returnType;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(Type type) {
         this.returnType = type;
     }
 
@@ -66,8 +70,8 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         return out;
     }
 
-    public String[] getArgumentTypesArr() {
-        String[] out = new String[argumentTypes.size()];
+    public Type[] getArgumentTypesArr() {
+        Type[] out = new Type[argumentTypes.size()];
         for (int i = 0; i < out.length; i++) {
             out[i] = argumentTypes.get(i);
         }
@@ -82,7 +86,70 @@ public abstract class CallableNode extends EvaluatorNode implements Callable {
         return argumentNames.get(i);
     }
 
-    public String getArgType(int i) {
+    public Type getArgType(int i) {
         return argumentTypes.get(i);
+    }
+
+    protected void processArgs(List<Token> tokenList, EvaluatorTree evaluatorTree) throws JavaMilySyntaxException {
+        String indent = " ".repeat(depth);
+
+        boolean isInitialized = false;
+        boolean argumentWanted = false;
+
+        if (evaluatorTree.debugMode)
+            System.out.printf(indent + "Parsing arguments %s:%n", this.nameToken);
+
+        while (!tokenList.isEmpty()) {
+            Token token = tokenList.remove(0);
+            if (evaluatorTree.debugMode)
+                System.out.printf(indent + "args\t:\t%s\t:\t%s%n", this.nameToken, token);
+
+            if (isWhiteSpace(token)) {
+                continue;
+
+            } else if (isPunctuation(token) && !isWhiteSpace(token)) {
+                if (argumentWanted) {
+                    throw new JavaMilySyntaxException("Expected argument", token);
+
+                } else if (keyEquals(KEY_BRACKET_CLOSE, token)) {
+                    return;
+
+                } else if (keyEquals(KEY_COMMA, token)) {
+                    argumentWanted = true;
+
+                } else {
+                    throw new JavaMilySyntaxException("Unexpected punctuation in arguments", token);
+
+                }
+            } else if (isOperator(token)) {
+                throw new JavaMilySyntaxException("Unexpected operator in arguments", token);
+
+            } else if (isVariableOrDeclarator(token)) {
+                Type type = DatatypeNode.processType(token, tokenList, evaluatorTree);
+                argumentTypes.add(type);
+                Token variableName = EvaluatorNode.fetchNextNonWhitespaceToken(tokenList);
+
+                if (!isVariableName(variableName)) {
+                    throw new JavaMilySyntaxException("Not a variable name in arguments", token);
+
+                } else if (!isInitialized || argumentWanted) {
+                    argumentNames.add(variableName.string);
+                    argumentWanted = false;
+
+                    FunctionArgNode functionArgNode = new FunctionArgNode(type, variableName, depth + 1);
+                    functionArgNode.setName(variableName.string);
+                    members.add(functionArgNode);
+
+                    if (evaluatorTree.debugMode)
+                        System.out.printf("Added argument %s%n", variableName);
+
+                } else {
+                    throw new JavaMilySyntaxException("Unexpected token in arguments", token);
+
+                }
+            }
+            isInitialized = true;
+        }
+        throw new JavaMilySyntaxException("Unexpected end of file", nameToken);
     }
 }

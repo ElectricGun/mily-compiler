@@ -1,7 +1,7 @@
 package mily.constants;
 
 import mily.parsing.*;
-import mily.structures.structs.*;
+import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 import java.util.*;
@@ -24,6 +24,8 @@ public class Maps {
     protected final static List<String> PUNCTUATION_KEYS = new ArrayList<>(Arrays.asList(
             KEY_BRACKET_OPEN,
             KEY_BRACKET_CLOSE,
+            KEY_DIAMOND_OPEN,
+            KEY_DIAMOND_CLOSE,
             KEY_CURLY_OPEN,
             KEY_CURLY_CLOSE,
             KEY_SEMICOLON,
@@ -40,7 +42,7 @@ public class Maps {
             KEY_SYMBOL_IDENTIFIER,
             KEY_ESCAPE,
             KEY_SPEECH_MARK,
-            KEY_TEMPLATE_RETURNS
+            KEY_TEMPLATE_RETURN_ARROW
     ));
     protected final static List<String> KEYWORD_KEYS = new ArrayList<>(Arrays.asList(
             KEY_RETURN,
@@ -61,11 +63,13 @@ public class Maps {
     ));
     protected final static List<String> DECLARATOR_KEYS = new ArrayList<>(Arrays.asList(
 //            KEY_DATA_DYNAMIC,
-            KEY_DATA_DOUBLE,
-            KEY_DATA_INT,
-            KEY_DATA_STRING,
-            KEY_DATA_BOOLEAN,
-            KEY_DATA_VOID
+            DATATYPE_DOUBLE.typeString,
+            DATATYPE_INT.typeString,
+            DATATYPE_STRING.typeString,
+            DATATYPE_BOOLEAN.typeString,
+            DATATYPE_VOID.typeString,
+            DATATYPE_MRAY.typeString,
+            DATATYPE_PTR.typeString
     ));
     protected final static List<String> OPERATOR_KEYS = new ArrayList<>(Arrays.asList(
             KEY_OP_ASSIGN,
@@ -168,7 +172,7 @@ public class Maps {
 
         // addition
         Consumer<OperationNode> addConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
+            if ((DATATYPE_INT.equals(o.getLeftTokenType()) && DATATYPE_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() + o.getRightConstantNumeric()));
             } else {
                 o.makeConstant(o.getLeftConstantNumeric() + o.getRightConstantNumeric());
@@ -178,7 +182,7 @@ public class Maps {
 
         // subtraction
         Consumer<OperationNode> subConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
+            if ((DATATYPE_INT.equals(o.getLeftTokenType()) && DATATYPE_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() - o.getRightConstantNumeric()));
 
             } else {
@@ -189,7 +193,7 @@ public class Maps {
 
         // multiplication
         Consumer<OperationNode> mulConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
+            if ((DATATYPE_INT.equals(o.getLeftTokenType()) && DATATYPE_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() * o.getRightConstantNumeric()));
 
             } else {
@@ -206,7 +210,7 @@ public class Maps {
 
         // modulo
         Consumer<OperationNode> modConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
+            if ((DATATYPE_INT.equals(o.getLeftTokenType()) && DATATYPE_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) (o.getLeftConstantNumeric() % o.getRightConstantNumeric()));
 
             } else {
@@ -227,7 +231,7 @@ public class Maps {
 
         // power
         Consumer<OperationNode> powConsumer = o -> {
-            if ((KEY_DATA_INT.equals(o.getLeftTokenType()) && KEY_DATA_INT.equals(o.getRightTokenType()))) {
+            if ((DATATYPE_INT.equals(o.getLeftTokenType()) && DATATYPE_INT.equals(o.getRightTokenType()))) {
                 o.makeConstant((int) Math.pow(
                         o.getLeftConstantNumeric(),
                         o.getRightConstantNumeric()
@@ -240,23 +244,26 @@ public class Maps {
                 ));
             }
         };
-//        addGenericNumericOperation(KEY_OP_POW, powConsumer);
 
         // ---- Casts
         Consumer<OperationNode> castToInt = o ->
                 o.makeConstant((int) Double.parseDouble(((OperationNode) o.getMember(0)).getConstantToken().string));
 
+        // this basically does nothing to the value
         Consumer<OperationNode> castToDouble = o ->
                 o.makeConstant(Double.parseDouble(((OperationNode) o.getMember(0)).getConstantToken().string));
 
         // implicit casts
-        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_DOUBLE, DATATYPE_DOUBLE, castToDouble);
 
-        // explicit casts
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, castToInt);
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, castToDouble);
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
-//        operationMap.addOperation(KEY_OP_CAST_EXPLICIT, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, castToInt);
+        // ptr casts
+        Consumer<OperationNode> castToPtr = o -> {
+        };
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_PTR_INT, DATATYPE_PTR_INT, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_INT, DATATYPE_PTR_DOUBLE, DATATYPE_PTR_DOUBLE, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_DOUBLE, DATATYPE_PTR_DOUBLE, DATATYPE_PTR_DOUBLE, castToDouble);
+        operationMap.addOperation(KEY_OP_CAST_IMPLICIT, DATATYPE_BOOLEAN, DATATYPE_PTR_BOOLEAN, DATATYPE_PTR_BOOLEAN, castToDouble);
+
 
         // comparisons
         addGenericNumericComparison(KEY_OP_LESS_THAN, o ->
@@ -282,18 +289,18 @@ public class Maps {
                 o.makeConstant(Objects.equals(o.getLeftConstantNumeric(), o.getRightConstantNumeric())));
 
         // boolean
-        operationMap.addOperation(KEY_OP_AND, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, o -> {
+        operationMap.addOperation(KEY_OP_AND, DATATYPE_BOOLEAN, DATATYPE_BOOLEAN, DATATYPE_BOOLEAN, o -> {
         });
 
         // -------- Unary Operators --------
 
         Consumer<UnaryToBinaryStruct> baseUnaryConsumer = b -> {
-            b.getNewOp().setOperator(KEY_OP_MUL);
-            b.getFactor().setConstantToken(new TypedToken(
-                    b.getOldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1",
-                    b.getOldOp().nameToken.source,
-                    KEY_DATA_INT,
-                    b.getOldOp().nameToken.line
+            b.newOp().setOperator(KEY_OP_MUL);
+            b.factor().setConstantToken(new TypedToken(
+                    b.oldOp().getOperator().equals(KEY_OP_SUB) ? "-1" : "1",
+                    b.oldOp().nameToken.source,
+                    DATATYPE_INT,
+                    b.oldOp().nameToken.line
             ));
         };
 
@@ -302,36 +309,36 @@ public class Maps {
     }
 
     static void addGenericNumericOperation(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_INT, DATATYPE_INT, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_DOUBLE, DATATYPE_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_INT, DATATYPE_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_DOUBLE, DATATYPE_DOUBLE, consumer);
     }
 
     static void addGenericNumericComparison(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_BOOLEAN, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_BOOLEAN, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_INT, DATATYPE_BOOLEAN, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_DOUBLE, DATATYPE_BOOLEAN, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_INT, DATATYPE_BOOLEAN, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_DOUBLE, DATATYPE_BOOLEAN, consumer);
     }
 
     @SuppressWarnings("SameParameterValue")
     static void addNumericOperationToInt(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_INT, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_INT, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_INT, DATATYPE_INT, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_DOUBLE, DATATYPE_INT, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_INT, DATATYPE_INT, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_DOUBLE, DATATYPE_INT, consumer);
     }
 
     @SuppressWarnings("SameParameterValue")
     static void addNumericOperationToDouble(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_INT, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_INT, KEY_DATA_DOUBLE, consumer);
-        operationMap.addOperation(operator, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, KEY_DATA_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_INT, DATATYPE_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_INT, DATATYPE_DOUBLE, DATATYPE_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_INT, DATATYPE_DOUBLE, consumer);
+        operationMap.addOperation(operator, DATATYPE_DOUBLE, DATATYPE_DOUBLE, DATATYPE_DOUBLE, consumer);
     }
 
     static void addBooleanOperator(String operator, Consumer<OperationNode> consumer) {
-        operationMap.addOperation(operator, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, KEY_DATA_BOOLEAN, consumer);
+        operationMap.addOperation(operator, DATATYPE_BOOLEAN, DATATYPE_BOOLEAN, DATATYPE_BOOLEAN, consumer);
     }
 }

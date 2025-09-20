@@ -3,7 +3,7 @@ package mily.processing;
 import mily.parsing.*;
 import mily.parsing.callables.*;
 import mily.tokens.*;
-import mily.utils.HashCodeSimplifier;
+import mily.utils.*;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public class Refining {
             return;
 
         } else if (member instanceof DeclarationNode dec) {
-            String newName = "user_" + dec.getName();
+            String newName = "u_" + dec.getName();
             renameMap.put(dec.getName(), newName);
             dec.setName(newName);
 
@@ -121,12 +121,14 @@ public class Refining {
     private static void addVoidReturnsRecursive(EvaluatorNode evaluatorNode) {
         if (evaluatorNode instanceof FunctionDeclareNode fn) {
             ScopeNode sc = fn.getScope();
-            if (!(sc.memberCount() > 0 && sc.getMember(sc.memberCount() -1) instanceof OperationNode op && op.isReturnOperation())) {
-                EvaluatorNode lastMember = sc.getMember(sc.memberCount() - 1);
-                OperationNode returnOperation = new OperationNode(new Token("return", lastMember.nameToken.source, lastMember.nameToken.line), lastMember.depth);
-                returnOperation.setReturnOperation(true);
-                returnOperation.setConstantToken(new VoidToken(lastMember.nameToken.source, lastMember.nameToken.line));
-                sc.appendMember(returnOperation);
+            if (sc.memberCount() > 0) {
+                if (!(sc.getMember(sc.memberCount() - 1) instanceof OperationNode op && op.isReturnOperation())) {
+                    EvaluatorNode lastMember = sc.getMember(sc.memberCount() - 1);
+                    OperationNode returnOperation = new OperationNode(new Token("return", lastMember.nameToken.source, lastMember.nameToken.line), lastMember.depth);
+                    returnOperation.setReturnOperation(true);
+                    returnOperation.setConstantToken(new VoidToken(lastMember.nameToken.source, lastMember.nameToken.line));
+                    sc.appendMember(returnOperation);
+                }
             }
         }
 

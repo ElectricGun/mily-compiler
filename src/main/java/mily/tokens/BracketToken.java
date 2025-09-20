@@ -15,7 +15,7 @@ public class BracketToken extends TypedToken {
     private final OperationNode operationNode;
 
     public BracketToken(String string, String source, int line, OperationNode operationNode) {
-        super(string, source, KEY_DATA_UNKNOWN, line);
+        super(string, source, DATATYPE_UNKNOWN, line);
 
         this.operationNode = operationNode;
     }

@@ -1,4 +1,6 @@
-package mily.abstracts;
+package mily.interfaces;
+
+import mily.structures.dataobjects.*;
 
 /**
  * <h1> Interface Typed </h1>
@@ -9,7 +11,7 @@ package mily.abstracts;
 
 public interface Typed {
 
-    String getType();
+    Type getType();
 
-    void setType(String type);
+    void setType(Type type);
 }

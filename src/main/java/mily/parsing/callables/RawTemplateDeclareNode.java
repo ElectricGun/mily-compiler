@@ -1,13 +1,12 @@
 package mily.parsing.callables;
 
-import mily.abstracts.*;
 import mily.parsing.*;
-import mily.parsing.invokes.*;
+import mily.structures.dataobjects.*;
+import mily.structures.errors.*;
 import mily.tokens.*;
 
 import java.util.*;
 
-import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
 
 /**
@@ -22,41 +21,24 @@ public class RawTemplateDeclareNode extends CallableNode {
     protected MacroScope scope;
     protected String returnVariableRaw;
 
-    @Override
-    public String errorName() {
-        return "template " + "\"" + nameToken.string + "\"";
-    }
-
-    public RawTemplateDeclareNode(String name, String returnType, Token nameToken, int depth) {
+    public RawTemplateDeclareNode(String name, Type returnType, Token nameToken, int depth) {
         super(name, nameToken, depth);
 
         this.returnType = returnType;
     }
 
+    @Override
+    public String errorName() {
+        return "template " + "\"" + nameToken.string + "\"";
+    }
+
+    @SuppressWarnings("unused")
     public MacroScope getScope() {
         return scope;
     }
 
     @Override
-    public boolean isOverload(Caller caller, String name, String... types) {
-//        if (!(caller instanceof RawTemplateInvoke)) {
-//            return false;
-//        }
-
-        return isOverload(name, types);
-    }
-
-    @Override
-    public boolean isOverload(Callable callable, String name, String... types) {
-        if (!(callable instanceof RawTemplateDeclareNode)) {
-            return false;
-        }
-
-        return isOverload(name, types);
-    }
-
-    @Override
-    public boolean isOverload(String name, String... types) {
+    public boolean isOverload(String name, Type... types) {
         if (!this.getName().equals(name)) {
             return false;
         }
@@ -64,7 +46,7 @@ public class RawTemplateDeclareNode extends CallableNode {
             return false;
         }
         for (int i = 0; i < types.length; i++) {
-            if (!types[i].equals(argumentTypes.get(i)) && !argumentTypes.get(i).equals(KEY_DATA_ANY)) {
+            if (!types[i].equals(argumentTypes.get(i)) /*&& !argumentTypes.get(i).equals(DATATYPE_ANY)*/) {
                 return false;
             }
         }
@@ -72,90 +54,47 @@ public class RawTemplateDeclareNode extends CallableNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
-        StringBuilder argBufferString = new StringBuilder();
-        boolean isParsingArg = false;
-        boolean doneParsingArgs = false;
+        boolean expectingReturnPattern = !returnType.equals(DATATYPE_VOID);
 
-        boolean expectingReturnPattern = !returnType.equals(KEY_DATA_VOID);
+        try {
+            Token openingToken = fetchNextNonWhitespaceToken(tokenList);
 
-        while (!tokenList.isEmpty()) {
-            Token token = tokenList.remove(0);
-            if (evaluatorTree.debugMode)
-                System.out.printf(indent + "raw template %s: %s%n", name, token);
-
-
-            if (isWhiteSpace(token) && !isParsingArg) {
-                continue;
+            if (!openingToken.equalsKey(KEY_BRACKET_OPEN)) {
+                return throwSyntaxError("Expected opening parenthesis", openingToken);
             }
 
-            if (!doneParsingArgs) {
-                if (name == null && !isParsingArg && isVariableName(token)) {
-                    name = token.string;
+            processArgs(tokenList, evaluatorTree);
 
-                } else if (returnType != null && name != null && keyEquals(KEY_BRACKET_OPEN, token) && !isParsingArg) {
-                    if (evaluatorTree.debugMode)
-                        System.out.printf(indent + "parsing raw template arguments", this.nameToken, token);
-                    isParsingArg = true;
+            if (expectingReturnPattern) {
+                Token nextToken = fetchNextNonWhitespaceToken(tokenList);
 
-                } else if (isParsingArg && token.equalsKey(KEY_BRACKET_CLOSE)) {
-                    argBufferString = new StringBuilder(argBufferString.toString().trim());
+                if (nextToken.equalsKey(KEY_TEMPLATE_RETURN_ARROW)) {
+                    Token returnPattern = fetchNextNonWhitespaceToken(tokenList);
+                    returnVariableRaw = returnPattern.string;
 
-                    if (!argBufferString.isEmpty()) {
-                        List<String> argStringsRaw = List.of(argBufferString.toString().split(KEY_COMMA));
-
-                        for (String arg : argStringsRaw) {
-                            String[] stringArgType = arg.trim().split(" ");
-
-                            if (isWhiteSpace(arg)) {
-                                return throwSyntaxError("Empty token in template input arguments", nameToken);
-
-                            } else if (stringArgType.length != 2) {
-                                return throwSyntaxError("Invalid argument in template declaration \"" + arg + "\"", nameToken);
-                            }
-
-                            argumentTypes.add(stringArgType[0]);
-                            argumentNames.add(stringArgType[1]);
-                        }
-                    }
-                    isParsingArg = false;
-                    doneParsingArgs = true;
-
-                } else if (isParsingArg && (isWhiteSpace(token) || isVariableOrDeclarator(token) || isVariableName(token) || keyEquals(KEY_COMMA, token))) {
-                    argBufferString.append(token.string);
-
-                } else if (isParsingArg) {
-                    return throwSyntaxError("Unexpected token in template input arguments", token);
+                } else {
+                    return throwSyntaxError("Non-void template requires a raw return variable name", nextToken);
                 }
-            } else if (!expectingReturnPattern && token.equalsKey(KEY_MACRO_LITERAL)) {
-                MacroScope macroScope = new MacroScope(token, argumentNames, depth + 1);
+            }
+
+            Token nextToken = fetchNextNonWhitespaceToken(tokenList);
+
+            if (nextToken.equalsKey(KEY_MACRO_LITERAL)) {
+                MacroScope macroScope = new MacroScope(nextToken, argumentNames, depth + 1);
                 members.add(macroScope.evaluate(tokenList, evaluatorTree));
                 scope = macroScope;
                 return this;
 
-            } else if (expectingReturnPattern && token.equalsKey(KEY_TEMPLATE_RETURNS)) {
-                Token outputPatternToken = tokenList.remove(0);
-
-                while (outputPatternToken.isWhiteSpace()) {
-                    outputPatternToken = tokenList.remove(0);
-                }
-
-                if (!isVariableName(outputPatternToken)) {
-                    return throwSyntaxError("Invalid return pattern", outputPatternToken);
-                }
-                returnVariableRaw = outputPatternToken.string;
-                expectingReturnPattern = false;
-
-            } else if (expectingReturnPattern) {
-                return throwSyntaxError("Non-void template requires a raw return variable name", token);
-
             } else {
-                return throwSyntaxError("Unexpected token after raw template input declaration", token);
+                return throwSyntaxError("Expected a macro after template declaration", nextToken);
             }
+
+        } catch (JavaMilySyntaxException e) {
+            return throwSyntaxError(e.getMessage(), e.getToken());
         }
-        return throwSyntaxError("Unexpected end of file", nameToken);
     }
 
     @Override
@@ -163,20 +102,6 @@ public class RawTemplateDeclareNode extends CallableNode {
         return "declare template: " + getName() + getArgumentNames() + " arg_types: " + getArgumentTypes() +
                 ((returnVariableRaw != null && returnVariableRaw.isEmpty()) ? getType() : " -> " + returnVariableRaw + " : " + getType());
     }
-
-//    @Override
-//    public String getFnKey() {
-//        StringBuilder fnKey = new StringBuilder(this.getName() + "_");
-//
-//        int argCount = getArgumentNames().size();
-//        for (int a = 0; a < argCount; a++) {
-//            fnKey.append(getArgumentTypes().get(a));
-//            if (a < argCount - 1) {
-//                fnKey.append("_");
-//            }
-//        }
-//        return fnKey.toString();
-//    }
 
     public String scopeAsFormatted(List<String> replacers, String outputVariable) {
         String out = scope.asFormatted(replacers);

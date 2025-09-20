@@ -11,6 +11,10 @@ raw void print(double x) ${
     print x
 }
 
+raw void print(boolean x) ${
+    print x
+}
+
 raw void println(string x) ${
     print x
     print "\n"
@@ -26,10 +30,19 @@ raw void println(double x) ${
     print "\n"
 }
 
+raw void println(boolean x) ${
+    print x
+    print "\n"
+}
+
 raw void println() ${
     print "\n"
 }
 
 raw void printflush(symbol target) ${
     printflush target
+}
+
+raw void printsp() ${
+    print " "
 }

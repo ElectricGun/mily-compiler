@@ -1,7 +1,7 @@
 package mily.tokens;
 
-import mily.abstracts.Named;
-import mily.constants.Functions;
+import mily.constants.*;
+import mily.interfaces.*;
 
 /**
  * Basic token, contains a string and line number.
@@ -11,9 +11,9 @@ import mily.constants.Functions;
 
 public class Token implements Named {
 
+    public final String source;
+    public final int line;
     public String string;
-    public String source;
-    public int line;
 
     public Token(String string, String source, int line) {
         this.string = string;
@@ -51,5 +51,9 @@ public class Token implements Named {
 
     public boolean isWhiteSpace() {
         return Functions.isWhiteSpace(this);
+    }
+
+    public boolean isVariableName() {
+        return Functions.isVariableName(this);
     }
 }

@@ -1,11 +1,70 @@
+-- TODO: create something to prevent too much copy and paste for overloads
 --------- Math Utils --------
-raw double pow(any x, any y) -> output ${
+
+---- Mlog Operators ----
+
+-- Exponentiation --
+
+raw double pow(double x, double y) -> output ${
     op pow output x y
 }
 
-raw int as_int(double x) -> output ${
+raw double pow(int x, int y) -> output ${
+    op pow output x y
+}
+
+raw double pow(double x, int y) -> output ${
+    op pow output x y
+}
+
+raw double pow(int x, double y) -> output ${
+    op pow output x y
+}
+
+-- Trigonometry --
+
+raw double sin(int a) -> output ${
+    op sin output a
+}
+
+raw double sin(double a) -> output ${
+    op sin output a
+}
+
+raw double cos(int a) -> output ${
+    op cos output a
+}
+
+raw double cos(double a) -> output ${
+    op cos output a
+}
+
+raw double tan(int a) -> output ${
+    op tan output a
+}
+
+raw double tan(double a) -> output ${
+    op tan output a
+}
+
+---- Other Utils ----
+
+-- Conversions --
+
+-- use the output var as the jump label because it should be a unique identifier
+raw int dtoi(double x) -> output ${
     op floor output x
     jump output greaterThanEq output 0
         op add output output 1
     output:
+}
+
+-- Incrementation --
+
+raw void inc(int i) ${
+    op add i i 1
+}
+
+raw void inc(double i) ${
+    op add i i 1
 }

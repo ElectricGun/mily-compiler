@@ -11,6 +11,6 @@ import static mily.constants.Keywords.*;
 public class VoidToken extends TypedToken {
 
     public VoidToken(String source, int line) {
-        super("void", source, KEY_DATA_VOID, line);
+        super("void", source, DATATYPE_VOID, line);
     }
 }

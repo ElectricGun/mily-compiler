@@ -1,8 +1,9 @@
 package mily.parsing;
 
-import java.util.*;
-
+import mily.structures.errors.*;
 import mily.tokens.*;
+
+import java.util.*;
 
 import static mily.constants.Functions.*;
 import static mily.constants.Keywords.*;
@@ -10,7 +11,7 @@ import static mily.constants.Keywords.*;
 /**
  * <h1> Class ForLoopNode </h1>
  * For Loops
- * Parsing AST node for for loops.
+ * Parsing AST node of for loops.
  *
  * @author ElectricGun
  */
@@ -33,7 +34,7 @@ public class ForLoopNode extends EvaluatorNode {
     }
 
     @Override
-    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) throws Exception {
+    protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
         String indent = " ".repeat(depth);
 
         Token previousToken = null;
@@ -60,13 +61,14 @@ public class ForLoopNode extends EvaluatorNode {
                         members.add(initial.evaluate(tokenList, evaluatorTree));
 
                     } else if (isVariableOrDeclarator(previousToken)) {
-                        if (isVariableName(token)) {
-                            // VARIABLE DECLARATION
-                            initial = new DeclarationNode(previousToken.string, token, depth + 1);
-                            members.add(initial.evaluate(tokenList, evaluatorTree));
-                        } else {
-                            return throwSyntaxError("Unexpected token in for loop initial variable declaration", token);
+                        try {
+                            initial = (VariableNode) ScopeNode.processDeclarationDatatype(token, previousToken, tokenList, evaluatorTree, depth + 1);
+                            members.add(initial);
+
+                        } catch (JavaMilySyntaxException e) {
+                            return throwSyntaxError("Unexpected end of file", token);
                         }
+
                     } else if (!isVariableOrDeclarator(token)) {
                         return throwSyntaxError("Unexpected token in for loop initial", token);
                     }
@@ -77,8 +79,6 @@ public class ForLoopNode extends EvaluatorNode {
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
-//                while (!keyEquals(KEY_SEMICOLON, operationTokens.getLast())) {
-//                    Token currentToken = tokenList.removeFirst();
                 while (!keyEquals(KEY_SEMICOLON, operationTokens.get(operationTokens.size() - 1))) {
                     Token currentToken = tokenList.remove(0);
                     operationTokens.add(currentToken);
@@ -90,21 +90,12 @@ public class ForLoopNode extends EvaluatorNode {
                 List<Token> operationTokens = new ArrayList<>();
                 operationTokens.add(token);
 
-//                while (!keyEquals(KEY_BRACKET_CLOSE, operationTokens.getLast())) {
-//                    Token currentToken = tokenList.removeFirst();
                 while (!keyEquals(KEY_BRACKET_CLOSE, operationTokens.get(operationTokens.size() - 1))) {
                     Token currentToken = tokenList.remove(0);
                     operationTokens.add(currentToken);
                 }
                 // remove last bracket
-//                operationTokens.removeLast();
                 operationTokens.remove(operationTokens.size() - 1);
-
-//                if (isVariableName(operationTokens.getFirst())) {
-//                    Token variableName = operationTokens.removeFirst();
-//
-//                    while (true) {
-//                        Token opToken = operationTokens.removeFirst();
 
                 if (isVariableName(operationTokens.get(0))) {
                     Token variableName = operationTokens.remove(0);

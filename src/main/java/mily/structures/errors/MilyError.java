@@ -1,10 +1,10 @@
 package mily.structures.errors;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 
 public class MilyError implements MilyThrowable {
 
-    String message;
+    protected final String message;
 
     public MilyError(String message) {
         this.message = message;

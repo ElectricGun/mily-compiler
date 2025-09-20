@@ -1,6 +1,6 @@
 package mily.processing;
 
-import mily.abstracts.*;
+import mily.interfaces.*;
 import mily.parsing.*;
 import mily.parsing.invokes.*;
 import mily.tokens.*;
@@ -162,7 +162,7 @@ public class Pruning {
             if (operationNode.isConstant()) {
                 return;
             }
-            
+
             if (!operationNode.isUnary()) {
                 boolean leftIsConstant = operationNode.getLeftSide().isConstant();
                 boolean rightIsConstant = operationNode.getRightSide().isConstant();
