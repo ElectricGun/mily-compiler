@@ -3,12 +3,10 @@
 </h1>
 
 [![Github All Releases](https://img.shields.io/github/downloads/electricgun/mily-compiler/total.svg)]()
-
+[![Changelog](https://img.shields.io/badge/changelog-md-blue.svg)](CHANGELOG.md)
 
 This program compiles the custom, C syntax programming language Mily to Mindustry Logic (mlog) syntax bytecode. 
 The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of a learning curve for anyone using this language.
-
-See [changelog](CHANGELOG.md) for the update history
 
 ## Disclaimer
 
