@@ -4,8 +4,8 @@
 
 <div align="center">
 
-[![Stars](https://img.shields.io/github/stars/electricgun/mily-compiler)]()
-[![Github All Releases](https://img.shields.io/github/downloads/electricgun/mily-compiler/total.svg)]()
+[![Stars](https://img.shields.io/github/stars/ElectricGun/mily-compiler)]()
+[![Github All Releases](https://img.shields.io/github/downloads/ElectricGun/mily-compiler/total.svg)]()
 [![Changelog](https://img.shields.io/badge/changelog-md-blue.svg)](CHANGELOG.md)
 
 </div>
