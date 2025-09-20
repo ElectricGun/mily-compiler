@@ -26,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(FLAG_PREFIX);
-        argParser.addFlag(FLAG_HELP, ArgParser.ArgTypes.BOOLEAN, "Print this page");
+        argParser.addFlag(FLAG_HELP, ArgParser.ArgTypes.BOOLEAN, "Prints this page");
         argParser.addFlag(FLAG_DEBUG, ArgParser.ArgTypes.BOOLEAN, "Print very convoluted logs");
         argParser.addFlag(FLAG_QUIET, ArgParser.ArgTypes.BOOLEAN, "Disable descriptive prints");
         argParser.addFlag(FLAG_BENCHMARK, ArgParser.ArgTypes.BOOLEAN, "Print benchmark");

@@ -6,6 +6,9 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
 ## Table of Contents
 
 * [Table of Contents](#table-of-contents)
+* [Usage](#usage)
+  * [Flags](#flags)
+  * [Examples](#examples)
 * [Key Features](#key-features)
 * [Datatypes](#datatypes)
   * [Primitive Datatypes](#primitive-datatypes)
@@ -13,6 +16,37 @@ The syntax looks pretty much like C/C#/Java/JS so there shouldn't be too much of
   <!-- * [Array Reference Datatypes](#array-reference-datatypes) -->
 * [Other Features](#other-features)
 * [Example Code](#example-code)
+
+## Usage
+### Flags
+| Flag                | Type   | Description                                         |
+|---------------------|--------|-----------------------------------------------------|
+| --help              | Bool   | Prints the help page                                |
+| --debug             | Bool   | Print very convoluted logs                          |
+| --quiet             | Bool   | Disable descriptive prints                          |
+| --benchmark         | Bool   | Print benchmark                                     |
+| --output            | String | Output directory (folder)                           |
+| --print-ast         | Bool   | Print final AST                                     |
+| --print-output      | Bool   | Print compiled output                               |
+| --no-confirm        | Bool   | Disable confirmations                               |
+| --generate-comments | Bool   | Enabled system generated comments in compiled code) |
+
+### Examples
+Replace `<main.mily>` with the directory of your main Mily file, and `Mily.jar` with your Mily compiler jar executable.
+#### Compile and print output to terminal 
+```shell
+    java -jar Mily.jar <main.mily> --quiet --print-output 
+```
+#### Compile and output to directory
+Replace `<output-dir>` with the directory of the output folder
+```shell
+    java -jar Mily.jar <main.mily> --quiet --output <output-dir>
+```
+
+#### Compile and output to directory without overwrite confirmation
+```shell
+    java -jar Mily.jar <main.mily> --quiet --no-confirm --output <output-dir>
+```
 
 ## Key Features
 - The basic stuff (looping, if statements, variables)
@@ -49,8 +83,8 @@ Complex datatypes. Able to store many primitive values.
 - [WIP] blnlist<type> ... [blocksize] - Blocked linked list. Essentially a linked list of contiguous arrays of size `blocksize`. 
 A larger block size will result in a faster element access speed, but more memory space.
 Access a value at index `n` using the array dereference function `ar(array, n)` found in the standard library
-
 -->
+
 ## Other Features
 - Compile error stack tracing.
 - Compile-time expression optimisation, for example, `10 + 38 * (200 + 3 ** 3) // 3` gets simplified to `2885` on compile time.
