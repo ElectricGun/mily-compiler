@@ -1,0 +1,7 @@
+raw double sense(symbol block, symbol type) -> output ${
+    sensor output block @type
+}
+
+raw double enabled(symbol block) -> output ${
+    sensor output block @enabled
+}
