@@ -6,7 +6,8 @@
 
 [![Stars](https://img.shields.io/github/stars/ElectricGun/mily-compiler)]()
 [![Github All Releases](https://img.shields.io/github/downloads/ElectricGun/mily-compiler/total.svg)]()
-[![Changelog](https://img.shields.io/badge/changelog-md-blue.svg)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-read-blue.svg)](CHANGELOG.md)
+[![Latest Release](https://img.shields.io/badge/download-latest-green.svg)](https://github.com/ElectricGun/mily-compiler/releases/latest)
 
 </div>
 
