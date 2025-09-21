@@ -1,4 +1,5 @@
 # Urgent TODO:
+ - fix boolean macros throwing a java exception
  - diamond types are printed incorrectly in mlog
  - maybe rewrite how code generation works, using lambda functions
    - make the IRFunction function arg in scope generation function a part of the scope config
