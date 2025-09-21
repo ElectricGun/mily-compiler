@@ -1,5 +1,6 @@
 # Urgent TODO:
  - diamond types are printed incorrectly in mlog
+ - primitive typedef and invalidation for malformed types
  - maybe rewrite how code generation works, using lambda functions
    - make the IRFunction function arg in scope generation function a part of the scope config
  - make dataobjects records
@@ -10,6 +11,10 @@
 
 # Flags
  - shorthand flags such as -h, -p, -v, etc
+
+# Functions
+- a type of function that is compiled like a macro every time it is invoked, 
+   instead of being called with a jump. 
 
 # Optimize
  - Pointer variables declared inside a scope should be unallocated
@@ -66,7 +71,6 @@
  - Replace all keyEquals(x, token) with token.keyEquals()
  - rewrite scopenode
 
-
 # Syntax Document
  - A syntax document for Milyscript
 
@@ -74,3 +78,4 @@
  - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
  - Byte packing, such as storing int8, int16, int32 inside a double
  - Display library
+ - enums
