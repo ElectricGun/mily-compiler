@@ -33,3 +33,7 @@ Additions:
   - Fibonacci sequence
   - Sensing @enabled from a switch.
   - Getting the pixel position of a cursor relative to a display.
+
+# v0.1.3-alpha
+Bug fixes:
+- Fixed boolean variables throwing a java exception when converted to mlog

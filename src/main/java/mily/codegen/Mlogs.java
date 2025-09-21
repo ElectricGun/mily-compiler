@@ -36,19 +36,23 @@ public class Mlogs {
     }
 
     public static String tokenAsMlog(TypedToken typedToken) {
-        if (typedToken.getType().equals(DATATYPE_BOOLEAN)) {
-            if (typedToken.equalsKey(KEY_BOOLEAN_FALSE)) {
-                return "0";
+        if (!typedToken.isVariableRef()) {
+            if (typedToken.getType().equals(DATATYPE_BOOLEAN)) {
+                if (typedToken.equalsKey(KEY_BOOLEAN_FALSE)) {
+                    return "0";
 
-            } else if (typedToken.equalsKey(KEY_BOOLEAN_TRUE)) {
-                return "1";
+                } else if (typedToken.equalsKey(KEY_BOOLEAN_TRUE)) {
+                    return "1";
+
+                } else {
+                    throw new IllegalArgumentException(String.format("Cannot convert boolean value to mlog \"%s\"", typedToken));
+                }
+            } else if (typedToken.getType().equals(DATATYPE_STRING)) {
+                return "\"" + typedToken.string + "\"";
 
             } else {
-                throw new IllegalArgumentException(String.format("Cannot boolean value to mlog \"%s\"", typedToken));
+                return typedToken.string;
             }
-        } else if (typedToken.getType().equals(DATATYPE_STRING) && !typedToken.isVariableRef()) {
-            return "\"" + typedToken.string + "\"";
-
         } else {
             return typedToken.string;
         }
