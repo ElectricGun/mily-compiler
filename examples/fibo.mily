@@ -1,0 +1,15 @@
+#include std/bulb.mily;
+
+int first = 0;
+int second = 1;
+int new_num = 0;
+int limit = 100; -- Highest fib number in program.
+
+for (int i = 0; i < limit; i = i + 1) {
+    new_num = first + second;
+    second = first;
+    first = new_num;
+}
+
+print(first);
+printflush(@message1);

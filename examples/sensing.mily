@@ -1,0 +1,8 @@
+#include std/bulb.mily;
+
+while (true) {
+    --// Due to the current limitations with mily, you cannot use a boolean as an output for a macro.
+    double result = enabled(@switch1);
+    print(result);
+    printflush(@message1);
+}

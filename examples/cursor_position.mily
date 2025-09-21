@@ -1,0 +1,56 @@
+/**
+Written by BnDLett
+
+This gets the position of a player's cursor relative to a display. The control authority is given the whichever player
+is in the designated arc turret. This is intended primarily as a precursor to a future touchscreen example.
+
+Note: You may see the usage of `--//` rather than just `--`. `--` itself will act as a comment, and the `//` part isn't
+necessary. However, for the sake of readability, I've designated *.mily files as `c/c++` files, which means that `--` is
+not recognized as a comment. To compensate for this, I'll put `//` directly after `--`. This will "trick" my IDE into
+recognizing the comment as a comment.
+
+To compile this, use this command (guaranteed to work on a properly configured Linux system):
+`java -jar build/libs/Mily.jar examples/cursor_position.mily --print-output`
+Make sure that you're at the root of the repository when you run the command, otherwise you may face complications.
+**/
+
+#include std/bulb.mily;
+
+--// Large displays have a resolution of 176, and are 6x6.
+--// Whenever getting the x and y of the displays, it'll return the x and y at the center. This means that we have to
+--// Offset our value by `display_ppb * 3`.
+double display_ppb = 176 / 6;
+double offset_constant = display_ppb * 3;
+
+--------- Useful functions ---------
+double cursor_position_x(symbol turret, symbol relative_screen) {
+    double screen_x = sense(relative_screen, @x);
+    double cursor_x = sense(turret, @shootX);
+    double relative_cursor_x = cursor_x - screen_x;
+    double cursor_pixel_x = relative_cursor_x * display_ppb;
+
+    double true_pixel_x = cursor_pixel_x + offset_constant;
+
+    return true_pixel_x;
+}
+
+double cursor_position_y(symbol turret, symbol relative_screen) {
+    double screen_y = sense(relative_screen, @y);
+    double cursor_y = sense(turret, @shootY);
+    double relative_cursor_y = cursor_y - screen_y;
+    double cursor_pixel_y = relative_cursor_y * display_ppb;
+
+    double true_pixel_y = cursor_pixel_y + offset_constant;
+
+    return true_pixel_y;
+}
+
+--------- Actual program ---------
+while (true) {
+    print("cursor x: ");
+    println(cursor_position_x(@arc1, @display1));
+    print("cursor y: ");
+    println(cursor_position_y(@arc1, @display1));
+
+    printflush(@message1);
+}

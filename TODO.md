@@ -1,4 +1,5 @@
 # Urgent TODO:
+ - fix boolean macros throwing a java exception
  - diamond types are printed incorrectly in mlog
  - maybe rewrite how code generation works, using lambda functions
    - make the IRFunction function arg in scope generation function a part of the scope config
@@ -25,6 +26,7 @@
  - pointers for memory variables
  - optimization hints invoked in the pruning stage, such as unused functions
  - multitoken variable names using \` \` literals
+ - Add more macros in `std/control.mily`. Currently, it's just the minimum for sensing values from blocks.
 
 # Semantic Checking
  - Check for unreachable code
