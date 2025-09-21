@@ -1,9 +1,75 @@
 -- sense should output a custom type Block, but typedef is yet to be implemented
 
-raw boolean sense(symbol block, symbol type) -> output ${
+----------------------- Sensing values -----------------------
+raw double sense(symbol block, symbol type) -> output ${
     sensor output block @type
 }
 
 raw boolean enabled(symbol block) -> output ${
     sensor output block @enabled
+}
+
+----------------------- General control -----------------------
+raw void set_enabled(symbol block, boolean enabled) ${
+    control enabled block enabled
+}
+
+raw void set_config(symbol block, symbol value) ${
+    control config block value 0 0 0
+}
+
+/** Excluding this since illuminator colors don't seem to have any use. But, also, not worrying about this macro should
+--// help shave some development time off.
+raw void set_color(symbol block, symbol value) ${
+    control config block value 0 0 0
+}
+**/
+
+----------------------- Shooting -----------------------
+raw void set_shoot(symbol block, double x, double y, boolean enabled) ${
+    control shoot block x y enabled
+}
+
+raw void start_shooting(symbol block, double x, double y) ${
+    control shoot block x y 1
+}
+
+raw void stop_shooting(symbol block, double x, double y) ${
+    control shoot block x y 0
+}
+
+raw void stop_shooting(symbol block) ${
+    control shoot block 0 0 0
+}
+
+raw void set_shootp(symbol block, symbol target, boolean enabled) ${
+    control shootp block target enabled
+}
+
+raw void shoot_at(symbol block, symbol target) ${
+    control shootp block target 1
+}
+
+raw void stop_shooting(symbol block, symbol target) ${
+    control shootp block target 0
+}
+
+----------------------- Radar -----------------------
+-- radar enemy any any distance turret1 1 result
+--// TODO: enums for sort
+raw symbol radar(symbol block, symbol filter, symbol sort, boolean order) -> output ${
+    radar filter any any sort block order output
+}
+
+raw symbol radar(symbol block, symbol filter, symbol filter_2, symbol sort, boolean order) -> output ${
+    radar filter filter_2 any sort block order output
+}
+
+raw symbol radar(symbol block, symbol filter, symbol filter_2, symbol filter_3, symbol sort, boolean order) -> output ${
+    radar filter filter_2 filter_3 sort block order output
+}
+
+----------------------- Misc. -----------------------
+raw symbol get_link(integer id) -> output ${
+    getlink output id
 }

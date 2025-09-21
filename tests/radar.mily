@@ -1,0 +1,9 @@
+#include std/bulb.mily;
+
+--// radar(symbol block, symbol filter, symbol filter_2, symbol filter_3, symbol sort, boolean order)
+while (true) {
+    symbol unit = radar(@foreshadow1, @player, @flying, @ally, @distance, true);
+    double position = sense(unit, @x);
+    print(position);
+    printflush(@message1);
+}
