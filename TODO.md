@@ -25,7 +25,6 @@
  - pointers for memory variables
  - optimization hints invoked in the pruning stage, such as unused functions
  - multitoken variable names using \` \` literals
- - Add more macros in `std/control.mily`. Currently, it's just the minimum for sensing values from blocks.
 
 # Semantic Checking
  - Check for unreachable code
@@ -74,3 +73,4 @@
 # Future Features (low priority)
  - Hardware recommendations (i.e. "this code requires at minimum 1 memory cell", etc)
  - Byte packing, such as storing int8, int16, int32 inside a double
+ - Display library
