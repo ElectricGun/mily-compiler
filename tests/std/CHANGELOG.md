@@ -1,4 +1,4 @@
-Starting from [v0.1.3-alpha](/CHANGELOG.md#v013-alpha) of the compiler
+Starting from [v0.1.3-alpha](../../CHANGELOG.md#v013-alpha) of the compiler
 
 # v0.1.0 (contributed by @BnDLett)
 - Finished the [control library](control.mily).
