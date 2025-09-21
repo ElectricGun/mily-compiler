@@ -22,3 +22,14 @@
 
 # v0.1.1-alpha
 - Changed `p` datatype to `ptr`
+
+# v0.1.2-alpha (contributed by @BnDLett)
+Bug fixes:
+- Added the Gradle wrapper jar, which is necessary for compiling the compiler.
+
+Additions:
+- A library for controlling blocks. Note that this library is incomplete and only contains enough macros to sense information from a block.
+- Example code — both revolving around the control library and other features.
+  - Fibonacci sequence
+  - Sensing @enabled from a switch.
+  - Getting the pixel position of a cursor relative to a display.
