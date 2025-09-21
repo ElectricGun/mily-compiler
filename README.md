@@ -159,3 +159,5 @@ while (i < 1000) {
 }
 printflush(@message1);
 ```
+
+More examples can be found in the [examples](examples) directory.
