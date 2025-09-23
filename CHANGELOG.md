@@ -39,5 +39,5 @@ Bug fixes:
 - Fixed boolean variables throwing a java exception when converted to mlog
 
 # v0.1.4-alpha (contributed by @BnDLett)
-- Updated the standard library. [Changelog](tests/std/CHANGELOG.md#v010-contributed-by-bndlett)
+- Updated the standard library. [Changelog](std/CHANGELOG.md#v010-contributed-by-bndlett)
 - Added a [new test](tests/radar.mily)
