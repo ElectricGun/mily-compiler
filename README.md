@@ -1,5 +1,5 @@
 <h1 align="center">
-    Xylem Compiler
+    Mily Compiler
 </h1>
 
 <div align="center">
