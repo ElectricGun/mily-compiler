@@ -247,7 +247,8 @@ public class CodeGeneration {
                 debugMode
         );
 
-//        irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE, "0", 0));
+        // BUG, other cell's pointers dont get reset
+        irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE, "0", 0));
 
         generateScopeRecursive(evaluatorTree.mainBlock, irScopeConfig.copy(), null, 0);
 
