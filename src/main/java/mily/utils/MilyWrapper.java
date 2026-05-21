@@ -41,7 +41,7 @@ public class MilyWrapper {
         List<Token> tokenList;
         try {
             tokenList = tokenize(code.code(), new File(code.directory(), code.filename()).getPath(), debugMode);
-            tokenList = Preprocess.processIncludes(tokenList, cwd, debugMode, false);
+            tokenList = Preprocess.processIncludes(tokenList, cwd, false, debugMode);
         } catch (Exception e) {
             // todo: unhardcode this message
             System.out.println(ANSI_ERROR + "MilyLexingError: " + ANSI_RESET);
