@@ -84,6 +84,7 @@ public class CodeGeneration {
                                     declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE + "@" + refTarget, depth));
                                 }
                                 declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE + "@" + refTarget, depth));
+                                declaredOp.lineList.add(new SetLine(oldVarName + ".ref", refTarget, depth));
                                 declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE + "@" + refTarget, KEY_OP_ADD, POINTER_VARIABLE + "@" + refTarget, "1", depth));
                             }
 
@@ -471,6 +472,12 @@ public class CodeGeneration {
         if (lastLine instanceof VariableLine variableLine)
             variableLine.setVarName(variableName);
 
+        // for fat pointers
+        var type = op.getConstantToken().getType();
+        if (type.typeString.equals(DATATYPE_PTR.typeString)) {
+            irScopeConfig.irCode().addSingleLineBlock(new SetLine(variableName + ".ref", type.referenceTarget, depth));
+        }
+
         return opBlock;
     }
 
@@ -523,12 +530,13 @@ public class CodeGeneration {
             }
         } else if (operationNode.isConstant()) {
             String constantVar = processConstantToken(irScopeConfig, operationNode.getConstantToken(), depth);
+
             irOperation.addLine(new SetLine(operationNode.nameToken.string, constantVar, depth));
 
         } else if (operationNode.isDereference()) {
             String constantVar = processConstantToken(irScopeConfig, operationNode.getLeftSide().getConstantToken(), depth);
             var refTarget = operationNode.getLeftTokenType().referenceTarget;
-            irOperation.addLine(new ReadLine(operationNode.nameToken.string, refTarget, constantVar, depth));
+            irOperation.addLine(new ReadLine(operationNode.nameToken.string, constantVar + ".ref", constantVar, depth));
         }
     }
 
