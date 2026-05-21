@@ -5,13 +5,17 @@
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/7.6/samples
  */
 plugins {
-    id 'java'
-    id 'application'
+    id "java"
+    id "application"
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'mily.Main'
+        attributes "Main-Class": "mily.Main"
+    }
+
+    from("std") {
+        into "std"
     }
 }
 
