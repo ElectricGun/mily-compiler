@@ -55,3 +55,6 @@ Bug fixes:
   - ptr<double>@cell1 x = 10;
   - int y = *x;
 - BUG: ptr indeces dont get reset
+
+# v0.1.8-alpha
+- Pointers now store the target memory cell
