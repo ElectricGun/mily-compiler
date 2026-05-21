@@ -31,8 +31,6 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
 
     @Override
     protected EvaluatorNode evaluator(List<Token> tokenList, EvaluatorTree evaluatorTree) {
-        String indent = " ".repeat(depth);
-
         boolean parsingDiamond = false;
         boolean expectingType = false;
         boolean typeParsed = false;
