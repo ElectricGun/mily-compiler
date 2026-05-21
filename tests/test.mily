@@ -3,9 +3,14 @@
 ptr<double> @cell1 sus = 0;
 ptr<double> @cell1 var = sus;
 
+var = 100;
+
 void f(ptr<double> x) {
-    ptr<double> y = x;
     print(*x);
 }
 
+f(sus);
 f(var);
+printflush(@message1);
+-- prints 100100
+-- because both references have the same value
