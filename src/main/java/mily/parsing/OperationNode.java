@@ -481,12 +481,22 @@ public class OperationNode extends EvaluatorNode {
 //                            this.operator = castToken.getType();
 
 //                        } else {
-                        type = KEY_OP_TYPE_OPERATION;
-                        this.operator = unaryOperator.string;
 //                        }
+
+                        this.operator = unaryOperator.string;
+
                         Token newConstantToken = operationTokens.remove(0);
 
-                        OperationNode op = new OperationNode(this.nameToken, depth + 1);
+                        OperationNode op;
+
+                        if (unaryOperator.equalsKey(KEY_OP_DEREFERENCE)) {
+                            type = KEY_OP_TYPE_DEREFERENCE;
+                            op = new DereferenceOperationNode(this.nameToken, depth + 1);
+                        } else {
+                            type = KEY_OP_TYPE_OPERATION;
+                            op = new OperationNode(this.nameToken, depth + 1);
+                        }
+
                         if (newConstantToken instanceof BracketToken bracketToken) {
                             setLeftSide(bracketToken.getOperationEvaluator());
 
@@ -531,6 +541,10 @@ public class OperationNode extends EvaluatorNode {
 
     public boolean isConstant() {
         return keyEquals(KEY_OP_TYPE_CONSTANT, type);
+    }
+
+    public boolean isDereference() {
+        return keyEquals(KEY_OP_TYPE_DEREFERENCE, type);
     }
 
     public void makeConstant(String newString) {
@@ -579,7 +593,10 @@ public class OperationNode extends EvaluatorNode {
             return out + "empty";
         }
 
-        if (isUnary()) {
+        if (isDereference()) {
+            out += "deref ";
+
+        } else if (isUnary()) {
             out += "unary ";
         }
 

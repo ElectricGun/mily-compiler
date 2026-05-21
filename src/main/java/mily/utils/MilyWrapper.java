@@ -79,7 +79,7 @@ public class MilyWrapper {
         boolean doAssignTypes = true;
         removeEmptyOperations(evaluatorTree);
         convertUnariesToBinary(evaluatorTree, debugMode);
-        validateDeclarations(evaluatorTree, doAssignTypes, debugMode);
+        validateDeclarationsAndSetTypes(evaluatorTree, doAssignTypes, debugMode);
         validateCallers(evaluatorTree, doAssignTypes, debugMode);
         validateFunctionDeclares(evaluatorTree, debugMode);
         // this step is not needed yet

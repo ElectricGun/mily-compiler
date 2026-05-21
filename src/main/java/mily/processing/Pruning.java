@@ -1,5 +1,6 @@
 package mily.processing;
 
+import mily.constants.*;
 import mily.interfaces.*;
 import mily.parsing.*;
 import mily.parsing.invokes.*;
@@ -131,7 +132,7 @@ public class Pruning {
             return;
 
         if (parent != null && evaluatorNode instanceof OperationNode opCurrent) {
-            if (opCurrent.isUnary()) {
+            if (opCurrent.isUnary() && opCurrent.getType().equals(Keywords.KEY_OP_TYPE_OPERATION)) {
                 if (debugMode)
                     System.out.println("converted unary operator " + opCurrent);
 

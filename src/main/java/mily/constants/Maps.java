@@ -79,6 +79,7 @@ public class Maps {
             KEY_OP_SUB,
             KEY_OP_DIV,
 //            KEY_OP_POW,  //UNUSED
+            KEY_OP_DEREFERENCE,
             KEY_OP_IDIV,
             KEY_OP_MOD,
             KEY_OP_EQUALS,

@@ -62,6 +62,8 @@ public class CodeGeneration {
                 if (declarationNode.memberCount() > 0 && declarationNode.getMember(0) instanceof OperationNode op) {
                     IROperation declaredOp = addOperationIRBlock(irScopeConfig, op, declarationNode.getName(), depth);
 
+                    var refTarget = declarationNode.getType().referenceTarget;
+
                     if (declarationNode.getType().typeString.equals(DATATYPE_PTR.typeString)) {
                         Line lastLine = declaredOp.lineList.get(declaredOp.lineList.size() - 1);
 
@@ -75,14 +77,14 @@ public class CodeGeneration {
 
                                 if (variableLine instanceof SetLine setLine) {
                                     declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
-                                    declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", POINTER_VARIABLE, depth));
+                                    declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", POINTER_VARIABLE + "@" + refTarget, depth));
                                 } else {
                                     // if its an op, overwrite the var name of the evaluated value
                                     variableLine.setVarName(ptrValueName);
-                                    declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE, depth));
+                                    declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE + "@" + refTarget, depth));
                                 }
-                                declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE, depth));
-                                declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE, KEY_OP_ADD, POINTER_VARIABLE, "1", depth));
+                                declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE + "@" + refTarget, depth));
+                                declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE + "@" + refTarget, KEY_OP_ADD, POINTER_VARIABLE + "@" + refTarget, "1", depth));
                             }
 
                         } else {
@@ -245,7 +247,7 @@ public class CodeGeneration {
                 debugMode
         );
 
-        irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE, "0", 0));
+//        irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE, "0", 0));
 
         generateScopeRecursive(evaluatorTree.mainBlock, irScopeConfig.copy(), null, 0);
 
@@ -501,6 +503,10 @@ public class CodeGeneration {
         } else if (operationNode.isConstant()) {
             String constantVar = processConstantToken(irScopeConfig, operationNode.getConstantToken(), depth);
             irOperation.addLine(new SetLine(operationNode.nameToken.string, constantVar, depth));
+
+        } else if (operationNode.isDereference()) {
+            var refTarget = operationNode.getLeftTokenType().referenceTarget;
+            irOperation.addLine(new ReadLine(operationNode.nameToken.string, refTarget, POINTER_VARIABLE + "@" + refTarget, depth));
         }
     }
 

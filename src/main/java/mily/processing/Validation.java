@@ -76,7 +76,7 @@ public class Validation {
      *
      * @param evaluatorTree Abstract syntax tree
      */
-    public static void validateDeclarations(EvaluatorTree evaluatorTree, boolean doAssignTypes, boolean debugMode) {
+    public static void validateDeclarationsAndSetTypes(EvaluatorTree evaluatorTree, boolean doAssignTypes, boolean debugMode) {
         List<String> declaredVariablesNames = new ArrayList<>();
         List<Type> variableTypes = new ArrayList<>();
 
@@ -212,6 +212,18 @@ public class Validation {
             } else if (operationNode.isConstant()) {
                 type = operationNode.getConstantToken().getType();
                 type = type == null ? DATATYPE_UNKNOWN.create() : type;
+
+            } else if (operationNode.isDereference()) {
+
+                // if not a reference datatype
+                if (!operationNode.getLeftTokenType().typeString.equals(DATATYPE_PTR.typeString)) {
+                    if (throwErrors)
+                        evaluatorNode.throwTypeError("Cannot dereference type " + operationNode.getLeftTokenType(), evaluatorNode.nameToken);
+                    return type;
+                }
+                var refType = operationNode.getLeftTokenType().diamondTypes.get(0);
+
+                type = refType;
             }
 
             // TODO remove redundancies
