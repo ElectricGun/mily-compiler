@@ -6,6 +6,7 @@ public class Type {
 
     public String typeString;
     public List<Type> diamondTypes = new ArrayList<>(); // such as the String in List<String>
+    public String referenceTarget;
 
     public Type(String typeString) {
         this.typeString = typeString;
@@ -54,6 +55,10 @@ public class Type {
                 }
             }
             out.append(">");
+        }
+
+        if (referenceTarget != null) {
+            out.append("@").append(referenceTarget);
         }
 
         return out.toString();

@@ -24,6 +24,7 @@ public class Keywords {
     KEY_COLON = ":",
     KEY_SPEECH_MARK = "\"",
     KEY_SYMBOL_IDENTIFIER = "@",
+    KEY_REFERENCE_TARGET = "@",
     KEY_HASH = "#",
     KEY_MACRO_LITERAL = "$",
     KEY_SEMICOLON = ";",

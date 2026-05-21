@@ -1,0 +1,15 @@
+#include std/bulb.mily;
+
+ptr<double> sus = 0;
+ptr<double> ref = sus;
+ref = 100;
+
+void f(ptr<double> x) {
+    print(r(x));
+}
+
+f(sus);
+f(ref);
+printflush(@message1);
+-- prints 100100
+-- because both references have the same value

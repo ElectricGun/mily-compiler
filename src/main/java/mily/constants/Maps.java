@@ -40,6 +40,7 @@ public class Maps {
             KEY_MACRO_LITERAL,
             KEY_HASH,
             KEY_SYMBOL_IDENTIFIER,
+            KEY_REFERENCE_TARGET,
             KEY_ESCAPE,
             KEY_SPEECH_MARK,
             KEY_TEMPLATE_RETURN_ARROW

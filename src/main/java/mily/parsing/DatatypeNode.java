@@ -35,6 +35,7 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
 
         boolean parsingDiamond = false;
         boolean expectingType = false;
+        boolean typeParsed = false;
 
         while (!tokenList.isEmpty()) {
             Token token = tokenList.remove(0);
@@ -43,14 +44,34 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
                 continue;
             }
 
-            if (!parsingDiamond) {
+            if (typeParsed) {
+                if (token.equalsKey(KEY_REFERENCE_TARGET)) {
+
+                    Token token1;
+                    do {
+                        token1 = tokenList.remove(0);
+                    } while (token.isWhiteSpace());
+
+                    if (token1.isVariableName()) {
+                        type.referenceTarget = token1.string;
+                        return this;
+                    }
+
+                } else {
+                    // add back removed token
+                    tokenList.add(0, token);
+                    return this;
+                }
+
+            } else if (!parsingDiamond) {
                 if (token.equalsKey(KEY_DIAMOND_OPEN)) {
                     parsingDiamond = true;
                     expectingType = true;
 
                 } else {
+                    // add back removed toen
                     tokenList.add(0, token);
-                    return this;
+                    typeParsed = true;
                 }
             } else {
                 if (expectingType && Functions.isVariableOrDeclarator(token)) {
@@ -63,7 +84,7 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
                     expectingType = true;
 
                 } else if (token.equalsKey(KEY_DIAMOND_CLOSE)) {
-                    return this;
+                    typeParsed = true;
 
                 } else {
                     return throwSyntaxError("Unexpected token in datatype", token);
