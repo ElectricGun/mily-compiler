@@ -509,8 +509,9 @@ public class CodeGeneration {
             irOperation.addLine(new SetLine(operationNode.nameToken.string, constantVar, depth));
 
         } else if (operationNode.isDereference()) {
+            String constantVar = processConstantToken(irScopeConfig, operationNode.getLeftSide().getConstantToken(), depth);
             var refTarget = operationNode.getLeftTokenType().referenceTarget;
-            irOperation.addLine(new ReadLine(operationNode.nameToken.string, refTarget, POINTER_VARIABLE + "@" + refTarget, depth));
+            irOperation.addLine(new ReadLine(operationNode.nameToken.string, refTarget, constantVar, depth));
         }
     }
 
