@@ -536,7 +536,6 @@ public class CodeGeneration {
 
         } else if (operationNode.isDereference()) {
             String constantVar = processConstantToken(irScopeConfig, operationNode.getLeftSide().getConstantToken(), depth);
-            var refTarget = operationNode.getLeftTokenType().referenceTarget;
             irOperation.addLine(new ReadLine(operationNode.nameToken.string, constantVar + ".ref", constantVar, depth));
         }
     }
