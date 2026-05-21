@@ -48,35 +48,27 @@ public class Preprocess {
                     // if the directory already exists in the internal library, use it instead
                     if (InternalLibraries.internalLibraryMap.containsKey(libraryName) || isInternal) {
 
+                        Path fullPath;
+
                         if (isInternal) {
-                            Path fullPath = Paths.get(directory).resolve(libraryName);
+                            fullPath = Paths.get(directory).resolve(libraryName);
                             libraryName = fullPath.toString();
+
+                        } else {
+                            fullPath = Paths.get("").resolve(libraryName);
                         }
 
                         String internalDirectory = InternalLibraries.internalLibraryMap.get(libraryName);
+                        String parentDir = fullPath.getParent().toString();
 
                         if (internalDirectory == null) {
                             throw new Exception("Internal library not found " + '"' + libraryName + '"' + " on line " + token.line);
                         }
 
-                        InputStream stream;
-                        Scanner sc;
+                        CodeFile includedCode = Functions.readInternalFile(internalDirectory);
 
-                        try {
-                            stream = Preprocess.class.getResourceAsStream(internalDirectory);
-
-                            sc = new Scanner(stream);
-
-                        } catch (Exception e) {
-                            throw e;
-                        }
-
-                        StringBuilder output = new StringBuilder();
-                        while (sc.hasNextLine())
-                            output.append(sc.nextLine() + "\n");
-
-                        includedTokens = Lexing.tokenize(output.toString(), libraryName, debugMode);
-                        includedTokens = processIncludes(includedTokens, "std/", true, debugMode);
+                        includedTokens = Lexing.tokenize(includedCode.code(), libraryName, debugMode);
+                        includedTokens = processIncludes(includedTokens, parentDir, true, debugMode);
 
                     } else {
                         File includedFile = new File(directory, libraryName);
