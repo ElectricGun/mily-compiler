@@ -45,5 +45,12 @@ Bug fixes:
 # v0.1.5-alpha
 - Refactored scope generation
 
-# v0.1.5-alpha
+# v0.1.6-alpha
 - Bundled the std with the jar
+
+# v0.1.7-alpha
+- Revamped ptr datatype
+- New dereferencing operator *
+  - example:
+  - ptr<double>@cell1 x = 10;
+  - int y = *x;
