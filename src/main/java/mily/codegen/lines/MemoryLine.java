@@ -12,6 +12,10 @@ public abstract class MemoryLine extends Line {
         this.cell = cell;
     }
 
+    public String getValue() {
+        return string;
+    }
+
     public String asMlogMem(String op) {
         return indent() + op + " " + string + " " + cell + " " + position;
     }

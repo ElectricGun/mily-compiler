@@ -1,3 +1,10 @@
-ptr<int> @cell1 x = 1;
+#include std/bulb.mily;
 
-int y = *1;
+ptr<double> @cell1 sus = 0;
+ptr<double> @cell1 var = sus;
+
+void f(ptr<double> @cell1 x) {
+    print(*x);
+}
+
+f(var);

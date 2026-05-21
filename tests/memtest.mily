@@ -1,11 +1,12 @@
 #include std/bulb.mily;
 
-ptr<double> sus = 0;
-ptr<double> ref = sus;
-ref = 100;
+ref<double> @cell1 sus = 0;
+ref<double> @cell1 var = sus;
 
-void f(ptr<double> x) {
-    print(r(x));
+var = 100;
+
+void f(ref<double> x) {
+    print(*x);
 }
 
 f(sus);

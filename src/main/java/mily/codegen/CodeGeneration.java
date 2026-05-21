@@ -290,8 +290,11 @@ public class CodeGeneration {
                 opBlock.lineList.remove(opBlock.lineList.size() - 1);
                 argNames.add(setLine.getValue());
 
+            } else if (lastLine instanceof ReadLine readLine) {
+                argNames.add(readLine.getValue());
+
             } else {
-                throw new Exception("Expected a BinaryOp or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
+                throw new Exception("Expected a BinaryOp, ReadLine, or SetLine in RawTemplateInvoke on codegen stage, got \"" + lastLine.getClass() + "\" instead");
             }
         }
         String formatted;
