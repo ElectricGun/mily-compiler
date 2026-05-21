@@ -44,3 +44,6 @@ Bug fixes:
 
 # v0.1.5-alpha
 - Refactored scope generation
+
+# v0.1.5-alpha
+- Bundled the std with the jar
