@@ -56,7 +56,7 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
                     }
 
                 } else {
-                    // add back removed token
+                    // add back unconsumed token token
                     tokenList.add(0, token);
                     return this;
                 }
@@ -67,7 +67,7 @@ public class DatatypeNode extends EvaluatorNode implements Typed {
                     expectingType = true;
 
                 } else {
-                    // add back removed toen
+                    // add unconsumed token
                     tokenList.add(0, token);
                     typeParsed = true;
                 }
