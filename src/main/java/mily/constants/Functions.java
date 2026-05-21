@@ -1,9 +1,11 @@
 package mily.constants;
 
+import mily.preprocessing.*;
 import mily.structures.dataobjects.*;
 import mily.tokens.*;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 import static mily.constants.Keywords.*;
@@ -45,6 +47,29 @@ public class Functions {
         sc.close();
 
         return new CodeFile(directory, filename, code.toString());
+    }
+
+    public static CodeFile readInternalFile(String internalDirectory) {
+        Path path = Paths.get(internalDirectory);
+        Path parent = path.getParent();
+
+        InputStream stream;
+        Scanner sc;
+
+        try {
+            stream = Preprocess.class.getResourceAsStream(internalDirectory);
+
+            sc = new Scanner(stream);
+
+        } catch (Exception e) {
+            throw e;
+        }
+
+        StringBuilder output = new StringBuilder();
+        while (sc.hasNextLine())
+            output.append(sc.nextLine() + "\n");
+
+        return new CodeFile(parent.toString(), path.getFileName().toString(), output.toString());
     }
 
     public static boolean keyEquals(String key, String compare) {

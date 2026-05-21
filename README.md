@@ -22,7 +22,7 @@ If you find a bug, please create an issue containing the Mily code with a brief 
 
 The alpha versions are unstable, and code syntax may change on updates!
 
-Do note that the standard library is currently not implemented as a part of the compiler, but a set of external files located in `tests/std/`.
+Do note that the standard library is currently not implemented as a part of the compiler, but a set of external files located in [std/](https://github.com/ElectricGun/mily-compiler/tree/main/std).
 Be sure to download the `std/` folder and move it to the working directory of your projects before importing them.
 
 ## Table of Contents
