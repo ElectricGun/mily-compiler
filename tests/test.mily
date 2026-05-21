@@ -4,6 +4,7 @@ ptr<double> @cell1 sus = 0;
 ptr<double> @cell1 var = sus;
 
 void f(ptr<double> x) {
+    ptr<double> y = x;
     print(*x);
 }
 
