@@ -5,6 +5,7 @@ import java.util.*;
 public class InternalLibraries {
     public static HashMap<String, String> internalLibraryMap = new HashMap<>();
     static {
+        // i know i know dont judge
         internalLibraryMap.put("std/bulb.mily", "/std/bulb.mily");
         internalLibraryMap.put("std/control.mily", "/std/control.mily");
         internalLibraryMap.put("std/flow.mily", "/std/flow.mily");
