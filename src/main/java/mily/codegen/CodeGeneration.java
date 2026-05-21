@@ -247,13 +247,30 @@ public class CodeGeneration {
                 debugMode
         );
 
-        // BUG, other cell's pointers dont get reset
-        irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE, "0", 0));
+        HashSet<String> memoryCells = new HashSet<>();
+
+        getAllRefTypesMemoryCells(evaluatorTree.mainBlock, memoryCells);
+
+        for(String cell : memoryCells) {
+            irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE + "@" + cell, "0", 0));
+        }
 
         generateScopeRecursive(evaluatorTree.mainBlock, irScopeConfig.copy(), null, 0);
 
         irScopeConfig.irCode().addSingleLineBlock(new Stop(0));
         return irScopeConfig.irCode();
+    }
+
+    private static void getAllRefTypesMemoryCells(EvaluatorNode evaluatorNode, HashSet<String> memoryCells) {
+        for (int i = 0; i < evaluatorNode.memberCount(); i++) {
+            var member = evaluatorNode.getMember(i);
+
+            if (member instanceof DeclarationNode declarationNode && declarationNode.getType().typeString.equals(DATATYPE_PTR.typeString)) {
+                memoryCells.add(declarationNode.getType().referenceTarget);
+            }
+
+            getAllRefTypesMemoryCells(member, memoryCells);
+        }
     }
 
     // the IRFunction here should be a part of scopeNode
