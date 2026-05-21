@@ -54,3 +54,4 @@ Bug fixes:
   - example:
   - ptr<double>@cell1 x = 10;
   - int y = *x;
+- BUG: ptr indeces dont get reset
