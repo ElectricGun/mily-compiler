@@ -1,6 +1,6 @@
 #include std/bulb.mily;
 
-ref<double> @cell1 sus = 0;
+ref<double> @cell sus = 0;
 ref<double> @cell1 var = sus;
 
 var = 100;

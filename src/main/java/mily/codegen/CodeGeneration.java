@@ -77,11 +77,11 @@ public class CodeGeneration {
 
                                 if (variableLine instanceof SetLine setLine) {
                                     declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
-                                    declaredOp.lineList.add(new WriteLine(setLine.getValue(), "cell1", POINTER_VARIABLE + "@" + refTarget, depth));
+                                    declaredOp.lineList.add(new WriteLine(setLine.getValue(), refTarget, POINTER_VARIABLE + "@" + refTarget, depth));
                                 } else {
                                     // if its an op, overwrite the var name of the evaluated value
                                     variableLine.setVarName(ptrValueName);
-                                    declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), "cell1", POINTER_VARIABLE + "@" + refTarget, depth));
+                                    declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), refTarget, POINTER_VARIABLE + "@" + refTarget, depth));
                                 }
                                 declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE + "@" + refTarget, depth));
                                 declaredOp.lineList.add(new SetLine(oldVarName + ".ref", refTarget, depth));
@@ -117,16 +117,17 @@ public class CodeGeneration {
                 if (declarator.getType().typeString.equals(DATATYPE_PTR.typeString)) {
                     // replace the last operation with a memcell write
                     Line lastline = irOperation.lineList.get(irOperation.lineList.size() - 1);
+                    var refTarget = as.getType().referenceTarget;
 
                     if (!getOperationType(op, false).typeString.equals(DATATYPE_PTR.typeString)) {
                         if (lastline instanceof SetLine setLine) {
                             irOperation.lineList.remove(irOperation.lineList.size() - 1);
-                            irOperation.addLine(new WriteLine(setLine.getValue(), "cell1", declarator.getName(), setLine.getIndent()));
+                            irOperation.addLine(new WriteLine(setLine.getValue(), refTarget, declarator.getName(), setLine.getIndent()));
 
                         } else if (lastline instanceof VariableLine variableLine) {
                             // if its an op
                             variableLine.setVarName("value_" + variableLine.getVarName());
-                            irOperation.addLine(new WriteLine(variableLine.getVarName(), "cell1", declarator.getName(), depth));
+                            irOperation.addLine(new WriteLine(variableLine.getVarName(), refTarget, declarator.getName(), depth));
                         }
                     }
                 }

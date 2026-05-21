@@ -1,7 +1,7 @@
 #include std/bulb.mily;
 
-ptr<double> @cell1 sus = 0;
-ptr<double> @cell1 var = sus;
+ptr<double> @cell2 sus = 0;
+ptr<double> @cell2 var = sus;
 
 var = 100;
 
