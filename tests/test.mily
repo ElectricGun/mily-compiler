@@ -1,9 +1,9 @@
 #include std/bulb.mily;
 
-ptr<double> @cell1 sus = 0;
-ptr<double> @cell2 var = 10;
+ref<double> @cell1 sus = 0;
+ref<double> @cell2 var = 10;
 
-void f(ptr<double> x, ptr<double> y) {
+void f(ref<double> x, ref<double> y) {
     void g() {
         print(*x);
     }

@@ -58,3 +58,7 @@ Bug fixes:
 
 # v0.1.8-alpha
 - Pointers now store the target memory cell
+
+# v0.1.9-alpha
+- Bug fixes
+- Changed ptr datatype to ref
