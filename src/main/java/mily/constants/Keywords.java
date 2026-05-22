@@ -118,7 +118,7 @@ public class Keywords {
     DATATYPE_SYMBOL = new Type("symbol"),
 
     // pointer stuff
-    DATATYPE_PTR = new Type("ptr"),
+    DATATYPE_PTR = new Type("ref"),
     DATATYPE_PTR_INT = new Type(DATATYPE_PTR.typeString, DATATYPE_INT),
     DATATYPE_PTR_DOUBLE = new Type(DATATYPE_PTR.typeString, DATATYPE_DOUBLE),
     DATATYPE_PTR_BOOLEAN = new Type(DATATYPE_PTR.typeString, DATATYPE_BOOLEAN),

@@ -1,16 +1,15 @@
 #include std/bulb.mily;
 
-ptr<double> @cell2 sus = 0;
-ptr<double> @cell2 var = sus;
+ptr<double> @cell1 sus = 0;
+ptr<double> @cell2 var = 10;
 
-var = 100;
-
-void f(ptr<double> x) {
-    print(*x);
+void f(ptr<double> x, ptr<double> y) {
+    void g() {
+        print(*x);
+    }
+    print(*y);
+    g();
 }
 
-f(sus);
-f(var);
+f(sus, var);
 printflush(@message1);
--- prints 100100
--- because both references have the same value

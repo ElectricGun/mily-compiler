@@ -476,9 +476,10 @@ public class CodeGeneration {
             variableLine.setVarName(variableName);
 
         // for fat pointers
-        var type = op.getConstantToken().getType();
+        var constant = op.getConstantToken();
+        var type = constant.getType();
         if (type.typeString.equals(DATATYPE_PTR.typeString)) {
-            irScopeConfig.irCode().addSingleLineBlock(new SetLine(variableName + ".owner", type.referenceTarget, depth));
+            irScopeConfig.irCode().addSingleLineBlock(new SetLine(variableName + ".owner", constant.string + ".owner", depth));
         }
 
         return opBlock;
