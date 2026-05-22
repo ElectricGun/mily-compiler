@@ -94,9 +94,10 @@ These datatypes may only be stored within the processor's variable map.
 
 ### Reference Datatypes
 Reference variables store the index of the value stored within a memory cell instead of the value itself. Only primitive datatypes may be stored in memory.
-- ptr<type>
+- ref<type>
 
-To access their value, call the dereference function `r(var)` found in the standard library.
+To access its value, call the dereference operator "*" before the variable name.
+Examle: *x
 
 <!--
 ### Array Reference Datatypes [WIP]
