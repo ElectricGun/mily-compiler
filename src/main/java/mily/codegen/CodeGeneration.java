@@ -68,12 +68,13 @@ public class CodeGeneration {
                         Line lastLine = declaredOp.lineList.get(declaredOp.lineList.size() - 1);
 
                         if (lastLine instanceof VariableLine variableLine) {
+                            String oldVarName = variableLine.getVarName();
+                            String ptrValueName = "value_" + oldVarName;
 
-                            // if the assigned value is a reference then just assign it normally
+                            // if the assigned value is a reference pointer then just assign it normally
                             if (!getOperationType(op, false).typeString.equals(DATATYPE_PTR.typeString)) {
+
                                 // if it is a set, just replace it with a write line
-                                String oldVarName = variableLine.getVarName();
-                                String ptrValueName = "value_" + oldVarName;
 
                                 if (variableLine instanceof SetLine setLine) {
                                     declaredOp.lineList.remove(declaredOp.lineList.size() - 1);
@@ -86,6 +87,8 @@ public class CodeGeneration {
                                 declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE + "@" + refTarget, depth));
                                 declaredOp.lineList.add(new SetLine(oldVarName + ".owner", refTarget, depth));
                                 declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE + "@" + refTarget, KEY_OP_ADD, POINTER_VARIABLE + "@" + refTarget, "1", depth));
+                            } else {
+
                             }
 
                         } else {
