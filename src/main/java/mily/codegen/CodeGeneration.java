@@ -87,8 +87,6 @@ public class CodeGeneration {
                                 declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE + "@" + refTarget, depth));
                                 declaredOp.lineList.add(new SetLine(oldVarName + ".owner", refTarget, depth));
                                 declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE + "@" + refTarget, KEY_OP_ADD, POINTER_VARIABLE + "@" + refTarget, "1", depth));
-                            } else {
-
                             }
 
                         } else {
