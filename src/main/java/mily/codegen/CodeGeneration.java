@@ -84,7 +84,7 @@ public class CodeGeneration {
                                     declaredOp.lineList.add(new WriteLine(variableLine.getVarName(), refTarget, POINTER_VARIABLE + "@" + refTarget, depth));
                                 }
                                 declaredOp.lineList.add(new SetLine(oldVarName, POINTER_VARIABLE + "@" + refTarget, depth));
-                                declaredOp.lineList.add(new SetLine(oldVarName + ".ref", refTarget, depth));
+                                declaredOp.lineList.add(new SetLine(oldVarName + ".owner", refTarget, depth));
                                 declaredOp.lineList.add(new BinaryOp(POINTER_VARIABLE + "@" + refTarget, KEY_OP_ADD, POINTER_VARIABLE + "@" + refTarget, "1", depth));
                             }
 
@@ -117,17 +117,16 @@ public class CodeGeneration {
                 if (declarator.getType().typeString.equals(DATATYPE_PTR.typeString)) {
                     // replace the last operation with a memcell write
                     Line lastline = irOperation.lineList.get(irOperation.lineList.size() - 1);
-                    var refTarget = as.getType().referenceTarget;
 
                     if (!getOperationType(op, false).typeString.equals(DATATYPE_PTR.typeString)) {
                         if (lastline instanceof SetLine setLine) {
                             irOperation.lineList.remove(irOperation.lineList.size() - 1);
-                            irOperation.addLine(new WriteLine(setLine.getValue(), refTarget, declarator.getName(), setLine.getIndent()));
+                            irOperation.addLine(new WriteLine(setLine.getValue(), declarator.getName() + ".owner", declarator.getName(), setLine.getIndent()));
 
                         } else if (lastline instanceof VariableLine variableLine) {
                             // if its an op
                             variableLine.setVarName("value_" + variableLine.getVarName());
-                            irOperation.addLine(new WriteLine(variableLine.getVarName(), refTarget, declarator.getName(), depth));
+                            irOperation.addLine(new WriteLine(variableLine.getVarName(), declarator.getName() + ".owner", declarator.getName(), depth));
                         }
                     }
                 }
@@ -254,6 +253,8 @@ public class CodeGeneration {
         getAllRefTypesMemoryCells(evaluatorTree.mainBlock, memoryCells);
 
         for(String cell : memoryCells) {
+            if (cell == null) continue;
+
             irScopeConfig.irCode().addSingleLineBlock(new SetLine(POINTER_VARIABLE + "@" + cell, "0", 0));
         }
 
@@ -476,7 +477,7 @@ public class CodeGeneration {
         // for fat pointers
         var type = op.getConstantToken().getType();
         if (type.typeString.equals(DATATYPE_PTR.typeString)) {
-            irScopeConfig.irCode().addSingleLineBlock(new SetLine(variableName + ".ref", type.referenceTarget, depth));
+            irScopeConfig.irCode().addSingleLineBlock(new SetLine(variableName + ".owner", type.referenceTarget, depth));
         }
 
         return opBlock;
@@ -536,7 +537,7 @@ public class CodeGeneration {
 
         } else if (operationNode.isDereference()) {
             String constantVar = processConstantToken(irScopeConfig, operationNode.getLeftSide().getConstantToken(), depth);
-            irOperation.addLine(new ReadLine(operationNode.nameToken.string, constantVar + ".ref", constantVar, depth));
+            irOperation.addLine(new ReadLine(operationNode.nameToken.string, constantVar + ".owner", constantVar, depth));
         }
     }
 
